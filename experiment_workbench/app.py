@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import queue
 import sys
+import threading
+import time
 from pathlib import Path
 import streamlit as st
 
@@ -77,6 +80,9 @@ with st.sidebar:
         st.caption(f"Attached: {image_upload.name}")
     st.divider()
     show_trace = st.toggle("Show detailed Python call trace", value=True)
+    live_debug = st.toggle("Show live execution debugger", value=True)
+    trace_lines = st.toggle("Trace individual source lines (slower)", value=False,
+        help="Line-by-line tracing inside the selected ORE package. More detailed, but can noticeably slow execution.")
     if st.button("Clear conversation", use_container_width=True):
         st.session_state.messages = []
         st.session_state.last_result = None
@@ -168,11 +174,77 @@ with left:
                 if image_upload is not None and image_is_supported:
                     runtime_kwargs["image"] = _image_to_array(image_upload)
                 st.session_state.messages.append({"role": "user", "content": prompt})
-                result = execute(
-                    component, selected, prompt, supplied,
-                    previous_output=upstream_artifact["output"] if upstream_artifact else None,
-                    runtime_kwargs=runtime_kwargs,
-                )
+                event_queue = queue.Queue()
+                execution_holder = {}
+
+                def _execute_in_worker():
+                    execution_holder["result"] = execute(
+                        component, selected, prompt, supplied,
+                        previous_output=upstream_artifact["output"] if upstream_artifact else None,
+                        runtime_kwargs=runtime_kwargs,
+                        on_event=event_queue.put,
+                        trace_lines=trace_lines,
+                    )
+
+                worker = threading.Thread(target=_execute_in_worker, daemon=True)
+                worker.start()
+                live_events = []
+                last_render = 0.0
+                with st.status(f"Running {component}...", expanded=live_debug) as live_status:
+                    metrics_slot = st.empty()
+                    active_slot = st.empty()
+                    timeline_slot = st.empty()
+                    while worker.is_alive() or not event_queue.empty():
+                        received = False
+                        while True:
+                            try:
+                                live_events.append(event_queue.get_nowait())
+                                received = True
+                            except queue.Empty:
+                                break
+                        now = time.monotonic()
+                        if live_debug and (received or now - last_render >= 0.35):
+                            last_render = now
+                            latest = live_events[-1] if live_events else None
+                            with metrics_slot.container():
+                                m1, m2, m3 = st.columns(3)
+                                m1.metric("Observed events", len(live_events))
+                                m2.metric("Function calls", sum(1 for e in live_events if e.get("kind") == "call"))
+                                m3.metric("Errors raised", sum(1 for e in live_events if e.get("kind") == "exception"))
+                            if latest:
+                                stack = latest.get("active_stack", [])
+                                current = stack[-1]["function"] if stack else "Between component calls or finishing."
+                                active_slot.markdown(
+                                    "**What Python is doing now**\n\n" + current
+                                    + "\n\n**Active call stack**\n"
+                                    + ("\n".join(f'{i+1}. {item["function"]}' for i, item in enumerate(stack[-8:])) if stack else "No ORE function is currently active.")
+                                )
+                                rows = [{
+                                    "time (ms)": e.get("elapsed_ms"),
+                                    "event": e.get("kind"),
+                                    "what happened": e.get("explanation"),
+                                    "location": f'{e.get("file", "")}:{e.get("line", "")}',
+                                    "duration (ms)": e.get("duration_ms", ""),
+                                } for e in live_events[-10:]]
+                                timeline_slot.dataframe(rows, use_container_width=True, hide_index=True)
+                            else:
+                                active_slot.info("Waiting for the selected component to enter its first Python function...")
+                        time.sleep(0.06)
+                    worker.join()
+                    while True:
+                        try:
+                            live_events.append(event_queue.get_nowait())
+                        except queue.Empty:
+                            break
+                    result = execution_holder.get("result")
+                    if result is None:
+                        raise RuntimeError("The execution worker ended without returning a result.")
+                    result["live_events"] = live_events
+                    live_status.update(
+                        label=("Execution completed" if result["status"] == "success" else "Execution failed"),
+                        state=("complete" if result["status"] == "success" else "error"),
+                        expanded=live_debug,
+                    )
                 st.session_state.last_result = result
                 if result["status"] == "success":
                     raw_output = result["output"]
@@ -211,7 +283,7 @@ with right:
         metrics[0].metric("Elapsed time", f'{result.get("elapsed_ms", 0)} ms')
         metrics[1].metric("Python calls", profile.get("observed_call_count", 0))
         metrics[2].metric("Numeric arrays", obs.get("array_count", 0))
-        tabs = st.tabs(["Overview", "Stage trace", "Python calls", "Numerics", "Raw result"])
+        tabs = st.tabs(["Overview", "Live debugger", "Stage trace", "Python calls", "Numerics", "Raw result"])
         with tabs[0]:
             st.write("**Run identity**")
             st.code(result.get("run_id", ""), language="text")
@@ -249,6 +321,46 @@ with right:
             st.json(_compact(json_safe(result.get("arguments", {}))))
 
         with tabs[1]:
+            st.markdown("**Readable execution timeline**")
+            st.caption("Events stream from the selected package while it runs. Calls mean a function started; returns mean it finished. Source-line events appear only when line tracing is enabled.")
+            timeline = result.get("live_events") or profile.get("timeline", [])
+            if timeline:
+                event_rows = [{
+                    "time (ms)": e.get("elapsed_ms"),
+                    "activity": e.get("kind", "event"),
+                    "plain-language explanation": e.get("explanation", ""),
+                    "function": e.get("function", ""),
+                    "source": f'{e.get("file", "")}:{e.get("line", "")}',
+                    "duration (ms)": e.get("duration_ms", ""),
+                } for e in timeline]
+                st.dataframe(event_rows, use_container_width=True, hide_index=True)
+                if profile.get("dropped_event_count"):
+                    st.warning(f'{profile["dropped_event_count"]} events were omitted at the capture limit.')
+                peak_stack = max((e.get("active_stack", []) for e in timeline), key=len, default=[])
+                st.write("**Deepest observed call stack**")
+                if peak_stack:
+                    for level, item in enumerate(peak_stack):
+                        st.write(f'{level + 1}. {"  " * min(level, 8)}{item["function"]}')
+                else:
+                    st.caption("No active stack was captured.")
+                exceptions = [e for e in timeline if e.get("kind") == "exception"]
+                if exceptions:
+                    st.write("**Exceptions observed during execution**")
+                    for e in exceptions:
+                        st.error(f'{e.get("exception_type")}: {e.get("exception_message", "")} · {e.get("file")}:{e.get("line")}')
+                line_events = [e for e in timeline if e.get("kind") == "line"]
+                if line_events:
+                    with st.expander("Individual source lines", expanded=False):
+                        st.code("\n".join(f'{e.get("file")}:{e.get("line")}  {e.get("source", "")}' for e in line_events), language="python")
+            else:
+                st.info("No live Python events were captured for this run. Check that the callable executes code inside the selected package.")
+            st.markdown("**How to read this panel**")
+            st.markdown("- Call: a function starts. Its position in the stack shows which function called it.")
+            st.markdown("- Return: a function finishes. Duration includes nested work.")
+            st.markdown("- Exception: Python raised an error at that point; the traceback gives full context.")
+            st.markdown("- Line: the specific source line Python is executing. Enable line tracing for this slower view.")
+
+        with tabs[2]:
             rows = obs.get("trace_rows", [])
             st.caption(f'{obs.get("trace_count", 0)} records extracted from component traces and diagnostics.')
             if rows:
@@ -256,7 +368,7 @@ with right:
             else:
                 st.info("No explicit stage/operation trace was exposed by this result object.")
 
-        with tabs[2]:
+        with tabs[3]:
             events = profile.get("events", [])
             if profile.get("dropped_event_count"):
                 st.warning(f'{profile["dropped_event_count"]} Python call events were omitted at the capture limit.')
@@ -268,7 +380,7 @@ with right:
             else:
                 st.info("No Python calls inside the selected package were captured.")
 
-        with tabs[3]:
+        with tabs[4]:
             arrays = obs.get("numerical_summaries", [])
             if arrays:
                 st.caption("Summaries are calculated from returned NumPy arrays; raw arrays remain unchanged.")
@@ -276,7 +388,7 @@ with right:
             else:
                 st.info("The output did not contain inspectable NumPy arrays.")
 
-        with tabs[4]:
+        with tabs[5]:
             st.caption("Preview is truncated for readability. Download the full JSON report.")
             st.json(result.get("output_preview", _compact(json_safe(result.get("output")))))
             report = {
@@ -285,6 +397,7 @@ with right:
                 "output": json_safe(result.get("output")),
                 "input_observation": result.get("input_observation", {}),
                 "observation": obs, "profile": profile,
+                "live_events": result.get("live_events", []),
             }
             report_text = json.dumps(report, indent=2, ensure_ascii=False, default=str)
             st.download_button(
@@ -308,6 +421,7 @@ with st.expander("Input and execution notes"):
 - Image: upload an image for callables that explicitly accept an image parameter, such as N1Processor.process(image=...). The uploader is not injected into unrelated functions.
 - Upstream artifact: explicitly hand a prior raw Python result to a compatible downstream input, such as an N1Result to N2Processor.process.
 - Constructor options: enter configuration under __init__. Inventory JSON records are converted to known ORE dataclasses where supported.
+- Live diagnostic: Python function-call activity is streamed while a run is executing. The component’s own named operation/stage records appear after its result is returned. Optional source-line tracing is slower.
 - Observation: stage records come from component traces/diagnostics. Python call timings are captured by a temporary profiler; NumPy summaries are calculated after execution.
 - Scientific interpretation: timing and numerical statistics are software observations. They do not establish biological validity.
 - Security: imports execute Python code. Keep the Workbench local or protect and isolate any hosted deployment.

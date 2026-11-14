@@ -323,3 +323,42 @@ print(result.biological["layers"]["orthographic"]["mean_firing_rate_hz"])
 For an upstream N6 result, use `reading_request_from_n6_result(n6_result)`; the adapter preserves N6 token order and does not modify N6 output. Input is text or already-tokenized orthography: image OCR and character segmentation remain upstream responsibilities. The default G2P rules are an English-oriented demonstration; language-specific rules and lexicons must be supplied for other writing systems.
 
 Run focused tests with `python -m pytest tests/test_integrated_reading.py -q` and the complete repository suite with `python -m pytest`.
+
+
+## Semantic Cognition — 44-operation registry
+
+The additive `ore_semantic` package implements a 44-operation semantic access and concept-selection subsystem. It adds episodic word-form retrieval, modality-specific semantic spokes, distributed feature activation, an ATL-inspired transmodal hub, IFG-inspired semantic control, and read-only abstract lexical prototypes.
+
+Functional evidence channels (lexical similarity, frequency, episodic retrieval, modality fit, context fit, hub fit and prototype fit) remain separately inspectable. Selection uses explicit confidence and ambiguity gates and preserves alternatives when it abstains.
+
+A second, distinct execution track runs current-based leaky integrate-and-fire population references for lexical, episodic, modality-spoke, distributed-feature, ATL-hub, IFG-control and abstract-prototype populations. It reports voltage (mV), current (pA), firing rate (Hz) and time (ms). This is a computational reference, not a fitted or validated reproduction of the human semantic system.
+
+See [the 44-operation semantic cognition registry](docs/SEMANTIC_COGNITION_44_OPERATION_REGISTRY.md).
+
+Quick start:
+
+```python
+from ore_semantic import SemanticConcept, SemanticCognitionProcessor, SemanticRequest
+
+concepts = [
+    SemanticConcept(
+        concept_id="concept-apple",
+        label="apple",
+        aliases=("fruit",),
+        semantic_features={"FOOD": 1.0, "PLANT": 0.8},
+        lexical_category="noun",
+        frequency=30.0,
+        verified_by="reviewer",
+        source_reference="dataset://apple",
+    ),
+]
+result = SemanticCognitionProcessor(concepts).process(
+    SemanticRequest("sample-001", text="apple", context={"FOOD": 0.8})
+)
+print(result.tokens[0]["selected_concept"])
+print(len(result.operation_trace))  # 44
+```
+
+To connect semantic concept access to the existing N9 semantic adapter slot, inject `SemanticN8Adapter(SemanticCognitionProcessor(concepts))` through `N9Adapters(n8=...)`. The adapter returns concept nodes only; it deliberately does not fabricate syntax, propositions or semantic relation edges.
+
+Run focused checks with `python -m pytest tests/test_semantic_cognition.py -q` and all repository tests with `python -m pytest`.

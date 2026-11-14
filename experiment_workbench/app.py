@@ -8,7 +8,7 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from adapter import discover_callables, execute, json_safe
+from adapter import accepts_parameter, discover_callables, execute, json_safe
 
 COMPONENTS = [
     "ore_contracts", "ore_lexical_access", "ore_lexical_context",
@@ -134,9 +134,12 @@ with left:
             st.caption(selected.doc)
             st.code(selected.signature, language="python")
 
+        upstream_key = f"upstream_{component}"
+        if st.session_state.get(upstream_key, "None") not in artifact_options:
+            st.session_state[upstream_key] = "None"
         st.selectbox(
             "Upstream artifact (optional)", artifact_options,
-            key=f"upstream_{component}",
+            key=upstream_key,
             help="Choose a real result from an earlier run. For example, pass an N1Result to N2 or an N3Result to N4.",
         )
         selected_artifact_label = st.session_state.get(f"upstream_{component}", "None")
@@ -160,7 +163,8 @@ with left:
                 if not isinstance(supplied, dict):
                     raise ValueError("Keyword arguments must be a JSON object.")
                 runtime_kwargs = {}
-                if image_upload is not None:
+                image_is_supported = accepts_parameter(selected, "image")
+                if image_upload is not None and image_is_supported:
                     runtime_kwargs["image"] = _image_to_array(image_upload)
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 result = execute(
@@ -230,6 +234,10 @@ with right:
                 if result.get("traceback"):
                     with st.expander("Full traceback", expanded=True):
                         st.code(result["traceback"])
+            st.write("**Constructor arguments**")
+            st.json(_compact(json_safe(result.get("constructor_arguments", {}))))
+            if result.get("reused_instance"):
+                st.info("Reused the selected processor instance from the chosen upstream artifact.")
             st.write("**Arguments actually passed**")
             st.json(_compact(json_safe(result.get("arguments", {}))))
 
@@ -289,7 +297,7 @@ with st.expander("Input and execution notes"):
     st.markdown("""
 - Prompt: mapped to a compatible text-like parameter or to the text field in a dataclass request.
 - Structured request: enter fields under request_data; missing sequence_id values are generated for convenience.
-- Image: upload an image for image-taking callables such as N1Processor.process(image=...).
+- Image: upload an image for callables that explicitly accept an image parameter, such as N1Processor.process(image=...). The uploader is not injected into unrelated functions.
 - Upstream artifact: explicitly hand a prior raw Python result to a compatible downstream input, such as an N1Result to N2Processor.process.
 - Constructor options: enter configuration under __init__. Inventory JSON records are converted to known ORE dataclasses where supported.
 - Observation: stage records come from component traces/diagnostics. Python call timings are captured by a temporary profiler; NumPy summaries are calculated after execution.

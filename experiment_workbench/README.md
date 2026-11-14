@@ -35,7 +35,7 @@ The adapter imports the selected package, walks importable submodules, and disco
 
 This is a transparent test harness, not an LLM. It does not silently substitute mock answers when a component cannot be imported or executed. Errors and tracebacks are shown for debugging.
 
-Some ORE modules expose classes, registries, or stateful pipelines rather than directly callable functions. They are not automatically instantiated because they may require configuration or mutate state; add an explicit adapter for those APIs.
+Processor, simulator, and model classes are also inspected for common methods such as process, run, infer, predict, train, simulate, and validate. The Workbench instantiates these classes with their default constructor. If a constructor requires configuration, provide it in the JSON panel under __init__. If a method expects a dataclass request object, provide its fields under request_data; the prompt is automatically assigned to a recognized text-like field when one exists. Classes with unusual lifecycle or nested input contracts may still need an explicit adapter.
 
 ## Reuse with another implementation
 Install the other Python package in the same environment, add its import name to COMPONENTS in app.py, and use the discovery/dispatch behavior. For a different invocation contract, extend adapter.py.

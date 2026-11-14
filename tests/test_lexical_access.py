@@ -127,3 +127,11 @@ def test_input_and_configuration_validation():
         LexicalAccessConfig(activation_temperature=0.0)
     with pytest.raises(ValueError):
         LexicalAccessProcessor([])
+
+
+def test_zero_frequency_inventory_keeps_identity_scores_finite():
+    zero = LexicalEntry("zero", "zero", frequency=0, lexical_category="noun")
+    processor = LexicalAccessProcessor([zero], config=LexicalAccessConfig(simulate_biology=False))
+    result = processor.process(LexicalAccessRequest("zero-frequency", "zero"))
+    assert result.lexical_identity_candidates[0]["frequency_strength"] == 0.0
+    assert result.diagnostics["valid"] is True

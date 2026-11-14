@@ -96,3 +96,24 @@ Add an importable package name to COMPONENTS in app.py and install it in the sam
 ## Security
 
 Only run trusted Python packages. Importing a package executes its module initialization code. Keep the Workbench local unless an exposed deployment has authentication, isolation, resource limits, and appropriate controls for uploaded data.
+
+
+## Live Diagnostic (debugger-style view)
+
+The chat run now executes in a worker thread while Streamlit polls a thread-safe event queue. The Live debugger view can show recent activity before the selected component finishes:
+
+- A **Call** event means a Python function inside the selected ORE package has started.
+- A **Return** event means that function finished; its duration includes any nested calls.
+- An **Exception** event marks an exception raised inside an ORE function. The run result also preserves the final traceback.
+- The **Active call stack** shows the chain of ORE functions currently executing.
+- Each event includes a plain-language explanation, module, file, and source line.
+- The optional **Trace individual source lines** setting adds line-by-line events and source text. It is slower and should be enabled only when investigating a specific issue.
+- After execution, the debugger retains the full event timeline and deepest observed call stack. The separate Stage trace view displays operation/stage records emitted by the component itself.
+
+### What the debugger can and cannot see
+
+The live timeline is based on Python's function profiler (and optional Python line tracing) for the selected package. It can show Python function boundaries and source lines, but it cannot show individual C-level NumPy/SciPy instructions, GPU kernels, or work dispatched to other threads/processes. Those operations are instead inspected through input/output array summaries and component-provided diagnostics after they return.
+
+A component may perform substantial work inside one Python call. In that case, the active function remains visible until the call returns; this is expected and is not evidence that the debugger has frozen. Stage-specific progress can only be shown live when the component emits progress events itself. The Workbench does not fabricate intermediate stage updates.
+
+Line tracing adds overhead. Use call tracing as the default; enable line tracing for a focused debugging run.

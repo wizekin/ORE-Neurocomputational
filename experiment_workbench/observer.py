@@ -227,10 +227,8 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                     if child_path not in visited_trace_paths:
                         visited_trace_paths.add(child_path)
                         for index, row in enumerate(child):
-                            if isinstance(row, dict):
-                                traces.append({"source": child_path, "index": index, **row})
-                            else:
-                                traces.append({"source": child_path, "index": index, "value": repr(row)})
+                            row_data = _trace_mapping(row)
+                            traces.append({"source": child_path, "index": index, **row_data})
                 walk(child, child_path, depth + 1)
 
     walk(output, "output", 0)

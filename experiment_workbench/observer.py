@@ -148,7 +148,7 @@ class PythonCallObserver:
     def _trace(self, frame, event, arg):
         if not self._belongs(frame):
             return None
-        if event == "line":
+        if event == "line" and self.trace_lines:
             current = self._active.get(id(frame))
             if current:
                 line_number = int(frame.f_lineno)
@@ -158,7 +158,16 @@ class PythonCallObserver:
                             "module": current["module"], "file": current["file"],
                             "line": line_number, "depth": current["depth"],
                             "source": source[:260]})
-        # Exception events are supplied by sys.setprofile above; avoid duplicates here.
+        elif event == "exception":
+            exc_type, exc_value, _ = arg
+            current = self._active.get(id(frame))
+            if current:
+                self._emit({"sequence": current["sequence"], "kind": "exception",
+                            "function": current["function"], "short_name": current["short_name"],
+                            "module": current["module"], "file": current["file"],
+                            "line": int(frame.f_lineno), "depth": current["depth"],
+                            "exception_type": getattr(exc_type, "__name__", str(exc_type)),
+                            "exception_message": str(exc_value)[:500]})
         return self._trace
 
     def __enter__(self):
@@ -166,14 +175,13 @@ class PythonCallObserver:
         self._previous_profile = sys.getprofile()
         self._previous_trace = sys.gettrace()
         sys.setprofile(self._profile)
-        if self.trace_lines:
-            sys.settrace(self._trace)
+        # Trace hooks are needed for exception events even when line events are off.
+        sys.settrace(self._trace)
         return self
 
     def __exit__(self, exc_type, exc, tb):
         sys.setprofile(self._previous_profile)
-        if self.trace_lines:
-            sys.settrace(self._previous_trace)
+        sys.settrace(self._previous_trace)
         self._previous_profile = None
         self._previous_trace = None
         self.events.sort(key=lambda item: item["sequence"])

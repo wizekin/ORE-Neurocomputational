@@ -1,7 +1,8 @@
 """Adapters for the existing ORE reading and N9 integration contracts."""
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
+import math
 
 from .contracts import SemanticRequest
 from .pipeline import SemanticCognitionProcessor
@@ -94,11 +95,12 @@ class SemanticN8Adapter:
             if isinstance(explicit_tokens, (list, tuple)):
                 tokens = [token for record in explicit_tokens
                           if (token := _token_from_record(record))]
+        request_text = None
         if not tokens:
-            text = payload.get("text")
-            if isinstance(text, str) and text.strip():
-                tokens = [text]
-        if not tokens:
+            candidate_text = payload.get("text")
+            if isinstance(candidate_text, str) and candidate_text.strip():
+                request_text = candidate_text
+        if not tokens and request_text is None:
             # The adapter must not invent a word when upstream lexical access failed.
             return {
                 "semantic_graph": {"nodes": [], "edges": []},
@@ -110,19 +112,28 @@ class SemanticN8Adapter:
             }
 
         context_snapshot = payload.get("context", {})
-        semantic_context: Mapping[str, float] = {}
+        semantic_context: dict[str, float] = {}
         if isinstance(context_snapshot, Mapping):
-            candidate_context = context_snapshot.get("semantic_features", context_snapshot.get("features", {}))
+            candidate_context = context_snapshot.get(
+                "semantic_features", context_snapshot.get("features", {})
+            )
             if isinstance(candidate_context, Mapping):
-                semantic_context = candidate_context
+                for key, raw_value in candidate_context.items():
+                    try:
+                        value = float(raw_value)
+                    except (TypeError, ValueError):
+                        continue
+                    if isinstance(key, str) and key.strip() and math.isfinite(value) and 0.0 <= value <= 1.0:
+                        semantic_context[key] = value
 
+        request_kwargs = {"text": request_text} if request_text is not None else {"tokens": tokens}
         request = SemanticRequest(
             sequence_id=sequence_id,
-            tokens=tokens,
             language=str(payload.get("language", "und")),
             task=str(payload.get("task", "comprehension")),
             context=semantic_context,
             source_reference="ore_n9.N8.SemanticN8Adapter",
+            **request_kwargs,
         )
         result = self.processor.process(request)
         result_payload = result.to_dict()
@@ -145,7 +156,7 @@ class SemanticN8Adapter:
         completeness = float(result.diagnostics["resolved_token_count"]) / token_count
         ambiguity_values = [
             float(item.get("ambiguity", 1.0)) / max(
-                1.0, __import__("math").log(max(len(item.get("candidates", [])), 2))
+                1.0, math.log(max(len(item.get("candidates", [])), 2))
             )
             for item in result.tokens
         ]

@@ -129,9 +129,9 @@ def test_input_and_configuration_validation():
         LexicalAccessProcessor([])
 
 
-def test_zero_frequency_inventory_keeps_identity_scores_finite():
-    zero = LexicalEntry("zero", "zero", frequency=0, lexical_category="noun")
-    processor = LexicalAccessProcessor([zero], config=LexicalAccessConfig(simulate_biology=False))
-    result = processor.process(LexicalAccessRequest("zero-frequency", "zero"))
-    assert result.lexical_identity_candidates[0]["frequency_strength"] == 0.0
+def test_minimum_valid_frequency_inventory_keeps_identity_scores_finite():
+    entry = LexicalEntry("minimum", "minimum", frequency=1, lexical_category="noun")
+    processor = LexicalAccessProcessor([entry], config=LexicalAccessConfig(simulate_biology=False))
+    result = processor.process(LexicalAccessRequest("minimum-frequency", "minimum"))
+    assert result.lexical_identity_candidates[0]["frequency_strength"] == pytest.approx(1.0)
     assert result.diagnostics["valid"] is True

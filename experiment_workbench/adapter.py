@@ -43,7 +43,7 @@ def discover_callables(package_name: str):
     found = {}
     method_names = {"process", "run", "execute", "infer", "predict", "train",
                     "fit", "transform", "simulate", "validate", "forward",
-                    "recognize", "initialize", "reset"}
+                    "recognize", "initialize", "reset", "learn"}
     for module in modules:
         for name, obj in inspect.getmembers(module, inspect.isfunction):
             if name.startswith("_") or obj.__module__ != module.__name__:
@@ -73,7 +73,7 @@ PROMPT_NAMES = {"prompt", "text", "sentence", "query", "message", "input_text",
                 "characters", "orthography"}
 PREVIOUS_PARAMETER_NAMES = {
     "n1_result", "source_n1_result", "n2_result", "n3_result", "n4_result",
-    "n5_model", "previous_result", "upstream_result", "prior_result",
+    "n5_model", "n3_processor", "parent_model", "previous_result", "upstream_result", "prior_result",
 }
 PREVIOUS_FIELD_NAMES = PREVIOUS_PARAMETER_NAMES | {"n1_input", "n2_input", "n3_input", "n4_input"}
 
@@ -176,12 +176,17 @@ def _type_hints(function):
     except Exception:
         return {}
 
-def _convert_constructor_kwargs(cls, package_name, raw_kwargs):
+def _convert_constructor_kwargs(cls, package_name, raw_kwargs, previous_output=None):
     signature = inspect.signature(cls)
     hints = _type_hints(cls.__init__)
     converted = {}
+    if previous_output is not None:
+        for name in PREVIOUS_PARAMETER_NAMES:
+            if name in signature.parameters and name not in raw_kwargs:
+                raw_kwargs[name] = previous_output
     for name, value in raw_kwargs.items():
-        annotation = hints.get(name, signature.parameters.get(name, inspect.Parameter(name, inspect.Parameter.KEYWORD_ONLY)).annotation)
+        parameter = signature.parameters.get(name)
+        annotation = hints.get(name, parameter.annotation if parameter else inspect.Parameter.empty)
         if (package_name, name) in ORE_INVENTORY_TYPES and isinstance(value, list):
             module_name, class_name = ORE_INVENTORY_TYPES[(package_name, name)]
             record_type = getattr(importlib.import_module(module_name), class_name)
@@ -256,7 +261,7 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
             if info.class_name:
                 cls = getattr(module, info.class_name)
                 init_kwargs = dict(supplied.pop("__init__", {}) if "__init__" in supplied else {})
-                instance = cls(**_convert_constructor_kwargs(cls, package_name, init_kwargs))
+                instance = cls(**_convert_constructor_kwargs(cls, package_name, init_kwargs, previous_output))
                 function = getattr(instance, info.name)
             else:
                 function = getattr(module, info.name)

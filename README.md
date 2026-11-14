@@ -391,3 +391,13 @@ print(len(result.operation_trace))  # 40 operations for one token
 ```
 
 Run the focused checks with `python -m pytest tests/test_lexical_context.py -q`; run the full repository suite with `python -m pytest`.
+
+## Master Predictive Orthography — seven stages / 40 operations
+
+The additive `ore_predictive_orthography` package composes N3's bottom-up grapheme evidence and bidirectional transition predictions with N4's competitive attention, sensory/prior precision and attended posterior inference. It exposes the seven requested master stages as a 40-operation registry (`MPO-001`–`MPO-040`), plus explicit left/right neighbor messages, classwise prediction errors and both contextual-prior and attended-posterior feature-space residuals.
+
+A parallel biological reference advances seven connected current-based leaky-integrate-and-fire populations for character evidence, transition memory, neighbor prediction, attention/sensory gain, prior precision, posterior settling and prediction-error diagnostics. It reports voltage, current, spikes, firing rates and time. This neural track is an explicit, configurable research hypothesis and does not alter the functional posterior.
+
+See [the seven-stage master algorithm](docs/MASTER_PREDICTIVE_ORTHOGRAPHY_7_STAGE_ALGORITHM.md). Run focused tests with `python -m pytest tests/test_predictive_orthography.py -q` and the complete suite with `python -m pytest`.
+
+The processor expects already-segmented patches in logical reading order and a fitted, labelled N3 model. It does not replace OCR segmentation, and its LIF model is not an anatomically fitted or empirically validated simulation of human reading.

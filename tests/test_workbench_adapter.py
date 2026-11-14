@@ -61,3 +61,18 @@ def test_streamlit_entrypoint_has_valid_python_syntax():
 
     app_path = WORKBENCH_DIR / "app.py"
     ast.parse(app_path.read_text(encoding="utf-8"), filename=str(app_path))
+
+
+def test_iterable_dataclass_arguments_are_converted_from_json():
+    from typing import Iterable
+    from adapter import _convert_value
+    from ore_n3.contracts import LabeledN2Patch
+
+    converted = _convert_value(
+        Iterable[LabeledN2Patch],
+        [{"grapheme": "a", "features": [0.1, 0.9]}],
+    )
+
+    assert len(converted) == 1
+    assert isinstance(converted[0], LabeledN2Patch)
+    assert converted[0].features.shape == (2,)

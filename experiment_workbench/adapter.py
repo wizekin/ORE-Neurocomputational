@@ -266,7 +266,8 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
     result = {
         "run_id": run_id, "started_at": started_at, "component": package_name,
         "callable": info.label, "prompt": prompt, "status": "error", "elapsed_ms": None,
-        "arguments": {}, "constructor_arguments": {}, "output": None, "error": None, "traceback": None,
+        "arguments": {}, "constructor_arguments": {}, "input_observation": {},
+        "output": None, "error": None, "traceback": None,
         "profile": {}, "observation": {},
     }
     try:
@@ -289,6 +290,7 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
                 function = getattr(module, info.name)
             kwargs = build_arguments(function, prompt, supplied, previous_output, runtime_kwargs)
             result["arguments"] = kwargs
+            result["input_observation"] = inspect_output(kwargs)
             result["output"] = function(**kwargs)
             result["status"] = "success"
     except Exception as exc:

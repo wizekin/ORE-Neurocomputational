@@ -71,7 +71,8 @@ def _combine_features(*feature_maps: Mapping[str, float]) -> dict[str, float]:
 
 
 def _max_frequency(values: Sequence[float]) -> float:
-    return max((float(value) for value in values), default=1.0)
+    # Keep logarithmic normalization defined even for an all-zero inventory.
+    return max(1.0, max((float(value) for value in values), default=0.0))
 
 
 class LexicalAccessProcessor:

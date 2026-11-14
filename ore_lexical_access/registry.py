@@ -27,7 +27,7 @@ _ROWS = (
      "Stable orthographic input is represented across distributed visual/orthographic populations."),
     ("S1", "Retrieve stored word identity", "Retrieve lexical-form candidates",
      "Search the supplied orthographic lexicon; retain exact and bounded near-form matches.",
-     "C(x) = {e : d_Lev(x, form(e)) <= d_max or sim(x, form(e)) >= s_min}",
+     "C(x) = {e : d_Lev(x, form(e)) <= d_max AND sim(x, form(e)) >= s_min}",
      "Left ventral occipitotemporal word-form networks are a useful high-level analogue for learned orthographic patterns; no single neuron stores a word."),
     ("S1", "Retrieve stored word identity", "Calculate orthographic likelihood",
      "Convert edit distance to a graded match likelihood for each stored form.",

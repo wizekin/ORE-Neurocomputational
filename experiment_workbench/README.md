@@ -9,7 +9,7 @@ A reusable Streamlit conversational laboratory for executing individual Python c
 - Profiles Python function calls made inside the selected package, recording call order, nesting depth, source file/line, return type, and elapsed time.
 - Extracts component-authored operation, stage, iteration, and training traces where present.
 - Extracts diagnostic stage records, including dataclass-backed records.
-- Summarizes returned NumPy arrays: shape, dtype, size, finite-value status, minimum, maximum, mean, standard deviation, L2 norm, and nonzero count.
+- Summarizes NumPy arrays found in both inputs and outputs: shape, dtype, size, finite-value status, minimum, maximum, mean, standard deviation, L2 norm, and nonzero count.
 - Surfaces warnings and validation flags exposed by the component.
 - Retains successful raw Python output objects as selectable in-session upstream artifacts.
 - Exports a JSON experiment report containing run metadata, arguments, output, traces, numerical summaries, and Python call profile.

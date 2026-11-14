@@ -42,9 +42,10 @@ def _image_to_array(upload):
     if upload is None:
         return None
     try:
+        from io import BytesIO
         from PIL import Image
         import numpy as np
-        return np.asarray(Image.open(upload).convert("L"), dtype=np.uint8)
+        return np.asarray(Image.open(BytesIO(upload.getvalue())).convert("L"), dtype=np.uint8)
     except Exception as exc:
         raise ValueError(f"Could not decode uploaded image: {type(exc).__name__}: {exc}") from exc
 
@@ -154,7 +155,7 @@ with left:
                 key=f"args_{component}", height=150,
             )
         if image_upload is not None:
-            st.image(image_upload, caption="Uploaded image input", width=280)
+            st.image(image_upload.getvalue(), caption="Uploaded image input", width=280)
 
         prompt = st.chat_input(f"Send an experimental prompt to {component}…")
         if prompt:
@@ -234,6 +235,12 @@ with right:
                 if result.get("traceback"):
                     with st.expander("Full traceback", expanded=True):
                         st.code(result["traceback"])
+            st.write("**Input observations**")
+            input_obs = result.get("input_observation", {})
+            if input_obs.get("numerical_summaries"):
+                st.dataframe(input_obs["numerical_summaries"], use_container_width=True, hide_index=True)
+            else:
+                st.caption("No NumPy arrays were found in the arguments for this run.")
             st.write("**Constructor arguments**")
             st.json(_compact(json_safe(result.get("constructor_arguments", {}))))
             if result.get("reused_instance"):
@@ -276,6 +283,7 @@ with right:
                 "run": {k: v for k, v in result.items() if k not in {"output", "arguments"}},
                 "arguments": json_safe(result.get("arguments", {})),
                 "output": json_safe(result.get("output")),
+                "input_observation": result.get("input_observation", {}),
                 "observation": obs, "profile": profile,
             }
             report_text = json.dumps(report, indent=2, ensure_ascii=False, default=str)

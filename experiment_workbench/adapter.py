@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import dataclasses
+from collections.abc import Iterable as ABCIterable, Mapping as ABCMapping, Sequence as ABCSequence
 import importlib
 import inspect
 import pkgutil
@@ -122,10 +123,10 @@ def _convert_value(annotation, value):
         item_type = args[0] if args else Any
         converted = [_convert_value(item_type, item) for item in value]
         return origin(converted) if origin is not tuple else tuple(converted)
-    if origin is not None and str(origin).endswith(("Iterable", "Sequence")):
+    if origin in (ABCIterable, ABCSequence):
         item_type = args[0] if args else Any
         return [_convert_value(item_type, item) for item in value]
-    if origin is not None and str(origin).endswith(("Mapping", "dict")) and isinstance(value, dict):
+    if origin in (ABCMapping, dict) and isinstance(value, dict):
         key_type, value_type = args if len(args) == 2 else (Any, Any)
         return {_convert_value(key_type, key): _convert_value(value_type, item)
                 for key, item in value.items()}

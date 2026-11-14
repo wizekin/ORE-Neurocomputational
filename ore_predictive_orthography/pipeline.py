@@ -155,6 +155,12 @@ class PredictiveOrthographyProcessor:
         stage_outputs: dict[str, Any] = {
             "S1": {"visual_probabilities": n3_result.visual_probabilities,
                    "class_names": list(n3_result.class_names),
+                   "raw_query_features": raw_features,
+                   "normalized_query_features": normalized_features,
+                   "feature_mean": np.asarray(self.n3_processor.visual_population.mean),
+                   "feature_scale": np.asarray(self.n3_processor.visual_population.scale),
+                   "grapheme_prototypes": prototypes,
+                   "query_prototype_similarities": normalized_features @ prototypes.T,
                    "feature_dimension": int(normalized_features.shape[1]),
                    "training_trace": list(getattr(self.n3_processor, "training_trace", []))},
             "S2": {"unigram_prior": np.asarray(transition_model.unigram, dtype=np.float32),
@@ -163,24 +169,29 @@ class PredictiveOrthographyProcessor:
                    "transition_fingerprint": str(transition_model.fingerprint)},
             "S3": {"left_neighbor_predictions": left, "right_neighbor_predictions": right,
                    "left_neighbor_available": left_available, "right_neighbor_available": right_available,
-                   "contextual_priors": n4_result.contextual_priors},
+                   "contextual_priors": n4_result.contextual_priors,
+                   "n3_iteration_trace": list(n3_result.trace)},
             "S4": {"bottom_up_salience": n4_result.bottom_up_salience,
                    "top_down_relevance": n4_result.top_down_relevance,
                    "attention_allocation": n4_result.attention_allocation,
                    "class_attention": n4_result.class_attention,
                    "class_attention_gate": n4_result.class_attention_gate,
-                   "sensory_precision": n4_result.sensory_precision},
-            "S5": {"prior_precision": n4_result.prior_precision},
+                   "sensory_precision": n4_result.sensory_precision,
+                   "n4_operation_trace": list(n4_result.operation_trace)},
+            "S5": {"prior_precision": n4_result.prior_precision,
+                   "n4_operation_trace": list(n4_result.operation_trace)},
             "S6": {"n3_initial_posterior": n4_result.n3_posterior_beliefs,
                    "attended_posterior": posterior,
-                   "iteration_trace": list(n4_result.iteration_trace)},
+                   "iteration_trace": list(n4_result.iteration_trace),
+                   "n4_operation_trace": list(n4_result.operation_trace)},
             "S7": {"classwise_prediction_error": classwise_error,
                    "visual_context_symmetric_kl": visual_context_divergence,
                    "contextual_feature_residuals": contextual_residuals,
                    "attended_feature_residuals": attended_feature_residuals,
                    "attended_feature_residual_norms": residual_norms,
                    "contextual_feature_residual_norms": contextual_residual_norms,
-                   "weighted_divergence_energy_proxy": weighted_divergence_proxy},
+                   "weighted_divergence_energy_proxy": weighted_divergence_proxy,
+                   "n4_final_prediction_error": n4_result.classwise_prediction_error},
         }
 
         stage_summaries: dict[str, dict[str, Any]] = {
@@ -224,7 +235,9 @@ class PredictiveOrthographyProcessor:
              "mathematical_form": op.mathematical_form,
              "biological_reference": op.biological_reference,
              "implementation_source": op.implementation_source,
-             "status": "executed", "stage_summary": stage_summaries[op.stage_id]}
+             "status": "executed",
+             "stage_output_keys": sorted(stage_outputs[op.stage_id].keys()),
+             "stage_summary": stage_summaries[op.stage_id]}
             for op in MASTER_OPERATION_REGISTRY
         ]
 

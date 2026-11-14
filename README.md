@@ -401,3 +401,13 @@ A parallel biological reference advances seven connected current-based leaky-int
 See [the seven-stage master algorithm](docs/MASTER_PREDICTIVE_ORTHOGRAPHY_7_STAGE_ALGORITHM.md). Run focused tests with `python -m pytest tests/test_predictive_orthography.py -q` and the complete suite with `python -m pytest`.
 
 The processor expects already-segmented patches in logical reading order and a fitted, labelled N3 model. It does not replace OCR segmentation, and its LIF model is not an anatomically fitted or empirically validated simulation of human reading.
+
+
+
+## Lexical access and morphology — seven-stage architecture
+
+The additive `ore_lexical_access` package implements seven stages and a 36-operation trace: stored word identity, word meaning, grammatical category, morphological decomposition, stem/affix retrieval, morphological alternative selection, and incremental lexical-candidate activation. It reuses the read-only lexical, meaning and morpheme records in `ore_lexical_context`; exact lexical inventories, meanings, roots and affixes must be supplied with provenance. Competing homographs and morphological parses are retained, and selection abstains when confidence or the top-two margin is insufficient.
+
+A separate seven-population recurrent current-based leaky integrate-and-fire reference reports membrane voltage, current, spikes, firing rate and simulation time. It is a configurable computational hypothesis, not an anatomically fitted or empirically validated human-brain simulation.
+
+See [the seven-stage lexical access architecture](docs/LEXICAL_ACCESS_7_STAGE_FINAL_ARCHITECTURE.md). Run the focused tests with `python -m pytest tests/test_lexical_access.py -q`; run the package demo with `python -m ore_lexical_access`.

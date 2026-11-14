@@ -258,18 +258,19 @@ def accepts_parameter(info: CallableInfo, parameter_name: str) -> bool:
         return False
 
 def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[str, Any],
-            previous_output: Any = None, runtime_kwargs: dict[str, Any] | None = None):
+            previous_output: Any = None, runtime_kwargs: dict[str, Any] | None = None,
+            on_event=None, trace_lines: bool = False):
     """Invoke one component and return raw output plus structured execution observations."""
     run_id = uuid.uuid4().hex
     started_at = datetime.now(timezone.utc).isoformat()
     started = time.perf_counter()
-    observer = PythonCallObserver(package_name)
+    observer = PythonCallObserver(package_name, on_event=on_event, trace_lines=trace_lines)
     result = {
         "run_id": run_id, "started_at": started_at, "component": package_name,
         "callable": info.label, "prompt": prompt, "status": "error", "elapsed_ms": None,
         "arguments": {}, "constructor_arguments": {}, "input_observation": {},
         "output": None, "error": None, "traceback": None,
-        "profile": {}, "observation": {},
+        "profile": {}, "observation": {}, "trace_lines_enabled": trace_lines,
     }
     try:
         with observer:

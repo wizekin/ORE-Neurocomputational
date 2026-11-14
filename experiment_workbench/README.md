@@ -1,44 +1,98 @@
 # ORE Experiment Workbench
 
-A reusable Streamlit chat-style interface for invoking and inspecting individual Python components in ORE-Neurocomputational.
+A reusable Streamlit conversational laboratory for executing individual Python components and inspecting their actual behavior.
 
-## Features
-- Independently select and test each ORE package.
-- Chat-style prompts and per-session conversation history.
-- Discover public functions in a package and its importable submodules.
-- Map prompts to common text parameter names.
-- Supply additional required keyword arguments as JSON.
-- Inspect actual return values, execution time, import warnings, and tracebacks.
-- Reuse the discovery/dispatch adapter with other installed Python packages.
-- No LLM or API key required: outputs come from the selected Python implementation.
+## What the execution and observation engine does
 
-## Included components
+- Gives each run a unique run ID and UTC start timestamp.
+- Executes the selected Python callable and captures its real return object.
+- Profiles Python function calls made inside the selected package, recording call order, nesting depth, source file/line, return type, and elapsed time.
+- Extracts component-authored operation, stage, iteration, and training traces where present.
+- Extracts diagnostic stage records, including dataclass-backed records.
+- Summarizes returned NumPy arrays: shape, dtype, size, finite-value status, minimum, maximum, mean, standard deviation, L2 norm, and nonzero count.
+- Surfaces warnings and validation flags exposed by the component.
+- Retains successful raw Python output objects as selectable in-session upstream artifacts.
+- Exports a JSON experiment report containing run metadata, arguments, output, traces, numerical summaries, and Python call profile.
+
+The observer does not modify arrays or component outputs. It does not infer unreported stages, and it does not claim that software timing or numerical values establish biological validity. Function timings are inclusive; nested calls overlap and should not be summed as if they were independent wall-clock intervals.
+
+## Components
+
 ore_contracts, ore_lexical_access, ore_lexical_context, ore_n1, ore_n2, ore_n3, ore_n4, ore_n5, ore_n6, ore_n9, ore_predictive_orthography, ore_reading, ore_semantic.
 
-## Run locally
+## Install and run
+
 From the repository root:
 
 ```bash
 python -m venv .venv
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
+# Windows PowerShell:
+.venv\\Scripts\\Activate.ps1
+# macOS/Linux:
+# source .venv/bin/activate
+
 python -m pip install --upgrade pip
 python -m pip install -e .
 python -m pip install -r experiment_workbench/requirements.txt
 streamlit run experiment_workbench/app.py
 ```
 
-Open the local URL printed by Streamlit (usually http://localhost:8501).
+Open the local URL printed by Streamlit (normally http://localhost:8501).
 
-## Invocation model
-The adapter imports the selected package, walks importable submodules, and discovers public functions defined there. Select a function, submit a prompt, and the adapter maps the prompt to a recognized text-like parameter. Supply other required keyword arguments in the JSON panel.
+## Typical experiments
 
-This is a transparent test harness, not an LLM. It does not silently substitute mock answers when a component cannot be imported or executed. Errors and tracebacks are shown for debugging.
+### Run an image through N1 and N2
 
-Processor, simulator, and model classes are also inspected for common methods such as process, run, infer, predict, train, simulate, and validate. The Workbench instantiates these classes with their default constructor. If a constructor requires configuration, provide it in the JSON panel under __init__. If a method expects a dataclass request object, provide its fields under request_data; the prompt is automatically assigned to a recognized text-like field when one exists. Classes with unusual lifecycle or nested input contracts may still need an explicit adapter.
+1. Select ore_n1 and N1Processor.process.
+2. Upload a grayscale or color image; it is supplied as a grayscale NumPy array.
+3. Send any short prompt (the image itself is the computational input).
+4. Select ore_n2 and N2Processor.process.
+5. Choose the N1Result from the Upstream artifact selector and run. The original Python result object, not a JSON reconstruction, is passed to N2.
 
-## Reuse with another implementation
-Install the other Python package in the same environment, add its import name to COMPONENTS in app.py, and use the discovery/dispatch behavior. For a different invocation contract, extend adapter.py.
+### Train and use N3
+
+1. Select ore_n3 and N3Processor.fit.
+2. Supply JSON keyword arguments containing reference_patches and optionally grapheme_sequences. Each reference patch may contain a grapheme and a numerical features array.
+3. Run fit. N3 returns its fitted processor instance.
+4. Select N3Processor.recognize and choose the fitted N3Processor artifact as the upstream artifact. Supply request_data with a sequence_id and patches; each patch should contain a patch_id and features or an N2 result.
+
+### Use text-oriented systems
+
+For ore_reading and ore_semantic, choose the processor's process method and provide text in the prompt. The request object's sequence_id is generated automatically. For lexical access, the prompt populates the request's word field; supply a lexicon through the processor's __init__ JSON arguments.
+
+### Supply structured request data
+
+Enter a JSON object under request_data. For example:
+
+```json
+{
+  "request_data": {
+    "language": "en",
+    "context": {"science": 0.8}
+  }
+}
+```
+
+The prompt is mapped to a recognized text field, and sequence_id is generated when the request contract has that required field. Explicit request_data values override automatic prompt values.
+
+### Continue a stateful experiment
+
+Choose a successful upstream artifact before executing the next operation. When the artifact is an instance of the selected processor class (for example, an N3Processor returned by fit), the existing instance is reused, preserving its fitted state. Otherwise, the artifact can be injected into compatible upstream-result parameters or request fields (for example, n1_result or n3_result).
+
+N5 model snapshots can be restored from their exported ore.n5.plasticity_model.v1 JSON representation. N5 learning still enforces its own independent-verification and user-authorization gates.
+
+## Reuse with other Python implementations
+
+Add an importable package name to COMPONENTS in app.py and install it in the same Python environment. The generic discovery, execution profiling, output inspection, and report export remain reusable. For unusual constructors, stateful lifecycles, or custom input/output schemas, extend adapter.py while preserving the observation schema.
+
+## Important limits
+
+- A raw text prompt is not a substitute for an image, patch sequence, lexicon, verified training sample, or upstream result required by a component.
+- A component may expose contracts and registries but no executable callable; the Workbench reports that rather than inventing a fake output.
+- Python profiling captures calls in the selected package on the current execution thread. It does not capture NumPy/SciPy internal C-level operations or work dispatched to other threads/processes.
+- Some classes may need custom lifecycle setup or domain-specific JSON inputs. Use the displayed signature, docstring, and traceback to configure them.
+- This interface is a test harness, not an LLM. It returns actual Python output and does not generate natural-language answers in place of component results.
 
 ## Security
-Only run this workbench with trusted Python packages. Importing a package executes its module initialization code. Do not expose this development workbench publicly without authentication and isolation.
+
+Only run trusted Python packages. Importing a package executes its module initialization code. Keep the Workbench local unless an exposed deployment has authentication, isolation, resource limits, and appropriate controls for uploaded data.

@@ -160,8 +160,13 @@ def _build_dataclass(cls, payload, prompt, previous_output):
     for field in fields:
         if not field.init or field.name not in values:
             continue
-        kwargs[field.name] = _convert_value(
-            hints.get(field.name, field.type), values[field.name])
+        raw_value = values[field.name]
+        if field.name == "n5_model" and isinstance(raw_value, dict) and raw_value.get("schema") == "ore.n5.plasticity_model.v1":
+            from ore_n5.contracts import N5ModelState
+            kwargs[field.name] = N5ModelState.from_dict(raw_value)
+        else:
+            kwargs[field.name] = _convert_value(
+                hints.get(field.name, field.type), raw_value)
     required = [field.name for field in fields if field.init
                 and field.default is dataclasses.MISSING
                 and field.default_factory is dataclasses.MISSING

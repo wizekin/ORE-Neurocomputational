@@ -54,3 +54,10 @@ def test_n1_image_execution_and_n2_upstream_handoff():
     assert n2["status"] == "success", n2["traceback"]
     assert n2["observation"]["trace_count"] > 0
     assert n2["observation"]["array_count"] > 0
+
+
+def test_streamlit_entrypoint_has_valid_python_syntax():
+    import ast
+
+    app_path = WORKBENCH_DIR / "app.py"
+    ast.parse(app_path.read_text(encoding="utf-8"), filename=str(app_path))

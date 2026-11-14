@@ -111,6 +111,22 @@ class PythonCallObserver:
         }
 
 
+def _trace_mapping(value: Any) -> dict[str, Any]:
+    if isinstance(value, dict):
+        return value
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        try:
+            return dataclasses.asdict(value)
+        except Exception:
+            pass
+    if hasattr(value, "__dict__"):
+        try:
+            return dict(vars(value))
+        except Exception:
+            pass
+    return {"value": repr(value)}
+
+
 def _field_items(value: Any):
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
         for field in dataclasses.fields(value):
@@ -194,10 +210,8 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                     if child_path not in visited_trace_paths:
                         visited_trace_paths.add(child_path)
                         for index, row in enumerate(child):
-                            if isinstance(row, dict):
-                                traces.append({"source": child_path, "index": index, **row})
-                            else:
-                                traces.append({"source": child_path, "index": index, "value": repr(row)})
+                            row_data = _trace_mapping(row)
+                            traces.append({"source": child_path, "index": index, **row_data})
                 if key_text == "records" and isinstance(child, dict):
                     for record_name, record in child.items():
                         if isinstance(record, dict):

@@ -54,3 +54,35 @@ def test_python_call_observer_records_component_function_calls():
     assert result["doubled"] == 42
     assert report["observed_call_count"] >= 1
     assert any(event["function"].endswith("._profile_target") for event in report["events"])
+
+
+def test_live_observer_streams_call_return_and_source_line_events():
+    streamed = []
+    with PythonCallObserver(__name__, on_event=streamed.append, trace_lines=True) as observer:
+        result = _profile_target(9)
+
+    kinds = {event["kind"] for event in streamed}
+    assert result["doubled"] == 18
+    assert "call" in kinds
+    assert "return" in kinds
+    assert "line" in kinds
+    assert all("explanation" in event for event in streamed)
+    assert any(event.get("active_stack") for event in streamed if event["kind"] == "call")
+    assert observer.report()["timeline_event_count"] == len(streamed)
+
+
+def _raise_for_observer():
+    raise RuntimeError("observer test exception")
+
+
+def test_live_observer_reports_exceptions_without_swallowing_them():
+    streamed = []
+    try:
+        with PythonCallObserver(__name__, on_event=streamed.append):
+            _raise_for_observer()
+    except RuntimeError as exc:
+        assert str(exc) == "observer test exception"
+    else:
+        raise AssertionError("The original component exception should propagate.")
+
+    assert any(event["kind"] == "exception" for event in streamed)

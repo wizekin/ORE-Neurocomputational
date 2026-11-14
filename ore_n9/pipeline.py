@@ -851,6 +851,8 @@ class N9Processor:
         coreference = list(syntax_output.get("coreference", []))
         mark(69, status="ok" if coreference else "not_configured")
         semantic_payload = {
+            "sequence_id": request.sequence_id,
+            "task": request.task,
             "lexical_hypotheses": lexical_hypotheses,
             "syntax": syntax_output,
             "morphology": morphology,

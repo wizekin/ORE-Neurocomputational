@@ -291,3 +291,35 @@ The canonical registry is now extended with shared interfaces **IF-05–IF-18**,
 See [the P2–P8 implementation notes](docs/CANONICAL_ORE_P2_P8_IMPLEMENTATION.md) and run the complete suite with `python -m pytest`.
 
 Important scope boundary: the existing `ore_n1`–`ore_n9` modules remain legacy-compatible packages, not aliases for canonical `B-N1`–`B-N9`. The controller reports missing canonical biological backends as unavailable. The included B-N1 rate simulator is a computational reference, not a validated cellular model; canonical B-N2–B-N8 biological implementations and independent brain-data validation remain future scientific work.
+
+## Integrated Reading Algorithm — 72-operation registry
+
+The additive `ore_reading` package implements a 72-operation integrated reading pipeline. It connects orthographic lexicon access and interactive activation with dual-route reading, grapheme-to-phoneme conversion, phonological assembly, TRACE-style word-form competition, Cohort narrowing, Shortlist-B-like Bayesian selection, and a connectionist spelling-sound-meaning model.
+
+It keeps the functional algorithm separate from a biological reference branch using current-based leaky integrate-and-fire populations. The biological branch exposes membrane potential (mV), synaptic current (pA), spike counts, firing rates (Hz), and simulated time (ms); it is not a fitted or validated reproduction of human reading circuitry.
+
+See [the 72-operation registry and mathematical specification](docs/INTEGRATED_READING_OPERATION_REGISTRY.md).
+
+Quick start:
+
+```python
+from ore_reading import IntegratedReadingProcessor, ReadingLexiconEntry, ReadingRequest
+
+lexicon = [
+    ReadingLexiconEntry(
+        "word-read", "read", ("R", "IY", "D"), 40.0,
+        {"READING": 1.0, "KNOWLEDGE": 0.7}, "verb",
+        verified_by="reviewer", source_reference="dataset://read",
+    ),
+]
+result = IntegratedReadingProcessor(lexicon).process(
+    ReadingRequest("sample-001", text="read")
+)
+print(result.tokens[0]["pronunciation"])
+print(len(result.operation_trace))  # 72
+print(result.biological["layers"]["orthographic"]["mean_firing_rate_hz"])
+```
+
+For an upstream N6 result, use `reading_request_from_n6_result(n6_result)`; the adapter preserves N6 token order and does not modify N6 output. Input is text or already-tokenized orthography: image OCR and character segmentation remain upstream responsibilities. The default G2P rules are an English-oriented demonstration; language-specific rules and lexicons must be supplied for other writing systems.
+
+Run focused tests with `python -m pytest tests/test_integrated_reading.py -q` and the complete repository suite with `python -m pytest`.

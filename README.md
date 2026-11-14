@@ -411,3 +411,18 @@ The additive `ore_lexical_access` package implements seven stages and a 36-opera
 A separate seven-population recurrent current-based leaky integrate-and-fire reference reports membrane voltage, current, spikes, firing rate and simulation time. It is a configurable computational hypothesis, not an anatomically fitted or empirically validated human-brain simulation.
 
 See [the seven-stage lexical access architecture](docs/LEXICAL_ACCESS_7_STAGE_FINAL_ARCHITECTURE.md). Run the focused tests with `python -m pytest tests/test_lexical_access.py -q`; run the package demo with `python -m ore_lexical_access`.
+
+
+## ORE Experiment Workbench
+
+Run and inspect ORE components through a Streamlit chat-style laboratory. It captures component stage traces, package-scoped Python call timings, numerical summaries for input/output arrays, validation flags, warnings, and full JSON experiment reports. Successful Python outputs can be reused as upstream artifacts for chained experiments.
+
+See [experiment_workbench/README.md](experiment_workbench/README.md) for installation, supported component workflows, structured inputs, and limitations.
+
+Run from the repository root:
+
+```bash
+python -m pip install -e .
+python -m pip install -r experiment_workbench/requirements.txt
+streamlit run experiment_workbench/app.py
+```

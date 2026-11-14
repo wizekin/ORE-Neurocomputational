@@ -78,7 +78,7 @@ with left:
             st.code(selected.signature, language="python")
         with st.expander("Advanced arguments", expanded=False):
             raw_args = st.text_area("Arguments (JSON object)", value="{}",
-                help="The prompt maps automatically to a parameter such as text, prompt, sentence, query, or word.",
+                help="Prompt maps to text-like parameters. For dataclass request objects use {\"request_data\":{...}}; optional constructor arguments can be supplied under __init__.",
                 key=f"args_{component}", height=110)
         prompt = st.chat_input(f"Send a test prompt to {component}…")
         if prompt:

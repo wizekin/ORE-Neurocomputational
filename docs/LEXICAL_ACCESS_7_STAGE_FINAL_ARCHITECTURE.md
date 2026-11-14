@@ -28,7 +28,7 @@ Let `x` be the normalized input word, `e` a lexical entry, `m` a meaning, `g` a 
 ### S1 — Retrieve stored word identity (BLA-001–BLA-005)
 
 1. **Normalize the incoming word form (BLA-001).** Unicode NFC normalization and case folding make lookup stable without stripping diacritics: `x = casefold(NFC(input))`.
-2. **Retrieve lexical-form candidates (BLA-002).** Search the supplied inventory for exact forms and bounded near-form candidates: `C(x) = {e : d_Lev(x, form(e)) <= d_max or sim(x, form(e)) >= s_min}`.
+2. **Retrieve lexical-form candidates (BLA-002).** Search the supplied inventory for exact forms and bounded near-form candidates: `C(x) = {e : d_Lev(x, form(e)) <= d_max AND sim(x, form(e)) >= s_min}`.
 3. **Calculate orthographic likelihood (BLA-003).** Convert edit distance into graded likelihood: `L(e|x) = exp(-lambda * d_Lev(x, form(e)) / max(|x|, |form(e)|, 1))`.
 4. **Retrieve frequency and exposure priors (BLA-004).** Read frequency and exposure from the lexical record and compress the scale: `F(e) = log(1 + frequency(e) + exposure(e))`.
 5. **Estimate stored-identity posterior (BLA-005).** Combine form likelihood and prior: `P(e|x) = softmax((log L(e|x) + beta_F * F(e)) / T_id)`. Multiple homographs and near forms are preserved.

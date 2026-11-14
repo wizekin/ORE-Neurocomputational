@@ -158,16 +158,7 @@ class PythonCallObserver:
                             "module": current["module"], "file": current["file"],
                             "line": line_number, "depth": current["depth"],
                             "source": source[:260]})
-        elif event == "exception":
-            exc_type, exc_value, _ = arg
-            current = self._active.get(id(frame))
-            if current:
-                self._emit({"sequence": current["sequence"], "kind": "exception",
-                            "function": current["function"], "short_name": current["short_name"],
-                            "module": current["module"], "file": current["file"],
-                            "line": int(frame.f_lineno), "depth": current["depth"],
-                            "exception_type": getattr(exc_type, "__name__", str(exc_type)),
-                            "exception_message": str(exc_value)[:500]})
+        # Exception events are supplied by sys.setprofile above; avoid duplicates here.
         return self._trace
 
     def __enter__(self):

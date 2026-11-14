@@ -362,3 +362,32 @@ print(len(result.operation_trace))  # 44
 To connect semantic concept access to the existing N9 semantic adapter slot, inject `SemanticN8Adapter(SemanticCognitionProcessor(concepts))` through `N9Adapters(n8=...)`. The adapter returns concept nodes only; it deliberately does not fabricate syntax, propositions or semantic relation edges.
 
 Run focused checks with `python -m pytest tests/test_semantic_cognition.py -q` and all repository tests with `python -m pytest`.
+
+
+## Lexical Context and Predictive Processing — 40-operation registry
+
+The additive `ore_lexical_context` package implements a 40-step lexical access, morphology, pronunciation mapping, orthographic competition, semantic ambiguity and predictive-processing pipeline. It follows the stages from accumulated word exposure and logarithmic frequency through lexical activation and settling, to sentence context, upcoming-word prediction, surprisal, semantic residuals and precision-weighted updating.
+
+Every operation emits an inspectable trace row with a stable `LC-001`–`LC-040` ID and a mathematical form. The package also provides typed lexical/meaning/morpheme/G2P contracts, an adapter from `ore_reading` outputs, a runnable demonstration and focused tests.
+
+A separate current-based LIF reference advances orthographic, lexical, morphological, phonological, semantic and context-predictive populations for each operation. The model reports voltage (mV), current (pA), firing rate (Hz) and time (ms). It is a generic, configurable biological hypothesis—not a fitted or empirically validated simulation of the human language system. Morphology and G2P candidates must be supplied through the inventories; no universal rules are fabricated.
+
+See [the 40-operation lexical context registry](docs/LEXICAL_CONTEXT_40_OPERATION_REGISTRY.md).
+
+Quick start:
+
+```python
+from ore_lexical_context import LexicalContextProcessor, LexicalContextRequest, LexicalEntry, LexicalMeaning
+
+lexicon = [LexicalEntry("bank", "bank", frequency=25, meanings=(
+    LexicalMeaning("river-bank", {"RIVER": 1.0, "LAND": 0.7}),
+    LexicalMeaning("financial-bank", {"MONEY": 1.0, "INSTITUTION": 0.7}),
+))]
+result = LexicalContextProcessor(lexicon).process(
+    LexicalContextRequest("sample-001", text="bank", context_features={"RIVER": 0.9})
+)
+print(result.tokens[0]["selected_meaning"])
+print(len(result.operation_trace))  # 40 operations for one token
+```
+
+Run the focused checks with `python -m pytest tests/test_lexical_context.py -q`; run the full repository suite with `python -m pytest`.

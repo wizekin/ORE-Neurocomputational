@@ -260,8 +260,15 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
             module = importlib.import_module(info.module)
             if info.class_name:
                 cls = getattr(module, info.class_name)
-                init_kwargs = dict(supplied.pop("__init__", {}) if "__init__" in supplied else {})
-                instance = cls(**_convert_constructor_kwargs(cls, package_name, init_kwargs, previous_output))
+                if previous_output is not None and isinstance(previous_output, cls) and callable(getattr(previous_output, info.name, None)):
+                    instance = previous_output
+                    result["reused_instance"] = True
+                    result["constructor_arguments"] = {}
+                else:
+                    init_kwargs = dict(supplied.pop("__init__", {}) if "__init__" in supplied else {})
+                    result["constructor_arguments"] = init_kwargs
+                    instance = cls(**_convert_constructor_kwargs(cls, package_name, init_kwargs, previous_output))
+                    result["reused_instance"] = False
                 function = getattr(instance, info.name)
             else:
                 function = getattr(module, info.name)

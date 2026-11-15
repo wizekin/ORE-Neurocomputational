@@ -488,3 +488,14 @@ Run the viewer:
 The default database is created automatically at `ore_logs/ore_logger.sqlite3` the first time a repository script is run. The directory is ignored by Git. Use `ORE_LOGGER_DB` to choose another database location, `ORE_LOG_MAX_EVENTS` to change the per-script event cap (default 200,000), or `ORE_AUTO_LOG=0` to disable automatic tracing for a process.
 
 The existing Experiment Workbench also creates a separate timestamped SQLite run for each component execution. See [the Workbench guide](experiment_workbench/README.md).
+
+
+## Sentence-level semantic composition — nine stages / 54 operations
+
+The additive ore_semantic_composition package continues after individual word-concept access. It composes word meanings, predicate-argument structures, thematic roles, propositions, negation/modality, quantifier scope, causal relations, and a typed sentence-level semantic graph. It defines 54 inspectable operations (SMC-001 through SMC-054) across the nine requested stages.
+
+The functional track accepts the existing ore_semantic.SemanticConcept inventory and optional ore_syntax.SyntaxResult, preserving alternatives and abstaining when confidence or margin is insufficient. Optional caller-supplied PredicateFrame records make valency and selectional preferences explicit. A separate nine-population current-based LIF reference reports voltage, current, firing rate, spikes, and simulated time; it is a computational hypothesis, not a validated reproduction of human semantic processing.
+
+See docs/SEMANTIC_COMPOSITION_9_STAGE_ARCHITECTURE.md for the full stage sequence, operation registry, mathematical models, biological-reference track, API, and limitations.
+
+Run python -m ore_semantic_composition for the bundled demonstration and python -m pytest tests/test_semantic_composition.py -q for focused tests. The existing ORE SQLite logger indexes every new class/function docstring into its annotation catalogue when an ORE script starts; its local database remains ore_logs/ore_logger.sqlite3.

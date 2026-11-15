@@ -199,3 +199,4 @@ def test_biological_reference_is_separate_and_reports_physical_units() -> None:
     assert result.biological["units"]["membrane_voltage"] == "mV"
     assert result.biological["units"]["synaptic_current"] == "pA"
     assert result.biological["units"]["firing_rate"] == "Hz"
+    assert result.biological["layers"]["concept_retrieval"]["spike_count"] > 0

@@ -112,21 +112,22 @@ class PythonCallObserver:
             code = frame.f_code
             module = frame.f_globals.get("__name__", "")
             short_name = code.co_name
-            label = f"{module}.{short_name}"
+            qualname = getattr(code, "co_qualname", short_name)
+            label = f"{module}.{qualname}"
             self.counts[label] += 1
             record = {"sequence": self._sequence, "function": label,
-                      "short_name": short_name, "module": module,
+                      "short_name": short_name, "qualname": qualname, "module": module,
                       "file": Path(code.co_filename).name,
                       "line": int(code.co_firstlineno), "depth": len(self._active),
                       "started_ns": time.perf_counter_ns()}
             self._active[ident] = record
-            self._emit({k: record[k] for k in ("sequence", "function", "short_name", "module", "file", "line", "depth")} | {"kind": "call"})
+            self._emit({k: record[k] for k in ("sequence", "function", "short_name", "qualname", "module", "file", "line", "depth")} | {"kind": "call"})
         elif event == "exception":
             exc_type, exc_value, _ = arg
             current = self._active.get(ident)
             if current:
                 self._emit({"sequence": current["sequence"], "kind": "exception",
-                            "function": current["function"], "short_name": current["short_name"],
+                            "function": current["function"], "short_name": current["short_name"], "qualname": current["qualname"],
                             "module": current["module"], "file": current["file"],
                             "line": int(frame.f_lineno), "depth": current["depth"],
                             "exception_type": getattr(exc_type, "__name__", str(exc_type)),
@@ -154,7 +155,7 @@ class PythonCallObserver:
                 line_number = int(frame.f_lineno)
                 source = linecache.getline(frame.f_code.co_filename, line_number).strip()
                 self._emit({"sequence": current["sequence"], "kind": "line",
-                            "function": current["function"], "short_name": current["short_name"],
+                            "function": current["function"], "short_name": current["short_name"], "qualname": current["qualname"],
                             "module": current["module"], "file": current["file"],
                             "line": line_number, "depth": current["depth"],
                             "source": source[:260]})

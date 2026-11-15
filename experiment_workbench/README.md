@@ -110,6 +110,51 @@ The chat run now executes in a worker thread while Streamlit polls a thread-safe
 - The optional **Trace individual source lines** setting adds line-by-line events and source text. It is slower and should be enabled only when investigating a specific issue.
 - After execution, the debugger retains the full event timeline and deepest observed call stack. The separate Stage trace view displays operation/stage records emitted by the component itself.
 
+
+## Plain-language background execution logger
+
+Every Workbench run now writes two persistent log files under `ore_logs/YYYY-MM-DD/`:
+
+- `ore-<run-id>.md` — a readable chronological explanation of the work ORE performed.
+- `ore-<run-id>.jsonl` — the same events as one JSON object per line, suitable for later analysis or custom viewers.
+
+The log includes run start/end, live Python call/return/exception events, translated operation events, status explanations, source locations and bounded technical details. Raw prompts, image pixels and full input arrays are deliberately excluded. The folder is ignored by Git so local logs are not accidentally committed.
+
+### What gets narrated
+
+- **N9:** its 120 registered operations are emitted through an optional `on_operation` callback at the point each operation is recorded. The narrator explains each operation and groups it into the ten N9 phases (input/provenance, visual processing, grapheme sequence, attention, lexical/phonological access, syntax/semantics, context, feedback, integration/decision, and learning governance).
+- **Other ORE components:** operation/stage/iteration records exposed by their returned result are translated and appended when the component finishes. Their Python function calls still appear live while the component runs.
+- **Python execution:** call, return, exception and optional line events retain the source file, line, call stack and duration. These are implementation events, not claims about individual neuron or NumPy instructions.
+
+The logger distinguishes completed work from `not_applicable`, `not_configured`, fallback and abstention statuses. This is important: a missing N6/N7/N8 adapter is reported as missing, not described as if that biological/functional stage had executed.
+
+### Direct Python use
+
+The generic adapter accepts a log directory:
+
+```python
+from experiment_workbench.adapter import execute
+
+result = execute(
+    package_name,
+    callable_info,
+    prompt="",
+    supplied={"request_data": request_payload},
+    log_directory="ore_logs",
+)
+print(result.get("logs", {}).get("markdown_path"))
+print(result.get("logs", {}).get("jsonl_path"))
+```
+
+The N9 processor can also stream operation records to an application callback without using Streamlit:
+
+```python
+events = []
+result = N9Processor().process(request, on_operation=events.append)
+```
+
+The Workbench's Narration log tab shows the translated records and offers downloads of both files. N9 operation events are logged as they are recorded. For packages that only expose traces in their final result, those trace rows cannot be truthfully displayed as live operation events; they are added after return.
+
 ### What the debugger can and cannot see
 
 The live timeline is based on Python's function profiler (and optional Python line tracing) for the selected package. It can show Python function boundaries and source lines, but it cannot show individual C-level NumPy/SciPy instructions, GPU kernels, or work dispatched to other threads/processes. Those operations are instead inspected through input/output array summaries and component-provided diagnostics after they return.

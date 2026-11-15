@@ -197,10 +197,13 @@ def _phase_for_step(step: Any) -> tuple[str, str]:
 
 def explain_operation(operation: Any, step: Any = None, status: Any = "ok") -> dict[str, str]:
     name = str(operation or "unnamed_operation")
-    phase, phase_description = _phase_for_step(step)
-    explanation = N9_OPERATION_EXPLANATIONS.get(
-        name, f"ORE is carrying out the component step: {_plain_name(name)}."
-    )
+    if name in N9_OPERATION_EXPLANATIONS:
+        phase, phase_description = _phase_for_step(step)
+        explanation = N9_OPERATION_EXPLANATIONS[name]
+    else:
+        phase = "Component operation"
+        phase_description = "A component-authored diagnostic step; this is not an N9 phase label."
+        explanation = f"ORE is carrying out the component step: {_plain_name(name)}."
     status_text = str(status or "ok").lower()
     status_explanations = {
         "ok": "Completed.",

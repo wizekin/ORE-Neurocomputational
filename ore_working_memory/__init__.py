@@ -1,4 +1,4 @@
-"""ORE working-memory and cognitive-control subsystem: five stages and 30 operations."""
+"""ORE working-memory and cognitive-control subsystem: five stages and 40 canonical WMCC operations."""
 
 from .biology import POPULATIONS, WorkingMemoryLIFSimulator
 from .contracts import WorkingMemoryConfig, WorkingMemoryRequest, WorkingMemoryResult

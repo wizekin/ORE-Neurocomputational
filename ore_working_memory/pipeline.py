@@ -297,12 +297,12 @@ class WorkingMemoryProcessor:
             for index, raw in enumerate(supplied):
                 item = dict(raw) if isinstance(raw, Mapping) else {"token_positions": list(raw)}
                 raw_positions = item.get("token_positions", ())
-            if isinstance(raw_positions, (str, int)):
-                raw_positions = [raw_positions]
-            positions = [
-                int(value) for value in raw_positions
-                if str(value).lstrip("-").isdigit() and 0 <= int(value) < len(state["tokens"])
-            ]
+                if isinstance(raw_positions, (str, int)):
+                    raw_positions = [raw_positions]
+                positions = [
+                    int(value) for value in raw_positions
+                    if str(value).lstrip("-").isdigit() and 0 <= int(value) < len(state["tokens"])
+                ]
                 if not positions and item.get("text"):
                     wanted = str(item["text"]).casefold()
                     positions = [record["index"] for record in state["token_records"]

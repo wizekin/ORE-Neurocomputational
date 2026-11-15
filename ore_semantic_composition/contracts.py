@@ -56,6 +56,7 @@ class PredicateFrame:
     source_reference: str = "unspecified"
 
     def __post_init__(self) -> None:
+        """Validate role names and feature preferences against this predicate frame."""
         if not self.predicate.strip():
             raise ValueError("predicate must be non-empty")
         if not self.roles or any(not role.strip() for role in self.roles):
@@ -87,6 +88,7 @@ class SemanticCompositionRequest:
     source_reference: str | None = None
 
     def __post_init__(self) -> None:
+        """Validate sentence input, token-indexed hypotheses, and contextual feature values."""
         if not self.sequence_id.strip():
             raise ValueError("sequence_id must be non-empty")
         if (self.text is None) == (self.tokens is None):
@@ -142,6 +144,7 @@ class SemanticCompositionConfig:
     inhibition_gain_pa: float = 20.0
 
     def __post_init__(self) -> None:
+        """Validate numerical bounds and ensure the LIF integration parameters are stable."""
         if self.max_concepts_per_token < 1 or self.max_scope_readings < 1 or self.max_tokens < 1:
             raise ValueError("candidate, scope, and token limits must be positive")
         if self.population_size < 2 or self.steps_per_operation < 1:

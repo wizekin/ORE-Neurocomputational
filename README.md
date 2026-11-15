@@ -488,3 +488,72 @@ Run the viewer:
 The default database is created automatically at `ore_logs/ore_logger.sqlite3` the first time a repository script is run. The directory is ignored by Git. Use `ORE_LOGGER_DB` to choose another database location, `ORE_LOG_MAX_EVENTS` to change the per-script event cap (default 200,000), or `ORE_AUTO_LOG=0` to disable automatic tracing for a process.
 
 The existing Experiment Workbench also creates a separate timestamped SQLite run for each component execution. See [the Workbench guide](experiment_workbench/README.md).
+
+
+## ORE discourse integration — eight stages / 64 operations
+
+The additive \`ore_discourse\` package implements the eight discourse stages:
+maintaining discourse context; integrating consecutive sentence propositions;
+inferring speaker intention; interpreting indirect requests; evaluating irony;
+constructing situation models; tracking temporal discourse relations; and
+maintaining topic/narrative coherence. It exposes a stable \`DC-001\`–\`DC-064\`
+operation registry, mathematical sketches, stage outputs and a complete trace.
+
+The functional track keeps caller-provided entities, common ground, beliefs,
+temporal metadata and prosody separate from surface-based hypotheses. It uses
+bounded heuristics for English examples, preserves alternative interpretations,
+and does not invent unsupported world facts. The biological-reference track
+advances coupled current-based LIF populations for discourse memory,
+proposition binding, speaker modeling, pragmatic control, incongruity
+monitoring, situation modeling, temporal order and narrative integration.
+
+The LIF reference reports voltage (mV), current (pA), firing rate (Hz), spikes
+and simulated time (ms). Its population assignments and parameters are
+computational hypotheses, not a validated reproduction of human language
+circuitry. Passing software tests does not establish behavioral or biological
+validity.
+
+Quick start:
+
+\`\`\`python
+from ore_discourse import DiscourseProcessor, DiscourseRequest
+
+request = DiscourseRequest(
+    sequence_id="dialogue-001",
+    sentences=[
+        "The deployment failed yesterday.",
+        "Great work on the release!",
+        "Could you inspect the service logs?",
+        "Then the engineer restarted the service.",
+    ],
+    context={"prior_turns": ["The team reported a failed deployment."]},
+    prosody={1: {"intonation_mismatch": 0.7}},
+)
+result = DiscourseProcessor().process(request)
+print(result.coherence["score"])
+print(result.indirect_requests)
+print(result.irony)
+print(len(result.operation_trace))  # 64
+\`\`\`
+
+Use the new ORE N7 adapter inside the existing N9 controller:
+
+\`\`\`python
+from ore_discourse import DiscourseN7Adapter
+from ore_n9 import N9Adapters, N9Processor
+
+adapters = N9Adapters(n7=DiscourseN7Adapter())
+n9 = N9Processor(adapters=adapters)
+result = n9.process(request_for_n9)
+\`\`\`
+
+Run the demonstration and tests:
+
+\`\`\`bash
+python -m ore_discourse
+python -m pytest tests/test_discourse.py -q
+python -m pytest
+\`\`\`
+
+See [docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md](docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md)
+for all 64 operations, equations, interfaces and scientific limitations.

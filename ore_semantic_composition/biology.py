@@ -62,6 +62,8 @@ class SemanticCompositionLIFSimulator:
             raise KeyError(f"unknown semantic-composition stage: {stage_id}")
         x = float(np.clip(drive, 0.0, 1.0))
         cfg = self.config
+        spike_before = int(np.sum(self.spikes[population]))
+        latest_fired = np.zeros(cfg.population_size, dtype=bool)
         for _ in range(cfg.steps_per_operation):
             previous = self._previous_activity[population]
             recurrent = cfg.recurrent_gain_pa * previous
@@ -81,15 +83,16 @@ class SemanticCompositionLIFSimulator:
             )
             voltage[active_mask] += delta[active_mask]
             fired = active_mask & (voltage >= cfg.threshold_mv)
+            latest_fired = fired
             self.spikes[population][fired] += 1
             voltage[fired] = cfg.reset_mv
             self.refractory[population][fired] = cfg.refractory_ms
             self.elapsed_ms += cfg.dt_ms
         duration_s = max(cfg.steps_per_operation * cfg.dt_ms / 1000.0, 1e-12)
-        rate = float(np.sum(self.spikes[population]) / (cfg.population_size * duration_s))
+        spike_delta = int(np.sum(self.spikes[population])) - spike_before
+        rate = float(spike_delta / (cfg.population_size * duration_s))
         self._last_rates[population] = rate
-        activity = float(np.mean(self.spikes[population] > 0))
-        self._previous_activity[population] = activity
+        self._previous_activity[population] = float(np.mean(latest_fired))
         return self._population_summary(population)
 
     def _population_summary(self, population: str) -> dict[str, Any]:

@@ -225,7 +225,7 @@ class SQLiteRunRecorder:
             source_path=source_path,
             annotation=annotation,
             annotation_source="operation_catalog",
-            source_hash="ore-operations-v1",
+            source_hash=hashlib.sha256(annotation.encode("utf-8")).hexdigest(),
         )
         return self.database.get_annotation_by_id(symbol_id) or {
             "symbol_id": symbol_id, "annotation": annotation,

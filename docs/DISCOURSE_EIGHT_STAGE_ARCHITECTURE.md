@@ -1,10 +1,10 @@
 # ORE discourse integration — eight stages / 64 operations
 
-**Package:** \`ore_discourse/\`  
-**Registry:** \`ORE-DISCOURSE-64\`  
+**Package:** `ore_discourse/`  
+**Registry:** `ORE-DISCOURSE-64`  
 **Version:** 1.0.0  
 **Status:** Executable functional prototype with an optional coupled LIF population reference.  
-**N9 slot:** Implements the existing N7 \`predict(payload)\` extension contract.
+**N9 slot:** Implements the existing N7 `predict(payload)` extension contract.
 
 ## 1. Purpose and boundaries
 
@@ -29,9 +29,9 @@ prosodic signal analyzer, or validated human-brain simulation.
 
 ## 2. The eight stages and all 64 operations
 
-The stable operation IDs are \`DC-001\` through \`DC-064\`. The source of truth
+The stable operation IDs are `DC-001` through `DC-064`. The source of truth
 for each operation's full functional responsibility, mathematical sketch and
-biological-reference interpretation is \`ore_discourse/registry.py\`. Every
+biological-reference interpretation is `ore_discourse/registry.py`. Every
 functional request returns exactly 64 trace rows in registry order.
 
 | Stage | Operations | Functional operations | Main representation |
@@ -222,19 +222,19 @@ conflicts; it is not an unconstrained generative summary.
 
 ## 3. Biological-reference track
 
-When \`DiscourseConfig(simulate_biology=True)\`, the simulator advances a
+When `DiscourseConfig(simulate_biology=True)`, the simulator advances a
 coupled population reference once for every operation (64 steps). The
 populations are:
 
-- \`discourse_memory\`
-- \`proposition_binding\`
-- \`speaker_model\`
-- \`pragmatic_control\`
-- \`incongruity_monitor\`
-- \`situation_model\`
-- \`temporal_order\`
-- \`narrative_coherence\`
-- \`prediction_error\`
+- `discourse_memory`
+- `proposition_binding`
+- `speaker_model`
+- `pragmatic_control`
+- `incongruity_monitor`
+- `situation_model`
+- `temporal_order`
+- `narrative_coherence`
+- `prediction_error`
 
 For population \(i\), a current-based leaky integrate-and-fire reference uses:
 
@@ -253,15 +253,15 @@ executes the 64 software operations.
 
 Disable this reference with:
 
-\`\`\`python
+```python
 DiscourseProcessor(DiscourseConfig(simulate_biology=False))
-\`\`\`
+```
 
 ## 4. API and N9 integration
 
 Standalone use:
 
-\`\`\`python
+```python
 from ore_discourse import DiscourseProcessor, DiscourseRequest
 
 request = DiscourseRequest(
@@ -275,21 +275,21 @@ print(result.discourse_context["coreference"])
 print(result.temporal_relations)
 print(result.coherence["score"])
 print(len(result.operation_trace))  # 64
-\`\`\`
+```
 
-N9 already accepts an object exposing \`predict(payload)\` in its \`n7\`
-adapter slot. The new \`DiscourseN7Adapter\` implements this contract and
-returns \`intents\`, \`predictions\`, \`situation_model\`, \`coherence\`,
-\`uncertainty\`, \`temporal_links\`, \`causal_links\`,
-\`proposition_compatibility\` and \`knowledge_conflicts\`.
+N9 already accepts an object exposing `predict(payload)` in its `n7`
+adapter slot. The new `DiscourseN7Adapter` implements this contract and
+returns `intents`, `predictions`, `situation_model`, `coherence`,
+`uncertainty`, `temporal_links`, `causal_links`,
+`proposition_compatibility` and `knowledge_conflicts`.
 
-\`\`\`python
+```python
 from ore_discourse import DiscourseN7Adapter
 from ore_n9 import N9Adapters, N9Processor
 
 processor = N9Processor(adapters=N9Adapters(n7=DiscourseN7Adapter()))
 integrated_result = processor.process(n9_request)
-\`\`\`
+```
 
 The adapter reads the existing N9 proposition, semantic-graph, lexical-hypothesis
 and discourse-context payloads. It does not modify upstream results.
@@ -297,9 +297,9 @@ and discourse-context payloads. It does not modify upstream results.
 ## 5. Annotation logging
 
 Every public and private class/function in the new Python modules has an
-English docstring. The existing \`ore_logger.catalog.sync_repository()\`
+English docstring. The existing `ore_logger.catalog.sync_repository()`
 AST catalogue reads these docstrings into the repository's
-\`annotations\` table in \`ore_logs/ore_logger.sqlite3\`. The automatic runtime
+`annotations` table in `ore_logs/ore_logger.sqlite3`. The automatic runtime
 logger links function call/return/exception events to those annotation rows
 when an ORE Python entry point is executed with auto-logging enabled.
 
@@ -310,15 +310,15 @@ commit a machine-specific database file.
 
 ## 6. Installation, tests and limits
 
-The package is registered in \`pyproject.toml\` and uses the repository's
+The package is registered in `pyproject.toml` and uses the repository's
 existing NumPy dependency.
 
-\`\`\`bash
+```bash
 python -m pip install -e ".[dev]"
 python -m ore_discourse
 python -m pytest tests/test_discourse.py -q
 python -m pytest
-\`\`\`
+```
 
 Included software tests cover registry order/count, one biological operation
 per trace row, entity/coreference preservation, common ground, connective

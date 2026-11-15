@@ -108,7 +108,7 @@ H(P)=-\sum_i P_i\log P_i,
 T_c=w_1H(P)+w_2U+w_3D
 \]
 
-Attention and top-down bias are separate from the source evidence. The processor preserves alternative hypotheses and can defer selection. Coordination messages express requests among memory, syntax, executive control, semantic resolution, and task management without allowing one subsystem to overwrite another's state.
+Attention and top-down bias are separate from the source evidence. The executive controller then regulates preliminary candidate activations through goal-sensitive excitation and lateral inhibition, preserving all candidates. It makes a provisional accept/continue decision using confidence, top-two margin, and any explicitly declared blocking conflict. This decision is not final: Stage 4 performs the fuller evidence integration and can select, abstain, or revise when new evidence arrives. Coordination messages express requests among memory, syntax, executive control, semantic resolution, and task management without allowing one subsystem to overwrite another's state.
 
 ### Stage 4 — Resolving competing semantic interpretations (9 operations)
 

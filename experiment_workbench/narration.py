@@ -227,141 +227,50 @@ def explain_operation(operation: Any, step: Any = None, status: Any = "ok") -> d
 
 
 class OREExecutionLogger:
-    """Thread-safe JSONL and Markdown logger for one ORE run."""
+    """Compatibility façade that stores Workbench events in the shared SQLite database."""
 
     def __init__(self, output_dir: str | Path, run_id: str, component: str,
                  callable_name: str, started_at: str,
                  on_event: Callable[[dict[str, Any]], None] | None = None) -> None:
-        self.run_id = run_id
-        self.component = component
-        self.callable_name = callable_name
-        self.started_at = started_at
-        self.on_event = on_event
-        self._lock = threading.RLock()
-        self._clock = time.perf_counter()
-        self._sequence = 0
-        self._event_count = 0
-        self._operation_keys: set[tuple[str, str]] = set()
-        self._closed = False
-        self._errors: list[str] = []
-        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        self.run_dir = Path(output_dir).expanduser() / day
-        self.run_dir.mkdir(parents=True, exist_ok=True)
-        stem = f"ore-{run_id}"
-        self.jsonl_path = self.run_dir / f"{stem}.jsonl"
-        self.markdown_path = self.run_dir / f"{stem}.md"
-        self._json = self.jsonl_path.open("a", encoding="utf-8")
-        self._markdown = self.markdown_path.open("a", encoding="utf-8")
-        self._markdown.write(
-            f"# ORE execution narrative\n\n- Run ID: {run_id}\n"
-            f"- Component: {component}\n- Callable: {callable_name}\n"
-            f"- Started (UTC): {started_at}\n\n"
-            "Raw prompts, image pixels and full input arrays are not written to this log.\n\n"
-            "## Event timeline\n"
+        from ore_logger.recorder import SQLiteRunRecorder
+
+        repository_root = Path(__file__).resolve().parents[1]
+        database_path = Path(output_dir).expanduser() / "ore_logger.sqlite3"
+        self._recorder = SQLiteRunRecorder(
+            database_path=database_path,
+            repository_root=repository_root,
+            run_id=run_id,
+            component=component,
+            callable_name=callable_name,
+            started_at_utc=started_at,
+            on_event=on_event,
         )
-        self._markdown.flush()
-        self._emit({
-            "kind": "run_started",
-            "explanation": f"Started {callable_name} in component {component}.",
-            "details": {"input_values_logged": False},
-        })
+        self._operation_keys: set[tuple[str, str]] = set()
 
     @property
     def metadata(self) -> dict[str, Any]:
-        return {
-            "jsonl_path": str(self.jsonl_path),
-            "markdown_path": str(self.markdown_path),
-            "event_count": self._event_count,
-            "logger_errors": list(self._errors),
-        }
-
-    def _emit(self, event: dict[str, Any]) -> None:
-        with self._lock:
-            if self._closed:
-                return
-            self._sequence += 1
-            record = {
-                "sequence": self._sequence, "run_id": self.run_id,
-                "component": self.component, "callable": self.callable_name,
-                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-                "elapsed_ms": round((time.perf_counter() - self._clock) * 1000, 3),
-                **event,
-            }
-            record["details"] = _safe_detail(record.get("details", {}))
-            try:
-                self._json.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
-                self._json.flush()
-                self._write_markdown(record)
-                self._event_count += 1
-            except Exception as exc:
-                self._errors.append(f"{type(exc).__name__}: {exc}")
-            if self.on_event is not None:
-                try:
-                    self.on_event(dict(record))
-                except Exception:
-                    pass
-
-    def _write_markdown(self, event: Mapping[str, Any]) -> None:
-        kind = str(event.get("kind", "event"))
-        if kind == "operation":
-            heading = f'Step {int(event.get("step", 0)):03d} · {event.get("phase", "ORE")} · {event.get("title", event.get("operation", "operation"))}'
-        elif kind == "component_trace":
-            heading = f'Component trace · {event.get("title", event.get("operation", "step"))}'
-        else:
-            heading = f'{kind.replace("_", " ").title()} · {event.get("function", event.get("callable", self.callable_name))}'
-        self._markdown.write(f"\n### {heading}\n\n")
-        self._markdown.write(f'- Time: {event.get("elapsed_ms", 0)} ms\n')
-        if event.get("status") is not None:
-            self._markdown.write(f'- Status: {event["status"]}\n')
-        if event.get("explanation"):
-            self._markdown.write(f'\n{event["explanation"]}\n')
-        if event.get("status_explanation"):
-            self._markdown.write(f'\n{event["status_explanation"]}\n')
-        if event.get("phase_explanation"):
-            self._markdown.write(f'\n_{event["phase_explanation"]}_\n')
-        if event.get("details"):
-            self._markdown.write("\nRecorded details\n\nJSON:\n")
-            self._markdown.write(json.dumps(event["details"], indent=2, ensure_ascii=False, default=str))
-            self._markdown.write("\n")
-        if event.get("file") or event.get("line"):
-            self._markdown.write(f'\nSource: {event.get("file", "")}:{event.get("line", "")}\n')
-        self._markdown.flush()
+        return self._recorder.metadata
 
     def log_python_event(self, event: Mapping[str, Any]) -> None:
-        row = dict(event)
-        kind = row.get("kind", "python_event")
-        if not row.get("explanation"):
-            label = _plain_name(row.get("short_name") or row.get("function"))
-            if kind == "call":
-                row["explanation"] = f"Python entered {label}."
-            elif kind == "return":
-                row["explanation"] = f"Python finished {label} and returned {row.get('return_type', 'a value')}."
-            elif kind == "exception":
-                row["explanation"] = f"{row.get('exception_type', 'An exception')} was raised while {label} was running."
-            elif kind == "line":
-                row["explanation"] = f"Python is executing source line {row.get('line')} in {label}."
-        self._emit(row)
+        self._recorder.log_python_event(event)
 
     def log_operation(self, operation_event: Mapping[str, Any]) -> None:
         row = dict(operation_event)
         name = str(row.get("operation", row.get("name", "unnamed_operation")))
         step = row.get("step", row.get("number"))
         status = row.get("status", "ok")
-        details = {k: v for k, v in row.items()
-                   if k not in {"kind", "step", "number", "operation", "name", "status"}}
         translated = explain_operation(name, step, status)
         self._operation_keys.add((str(step), name))
-        self._emit({
-            "kind": "operation", "step": step, "operation": name,
-            "title": translated["title"], "phase": translated["phase"],
+        self._recorder.log_operation({
+            **row,
+            **translated,
+            "phase": translated["phase"],
             "phase_explanation": translated["phase_explanation"],
-            "explanation": translated["explanation"], "status": status,
             "status_explanation": translated["status_explanation"],
-            "details": details, "source": row.get("source", "live_operation_callback"),
         })
 
     def log_component_traces(self, rows: list[Mapping[str, Any]]) -> None:
-        """Log returned traces from components that do not stream operation events."""
+        pending = []
         for index, source_row in enumerate(rows):
             row = dict(source_row)
             name = str(row.get("operation", row.get("name", row.get("stage", row.get("step_name", f"trace_{index + 1}")))))
@@ -370,30 +279,18 @@ class OREExecutionLogger:
                 continue
             status = row.get("status", "recorded")
             translated = explain_operation(name, step, status)
-            self._emit({
-                "kind": "component_trace", "step": step, "operation": name,
-                "title": translated["title"], "phase": translated["phase"],
+            pending.append({
+                **row,
+                "step": step,
+                "operation": name,
+                "status": status,
+                "explanation": translated["explanation"],
+                "phase": translated["phase"],
                 "phase_explanation": translated["phase_explanation"],
-                "explanation": translated["explanation"], "status": status,
                 "status_explanation": translated["status_explanation"],
-                "details": row, "source": "returned_component_trace",
             })
+        self._recorder.log_component_traces(pending)
 
     def finish(self, status: str, elapsed_ms: float | None,
                output_type: str | None = None, error: str | None = None) -> dict[str, Any]:
-        with self._lock:
-            if not self._closed:
-                self._emit({
-                    "kind": "run_finished", "status": status,
-                    "explanation": (
-                        f"Execution {status}. Output type: {output_type or 'none'}."
-                        if not error else f"Execution failed: {error[:500]}"
-                    ),
-                    "details": {"elapsed_ms": elapsed_ms, "output_type": output_type},
-                })
-                self._closed = True
-                self._json.close()
-                self._markdown.write("\n\n---\n\nEnd of execution log.\n")
-                self._markdown.flush()
-                self._markdown.close()
-        return self.metadata
+        return self._recorder.finish(status, elapsed_ms, output_type, error)

@@ -151,6 +151,12 @@ def test_executive_control_retains_goal_bias_separately_from_evidence() -> None:
     result = _no_biology().process(request)
     assert result.executive_control["control_demand"] > 0.0
     assert result.executive_control["focus_hypothesis_id"] == "h1"
+    assert result.executive_control["regulated_alternatives_preserved"] == 2
+    provisional = result.executive_control["provisional_interpretation_decision"]
+    assert provisional["is_final_semantic_decision"] is False
+    assert provisional["status"] in {"provisionally_accepted", "continue_evaluation"}
+    assert result.operation_trace[18]["operation_id"] == "WMCC-019"
+    assert result.operation_trace[19]["operation_id"] == "WMCC-020"
     assert "goal_bias" in result.semantic_resolution["evidence_channels"]
 
 

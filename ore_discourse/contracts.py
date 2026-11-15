@@ -160,6 +160,7 @@ class DiscourseResult:
     def to_dict(self) -> dict[str, Any]:
         """Serialize the result without leaking NumPy objects or non-finite numbers."""
         def clean(value: Any) -> Any:
+            """Recursively convert nested values into JSON-compatible representations."""
             if isinstance(value, Mapping):
                 return {str(key): clean(item) for key, item in value.items()}
             if isinstance(value, (tuple, list)):

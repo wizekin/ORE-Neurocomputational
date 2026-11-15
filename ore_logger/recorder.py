@@ -187,6 +187,12 @@ class SQLiteRunRecorder:
             "exception": f"{row.get('exception_type', 'An exception')} occurred in {label}. {annotation}",
             "line": f"Executing line {row.get('line')} in {label}. {annotation}",
         }.get(kind, annotation)
+        display_fields = {
+            "short_name": row.get("short_name"),
+            "active_stack": row.get("active_stack", []),
+        }
+        if row.get("source") is not None:
+            display_fields["source"] = row.get("source")
         self._emit(
             kind, symbol=symbol, class_symbol=class_symbol,
             source_path=(symbol.get("source_path") if symbol else None)
@@ -201,9 +207,10 @@ class SQLiteRunRecorder:
                 "module": row.get("module"),
                 "qualname": row.get("qualname"),
                 "active_stack": row.get("active_stack", []),
+                "source_text": row.get("source"),
             },
             explanation=explanation,
-            display_fields={"short_name": row.get("short_name")},
+            display_fields=display_fields,
         )
 
     def _register_synthetic(self, component: str, name: str, kind: str, annotation: str) -> dict[str, Any]:

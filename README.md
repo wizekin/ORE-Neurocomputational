@@ -476,9 +476,10 @@ The repository includes an automatic, repository-wide execution logger and a Str
 - The viewer supports searching and manually editing annotations. Manual edits are preserved across catalogue refreshes; a source change marks the annotation for review.
 - Input argument values, raw prompts, image pixels and full numerical arrays are not recorded.
 
-Install the repository in the Python environment:
+Install the repository and the optional Streamlit viewer dependency:
 
     python -m pip install -e .
+    python -m pip install -r experiment_workbench/requirements.txt
 
 Run the viewer:
 

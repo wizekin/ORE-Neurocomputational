@@ -285,17 +285,26 @@ class _DefinitionCollector:
 
     def _visit_body(self, body: list[ast.stmt], parent: str) -> None:
         for node in body:
-            if isinstance(node, ast.ClassDef):
-                qualname = f"{parent}.{node.name}" if parent else node.name
-                annotation, signature, source = _class_annotation(node, qualname, self.module_name)
-                self._append(qualname, "class", annotation, signature, node, source)
-                self._visit_body(node.body, qualname)
-            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                qualname = f"{parent}.{node.name}" if parent else node.name
-                annotation, signature, source = _function_annotation(node, qualname, self.module_name)
-                kind = "async_function" if isinstance(node, ast.AsyncFunctionDef) else "function"
-                self._append(qualname, kind, annotation, signature, node, source)
-                self._visit_body(node.body, qualname)
+            self._visit_nested_definitions(node, parent)
+
+    def _visit_nested_definitions(self, node: ast.AST, parent: str) -> None:
+        """Find definitions inside control-flow blocks without entering another definition twice."""
+        if isinstance(node, ast.ClassDef):
+            qualname = f"{parent}.{node.name}" if parent else node.name
+            annotation, signature, source = _class_annotation(node, qualname, self.module_name)
+            self._append(qualname, "class", annotation, signature, node, source)
+            self._visit_body(node.body, qualname)
+            return
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            qualname = f"{parent}.{node.name}" if parent else node.name
+            annotation, signature, source = _function_annotation(node, qualname, self.module_name)
+            kind = "async_function" if isinstance(node, ast.AsyncFunctionDef) else "function"
+            self._append(qualname, kind, annotation, signature, node, source)
+            local_parent = qualname + ".<locals>"
+            self._visit_body(node.body, local_parent)
+            return
+        for child in ast.iter_child_nodes(node):
+            self._visit_nested_definitions(child, parent)
 
 
 def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> dict[str, int]:

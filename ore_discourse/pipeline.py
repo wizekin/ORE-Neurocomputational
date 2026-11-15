@@ -39,7 +39,7 @@ _NEGATIVE = {
 _NEGATIONS = {"not", "no", "never", "neither", "n't", "cannot"}
 _MODALS = {"may", "might", "could", "would", "should", "must", "can", "will"}
 _TEMPORAL = {
-    "before": "before", "after": "after", "then": "after", "later": "after",
+    "before": "before", "after": "after", "afterward": "after", "subsequently": "after", "then": "after", "later": "after",
     "earlier": "before", "previously": "before", "while": "overlap",
     "during": "overlap", "meanwhile": "overlap", "simultaneously": "overlap",
     "first": "before", "finally": "after", "next": "after",
@@ -148,7 +148,7 @@ def _safe_number(value: Any, default: float = 0.0) -> float:
 
 def _sentence_texts(request: DiscourseRequest) -> list[str]:
     """Resolve the discourse surface strings from explicit sentences or proposition records."""
-    if request.sentences is not None:
+    if request.sentences is not None and len(request.sentences) > 0:
         return list(request.sentences)
     indexed: dict[int, str] = {}
     for fallback, item in enumerate(request.propositions):
@@ -701,7 +701,7 @@ class DiscourseProcessor:
                 action_text, construction, strength = match.group(1), "ability_or_willingness_question", 0.78
             elif re.match(r"^(please\s+)?(open|close|send|give|take|help|bring|call|tell|wait|stop|look|listen)\b", lower):
                 action_text, construction, strength = lower, "imperative_request", 0.92
-            elif re.search(r"\bit('?s| is) cold\b", lower) and request.context.get("scene", {}).get("window_open"):
+            elif re.search(r"\bit('?s| is) cold\b", lower) and isinstance(request.context.get("scene", {}), Mapping) and request.context.get("scene", {}).get("window_open"):
                 action_text, construction, strength = "close the window", "contextual_environmental_hint", 0.58
             literal_type = "question" if sentence.rstrip().endswith("?") else "assertion"
             if construction == "imperative_request":

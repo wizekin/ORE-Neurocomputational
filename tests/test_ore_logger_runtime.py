@@ -1,4 +1,8 @@
 from pathlib import Path
+import os
+import subprocess
+import sys
+import uuid
 
 from ore_logger.database import LoggerDatabase
 from ore_logger.runtime import RuntimeSession, _candidate_script
@@ -71,3 +75,44 @@ def test_streamlit_viewer_has_valid_python_syntax():
     root = Path(__file__).resolve().parents[1]
     viewer = root / "ore_logger" / "viewer.py"
     ast.parse(viewer.read_text(encoding="utf-8"), filename=str(viewer))
+
+
+
+def test_sitecustomize_automatically_logs_a_launched_repository_script(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    script = root / "tests" / f"_ore_logger_probe_{uuid.uuid4().hex[:8]}.py"
+    database_path = tmp_path / "automatic.sqlite3"
+    script.write_text(
+        "def _automatic_probe(value):\n"
+        "    return value * 3\n"
+        "\n"
+        "assert _automatic_probe(7) == 21\n",
+        encoding="utf-8",
+    )
+    environment = os.environ.copy()
+    environment["ORE_LOGGER_DB"] = str(database_path)
+    environment["ORE_AUTO_LOG"] = "1"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(script)],
+            cwd=root,
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+    finally:
+        script.unlink(missing_ok=True)
+
+    assert completed.returncode == 0, completed.stderr
+    database = LoggerDatabase(database_path)
+    runs = database.list_runs()
+    assert len(runs) == 1
+    assert runs[0]["script_path"].startswith("tests/_ore_logger_probe_")
+    events = database.list_events(runs[0]["run_id"])
+    assert any(event.get("qualified_name") == "_automatic_probe" for event in events)
+    assert any(
+        event["event_kind"] == "run_finished"
+        for event in events
+    )

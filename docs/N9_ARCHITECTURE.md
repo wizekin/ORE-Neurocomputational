@@ -7,7 +7,7 @@
 
 ## 1. Repository boundary
 
-This repository snapshot contains N1, N2, N3 and N4. N5-N8 are not present as first-party packages in this branch. N9 therefore:
+This repository snapshot contains the N1-N4 visual/orthographic packages, the optional N5/N6 learning and lexical components, the N7 discourse package (`ore_discourse`), and the N8 semantic package (`ore_semantic`). N9 remains dependency-injected: it invokes N1/N2 for image patches, optionally invokes fitted N3/N4 processors, and calls N5-N8 only when corresponding adapters are supplied. N9 therefore:
 
 - invokes N1 and N2 automatically for supplied, already-localized grayscale image patches;
 - can invoke a separately fitted N3Processor and the N4 attention/precision processor;

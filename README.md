@@ -462,3 +462,28 @@ Run `python -m ore_syntax` for a demonstration and
 compact English-oriented research prototype, not a treebank-trained parser.
 Its scores are not calibrated probabilities, and its LIF population model is
 a computational analogy rather than a validated reproduction of neural syntax.
+
+
+## ORE Execution Logger — SQLite annotations and run history
+
+The repository includes an automatic, repository-wide execution logger and a Streamlit observatory. The logger scans all Python source files and indexes module, class, method, nested-function, function and asynchronous-function definitions in a SQLite annotation catalogue.
+
+- Existing Python docstrings are used as the initial explanation where available.
+- Definitions without docstrings receive a source-based English description generated from their name, signature, return annotation, helper calls and control-flow structure. These are marked as source analysis, not as manually verified documentation.
+- Each execution receives a unique run ID and local/UTC date-time labels.
+- Function calls, returns, class entry, exceptions, source locations and durations are recorded as event rows.
+- Events store a foreign-key reference to an annotation. The explanation is stored once in the annotations table rather than copied into each event.
+- The viewer supports searching and manually editing annotations. Manual edits are preserved across catalogue refreshes; a source change marks the annotation for review.
+- Input argument values, raw prompts, image pixels and full numerical arrays are not recorded.
+
+Install the repository in the Python environment:
+
+    python -m pip install -e .
+
+Run the viewer:
+
+    streamlit run ore_logger/viewer.py
+
+The default database is created automatically at `ore_logs/ore_logger.sqlite3` the first time a repository script is run. The directory is ignored by Git. Use `ORE_LOGGER_DB` to choose another database location, `ORE_LOG_MAX_EVENTS` to change the per-script event cap (default 200,000), or `ORE_AUTO_LOG=0` to disable automatic tracing for a process.
+
+The existing Experiment Workbench also creates a separate timestamped SQLite run for each component execution. See [the Workbench guide](experiment_workbench/README.md).

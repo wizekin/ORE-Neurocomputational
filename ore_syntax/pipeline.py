@@ -41,6 +41,9 @@ _add_words("ADJ", "good bad new old large small little big happy sad red blue gr
 _add_words("VERB", "be have do say go get make know think take see come want use find give tell work call try ask need feel become leave put mean keep let begin seem help talk turn start show hear play run move live believe bring happen write provide sit stand lose pay meet include continue set learn change lead understand watch follow stop create read eat drink buy build open close chase love like", 0.78)
 _add_words("NOUN", "time person year way day man woman child world life hand part eye place work week case point government company number group problem fact house water book school family question", 0.72)
 _add_words("INTJ", "oh hey hello yes yeah no wow", 0.75)
+_add_words("PROPN", "mary john alice bob london paris", 0.88)
+_add_words("NOUN", "cat cats dog dogs fish apple apples boy girl man woman child children cake book books ball teacher student scientist computer city car mouse mice", 0.78)
+_add_words("VERB", "eats ate eaten drinks drank drunk reads read writes wrote written buys bought chases chased sees saw gives gave given makes made builds built likes liked watches watched runs ran walks walked", 0.84)
 
 _AMBIGUOUS_LEXEMES = {
     "book": {"NOUN": 0.55, "VERB": 0.45},
@@ -82,6 +85,7 @@ _BINARY_RULES = (
     ("ADVP", "ADV", "ADV", 0.58),
     ("SBAR", "SCONJ", "S", 0.92),
     ("SBAR", "PRON", "S", 0.72),
+    ("S", "S", "PUNCT", 0.98),
 )
 _UNARY_RULES = (
     ("NP", "NOUN", 0.88), ("NP", "PROPN", 0.92), ("NP", "PRON", 0.96),

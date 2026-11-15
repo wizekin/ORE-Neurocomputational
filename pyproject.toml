@@ -15,8 +15,11 @@ dependencies = ["numpy>=1.24", "scipy>=1.10"]
 [project.optional-dependencies]
 dev = ["pytest>=7.4", "ruff>=0.4"]
 
+[tool.setuptools]
+py-modules = ["sitecustomize"]
+
 [tool.setuptools.packages.find]
-include = ["ore_n1*", "ore_n2*", "ore_n3*", "ore_n4*", "ore_n5*", "ore_n6*", "ore_n9*", "ore_contracts*", "ore_reading*", "ore_semantic*", "ore_lexical_context*", "ore_predictive_orthography*", "ore_lexical_access*", "ore_syntax*"]
+include = ["ore_logger*", "ore_n1*", "ore_n2*", "ore_n3*", "ore_n4*", "ore_n5*", "ore_n6*", "ore_n9*", "ore_contracts*", "ore_reading*", "ore_semantic*", "ore_lexical_context*", "ore_predictive_orthography*", "ore_lexical_access*", "ore_syntax*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

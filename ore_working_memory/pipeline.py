@@ -68,6 +68,19 @@ def _cosine_similarity(left: Mapping[str, Any], right: Mapping[str, Any]) -> flo
     return _clip(sum(x * y for x, y in zip(a, b)) / (norm_a * norm_b))
 
 
+def _surface_similarity(left: str, right: str) -> float:
+    """Estimate lexical-form overlap with character-set Jaccard similarity, not numeric cosine."""
+    a = str(left).casefold()
+    b = str(right).casefold()
+    if not a or not b:
+        return 0.0
+    if a == b:
+        return 1.0
+    set_a, set_b = set(a), set(b)
+    union = set_a | set_b
+    return len(set_a & set_b) / len(union) if union else 0.0
+
+
 def _as_mapping(value: Any) -> Mapping[str, Any]:
     """Read an upstream result as a mapping without changing the original object."""
     if isinstance(value, Mapping):
@@ -887,10 +900,8 @@ class WorkingMemoryProcessor:
         lexical_items = state["buffers"].get("lexical_semantic", [])
         for item in lexical_items:
             item["similarity_interference"] = sum(
-                _cosine_similarity(
-                    {"surface": item["normalized"]},
-                    {"surface": other["normalized"]},
-                ) * other["activation"]
+                _surface_similarity(item["normalized"], other["normalized"])
+                * other["activation"]
                 for other in lexical_items if other["position"] != item["position"]
             )
             interference[str(item["position"])] = item["similarity_interference"]

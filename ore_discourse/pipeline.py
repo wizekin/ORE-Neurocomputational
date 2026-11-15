@@ -1142,7 +1142,7 @@ class DiscourseProcessor:
         signals = [
             {"value": len(topic_distribution), "drive": float(np.clip(len(topic_distribution) / 10, 0, 1))},
             {"value": topic_continuity, "drive": topic_continuity},
-            {"value": len(progression["new_event_count"] if isinstance(progression["new_event_count"], list) else situation.get("events", [])), "drive": float(np.clip(len(situation.get("events", [])) / 5, 0, 1))},
+            {"value": len(situation.get("events", [])), "drive": float(np.clip(len(situation.get("events", [])) / 5, 0, 1))},
             {"value": relation_support, "drive": relation_support},
             {"value": len(conflicts), "drive": float(np.clip(len(conflicts) / max(1, len(propositions)), 0, 1))},
             {"value": revised, "drive": revised},

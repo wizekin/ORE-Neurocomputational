@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ORE Experiment Workbench run logs (created locally)
+ore_logs/

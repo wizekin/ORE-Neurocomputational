@@ -47,7 +47,7 @@ def test_coreference_and_common_ground_are_preserved() -> None:
     assert result.discourse_context["common_ground"]["facts"] == [
         "The room is part of the office."
     ]
-    assert result.discourse_context["prior_turn_count"] == 1
+    assert result.discourse_context["active_information"]["prior_turn_count"] == 1
 
 
 def test_sentence_integration_detects_contrast_and_causal_connectives() -> None:
@@ -97,7 +97,9 @@ def test_temporal_relations_and_duration_are_tracked() -> None:
     )
     result = DiscourseProcessor(DiscourseConfig(simulate_biology=False)).process(request)
     assert any(item["relation"] == "after" for item in result.temporal_relations)
-    assert result.coherence["timeline"] == [0, 1]
+    timeline = result.coherence["timeline"]
+    assert [item["sentence_index"] for item in timeline] == [0, 1]
+    assert timeline[0]["duration"] == {"value": 3, "unit": "minutes"}
     assert result.diagnostics["temporal_constraints_valid"] is True
 
 

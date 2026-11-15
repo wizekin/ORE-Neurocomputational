@@ -139,9 +139,21 @@ class LoggerDatabase:
         working_directory: str | None = None,
         process_id: int | None = None,
         python_version: str | None = None,
+        run_id: str | None = None,
+        started_at_utc: str | None = None,
     ) -> str:
-        run_id, started_utc, started_local, label = new_run_identity()
-        with self.connect() as connection:
+        generated_id, generated_utc, generated_local, _ = new_run_identity()
+        run_id = run_id or generated_id
+        started_utc = started_at_utc or generated_utc
+        try:
+            local_time = datetime.fromisoformat(started_utc).astimezone()
+            started_local = local_time.isoformat(timespec="milliseconds")
+            local_label = local_time.strftime("%Y-%m-%d %H:%M:%S %Z")
+        except ValueError:
+            started_local = generated_local
+            local_label = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+        label = f"{local_label} · {run_id[:8]}"
+        with self.connection() as connection:
             connection.execute(
                 """INSERT INTO runs
                    (run_id, display_label, started_at_utc, started_at_local,
@@ -168,7 +180,7 @@ class LoggerDatabase:
         annotation_source: str = "source_analysis",
         source_hash: str | None = None,
     ) -> None:
-        with self.connect() as connection:
+        with self.connection() as connection:
             connection.execute(
                 """INSERT INTO annotations
                    (symbol_id, module_name, qualified_name, symbol_kind, source_path,
@@ -202,7 +214,7 @@ class LoggerDatabase:
         self, module_name: str, qualified_name: str,
         symbol_kind: str = "function", source_path: str | None = None,
     ) -> dict[str, Any] | None:
-        with self.connect() as connection:
+        with self.connection() as connection:
             if source_path:
                 row = connection.execute(
                     """SELECT * FROM annotations
@@ -220,7 +232,7 @@ class LoggerDatabase:
         return dict(row) if row else None
 
     def get_annotation_by_id(self, symbol_id: str) -> dict[str, Any] | None:
-        with self.connect() as connection:
+        with self.connection() as connection:
             row = connection.execute(
                 "SELECT * FROM annotations WHERE symbol_id=?", (symbol_id,)
             ).fetchone()
@@ -229,7 +241,7 @@ class LoggerDatabase:
     def save_manual_annotation(self, symbol_id: str, annotation: str) -> None:
         if not annotation.strip():
             raise ValueError("Annotation cannot be empty.")
-        with self.connect() as connection:
+        with self.connection() as connection:
             cursor = connection.execute(
                 """UPDATE annotations SET annotation=?, annotation_source='manual',
                    stale=0, updated_at_utc=? WHERE symbol_id=?""",
@@ -258,7 +270,7 @@ class LoggerDatabase:
     ) -> dict[str, Any]:
         timestamp = timestamp_utc or utc_now()
         metadata_json = json.dumps(dict(metadata or {}), ensure_ascii=False, default=str)
-        with self.connect() as connection:
+        with self.connection() as connection:
             connection.execute(
                 """INSERT INTO events
                    (run_id, sequence_no, timestamp_utc, elapsed_ms, event_kind,
@@ -298,7 +310,7 @@ class LoggerDatabase:
         self, run_id: str, status: str, duration_ms: float | None = None,
         error_summary: str | None = None,
     ) -> None:
-        with self.connect() as connection:
+        with self.connection() as connection:
             connection.execute(
                 """UPDATE runs SET ended_at_utc=?, duration_ms=?, status=?,
                    error_summary=? WHERE run_id=?""",
@@ -306,7 +318,7 @@ class LoggerDatabase:
             )
 
     def list_runs(self, limit: int = 200) -> list[dict[str, Any]]:
-        with self.connect() as connection:
+        with self.connection() as connection:
             rows = connection.execute(
                 "SELECT * FROM runs ORDER BY started_at_utc DESC LIMIT ?",
                 (max(1, min(int(limit), 5000)),),
@@ -314,14 +326,14 @@ class LoggerDatabase:
         return [dict(row) for row in rows]
 
     def get_run(self, run_id: str) -> dict[str, Any] | None:
-        with self.connect() as connection:
+        with self.connection() as connection:
             row = connection.execute(
                 "SELECT * FROM runs WHERE run_id=?", (run_id,)
             ).fetchone()
         return dict(row) if row else None
 
     def list_events(self, run_id: str, limit: int = 50000) -> list[dict[str, Any]]:
-        with self.connect() as connection:
+        with self.connection() as connection:
             rows = connection.execute(
                 """SELECT e.*, a.module_name, a.qualified_name, a.symbol_kind,
                           a.annotation, a.annotation_source, a.stale,
@@ -344,7 +356,7 @@ class LoggerDatabase:
         return output
 
     def search_annotations(self, query: str = "", limit: int = 1000) -> list[dict[str, Any]]:
-        with self.connect() as connection:
+        with self.connection() as connection:
             if query.strip():
                 pattern = f"%{query.strip()}%"
                 rows = connection.execute(
@@ -362,7 +374,7 @@ class LoggerDatabase:
         return [dict(row) for row in rows]
 
     def summary(self) -> dict[str, int]:
-        with self.connect() as connection:
+        with self.connection() as connection:
             runs = connection.execute("SELECT COUNT(*) FROM runs").fetchone()[0]
             events = connection.execute("SELECT COUNT(*) FROM events").fetchone()[0]
             symbols = connection.execute("SELECT COUNT(*) FROM annotations").fetchone()[0]

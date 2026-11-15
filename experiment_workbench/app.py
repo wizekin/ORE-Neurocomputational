@@ -403,23 +403,21 @@ with right:
             log_meta = result.get("logs", {})
             if log_meta:
                 st.divider()
-                st.markdown("**Saved background log files**")
-                st.caption(f'Events written: {log_meta.get("event_count", 0)} · Log directory: {Path(log_meta.get("markdown_path", "")).parent}')
-                for key, label, mime in (
-                    ("markdown_path", "Download readable Markdown log", "text/markdown"),
-                    ("jsonl_path", "Download machine-readable JSONL log", "application/x-ndjson"),
-                ):
-                    log_path = Path(log_meta.get(key, ""))
-                    if log_path.is_file():
-                        st.download_button(
-                            label, data=log_path.read_text(encoding="utf-8"),
-                            file_name=log_path.name, mime=mime,
-                            key=f'{key}_{result.get("run_id")}',
-                        )
+                st.markdown("**Saved in the shared SQLite execution database**")
+                st.caption(
+                    f'Events stored: {log_meta.get("event_count", 0)} · '
+                    f'Run ID: {log_meta.get("run_id", result.get("run_id"))}'
+                )
+                st.code(log_meta.get("database_path", ""), language="text")
+                st.caption(
+                    "Annotation text is stored once in SQLite. Timeline events reference the matching class/function annotation by ID."
+                )
+                st.markdown("Open the searchable run history and annotation editor with:")
+                st.code("streamlit run ore_logger/viewer.py", language="powershell")
                 if log_meta.get("logger_errors"):
                     st.warning("The execution completed, but the logger reported: " + "; ".join(log_meta["logger_errors"]))
             elif result.get("logging_error"):
-                st.warning("Persistent logging could not be started: " + result["logging_error"])
+                st.warning("SQLite logging could not be started: " + result["logging_error"])
 
         with tabs[3]:
             rows = obs.get("trace_rows", [])

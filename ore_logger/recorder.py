@@ -10,6 +10,27 @@ from .catalog import sync_repository
 from .database import LoggerDatabase
 
 
+def _compact_metadata(value: Any, depth: int = 0) -> Any:
+    if depth >= 5:
+        return "..."
+    if value is None or isinstance(value, (bool, int, float)):
+        return value
+    if isinstance(value, str):
+        return value[:240]
+    if isinstance(value, Mapping):
+        return {str(key)[:80]: _compact_metadata(item, depth + 1)
+                for key, item in list(value.items())[:30]}
+    if isinstance(value, (list, tuple)):
+        items = [_compact_metadata(item, depth + 1) for item in value[:12]]
+        if len(value) > 12:
+            items.append(f"... {len(value) - 12} more value(s)")
+        return items
+    shape = getattr(value, "shape", None)
+    if shape is not None:
+        return {"array_shape": list(shape), "dtype": str(getattr(value, "dtype", "unknown"))}
+    return repr(value)[:240]
+
+
 class SQLiteRunRecorder:
     """Persist execution events as references to reusable annotation records."""
 
@@ -98,7 +119,7 @@ class SQLiteRunRecorder:
                 duration_ms=duration_ms,
                 exception_type=exception_type,
                 exception_message=exception_message,
-                metadata=metadata,
+                metadata=_compact_metadata(dict(metadata or {})),
             )
             self._event_count += 1
             symbol_data = row.get("symbol") or {}
@@ -121,7 +142,7 @@ class SQLiteRunRecorder:
                 "duration_ms": duration_ms,
                 "exception_type": exception_type,
                 "exception_message": exception_message,
-                "details": dict(metadata or {}),
+                "details": _compact_metadata(dict(metadata or {})),
             }
             if display_fields:
                 event.update(dict(display_fields))
@@ -140,8 +161,17 @@ class SQLiteRunRecorder:
         if symbol is None:
             symbol = self.database.get_annotation(module, qualname, "async_function")
         class_symbol = None
-        class_name = qualname.split(".<locals>.", 1)[0].split(".", 1)[0]
-        if "." in qualname and class_name:
+        if ".<locals>." in qualname:
+            outer, nested = qualname.split(".<locals>.", 1)
+            if "." in outer:
+                class_name = outer.split(".", 1)[0]
+            elif "." in nested:
+                class_name = nested.split(".", 1)[0]
+            else:
+                class_name = None
+        else:
+            class_name = qualname.rsplit(".", 1)[0] if "." in qualname else None
+        if class_name:
             class_symbol = self.database.get_annotation(module, class_name, "class")
         return symbol, class_symbol
 
@@ -159,7 +189,8 @@ class SQLiteRunRecorder:
         }.get(kind, annotation)
         self._emit(
             kind, symbol=symbol, class_symbol=class_symbol,
-            source_path=row.get("source_path") or row.get("file"),
+            source_path=(symbol.get("source_path") if symbol else None)
+                or row.get("source_path") or row.get("file"),
             line=row.get("line"),
             duration_ms=row.get("duration_ms"),
             exception_type=row.get("exception_type"),
@@ -169,6 +200,7 @@ class SQLiteRunRecorder:
                 "return_type": row.get("return_type"),
                 "module": row.get("module"),
                 "qualname": row.get("qualname"),
+                "active_stack": row.get("active_stack", []),
             },
             explanation=explanation,
             display_fields={"short_name": row.get("short_name")},
@@ -198,7 +230,7 @@ class SQLiteRunRecorder:
         name = str(row.get("operation", row.get("name", "unnamed_operation")))
         step = row.get("step", row.get("number"))
         status = row.get("status", "ok")
-        translated = explain = row.get("explanation")
+        explain = row.get("explanation")
         if not explain:
             explain = f"ORE is executing operation {name.replace('_', ' ')}."
         symbol = self._register_synthetic(self.component, name, "operation", explain)

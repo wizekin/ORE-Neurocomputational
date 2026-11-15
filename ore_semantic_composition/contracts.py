@@ -130,7 +130,7 @@ class SemanticCompositionConfig:
     simulate_biology: bool = True
     population_size: int = 12
     dt_ms: float = 1.0
-    steps_per_operation: int = 2
+    steps_per_operation: int = 4
     membrane_tau_ms: float = 20.0
     refractory_ms: float = 2.0
     rest_mv: float = -70.0

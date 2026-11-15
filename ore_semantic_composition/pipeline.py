@@ -11,6 +11,8 @@ from dataclasses import asdict, is_dataclass
 from difflib import SequenceMatcher
 from itertools import permutations
 from typing import Any, Iterable, Mapping, Sequence
+import hashlib
+import json
 import math
 import re
 import unicodedata
@@ -212,7 +214,7 @@ class SemanticCompositionProcessor:
                 tuple(_get(concept, "aliases", ()) or ()),
                 tuple(sorted(_feature_map(concept).items())),
             ))
-        return str(abs(hash(tuple(rows))))
+        return hashlib.sha256(json.dumps(rows, sort_keys=True, ensure_ascii=False, default=str).encode("utf-8")).hexdigest()
 
     def _syntax_payload(self, syntax_result: Any) -> dict[str, Any]:
         """Normalize an optional SyntaxResult object or mapping to a read-only dictionary."""
@@ -389,8 +391,12 @@ class SemanticCompositionProcessor:
                 })
             top = ranked[0] if ranked else None
             second = ranked[1]["probability"] if len(ranked) > 1 else 0.0
-            confidence = float(top["probability"]) if top else 0.0
-            margin = confidence - second
+            posterior_confidence = float(top["probability"]) if top else 0.0
+            confidence = (
+                posterior_confidence * float(top["lexical_similarity"])
+                if top else 0.0
+            )
+            margin = posterior_confidence - second
             selected = (
                 top if top and confidence >= self.config.confidence_threshold
                 and margin >= self.config.ambiguity_margin else None
@@ -491,7 +497,7 @@ class SemanticCompositionProcessor:
         for item in syntax.get("selected_pos", ()) or ():
             index = _get(item, "token_index", _get(item, "index"))
             if index == token_index:
-                return str(_get(item, "pos", _get(item, "label", ""))).upper() or None
+                return str(_get(item, "tag", _get(item, "pos", _get(item, "label", "")))).upper() or None
         return None
 
     def _dependency_arcs(self, syntax: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -524,7 +530,7 @@ class SemanticCompositionProcessor:
             record = word_concepts[index]
             category = record["selected_lexical_category"].casefold()
             pos = (self._pos_at(syntax, index) or "").upper()
-            if category in _PREDICATE_CATEGORIES or pos.startswith(("VB", "JJ")):
+            if category in _PREDICATE_CATEGORIES or pos in {"VERB", "AUX", "ADJ"} or pos.startswith(("VB", "JJ")):
                 label = record["selected_label"] or token
                 frame = self._frames_by_concept.get(record["selected_concept_id"]) or self._frames_by_lemma.get(_normalize(label))
                 predicates.append({
@@ -838,7 +844,15 @@ class SemanticCompositionProcessor:
             "proposition_argument_bindings": sum(len(item["arguments"]) for item in propositions),
         })
         auxiliaries = {token.casefold() for token in tokens}
-        tense = "future" if auxiliaries.intersection({"will", "shall"}) else "past" if "ed" in " ".join(tokens).casefold() else "unspecified"
+        past_hint = any(
+            token.casefold() in {"did", "was", "were", "had"}
+            or (len(token) > 3 and token.casefold().endswith("ed"))
+            for token in tokens
+        )
+        tense = (
+            "future" if auxiliaries.intersection({"will", "shall"})
+            else "past" if past_hint else "unspecified"
+        )
         voice = "passive" if any(
             "pass" in str(_get(arc, "relation", "")).lower()
             for arc in (syntax.get("dependency_arcs", ()) or ())
@@ -990,16 +1004,18 @@ class SemanticCompositionProcessor:
                 and arc["relation"] in {"det", "det:predet", "nummod"}
                 and arc["head_index"] is not None
             ]
-            head = det_dependents[0] if det_dependents else next(
+            fallback_head = next(
                 (
                     index for index in range(cue["token_index"] + 1, len(tokens))
                     if (
                         word_concepts[index]["selected_lexical_category"].casefold() in _NOUN_CATEGORIES
                         or (self._pos_at(syntax, index) or "").upper().startswith(("NN", "PRP"))
+                        or (self._pos_at(syntax, index) or "").upper() in {"NOUN", "PROPN", "PRON"}
                     )
                 ),
-                min(cue["token_index"] + 1, len(tokens) - 1),
+                None,
             )
+            head = det_dependents[0] if det_dependents else fallback_head
             domains.append({
                 **cue,
                 "domain_head_index": head if 0 <= head < len(tokens) else None,
@@ -1056,7 +1072,7 @@ class SemanticCompositionProcessor:
                 **order,
                 "formulas": reading_formulas,
                 "combined_scope_formula": " > ".join(reading_formulas) if reading_formulas else None,
-                "confidence": 1.0 if len(readings) == 0 else 1.0 / (len(readings) + 1),
+                "confidence": 1.0 / max(1, len(orders)),
                 "ambiguity_preserved": len(orders) > 1,
             })
         result = []
@@ -1404,13 +1420,13 @@ class SemanticCompositionProcessor:
         if len(tokens) > self.config.max_tokens:
             raise ValueError(f"sentence contains {len(tokens)} tokens; max_tokens={self.config.max_tokens}")
         syntax = self._syntax_payload(request.syntax_result)
+        self._diagnostics = {}
         if syntax.get("tokens") and list(syntax["tokens"]) != tokens:
-            self._diagnostics = {"syntax_alignment_warning": "syntax token sequence differs from request tokens"}
+            self._diagnostics["syntax_alignment_warning"] = "syntax token sequence differs from request tokens"
         self._sequence_id = request.sequence_id
         self._language = request.language
         self._trace: list[dict[str, Any]] = []
         self._biology_operation_states: list[dict[str, Any]] = []
-        self._diagnostics = getattr(self, "_diagnostics", {})
         self._diagnostics.setdefault("concept_constraint_warnings", [])
         self._simulator = (
             SemanticCompositionLIFSimulator(self.config)

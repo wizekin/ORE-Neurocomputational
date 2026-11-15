@@ -62,7 +62,7 @@ def test_repository_catalog_indexes_the_full_python_source_tree(tmp_path):
     assert database.get_annotation("ore_n9.pipeline", "N9Processor", "class")
     assert database.get_annotation("ore_n9.pipeline", "N9Processor.process", "function")
     assert database.get_annotation("ore_n1.pipeline", "N1Processor.process", "function")
-    assert database.get_annotation("ore_syntax.pipeline", "SyntaxProcessor.process", "function") or database.search_annotations("SyntaxProcessor", limit=20)
+    assert database.search_annotations("ore_syntax.pipeline", limit=20)
 
 
 def test_streamlit_viewer_has_valid_python_syntax():

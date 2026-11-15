@@ -20,20 +20,23 @@ def _no_biology(**overrides):
     return WorkingMemoryProcessor(WorkingMemoryConfig(**values))
 
 
-def test_registry_and_trace_cover_all_five_stages_and_thirty_operations() -> None:
+def test_registry_and_trace_cover_the_canonical_forty_operations() -> None:
     """Check stable operation ordering, stage distribution, and biological-step correspondence."""
     request = WorkingMemoryRequest(
         sequence_id="trace-001", text="The student read the sentence carefully.",
     )
     result = WorkingMemoryProcessor().process(request)
     assert len(STAGE_REGISTRY) == 5
-    assert [stage.operation_count for stage in STAGE_REGISTRY] == [6, 6, 6, 6, 6]
-    assert len(OPERATION_REGISTRY) == 30
-    assert len(result.operation_trace) == 30
+    assert [stage.operation_count for stage in STAGE_REGISTRY] == [8, 6, 7, 9, 10]
+    assert len(OPERATION_REGISTRY) == 40
+    assert len(result.operation_trace) == 40
     assert [row["operation_id"] for row in result.operation_trace] == [
-        f"WMC-{index:03d}" for index in range(1, 31)
+        f"WMCC-{index:03d}" for index in range(1, 41)
     ]
-    assert result.biological["operation_count"] == 30
+    assert [row["operation_name"] for row in result.operation_trace] == [
+        item.operation_name for item in OPERATION_REGISTRY
+    ]
+    assert result.biological["operation_count"] == 40
     assert result.biological["units"]["voltage"] == "mV"
     assert result.diagnostics["valid"] is True
 
@@ -46,7 +49,7 @@ def test_linguistic_buffers_are_separate_bounded_and_rehearsed() -> None:
     )
     result = _no_biology(buffer_capacity=3).process(request)
     assert set(result.buffers) == {
-        "phonological", "lexical", "syntactic", "semantic", "discourse",
+        "phonological", "lexical_semantic", "syntactic", "event_discourse", "executive_goal",
     }
     assert all(len(items) <= 3 for items in result.buffers.values())
     assert any(item["rehearsal_count"] > 0 for items in result.buffers.values() for item in items)
@@ -164,6 +167,8 @@ def test_task_switching_records_switch_cost_and_resumption() -> None:
     assert task["estimated_total_switch_cost_ms"] > 0.0
     assert task["interference"] >= 0.0
     assert "reading" in task["resumed_tasks"]
+    assert task["suspended_checkpoints"]
+    assert task["resumption_events"][0]["checkpoint_restored"] is True
     assert task["active_control_state"]["task"] == "memory_retrieval"
 
 
@@ -173,7 +178,7 @@ def test_serialization_and_disabled_biology_are_json_compatible() -> None:
     result = _no_biology().process(request)
     payload = result.to_dict()
     assert payload["schema"] == "ore.working_memory_cognitive_control.1.0"
-    assert len(payload["operation_trace"]) == 30
+    assert len(payload["operation_trace"]) == 40
     assert payload["biological"]["model"] == "disabled"
     assert payload["tokens"] == ["Hello", "world", "."]
 
@@ -234,6 +239,10 @@ def test_working_memory_annotations_are_stored_in_logger_sqlite_database(tmp_pat
         ("ore_working_memory.pipeline", "WorkingMemoryProcessor", "class"),
         ("ore_working_memory.pipeline", "WorkingMemoryProcessor.process", "function"),
         ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_emit_task_state", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_chunk_stored_information", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_revise_interpretations", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_evaluate_processing_completion", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_preserve_suspended_task_states", "function"),
     )
     for module, qualified_name, kind in expected:
         row = database.get_annotation(module, qualified_name, kind)
@@ -245,3 +254,132 @@ def test_working_memory_annotations_are_stored_in_logger_sqlite_database(tmp_pat
             "SELECT COUNT(*) FROM annotations WHERE module_name LIKE 'ore_working_memory.%'"
         ).fetchone()[0]
     assert stored >= 45
+
+
+
+def test_operation_registry_names_match_the_uploaded_wmcc_source_sequence() -> None:
+    """Protect the exact 40 canonical operation names and their original stage allocation."""
+    expected = [
+        "Initialize cognitive processing environment",
+        "Receive linguistic information",
+        "Encode incoming linguistic representations",
+        "Distribute representations across working-memory buffers",
+        "Organize and chunk stored information",
+        "Maintain activation",
+        "Regulate memory capacity and attention",
+        "Perform content-addressable retrieval",
+        "Detect incomplete syntactic structures",
+        "Generate grammatical expectations",
+        "Maintain unresolved dependencies",
+        "Maintain nested syntactic structures",
+        "Update incomplete structures",
+        "Maintain dependencies through working-memory updates",
+        "Maintain cognitive goals",
+        "Monitor sentence-processing progress",
+        "Detect competing processing demands",
+        "Allocate attention",
+        "Regulate competing representations",
+        "Determine interpretation acceptance",
+        "Coordinate processing subsystems",
+        "Identify semantic ambiguity",
+        "Generate alternative interpretations",
+        "Retrieve supporting semantic knowledge",
+        "Evaluate grammatical compatibility",
+        "Evaluate contextual compatibility",
+        "Calculate the overall evidence supporting each interpretation",
+        "Allow competing interpretations to interact",
+        "Select an interpretation or preserve multiple possibilities",
+        "Revise an interpretation when new information arrives",
+        "Identify the currently active cognitive task",
+        "Detect when a task switch is necessary",
+        "Preserve the current task state before switching",
+        "Activate the new cognitive task",
+        "Reduce interference from the previous task",
+        "Monitor the new task and determine when to return",
+        "Resume suspended tasks",
+        "Learn from task-switching history",
+        "Integrate the cognitive state",
+        "Evaluate whether processing is complete",
+    ]
+    assert [item.operation_name for item in OPERATION_REGISTRY] == expected
+    assert [item.operation_id for item in OPERATION_REGISTRY] == [
+        f"WMCC-{index:03d}" for index in range(1, 41)
+    ]
+
+
+def test_semantic_knowledge_compatibility_and_new_evidence_revision_are_applied() -> None:
+    """Use supplied concept support and explicit later evidence to revise a retained interpretation."""
+    request = WorkingMemoryRequest(
+        sequence_id="revision-001",
+        text="The researcher examined the sample.",
+        interpretations=[
+            {
+                "hypothesis_id": "careful", "interpretation": "careful examination",
+                "lexical_score": 0.85, "semantic_score": 0.84, "syntactic_score": 0.82,
+                "discourse_score": 0.8, "world_score": 0.8, "prior": 0.6,
+                "features": {"careful": 1.0, "analysis": 0.8},
+            },
+            {
+                "hypothesis_id": "rapid", "interpretation": "rapid examination",
+                "lexical_score": 0.35, "semantic_score": 0.3, "syntactic_score": 0.35,
+                "discourse_score": 0.35, "world_score": 0.35, "prior": 0.4,
+                "features": {"speed": 1.0},
+            },
+        ],
+        context={
+            "semantic_knowledge": {"careful": 0.8, "rapid": 0.3},
+            "revision_evidence": {
+                "rapid": {
+                    "lexical_score": 1.0, "semantic_score": 1.0,
+                    "syntactic_score": 1.0, "discourse_score": 1.0,
+                    "world_score": 1.0, "pragmatic_score": 1.0,
+                }
+            },
+        },
+    )
+    result = _no_biology(semantic_temperature=0.35).process(request)
+    assert result.semantic_resolution["revision_applied"] is True
+    assert result.semantic_resolution["selected_hypothesis_id"] == "rapid"
+    support = {
+        item["hypothesis_id"]: item
+        for item in result.operation_trace[23]["functional_output"]["support"]
+    }
+    assert support["careful"]["knowledge_score"] == 0.8
+    assert support["rapid"]["knowledge_score"] == 0.3
+
+
+def test_task_transition_learning_uses_observed_history_not_estimated_costs() -> None:
+    """Update task-transition estimates only from caller-supplied observed transition costs."""
+    request = WorkingMemoryRequest(
+        sequence_id="task-learning-001",
+        text="A sentence for task switching.",
+        task_sequence=["reading", "parsing"],
+        context={
+            "previous_task": "reading",
+            "prior_transition_costs": {"reading->parsing": 100.0},
+            "observed_transition_costs": {"reading->parsing": 200.0},
+            "task_cost_learning_rate": 0.2,
+        },
+    )
+    task = _no_biology().process(request).task_switching
+    assert task["learned_transition_costs"]["reading->parsing"] == 120.0
+    assert task["learning_source"] == "explicit_observed_history"
+
+
+def test_processing_completion_is_blocked_by_open_syntax_and_unresolved_references() -> None:
+    """Do not mark comprehension complete while required syntax or references remain open."""
+    request = WorkingMemoryRequest(
+        sequence_id="completion-open-001",
+        text="The scientist who discovered the compound",
+        partial_structures=[{
+            "structure_id": "relative-clause", "label": "relative clause",
+            "expected_slots": ["main_clause_completion"],
+        }],
+        context={"unresolved_references": ["it"]},
+    )
+    result = _no_biology().process(request)
+    assert result.diagnostics["processing_complete"] is False
+    assert result.operation_trace[-1]["operation_id"] == "WMCC-040"
+    assert result.operation_trace[-1]["functional_output"]["status"] == "partial_or_unresolved"
+
+

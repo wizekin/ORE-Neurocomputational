@@ -1,4 +1,4 @@
-"""ORE eight-stage discourse, pragmatic and situation-model subsystem."""
+"""ORE eight-stage discourse subsystem with 39 registered functional/neural-reference operations."""
 
 from .biology import POPULATIONS, DiscourseLIFSimulator
 from .contracts import DiscourseConfig, DiscourseRequest, DiscourseResult

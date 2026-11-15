@@ -13,7 +13,7 @@ from ore_discourse import (
 
 
 def test_registry_trace_and_biological_reference_are_complete() -> None:
-    """Check stable 64-operation ordering and one neural step per functional operation."""
+    """Check stable 39-operation ordering and one neural step per functional operation."""
     request = DiscourseRequest(
         sequence_id="trace-001",
         sentences=["Mira opened the door.", "Then she entered the room."],
@@ -21,12 +21,12 @@ def test_registry_trace_and_biological_reference_are_complete() -> None:
     )
     result = DiscourseProcessor(DiscourseConfig(simulate_biology=True)).process(request)
     assert len(STAGE_REGISTRY) == 8
-    assert len(OPERATION_REGISTRY) == 64
-    assert len(result.operation_trace) == 64
+    assert len(OPERATION_REGISTRY) == 39
+    assert len(result.operation_trace) == 39
     assert [row["operation_id"] for row in result.operation_trace] == [
-        f"DC-{index:03d}" for index in range(1, 65)
+        f"DC-{index:03d}" for index in range(1, 40)
     ]
-    assert result.biological["operation_count"] == 64
+    assert result.biological["operation_count"] == 39
     assert result.biological["units"]["voltage"] == "mV"
     assert result.biological["units"]["current"] == "pA"
     assert result.diagnostics["valid"] is True
@@ -139,8 +139,8 @@ def test_serialization_and_disabled_biology() -> None:
     )
     result = DiscourseProcessor(DiscourseConfig(simulate_biology=False)).process(request)
     payload = result.to_dict()
-    assert payload["schema"] == "ore.discourse.eight_stage.v1"
-    assert len(payload["operation_trace"]) == 64
+    assert payload["schema"] == "ore.discourse.eight_stage.v2"
+    assert len(payload["operation_trace"]) == 39
     assert payload["biological"]["model"] == "disabled"
 
 
@@ -152,3 +152,51 @@ def test_request_validation_rejects_empty_input() -> None:
         assert "provide sentences" in str(error)
     else:
         raise AssertionError("empty request should fail validation")
+
+
+def test_stage_registry_counts_match_the_39_operation_distribution() -> None:
+    """Check that the eight stage counts add up to exactly 39 registered operations."""
+    assert [stage.operation_count for stage in STAGE_REGISTRY] == [5, 5, 5, 5, 4, 5, 5, 5]
+    assert sum(stage.operation_count for stage in STAGE_REGISTRY) == 39
+    assert all(
+        row["functional_output"]["source_stage_outputs"]
+        for row in DiscourseProcessor(DiscourseConfig(simulate_biology=False)).process(
+            DiscourseRequest(
+                sequence_id="grouping-001",
+                sentences=["Mira arrived.", "Then she opened the door."],
+            )
+        ).operation_trace
+    )
+
+
+def test_discourse_symbols_are_annotated_in_the_logger_sqlite_catalog(tmp_path) -> None:
+    """Index discourse docstrings and verify class/function annotations are stored in SQLite."""
+    from ore_logger.catalog import sync_repository
+    from ore_logger.database import LoggerDatabase
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    database = LoggerDatabase(tmp_path / "discourse-annotations.sqlite3")
+    report = sync_repository(database, root)
+    assert report["parse_errors"] == 0
+
+    expected_symbols = (
+        ("ore_discourse.pipeline", "DiscourseProcessor", "class"),
+        ("ore_discourse.pipeline", "DiscourseProcessor.process", "function"),
+        ("ore_discourse.pipeline", "DiscourseProcessor._stage_context", "function"),
+        ("ore_discourse.biology", "DiscourseLIFSimulator", "class"),
+        ("ore_discourse.biology", "DiscourseLIFSimulator.step", "function"),
+        ("ore_discourse.registry", "OperationSpec", "class"),
+        ("ore_discourse.registry", "registry_as_dicts", "function"),
+        ("ore_discourse.contracts", "DiscourseRequest", "class"),
+    )
+    for module, qualified_name, kind in expected_symbols:
+        annotation = database.get_annotation(module, qualified_name, kind)
+        assert annotation is not None
+        assert annotation["annotation"].strip()
+
+    with database.connection() as connection:
+        stored = connection.execute(
+            "SELECT COUNT(*) FROM annotations WHERE module_name LIKE 'ore_discourse.%'"
+        ).fetchone()[0]
+    assert stored >= len(expected_symbols)

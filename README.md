@@ -490,13 +490,13 @@ The default database is created automatically at `ore_logs/ore_logger.sqlite3` t
 The existing Experiment Workbench also creates a separate timestamped SQLite run for each component execution. See [the Workbench guide](experiment_workbench/README.md).
 
 
-## ORE discourse integration — eight stages / 64 operations
+## ORE discourse integration — eight stages / 39 operations
 
 The additive `ore_discourse` package implements the eight discourse stages:
 maintaining discourse context; integrating consecutive sentence propositions;
 inferring speaker intention; interpreting indirect requests; evaluating irony;
 constructing situation models; tracking temporal discourse relations; and
-maintaining topic/narrative coherence. It exposes a stable `DC-001`–`DC-064`
+maintaining topic/narrative coherence. It exposes a stable `DC-001`–`DC-039`
 operation registry, mathematical sketches, stage outputs and a complete trace.
 
 The functional track keeps caller-provided entities, common ground, beliefs,
@@ -533,7 +533,7 @@ result = DiscourseProcessor().process(request)
 print(result.coherence["score"])
 print(result.indirect_requests)
 print(result.irony)
-print(len(result.operation_trace))  # 64
+print(len(result.operation_trace))  # 39
 ```
 
 Use the new ORE N7 adapter inside the existing N9 controller:
@@ -556,4 +556,4 @@ python -m pytest
 ```
 
 See [docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md](docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md)
-for all 64 operations, equations, interfaces and scientific limitations.
+for all 39 registered operations, equations, interfaces and scientific limitations.

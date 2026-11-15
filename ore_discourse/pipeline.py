@@ -253,7 +253,7 @@ def _op_signal(record: Mapping[str, Any]) -> float:
 
 
 class DiscourseProcessor:
-    """Run the eight-stage, 64-operation discourse and pragmatic integration model.
+    """Run the eight-stage, 39-operation discourse and pragmatic integration model.
 
     The deterministic functional track maintains explicit evidence channels. An
     optional coupled LIF reference is advanced in registry order and reported
@@ -269,7 +269,7 @@ class DiscourseProcessor:
         request: DiscourseRequest,
         on_operation: Callable[[dict[str, Any]], None] | None = None,
     ) -> DiscourseResult:
-        """Execute all 64 operations and return context, intent, event, time and coherence tracks."""
+        """Execute all 39 registered operations and return integrated discourse tracks."""
         if not isinstance(request, DiscourseRequest):
             raise TypeError("request must be a DiscourseRequest")
         sentences = _sentence_texts(request)
@@ -314,11 +314,30 @@ class DiscourseProcessor:
 
         simulator = DiscourseLIFSimulator(self.config) if self.config.simulate_biology else None
         trace: list[dict[str, Any]] = []
-        for index, operation in enumerate(OPERATION_REGISTRY):
-            """Record each completed operation and advance its matching neural-reference population."""
+        for operation in OPERATION_REGISTRY:
+            """Record one consolidated operation and advance its matching neural-reference population."""
             stage_index = int(operation.stage_id[1:]) - 1
-            op_index = index % 8
-            functional_output = dict(stage_outputs[stage_index][op_index])
+            source_rows = [
+                dict(stage_outputs[stage_index][source_index - 1])
+                for source_index in operation.source_output_indices
+            ]
+            source_drives = [_op_signal(item) for item in source_rows]
+            functional_output = {
+                "source_stage_outputs": [
+                    {
+                        "source_output_index": source_index,
+                        "value": _json_value(source_row.get("value")),
+                        "drive": _op_signal(source_row),
+                    }
+                    for source_index, source_row in zip(
+                        operation.source_output_indices, source_rows
+                    )
+                ],
+                "value": [
+                    _json_value(item.get("value")) for item in source_rows
+                ],
+                "drive": float(np.mean(source_drives)) if source_drives else 0.0,
+            }
             signal = _op_signal(functional_output)
             neural = (
                 simulator.step(operation.operation_id, operation.stage_id, signal)
@@ -345,9 +364,9 @@ class DiscourseProcessor:
         }
         coherence["timeline"] = timeline
         diagnostics = {
-            "valid": len(trace) == 64 and len({row["operation_id"] for row in trace}) == 64,
+            "valid": len(trace) == len(OPERATION_REGISTRY) and len({row["operation_id"] for row in trace}) == len(OPERATION_REGISTRY),
             "operation_count": len(trace),
-            "expected_operation_count": 64,
+            "expected_operation_count": len(OPERATION_REGISTRY),
             "stage_count": 8,
             "sentence_count": len(sentences),
             "entity_count": len(entities),
@@ -363,10 +382,10 @@ class DiscourseProcessor:
             ),
         }
         metadata = {
-            "schema": "ore.discourse.eight_stage.v1",
+            "schema": "ore.discourse.eight_stage.v2",
             "language": request.language,
             "source_reference": request.source_reference,
-            "operation_registry": "ORE-DISCOURSE-64",
+            "operation_registry": "ORE-DISCOURSE-39",
             "configuration": self.config.to_dict(),
             "inference_is_read_only": True,
             "caller_facts_separated_from_heuristics": True,

@@ -172,7 +172,7 @@ class DiscourseResult:
             return repr(value)
 
         return clean({
-            "schema": "ore.discourse.eight_stage.v1",
+            "schema": "ore.discourse.eight_stage.v2",
             "sequence_id": self.sequence_id,
             "sentences": self.sentences,
             "propositions": self.propositions,

@@ -1,8 +1,8 @@
-# ORE discourse integration — eight stages / 64 operations
+# ORE discourse integration — eight stages / 39 operations
 
 **Package:** `ore_discourse/`  
-**Registry:** `ORE-DISCOURSE-64`  
-**Version:** 1.0.0  
+**Registry:** `ORE-DISCOURSE-39`  
+**Version:** 2.0.0  
 **Status:** Executable functional prototype with an optional coupled LIF population reference.  
 **N9 slot:** Implements the existing N7 `predict(payload)` extension contract.
 
@@ -27,23 +27,30 @@ baseline, not a general language-understanding system. There is no learned
 world-knowledge database, unrestricted theory-of-mind capability, full
 prosodic signal analyzer, or validated human-brain simulation.
 
-## 2. The eight stages and all 64 operations
+## 2. The eight stages and all 39 registered operations
 
-The stable operation IDs are `DC-001` through `DC-064`. The source of truth
-for each operation's full functional responsibility, mathematical sketch and
-biological-reference interpretation is `ore_discourse/registry.py`. Every
-functional request returns exactly 64 trace rows in registry order.
+The stable operation IDs are `DC-001` through `DC-039`. The source of truth
+for each operation's functional responsibility, mathematical sketch, biological
+reference and mapping to the detailed stage outputs is `ore_discourse/registry.py`.
+Every request returns exactly 39 trace rows in registry order. Some registered
+operations intentionally bundle closely related lower-level calculations;
+their individual output values remain visible in each trace row under
+`functional_output.source_stage_outputs`.
 
-| Stage | Operations | Functional operations | Main representation |
+| Stage | Operations | Registered functional operations | Main representation |
 |---|---:|---|---|
-| S1 — Maintain discourse context | DC-001–008 | Initialize discourse state; retrieve prior-turn memory; extract entity mentions; resolve entity references; update entity salience; integrate common ground; track given/new information; apply working-memory decay | Active entity and discourse-memory state |
-| S2 — Integrate consecutive sentences | DC-009–016 | Extract sentence propositions; link adjacent propositions; detect discourse connectives; score semantic continuity; infer coherence relations; generate bridging inferences; build proposition graph; estimate inferential compatibility | Proposition graph with typed links |
-| S3 — Identify speaker intention | DC-017–024 | Initialize speaker belief state; infer communicative act; estimate speaker goals; infer mental-state cues; compare speaker model with common ground; estimate epistemic commitment; rank speaker intentions; preserve intent alternatives | Ranked communicative-act and goal hypotheses |
-| S4 — Understand indirect requests | DC-025–032 | Derive literal utterance meaning; detect indirect-request constructions; map utterance to intended action; integrate listener/scene context; estimate politeness and indirectness; discriminate question from request; score intended-action confidence; preserve literal/intended distinction | Separate literal interpretation and action hypothesis |
-| S5 — Interpret irony | DC-033–040 | Detect lexical polarity; retrieve contextual outcome; measure semantic valence mismatch; integrate prosodic evidence; evaluate pragmatic incongruity; estimate irony versus literal reading; distinguish irony/sarcasm cues; preserve evidence and uncertainty | Literal and ironic alternatives with cue scores |
-| S6 — Construct situation models | DC-041–048 | Instantiate participants; extract event predicates; assign participant roles; track entity states; infer goal/motivation hypotheses; add causal event structure; build situation event graph; validate situation consistency | People, events, participants, states, goals and causal graph |
-| S7 — Track temporal discourse relations | DC-049–056 | Extract temporal expressions; infer event ordering; estimate duration/intervals; detect overlap/containment; resolve temporal connectives; detect time shifts/anchors; normalize timeline; validate temporal constraints | Event intervals, order links and validation |
-| S8 — Maintain topic and narrative coherence | DC-057–064 | Aggregate topic features; estimate topic continuity; track narrative progression; integrate temporal/causal structure; detect explicit contradictions; compute global narrative coherence; revise bounded discourse state; generate coherent state summary | Global topic, progression, consistency and summary |
+| S1 — Maintain discourse context | DC-001–005 | Initialize context/retrieve memory; extract mentions/resolve references; update salience; integrate common ground and given/new status; apply working-memory decay | Active entity and discourse-memory state |
+| S2 — Integrate consecutive sentences | DC-006–010 | Extract/link propositions; detect connectives; score semantic continuity; infer coherence/bridging; build proposition graph/check compatibility | Proposition graph with typed links |
+| S3 — Identify speaker intention | DC-011–015 | Initialize beliefs/infer communicative act; estimate goals; infer mental-state cues; compare common ground/epistemic commitment; rank intentions/preserve alternatives | Ranked communicative-act and goal hypotheses |
+| S4 — Understand indirect requests | DC-016–020 | Preserve literal meaning/detect indirect forms; map intended action; integrate listener/scene context; estimate politeness/distinguish question/request; score action/preserve literal distinction | Separate literal interpretation and action hypothesis |
+| S5 — Interpret irony | DC-021–024 | Detect polarity/retrieve outcome; measure valence mismatch; integrate prosody/evaluate incongruity; rank irony/sarcasm alternatives and uncertainty | Literal and ironic alternatives with cue scores |
+| S6 — Construct situation models | DC-025–029 | Instantiate participants/extract events; assign roles; track entity states; infer goals/causal links; build/validate situation graph | People, events, participants, states, goals and causal graph |
+| S7 — Track temporal discourse relations | DC-030–034 | Extract time cues/order events; estimate intervals; detect overlap/containment; resolve connectives/time shifts; normalize timeline/validate constraints | Event intervals, order links and validation |
+| S8 — Maintain topic and narrative coherence | DC-035–039 | Aggregate topic features; estimate topic continuity; track narrative progression; integrate temporal/causal structure/detect contradictions; revise global state/compute coherence/produce summary | Global topic, progression, consistency and summary |
+
+The stage implementations retain the finer calculations described below. The
+39-operation registry is the stable public execution contract; its biological
+reference advances once per registered operation.
 
 ### Stage 1 — Discourse context
 
@@ -223,7 +230,7 @@ conflicts; it is not an unconstrained generative summary.
 ## 3. Biological-reference track
 
 When `DiscourseConfig(simulate_biology=True)`, the simulator advances a
-coupled population reference once for every operation (64 steps). The
+coupled population reference once for every registered operation (39 steps). The
 populations are:
 
 - `discourse_memory`
@@ -249,7 +256,7 @@ coupling. The result reports membrane voltage (mV), current (pA), time (ms),
 spikes and firing rate (Hz). Population routing is a declared hypothesis for
 software experiments. It is not a fitted cortical network, cellular model,
 proof of anatomical localization, or evidence that the brain literally
-executes the 64 software operations.
+executes the 39 registered computational operations.
 
 Disable this reference with:
 
@@ -274,7 +281,7 @@ result = DiscourseProcessor().process(request)
 print(result.discourse_context["coreference"])
 print(result.temporal_relations)
 print(result.coherence["score"])
-print(len(result.operation_trace))  # 64
+print(len(result.operation_trace))  # 39
 ```
 
 N9 already accepts an object exposing `predict(payload)` in its `n7`
@@ -320,7 +327,7 @@ python -m pytest tests/test_discourse.py -q
 python -m pytest
 ```
 
-Included software tests cover registry order/count, one biological operation
+Included software tests cover registry order/count, one biological update
 per trace row, entity/coreference preservation, common ground, connective
 integration, indirect-request separation, contextual/prosodic irony cues,
 temporal ordering/duration, N9 adapter fields, JSON serialization and input

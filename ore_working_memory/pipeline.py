@@ -289,11 +289,19 @@ class WorkingMemoryProcessor:
     ) -> None:
         """Create surface- or caller-defined chunks while preserving references to their source tokens."""
         supplied = request.context.get("chunks", ())
+        if isinstance(supplied, Mapping):
+            supplied = [supplied]
         chunks: list[dict[str, Any]] = []
         if supplied:
             for index, raw in enumerate(supplied):
                 item = dict(raw) if isinstance(raw, Mapping) else {"token_positions": list(raw)}
-                positions = [int(value) for value in item.get("token_positions", ()) if 0 <= int(value) < len(state["tokens"])]
+                raw_positions = item.get("token_positions", ())
+            if isinstance(raw_positions, (str, int)):
+                raw_positions = [raw_positions]
+            positions = [
+                int(value) for value in raw_positions
+                if str(value).lstrip("-").isdigit() and 0 <= int(value) < len(state["tokens"])
+            ]
                 if not positions and item.get("text"):
                     wanted = str(item["text"]).casefold()
                     positions = [record["index"] for record in state["token_records"]
@@ -473,8 +481,12 @@ class WorkingMemoryProcessor:
                     explicit = _clip(float(keyed))
                 evidence_source = "context.semantic_knowledge"
             if explicit is None and isinstance(knowledge, Mapping) and knowledge:
-                explicit = _cosine_similarity(candidate.get("features", {}), knowledge)
-                evidence_source = "context.semantic_knowledge_features"
+                feature_map = knowledge.get("features", knowledge)
+                if isinstance(feature_map, Mapping) and all(
+                    isinstance(value, (int, float)) for value in feature_map.values()
+                ):
+                    explicit = _cosine_similarity(candidate.get("features", {}), feature_map)
+                    evidence_source = "context.semantic_knowledge_features"
             if explicit is not None:
                 candidate["world_score"] = _clip(float(explicit))
                 candidate["knowledge_score"] = candidate["world_score"]
@@ -824,7 +836,6 @@ class WorkingMemoryProcessor:
                     buffers["syntactic"].append(dict(base))
                 if normalized not in _STOPWORDS:
                     buffers["event_discourse"].append(dict(base))
-                    buffers["event_discourse"].append(dict(base))
             else:
                 buffers["phonological"].append(dict(base))
                 buffers["syntactic"].append(dict(base))
@@ -894,8 +905,15 @@ class WorkingMemoryProcessor:
         for name, items in state["buffers"].items():
             ranked = sorted(items, key=lambda item: (item["activation"], item["position"]), reverse=True)
             retained = ranked[:self.config.buffer_capacity]
-            kept_positions = {item["position"] for item in retained}
-            evicted[name] = [dict(item) for item in items if item["position"] not in kept_positions]
+            retained_keys = {
+                (item.get("position"), item.get("normalized"), item.get("representation_type"))
+                for item in retained
+            }
+            evicted[name] = [
+                dict(item) for item in items
+                if (item.get("position"), item.get("normalized"), item.get("representation_type"))
+                not in retained_keys
+            ]
             state["buffers"][name] = sorted(retained, key=lambda item: item["position"])
         state["evicted_items"] = evicted
         total_evicted = sum(len(items) for items in evicted.values())
@@ -1491,7 +1509,8 @@ class WorkingMemoryProcessor:
         state["resolution"].update({
             "alternatives": alternatives, "candidate_count": len(alternatives),
             "evidence_channels": [
-                "lexical", "semantic", "syntactic", "discourse", "world", "goal_bias",
+                "lexical", "semantic", "grammatical", "contextual",
+                "world_knowledge", "pragmatic", "prior", "goal_bias",
             ],
             "competition_iterations": state["control"].get("competition_iterations", 0),
             "competition_converged": state["control"].get("competition_converged", True),
@@ -1610,7 +1629,7 @@ class WorkingMemoryProcessor:
         ]
         self._record(state, "WMCC-035", {
             "interference": state["task"]["interference"],
-            "suspended_tasks": suspended, "resumed_tasks": state["task"]["resumed_tasks"],
+            "suspended_tasks": suspended, "resumed_tasks": state["task"].get("resumed_tasks", []),
         }, state["task"]["interference"])
 
     def _op_emit_task_state(self, state: dict[str, Any], request: WorkingMemoryRequest) -> None:

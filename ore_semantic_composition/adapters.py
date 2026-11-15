@@ -41,6 +41,8 @@ def composition_request_from_results(
         for index, row in enumerate(semantic.get("tokens", ()) or ()):
             ids: list[str] = []
             selected = row.get("selected_concept_id") or row.get("selected_concept")
+            if isinstance(selected, Mapping):
+                selected = selected.get("concept_id")
             if isinstance(selected, str) and selected:
                 ids.append(selected)
             for candidate in row.get("candidates", ()) or ():

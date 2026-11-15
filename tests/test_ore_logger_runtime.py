@@ -46,3 +46,28 @@ def test_runtime_session_records_calls_and_returns_for_script_symbols(tmp_path):
     assert any(event["event_kind"] == "call" for event in probe_events)
     assert any(event["event_kind"] == "return" for event in probe_events)
     assert all(event.get("annotation") for event in probe_events)
+
+
+
+def test_repository_catalog_indexes_the_full_python_source_tree(tmp_path):
+    from ore_logger.catalog import sync_repository
+
+    root = Path(__file__).resolve().parents[1]
+    database = LoggerDatabase(tmp_path / "full-catalog.sqlite3")
+    report = sync_repository(database, root)
+
+    assert report["files_seen"] >= 100
+    assert report["files_indexed"] >= 100
+    assert report["parse_errors"] == 0
+    assert database.get_annotation("ore_n9.pipeline", "N9Processor", "class")
+    assert database.get_annotation("ore_n9.pipeline", "N9Processor.process", "function")
+    assert database.get_annotation("ore_n1.pipeline", "N1Processor.process", "function")
+    assert database.get_annotation("ore_syntax.pipeline", "SyntaxProcessor.process", "function") or database.search_annotations("SyntaxProcessor", limit=20)
+
+
+def test_streamlit_viewer_has_valid_python_syntax():
+    import ast
+
+    root = Path(__file__).resolve().parents[1]
+    viewer = root / "ore_logger" / "viewer.py"
+    ast.parse(viewer.read_text(encoding="utf-8"), filename=str(viewer))

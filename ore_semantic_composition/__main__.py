@@ -13,6 +13,7 @@ from .contracts import (
     SemanticCompositionConfig,
     SemanticCompositionRequest,
 )
+from .registry import STAGE_REGISTRY
 from .pipeline import SemanticCompositionProcessor
 
 
@@ -90,7 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(json.dumps({
         "sequence_id": result.sequence_id,
         "operation_count": len(result.operation_trace),
-        "stages": len(result.metadata["configuration"]) > 0 and 9,
+        "stages": len(STAGE_REGISTRY),
         "propositions": len(result.propositions),
         "valid": result.diagnostics["valid"],
         "output": str(args.output) if args.output else None,

@@ -599,3 +599,37 @@ Quick start:
 Run python -m ore_working_memory for the demonstration, python -m pytest tests/test_working_memory.py -q for focused tests, and python -m pytest for the complete suite. See docs/WORKING_MEMORY_COGNITIVE_CONTROL_ARCHITECTURE.md for the complete 40-operation registry, equations, biological-reference descriptions, API details, logger integration, and limitations.
 
 The ORE logger indexes every new class/function docstring in its SQLite annotation catalogue when an ORE Python entry point is launched with automatic logging enabled; the default local database is ore_logs/ore_logger.sqlite3.
+
+## Master Biological Neurocomputational ORE — BNBEA
+
+The additive ore_bnbea package implements the nine-stage biological/functional master sequence. It composes the existing N1–N9 functional pipeline with a separate conductance-based LIF network, recurrent excitatory/inhibitory projections, bounded Hebbian/STDP-style plasticity, two-timescale associative memory, Bayesian contextual prediction, and optional EEG/MEG/fMRI/behavioral validation.
+
+The detailed per-stage lists produce **139 master operations** (11/12/12/14/13/16/18/19/24). Each operation has a stable ID and a SQLite annotation. N9's existing 120-operation trace is preserved separately.
+
+Quick start:
+
+    from ore_bnbea import BNBEAConfig, BNBEAProcessor, BNBEARequest
+    from ore_n9 import N9Patch, N9Request
+
+    request = N9Request(
+        sequence_id="reading-001",
+        patches=[
+            N9Patch("p0", grapheme_probabilities={"a": 0.9, "o": 0.1}),
+            N9Patch("p1", grapheme_probabilities={"b": 0.8, "d": 0.2}),
+        ],
+        script_profile={"script": "Latin"},
+    )
+    result = BNBEAProcessor(
+        config=BNBEAConfig(simulation_steps=24, neurons_per_population=12)
+    ).process(BNBEARequest(n9_request=request))
+    print(len(result.operation_trace))  # 139
+
+The default logger database remains ore_logs/ore_logger.sqlite3. BNBEA indexes every repository Python class/function/method docstring and writes all detailed stage-operation annotations and execution events to the same SQLite database.
+
+Install and test with:
+
+    python -m pip install -e ".[dev]"
+    python -m pytest tests/test_bnbea.py -q
+    python -m pytest
+
+See docs/BNBEA_IMPLEMENTATION.md for the equations, stage boundaries, operation registry, API, logger contract, and scientific limitations. Software tests validate code behavior; they do not establish biological equivalence. Stage 8 remains not_tested until real independent brain/behavior datasets are supplied.

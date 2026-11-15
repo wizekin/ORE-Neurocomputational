@@ -77,6 +77,8 @@ class WorkingMemoryRequest:
             for field_name in (
                 "prior", "lexical_score", "semantic_score", "syntactic_score",
                 "discourse_score", "world_score", "goal_compatibility",
+                "pragmatic_score", "knowledge_score", "grammar_compatibility",
+                "contextual_compatibility",
             ):
                 if field_name in candidate:
                     value = float(candidate[field_name])

@@ -1,4 +1,4 @@
-"""Thirty-operation working-memory and cognitive-control processing pipeline.
+"""Canonical 40-operation working-memory and cognitive-control processing pipeline.
 
 The functional track uses bounded data structures, cue-based retrieval, explicit ambiguity, and
 conservative slot binding. A separate optional LIF reference advances once per registered operation.

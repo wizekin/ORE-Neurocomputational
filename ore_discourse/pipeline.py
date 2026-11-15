@@ -1192,6 +1192,14 @@ class DiscourseN7Adapter:
                 {"sentence_index": index, "text": sentence}
                 for index, sentence in enumerate(sentence_texts)
             ]
+        if not sentence_texts and not propositions:
+            return {
+                "intents": [], "predictions": {}, "situation_model": {},
+                "coherence": 0.0, "uncertainty": 1.0, "temporal_links": [],
+                "causal_links": [], "proposition_compatibility": [],
+                "knowledge_conflicts": [], "indirect_requests": [], "irony": [],
+                "diagnostics": {"status": "no_discourse_evidence"},
+            }
         request = DiscourseRequest(
             sequence_id=str(discourse_context.get("sequence_id", "n9-discourse")),
             sentences=sentence_texts or None,

@@ -1,0 +1,247 @@
+"""Software-contract tests for ORE's working-memory and cognitive-control subsystem."""
+
+from __future__ import annotations
+
+import ast
+from pathlib import Path
+
+from ore_logger.catalog import sync_repository
+from ore_logger.database import LoggerDatabase
+from ore_working_memory import (
+    OPERATION_REGISTRY, STAGE_REGISTRY, WorkingMemoryConfig,
+    WorkingMemoryProcessor, WorkingMemoryRequest,
+)
+
+
+def _no_biology(**overrides):
+    """Build a deterministic processor without the optional neural-reference simulation."""
+    values = {"simulate_biology": False}
+    values.update(overrides)
+    return WorkingMemoryProcessor(WorkingMemoryConfig(**values))
+
+
+def test_registry_and_trace_cover_all_five_stages_and_thirty_operations() -> None:
+    """Check stable operation ordering, stage distribution, and biological-step correspondence."""
+    request = WorkingMemoryRequest(
+        sequence_id="trace-001", text="The student read the sentence carefully.",
+    )
+    result = WorkingMemoryProcessor().process(request)
+    assert len(STAGE_REGISTRY) == 5
+    assert [stage.operation_count for stage in STAGE_REGISTRY] == [6, 6, 6, 6, 6]
+    assert len(OPERATION_REGISTRY) == 30
+    assert len(result.operation_trace) == 30
+    assert [row["operation_id"] for row in result.operation_trace] == [
+        f"WMC-{index:03d}" for index in range(1, 31)
+    ]
+    assert result.biological["operation_count"] == 30
+    assert result.biological["units"]["voltage"] == "mV"
+    assert result.diagnostics["valid"] is True
+
+
+def test_linguistic_buffers_are_separate_bounded_and_rehearsed() -> None:
+    """Verify modality-specific buffers, capacity limits, activation values, and rehearsal traces."""
+    request = WorkingMemoryRequest(
+        sequence_id="buffers-001",
+        text="The small researcher carefully examined the complicated sentence structure.",
+    )
+    result = _no_biology(buffer_capacity=3).process(request)
+    assert set(result.buffers) == {
+        "phonological", "lexical", "syntactic", "semantic", "discourse",
+    }
+    assert all(len(items) <= 3 for items in result.buffers.values())
+    assert any(item["rehearsal_count"] > 0 for items in result.buffers.values() for item in items)
+    assert all(
+        0.0 <= item["activation"] <= 1.0
+        for items in result.buffers.values() for item in items
+    )
+
+
+def test_incomplete_syntactic_slots_are_maintained_and_only_explicit_evidence_binds() -> None:
+    """Preserve an unresolved relative-clause slot unless a matching explicit binding is supplied."""
+    open_request = WorkingMemoryRequest(
+        sequence_id="syntax-open-001",
+        text="The book that the student borrowed",
+        partial_structures=[{
+            "structure_id": "relative-1", "label": "relative clause",
+            "expected_slots": ["object"],
+        }],
+    )
+    open_result = _no_biology().process(open_request)
+    assert open_result.incomplete_structures["unresolved_slot_count"] == 1
+    assert open_result.incomplete_structures["complete"] is False
+
+    bound_request = WorkingMemoryRequest(
+        sequence_id="syntax-bound-001",
+        text="The book that the student borrowed",
+        partial_structures=[{
+            "structure_id": "relative-1", "label": "relative clause",
+            "expected_slots": ["object"],
+            "candidate_bindings": [{
+                "slot": "object", "value": "the book", "confidence": 0.95,
+            }],
+        }],
+    )
+    bound_result = _no_biology().process(bound_request)
+    assert bound_result.incomplete_structures["unresolved_slot_count"] == 0
+    assert bound_result.incomplete_structures["complete"] is True
+
+
+def test_unresolved_long_distance_dependency_is_preserved() -> None:
+    """Retain an upstream unresolved filler-gap dependency without inventing its gap site."""
+    request = WorkingMemoryRequest(
+        sequence_id="dependency-001",
+        text="Which article did the editor say that the author revised",
+        syntax_result={
+            "long_distance_dependencies": [{
+                "dependency_id": "wh-1", "filler": "Which article",
+                "expected_role": "object", "unresolved": True,
+            }]
+        },
+    )
+    result = _no_biology().process(request)
+    assert result.incomplete_structures["pending_dependencies"][0]["dependency_id"] == "wh-1"
+    assert result.incomplete_structures["complete"] is False
+
+
+def test_semantic_competition_preserves_alternatives_and_abstains_when_ambiguous() -> None:
+    """Keep two close readings visible and abstain instead of forcing an unsupported decision."""
+    request = WorkingMemoryRequest(
+        sequence_id="ambiguity-001", text="I saw her duck.",
+        interpretations=[
+            {
+                "hypothesis_id": "duck-bird", "interpretation": "I saw the duck belonging to her",
+                "lexical_score": 0.78, "semantic_score": 0.77, "syntactic_score": 0.76,
+                "discourse_score": 0.55, "world_score": 0.65, "prior": 0.5,
+            },
+            {
+                "hypothesis_id": "duck-action", "interpretation": "I saw her lower her head",
+                "lexical_score": 0.77, "semantic_score": 0.78, "syntactic_score": 0.76,
+                "discourse_score": 0.55, "world_score": 0.65, "prior": 0.5,
+            },
+        ],
+    )
+    result = _no_biology(
+        semantic_temperature=0.9, confidence_threshold=0.8, ambiguity_margin=0.2,
+    ).process(request)
+    assert result.semantic_resolution["abstained"] is True
+    assert result.semantic_resolution["selected"] is None
+    assert len(result.semantic_resolution["alternatives"]) == 2
+    assert abs(sum(item["posterior"] for item in result.semantic_resolution["alternatives"]) - 1.0) < 1e-8
+
+
+def test_executive_control_retains_goal_bias_separately_from_evidence() -> None:
+    """Verify explicit goals influence focus without overwriting source evidence scores."""
+    request = WorkingMemoryRequest(
+        sequence_id="control-001", text="The scientist examined the sample.",
+        goals={"priority": 0.9, "features": {"careful": 1.0, "analysis": 0.8}},
+        interpretations=[
+            {
+                "hypothesis_id": "h1", "interpretation": "careful analysis",
+                "features": {"careful": 1.0, "analysis": 0.9}, "semantic_score": 0.6,
+            },
+            {
+                "hypothesis_id": "h2", "interpretation": "rapid completion",
+                "features": {"speed": 1.0}, "semantic_score": 0.8,
+            },
+        ],
+    )
+    result = _no_biology().process(request)
+    assert result.executive_control["control_demand"] > 0.0
+    assert result.executive_control["focus_hypothesis_id"] == "h1"
+    assert "goal_bias" in result.semantic_resolution["evidence_channels"]
+
+
+def test_task_switching_records_switch_cost_and_resumption() -> None:
+    """Detect task changes and report explicit cost, interference, and resumed task state."""
+    request = WorkingMemoryRequest(
+        sequence_id="switch-001", text="The sentence remains available.",
+        task_sequence=["reading", "parsing", "reading", "memory_retrieval"],
+        context={"previous_task": "reading", "task_cue_strength": 0.5},
+    )
+    result = _no_biology().process(request)
+    task = result.task_switching
+    assert task["switch_count"] == 3
+    assert task["estimated_total_switch_cost_ms"] > 0.0
+    assert task["interference"] >= 0.0
+    assert "reading" in task["resumed_tasks"]
+    assert task["active_control_state"]["task"] == "memory_retrieval"
+
+
+def test_serialization_and_disabled_biology_are_json_compatible() -> None:
+    """Serialize the complete result while making neural-reference disablement explicit."""
+    request = WorkingMemoryRequest(sequence_id="json-001", tokens=["Hello", "world", "."])
+    result = _no_biology().process(request)
+    payload = result.to_dict()
+    assert payload["schema"] == "ore.working_memory_cognitive_control.1.0"
+    assert len(payload["operation_trace"]) == 30
+    assert payload["biological"]["model"] == "disabled"
+    assert payload["tokens"] == ["Hello", "world", "."]
+
+
+def test_request_and_configuration_validation_reject_invalid_inputs() -> None:
+    """Reject missing text/tokens, invalid candidate probabilities, and non-positive limits."""
+    try:
+        WorkingMemoryRequest(sequence_id="invalid-001")
+    except ValueError as error:
+        assert "exactly one" in str(error)
+    else:
+        raise AssertionError("missing sentence input should fail")
+
+    try:
+        WorkingMemoryRequest(
+            sequence_id="invalid-002", text="A sentence",
+            interpretations=[{"semantic_score": 1.5}],
+        )
+    except ValueError as error:
+        assert "semantic_score" in str(error)
+    else:
+        raise AssertionError("out-of-range evidence should fail")
+
+    try:
+        WorkingMemoryConfig(buffer_capacity=0)
+    except ValueError as error:
+        assert "limits must be positive" in str(error)
+    else:
+        raise AssertionError("zero buffer capacity should fail")
+
+
+def test_every_working_memory_class_and_function_has_a_docstring() -> None:
+    """Check every source class and function has a plain-English annotation for the SQLite catalog."""
+    package_root = Path(__file__).resolve().parents[1] / "ore_working_memory"
+    for source_path in package_root.glob("*.py"):
+        tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+                assert ast.get_docstring(node), (
+                    f"missing annotation docstring: {source_path.name}:{node.name}"
+                )
+
+
+def test_working_memory_annotations_are_stored_in_logger_sqlite_database(tmp_path) -> None:
+    """Index the repository and verify class/method annotations are persisted in the annotations table."""
+    root = Path(__file__).resolve().parents[1]
+    database = LoggerDatabase(tmp_path / "working-memory-annotations.sqlite3")
+    report = sync_repository(database, root)
+    assert report["parse_errors"] == 0
+    expected = (
+        ("ore_working_memory.contracts", "WorkingMemoryRequest", "class"),
+        ("ore_working_memory.contracts", "WorkingMemoryRequest.__post_init__", "function"),
+        ("ore_working_memory.contracts", "WorkingMemoryConfig", "class"),
+        ("ore_working_memory.biology", "WorkingMemoryLIFSimulator", "class"),
+        ("ore_working_memory.biology", "WorkingMemoryLIFSimulator.step", "function"),
+        ("ore_working_memory.registry", "OperationSpec", "class"),
+        ("ore_working_memory.registry", "registry_as_dicts", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor", "class"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor.process", "function"),
+        ("ore_working_memory.pipeline", "WorkingMemoryProcessor._op_emit_task_state", "function"),
+    )
+    for module, qualified_name, kind in expected:
+        row = database.get_annotation(module, qualified_name, kind)
+        assert row is not None
+        assert row["annotation"].strip()
+        assert row["annotation_source"] == "docstring"
+    with database.connection() as connection:
+        stored = connection.execute(
+            "SELECT COUNT(*) FROM annotations WHERE module_name LIKE 'ore_working_memory.%'"
+        ).fetchone()[0]
+    assert stored >= 45

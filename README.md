@@ -568,3 +568,34 @@ python -m pytest
 
 See [docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md](docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md)
 for all 39 registered operations, equations, interfaces and scientific limitations.
+
+
+## ORE working memory and cognitive control — five stages / 30 operations
+
+The additive ore_working_memory package implements linguistic working-memory buffers, maintenance of incomplete syntactic structures, executive control over sentence interpretations, competing semantic interpretation resolution, and cognitive task switching. Its stable operation registry runs WMC-001 through WMC-030 (six operations per stage) and returns functional outputs, equations, biological-reference notes, and a full operation trace.
+
+The functional implementation preserves modality-specific buffers, unresolved syntactic slots, alternative interpretations, and task-state transitions. It applies bounded activation decay and rehearsal, explicit-evidence slot binding, goal-sensitive control bias, temperature-scaled posterior competition, entropy/margin-based abstention, and estimated task-switch costs.
+
+An optional current-based leaky integrate-and-fire reference advances coupled phonological, lexical, syntactic, semantic, parietal-attention, prefrontal-control, conflict-monitoring, and task-set populations once per operation. These are declared computational analogies, not validated anatomical mappings or physiological claims.
+
+Quick start:
+
+    from ore_working_memory import WorkingMemoryProcessor, WorkingMemoryRequest
+
+    request = WorkingMemoryRequest(
+        sequence_id="reading-001",
+        text="I saw her duck.",
+        interpretations=[
+            {"hypothesis_id": "bird", "interpretation": "her duck", "semantic_score": 0.7},
+            {"hypothesis_id": "action", "interpretation": "she ducked", "semantic_score": 0.72},
+        ],
+        task_sequence=["reading", "parsing", "semantic_resolution"],
+    )
+    result = WorkingMemoryProcessor().process(request)
+    print(result.semantic_resolution)
+    print(result.task_switching)
+    print(len(result.operation_trace))  # 30
+
+Run python -m ore_working_memory for the demonstration, python -m pytest tests/test_working_memory.py -q for focused tests, and python -m pytest for the complete suite. See docs/WORKING_MEMORY_COGNITIVE_CONTROL_ARCHITECTURE.md for all operations, equations, biological-reference descriptions, API details, and limitations.
+
+The ORE logger indexes every new class/function docstring in its SQLite annotation catalogue when an ORE Python entry point is launched with automatic logging enabled; the default local database is ore_logs/ore_logger.sqlite3.

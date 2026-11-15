@@ -113,24 +113,37 @@ The chat run now executes in a worker thread while Streamlit polls a thread-safe
 
 ## Plain-language background execution logger
 
-Every Workbench run now writes two persistent log files under `ore_logs/YYYY-MM-DD/`:
+Each Workbench component execution is stored in the shared SQLite database at `ore_logs/ore_logger.sqlite3` by default. The database contains three linked kinds of information:
 
-- `ore-<run-id>.md` — a readable chronological explanation of the work ORE performed.
-- `ore-<run-id>.jsonl` — the same events as one JSON object per line, suitable for later analysis or custom viewers.
+- **Annotations:** one reusable plain-English explanation per module, class, method, function or registered ORE operation.
+- **Runs:** a unique run ID, local and UTC start time, end time, script/component identity, duration and status.
+- **Events:** calls, returns, exceptions, operation milestones and their source locations. Each event stores an annotation foreign key, not another copy of the annotation text.
 
-The log includes run start/end, live Python call/return/exception events, translated operation events, status explanations, source locations and bounded technical details. Raw prompts, image pixels and full input arrays are deliberately excluded. The folder is ignored by Git so local logs are not accidentally committed.
+Raw prompts, image pixels, full input arrays and Python argument values are not written to the event database. Technical metadata is bounded before storage.
 
 ### What gets narrated
 
-- **N9:** its 120 registered operations are emitted through an optional `on_operation` callback at the point each operation is recorded. The narrator explains each operation and groups it into the ten N9 phases (input/provenance, visual processing, grapheme sequence, attention, lexical/phonological access, syntax/semantics, context, feedback, integration/decision, and learning governance).
-- **Other ORE components:** operation/stage/iteration records exposed by their returned result are translated and appended when the component finishes. Their Python function calls still appear live while the component runs.
-- **Python execution:** call, return, exception and optional line events retain the source file, line, call stack and duration. These are implementation events, not claims about individual neuron or NumPy instructions.
+- **Repository-wide Python symbols:** an AST catalogue indexes module definitions, classes, methods, nested functions, synchronous functions and asynchronous functions across the Python source files.
+- **Existing explanations:** existing docstrings are used as the starting annotation. Where a docstring does not exist, a source-based explanation is generated using the definition name, arguments, return type, helper calls and control-flow structures. The viewer identifies these as source analysis, not reviewed documentation.
+- **N9:** its 120 registered operations are emitted through the optional `on_operation` callback as each operation is recorded. Each operation is linked to its reusable description and grouped into the ten N9 phases.
+- **Other ORE components:** operation, stage and iteration records exposed by a component result are narrated after that component returns. Their Python function calls are observed while it runs.
+- **Python execution:** call, return, exception and optional line events retain function identity, source location, call depth and duration.
 
-The logger distinguishes completed work from `not_applicable`, `not_configured`, fallback and abstention statuses. This is important: a missing N6/N7/N8 adapter is reported as missing, not described as if that biological/functional stage had executed.
+The logger distinguishes completed work from `not_applicable`, `not_configured`, fallback and abstention statuses. A missing N6/N7/N8 adapter is reported as missing, not described as though that stage had executed.
+
+### View and edit the catalogue
+
+Launch the independent Streamlit observatory:
+
+```powershell
+streamlit run ore_logger/viewer.py
+```
+
+The viewer provides timestamped run history, event filtering, function/class explanations, source locations, technical details, run export, annotation search and a manual annotation editor. Manual explanations are retained in SQLite; when the source changes, the viewer marks the explanation for review.
 
 ### Direct Python use
 
-The generic adapter accepts a log directory:
+The generic adapter accepts a log directory; it creates or reuses the SQLite database inside that directory:
 
 ```python
 from experiment_workbench.adapter import execute
@@ -142,8 +155,7 @@ result = execute(
     supplied={"request_data": request_payload},
     log_directory="ore_logs",
 )
-print(result.get("logs", {}).get("markdown_path"))
-print(result.get("logs", {}).get("jsonl_path"))
+print(result.get("logs", {}).get("database_path"))
 ```
 
 The N9 processor can also stream operation records to an application callback without using Streamlit:
@@ -153,7 +165,7 @@ events = []
 result = N9Processor().process(request, on_operation=events.append)
 ```
 
-The Workbench's Narration log tab shows the translated records and offers downloads of both files. N9 operation events are logged as they are recorded. For packages that only expose traces in their final result, those trace rows cannot be truthfully displayed as live operation events; they are added after return.
+N9 operation events are logged as they are recorded. For packages that only expose traces in their final result, those trace rows cannot truthfully be displayed as live operation events; they are added after return.
 
 ### What the debugger can and cannot see
 
@@ -162,3 +174,12 @@ The live timeline is based on Python's function profiler (and optional Python li
 A component may perform substantial work inside one Python call. In that case, the active function remains visible until the call returns; this is expected and is not evidence that the debugger has frozen. Stage-specific progress can only be shown live when the component emits progress events itself. The Workbench does not fabricate intermediate stage updates.
 
 Line tracing adds overhead. Use call tracing as the default; enable line tracing for a focused debugging run.
+
+
+## Automatic logging for other Python scripts
+
+Installing the repository with `python -m pip install -e .` installs the small Python startup hook. When a Python script or module entry point inside this repository starts, it creates a timestamped run and observes repository-defined Python calls, returns and uncaught exceptions. Workbench runs are logged individually by the adapter rather than as part of the long-lived Streamlit server process.
+
+The database defaults to `ore_logs/ore_logger.sqlite3`. Set `ORE_LOGGER_DB` to override its location, `ORE_LOG_MAX_EVENTS` to change the per-process cap (default 200,000), or `ORE_AUTO_LOG=0` to disable automatic tracing for a process. The startup hook is diagnostic only and fails open: a logger failure must not prevent the user's script from running.
+
+Python profiling does not expose native NumPy/SciPy instructions, GPU kernels or work performed in existing external processes. It records Python-level operations and the component-authored diagnostics available from ORE.

@@ -426,3 +426,39 @@ python -m pip install -e .
 python -m pip install -r experiment_workbench/requirements.txt
 streamlit run experiment_workbench/app.py
 ```
+
+
+## ORE syntax parsing — nine stages, 56 operations
+
+The new independent `ore_syntax` package implements part-of-speech identification,
+phrase detection, dependency parsing, constituency parsing, hierarchical
+syntax representation, subject/object assignment, agent/patient thematic roles,
+syntactic ambiguity resolution, and long-distance dependency processing.
+
+It exposes separate functional and biological-reference tracks, a numbered
+56-operation registry, detailed per-operation traces, ranked parse alternatives,
+argument/role evidence, enhanced filler-gap links, and JSON-safe diagnostics.
+It can consume token-indexed lexical evidence from upstream ORE lexical access
+and semantic features from the caller without mutating those inventories.
+
+See [docs/SYNTAX_PARSING_ARCHITECTURE.md](docs/SYNTAX_PARSING_ARCHITECTURE.md)
+for the full ordered algorithm, equations, API and scientific limitations.
+
+Quick start:
+
+```python
+from ore_syntax import SyntaxConfig, SyntaxProcessor, SyntaxRequest
+
+result = SyntaxProcessor(config=SyntaxConfig()).process(
+    SyntaxRequest("sample-001", text="The cat eats fish.", language="en")
+)
+print(result.selected_pos)
+print(result.dependency_arcs)
+print(result.operation_trace)  # 56 operations
+```
+
+Run `python -m ore_syntax` for a demonstration and
+`python -m pytest tests/test_syntax.py -q` for focused tests. The parser is a
+compact English-oriented research prototype, not a treebank-trained parser.
+Its scores are not calibrated probabilities, and its LIF population model is
+a computational analogy rather than a validated reproduction of neural syntax.

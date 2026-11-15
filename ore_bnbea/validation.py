@@ -209,7 +209,16 @@ def _has_any_measurement(data: BrainValidationInput) -> bool:
         "heldout_labels", "human_values", "bootstrap_values",
         "lesion_baseline_score", "ablation_scores",
     )
-    return any(getattr(data, name) is not None for name in names)
+    for name in names:
+        value = getattr(data, name)
+        if name == "ablation_scores":
+            if bool(value):
+                return True
+        elif value is not None:
+            if isinstance(value, (tuple, list, dict)) and len(value) == 0:
+                continue
+            return True
+    return False
 
 
 def validate_brain_data(data: BrainValidationInput | None) -> dict[str, Any]:
@@ -252,15 +261,30 @@ def validate_brain_data(data: BrainValidationInput | None) -> dict[str, Any]:
     metrics: dict[str, Any] = {}
     statuses[operation_names[0]] = "executed"
     statuses[operation_names[1]] = "executed"
-
-    if data.observed_eeg_trials is not None or data.observed_meg_trials is not None:
+    eeg_trials = (
+        preprocess_trials(data.observed_eeg_trials)
+        if data.observed_eeg_trials is not None else None
+    )
+    meg_trials = (
+        preprocess_trials(data.observed_meg_trials)
+        if data.observed_meg_trials is not None else None
+    )
+    if eeg_trials is not None or meg_trials is not None:
         statuses[operation_names[2]] = "executed"
+        metrics["preprocessing"] = {
+            "eeg_shape": list(eeg_trials.shape) if eeg_trials is not None else None,
+            "meg_shape": list(meg_trials.shape) if meg_trials is not None else None,
+        }
     if data.source_activity is not None and data.eeg_leadfield is not None:
         projected = forward_project_sources(data.source_activity, data.eeg_leadfield)
         metrics["eeg_forward_prediction"] = {
             "shape": list(projected.shape), "mean": float(np.mean(projected)),
             "std": float(np.std(projected)),
         }
+        if eeg_trials is not None:
+            observed_erp = event_related_potential(eeg_trials)
+            if observed_erp.shape == projected.shape:
+                metrics["eeg_forward_erp_mae"] = mean_absolute_error(observed_erp, projected)
         statuses[operation_names[3]] = "executed"
     if data.source_activity is not None and data.meg_leadfield is not None:
         projected = forward_project_sources(data.source_activity, data.meg_leadfield)
@@ -268,35 +292,39 @@ def validate_brain_data(data: BrainValidationInput | None) -> dict[str, Any]:
             "shape": list(projected.shape), "mean": float(np.mean(projected)),
             "std": float(np.std(projected)),
         }
+        if meg_trials is not None:
+            observed_erp = event_related_potential(meg_trials)
+            if observed_erp.shape == projected.shape:
+                metrics["meg_forward_erp_mae"] = mean_absolute_error(observed_erp, projected)
         statuses[operation_names[4]] = "executed"
-    if data.eeg_leadfield is not None and data.observed_eeg_trials is not None:
-        erp = event_related_potential(data.observed_eeg_trials)
+    if data.eeg_leadfield is not None and eeg_trials is not None:
+        erp = event_related_potential(eeg_trials)
         inverse = ridge_inverse_sources(erp, data.eeg_leadfield)
         metrics["eeg_inverse_estimate"] = {
             "shape": list(inverse.shape), "mean": float(np.mean(inverse)),
         }
         statuses[operation_names[5]] = "executed"
-    elif data.meg_leadfield is not None and data.observed_meg_trials is not None:
-        erp = event_related_potential(data.observed_meg_trials)
+    elif data.meg_leadfield is not None and meg_trials is not None:
+        erp = event_related_potential(meg_trials)
         inverse = ridge_inverse_sources(erp, data.meg_leadfield)
         metrics["meg_inverse_estimate"] = {
             "shape": list(inverse.shape), "mean": float(np.mean(inverse)),
         }
         statuses[operation_names[5]] = "executed"
-    if data.observed_eeg_trials is not None:
-        erp = event_related_potential(data.observed_eeg_trials)
+    if eeg_trials is not None:
+        erp = event_related_potential(eeg_trials)
         metrics["eeg_erp"] = {"shape": list(erp.shape), "mean": float(np.mean(erp))}
         statuses[operation_names[6]] = "executed"
-    if data.observed_meg_trials is not None and data.meg_sampling_rate_hz is not None:
-        tfr = time_frequency_power(data.observed_meg_trials, data.meg_sampling_rate_hz)
+    if meg_trials is not None and data.meg_sampling_rate_hz is not None:
+        tfr = time_frequency_power(meg_trials, data.meg_sampling_rate_hz)
         metrics["meg_time_frequency"] = {
             "frequency_bins": int(tfr["frequencies_hz"].size),
             "time_bins": int(tfr["times_seconds"].size),
             "mean_power": float(np.mean(tfr["power"])),
         }
         statuses[operation_names[7]] = "executed"
-    elif data.observed_eeg_trials is not None and data.eeg_sampling_rate_hz is not None:
-        tfr = time_frequency_power(data.observed_eeg_trials, data.eeg_sampling_rate_hz)
+    elif eeg_trials is not None and data.eeg_sampling_rate_hz is not None:
+        tfr = time_frequency_power(eeg_trials, data.eeg_sampling_rate_hz)
         metrics["eeg_time_frequency"] = {
             "frequency_bins": int(tfr["frequencies_hz"].size),
             "time_bins": int(tfr["times_seconds"].size),

@@ -252,10 +252,12 @@ def _module_annotation(node: ast.Module, module_name: str, source_path: str) -> 
 
 
 class _DefinitionCollector:
-    def __init__(self, source_path: str, module_name: str, source_hash: str) -> None:
+    def __init__(self, source_path: str, module_name: str, source_hash: str,
+                 source_text: str) -> None:
         self.source_path = source_path
         self.module_name = module_name
         self.source_hash = source_hash
+        self.source_text = source_text
         self.rows: list[dict[str, Any]] = []
 
     def collect(self, tree: ast.Module) -> list[dict[str, Any]]:
@@ -268,6 +270,11 @@ class _DefinitionCollector:
         self, qualname: str, kind: str, annotation: str,
         signature: str | None, node: ast.AST, source: str,
     ) -> None:
+        source_segment = ast.get_source_segment(self.source_text, node)
+        symbol_source_hash = (
+            hashlib.sha256(source_segment.encode("utf-8")).hexdigest()
+            if source_segment else self.source_hash
+        )
         self.rows.append({
             "symbol_id": _symbol_id(self.source_path, kind, qualname),
             "module_name": self.module_name,
@@ -280,7 +287,7 @@ class _DefinitionCollector:
             "annotation": annotation,
             "source_docstring": _clean_docstring(node) or None,
             "annotation_source": source,
-            "source_hash": self.source_hash,
+            "source_hash": symbol_source_hash,
         })
 
     def _visit_body(self, body: list[ast.stmt], parent: str) -> None:
@@ -344,7 +351,7 @@ def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> di
                 source_text = source_bytes.decode("utf-8")
                 tree = ast.parse(source_text, filename=relative)
                 module = _module_name(relative)
-                collector = _DefinitionCollector(relative, module, source_hash)
+                collector = _DefinitionCollector(relative, module, source_hash, source_text)
                 rows = collector.collect(tree)
                 with database.connect() as connection:
                     for row in rows:

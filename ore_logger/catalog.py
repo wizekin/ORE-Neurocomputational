@@ -366,6 +366,9 @@ def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> di
                                    WHEN annotations.annotation_source='manual'
                                    THEN annotations.annotation ELSE excluded.annotation END,
                                  source_docstring=excluded.source_docstring,
+                                 annotation_source=CASE
+                                   WHEN annotations.annotation_source='manual'
+                                   THEN 'manual' ELSE excluded.annotation_source END,
                                  source_hash=excluded.source_hash,
                                  stale=CASE
                                    WHEN annotations.annotation_source='manual'

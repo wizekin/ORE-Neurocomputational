@@ -492,11 +492,11 @@ The existing Experiment Workbench also creates a separate timestamped SQLite run
 
 ## ORE discourse integration — eight stages / 64 operations
 
-The additive \`ore_discourse\` package implements the eight discourse stages:
+The additive `ore_discourse` package implements the eight discourse stages:
 maintaining discourse context; integrating consecutive sentence propositions;
 inferring speaker intention; interpreting indirect requests; evaluating irony;
 constructing situation models; tracking temporal discourse relations; and
-maintaining topic/narrative coherence. It exposes a stable \`DC-001\`–\`DC-064\`
+maintaining topic/narrative coherence. It exposes a stable `DC-001`–`DC-064`
 operation registry, mathematical sketches, stage outputs and a complete trace.
 
 The functional track keeps caller-provided entities, common ground, beliefs,
@@ -515,7 +515,7 @@ validity.
 
 Quick start:
 
-\`\`\`python
+```python
 from ore_discourse import DiscourseProcessor, DiscourseRequest
 
 request = DiscourseRequest(
@@ -534,26 +534,26 @@ print(result.coherence["score"])
 print(result.indirect_requests)
 print(result.irony)
 print(len(result.operation_trace))  # 64
-\`\`\`
+```
 
 Use the new ORE N7 adapter inside the existing N9 controller:
 
-\`\`\`python
+```python
 from ore_discourse import DiscourseN7Adapter
 from ore_n9 import N9Adapters, N9Processor
 
 adapters = N9Adapters(n7=DiscourseN7Adapter())
 n9 = N9Processor(adapters=adapters)
 result = n9.process(request_for_n9)
-\`\`\`
+```
 
 Run the demonstration and tests:
 
-\`\`\`bash
+```bash
 python -m ore_discourse
 python -m pytest tests/test_discourse.py -q
 python -m pytest
-\`\`\`
+```
 
 See [docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md](docs/DISCOURSE_EIGHT_STAGE_ARCHITECTURE.md)
 for all 64 operations, equations, interfaces and scientific limitations.

@@ -13,7 +13,7 @@ from itertools import product
 import json
 import math
 import time
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
@@ -294,7 +294,7 @@ class N9Processor:
         self.config = config or N9Config()
         self.adapters = adapters or N9Adapters()
 
-    def process(self, request: N9Request) -> N9Result:
+    def process(self, request: N9Request, on_operation: Callable[[dict[str, Any]], None] | None = None) -> N9Result:
         started = time.perf_counter()
         if not isinstance(request, N9Request):
             raise TypeError("request must be an N9Request")
@@ -310,12 +310,19 @@ class N9Processor:
             if number != expected:
                 raise RuntimeError(f"N9 operation order error: expected {expected}, received {number}")
             operation_cursor = number
-            trace.append({
+            event = {
                 "step": number,
                 "operation": N9_ALGORITHM_STEPS[number - 1],
                 "status": status,
                 **_jsonable(details),
-            })
+            }
+            trace.append(event)
+            if on_operation is not None:
+                try:
+                    on_operation(dict(event))
+                except Exception:
+                    # Instrumentation must never interrupt ORE inference.
+                    pass
 
         # A. Operations 1–12: input, provenance and execution state.
         mark(1, patch_count=len(request.patches), sequence_id=request.sequence_id)

@@ -985,6 +985,11 @@ class DiscourseProcessor:
                     isinstance(item.get("duration"), Mapping)
                     and _safe_number(item["duration"].get("value"), 0.0) < 0
                 )
+                and not (
+                    isinstance(item.get("start"), (int, float))
+                    and isinstance(item.get("end"), (int, float))
+                    and float(item["end"]) < float(item["start"])
+                )
                 for item in intervals
             ),
             "cycle_detected": cycle,

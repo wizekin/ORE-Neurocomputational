@@ -87,10 +87,11 @@ def _task_family(task: str) -> str:
 
 
 class WorkingMemoryProcessor:
-    """Coordinate five working-memory and cognitive-control stages with inspectable operation traces.
+    """Coordinate the five WMCC stages and emit the canonical 40-operation execution trace.
 
     The processor is deterministic. It does not use a trained parser or world-knowledge model;
     upstream evidence is accepted explicitly and weak evidence is retained as unresolved.
+    Executive acceptance is provisional; semantic resolution can revise it when new evidence arrives.
     """
 
     def __init__(self, config: WorkingMemoryConfig | None = None) -> None:

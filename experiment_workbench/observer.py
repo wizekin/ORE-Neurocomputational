@@ -139,7 +139,7 @@ class PythonCallObserver:
             duration = (time.perf_counter_ns() - record["started_ns"]) / 1_000_000
             completed = {"sequence": record["sequence"], "kind": "return",
                          "function": record["function"], "short_name": record["short_name"],
-                         "module": record["module"], "file": record["file"],
+                         "qualname": record["qualname"], "module": record["module"], "file": record["file"],
                          "line": record["line"], "depth": record["depth"],
                          "duration_ms": round(duration, 4), "return_type": type(arg).__name__}
             if len(self.events) < self.max_events:
@@ -165,7 +165,7 @@ class PythonCallObserver:
             if current:
                 self._emit({"sequence": current["sequence"], "kind": "exception",
                             "function": current["function"], "short_name": current["short_name"],
-                            "module": current["module"], "file": current["file"],
+                            "qualname": current["qualname"], "module": current["module"], "file": current["file"],
                             "line": int(frame.f_lineno), "depth": current["depth"],
                             "exception_type": getattr(exc_type, "__name__", str(exc_type)),
                             "exception_message": str(exc_value)[:500]})

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import atexit
+import importlib.util
 import os
 import sys
 import threading
@@ -49,6 +50,7 @@ class RuntimeSession:
         self._closed = False
         self._previous_profile = None
         self._previous_trace = None
+        self._previous_excepthook = sys.excepthook
         self._install()
         self._emit(
             "run_started",
@@ -65,6 +67,7 @@ class RuntimeSession:
         if self._previous_trace is None:
             sys.settrace(self._trace)
             threading.settrace(self._trace)
+        sys.excepthook = self._excepthook
 
     def _source(self, frame: Any) -> tuple[str | None, str | None, str]:
         filename = Path(frame.f_code.co_filename).resolve()
@@ -186,6 +189,11 @@ class RuntimeSession:
             pass
         return self._trace
 
+    def _excepthook(self, exc_type: Any, exc_value: Any, traceback_obj: Any) -> None:
+        self.close("failed", f"{getattr(exc_type, '__name__', exc_type)}: {exc_value}")
+        if self._previous_excepthook is not None:
+            self._previous_excepthook(exc_type, exc_value, traceback_obj)
+
     def close(self, status: str = "completed", error: str | None = None) -> None:
         with self._lock:
             if self._closed:
@@ -204,13 +212,38 @@ class RuntimeSession:
                     sys.settrace(self._previous_trace)
                 threading.setprofile(self._previous_profile)
                 threading.settrace(self._previous_trace)
+                if sys.excepthook == self._excepthook:
+                    sys.excepthook = self._previous_excepthook
             except Exception:
                 pass
             self.database.finish_run(self.run_id, status, duration, error)
 
 
 def _candidate_script(arguments: list[str], root: Path) -> tuple[Path | None, str]:
-    for index, value in enumerate(arguments):
+    # The module target is present in sys.orig_argv even when sitecustomize runs
+    # before runpy has replaced sys.argv[0] with the module's file path.
+    combined = list(arguments) + list(getattr(sys, "orig_argv", []))
+    if "-m" in combined:
+        try:
+            module_index = combined.index("-m")
+            module_target = combined[module_index + 1]
+            spec = importlib.util.find_spec(module_target)
+            if spec is not None:
+                candidate = None
+                if spec.submodule_search_locations:
+                    package_dir = Path(next(iter(spec.submodule_search_locations))).resolve()
+                    package_main = package_dir / "__main__.py"
+                    candidate = package_main if package_main.is_file() else None
+                if candidate is None and spec.origin:
+                    candidate = Path(spec.origin).resolve()
+                if candidate is not None:
+                    relative = candidate.relative_to(root)
+                    if relative.parts and relative.parts[0] != "ore_logger" and candidate.is_file():
+                        return candidate, "module"
+        except (IndexError, ImportError, ModuleNotFoundError, ValueError, OSError):
+            pass
+
+    for value in combined:
         if not value or value.startswith("-"):
             continue
         candidate = Path(value)

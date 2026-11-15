@@ -633,3 +633,29 @@ Install and test with:
     python -m pytest
 
 See docs/BNBEA_IMPLEMENTATION.md for the equations, stage boundaries, operation registry, API, logger contract, and scientific limitations. Software tests validate code behavior; they do not establish biological equivalence. Stage 8 remains not_tested until real independent brain/behavior datasets are supplied.
+## Brain Networks and Biological Evidence Algorithm — 12 operations
+
+The additive `ore_brain_networks` package implements the 12-operation visual, orthographic, language-network, auditory, neural-measurement and causal-validation sequence. It contains explicit Gabor filterbanks, grapheme population prototypes, recurrent LIF dynamics, hierarchical visual populations, a VWFA hierarchy, an IFG/MTG/ATL network, auditory dorsal/ventral representations, EEG/MEG and fMRI forward models, virtual lesion and TMS analyses, and independent human-reading validation.
+
+Functional representations, simulated biological state, and experimental predictions are kept in separate output tracks. The LIF reference reports membrane voltage, current, firing rate, spikes and simulation time. Synthetic EEG/MEG projections are marked as toy lead fields; BOLD is an HRF-convolved proxy. Lesions and TMS are model-only interventions, and human validation waits for independent measurements rather than inventing empirical results.
+
+See [docs/BNBEA_12_OPERATION_ARCHITECTURE.md](docs/BNBEA_12_OPERATION_ARCHITECTURE.md) for the ordered BNBEA-001–BNBEA-012 registry, mathematical operations, biological qualifications, API and scientific limitations.
+
+Quick start:
+
+```python
+import numpy as np
+from ore_brain_networks import BNBEAProcessor, BNBEARequest, LexicalEntry
+
+request = BNBEARequest(
+    sample_id="reading-001",
+    visual_image=np.zeros((64, 96)),
+    orthographic_sequence=("c", "a", "t"),
+    lexicon=(LexicalEntry("cat", frequency=30.0),),
+    semantic_features={"ANIMAL": 1.0},
+)
+result = BNBEAProcessor().process(request)
+print(len(result.operation_trace))  # 12 operations
+```
+
+Run `python -m ore_brain_networks` for a deterministic demonstration and `python -m pytest tests/test_brain_networks.py -q` for focused tests. The existing ORE SQLite logger stores class and callable docstrings in `ore_logs/ore_logger.sqlite3` when the package initializes its annotation catalogue. Passing software tests does not establish biological validity.

@@ -1,273 +1,219 @@
-# ORE working memory and cognitive control — five stages / 30 operations
+# ORE working memory and cognitive control — five stages / 40 operations
 
 **Package:** ore_working_memory/  
-**Registry:** ORE-WMC-30  
-**Operation IDs:** WMC-001 through WMC-030  
-**Status:** Executable functional prototype with an optional coupled LIF population reference
+**Canonical source:** Uploaded Library document Brain Language Algorithm.md  
+**Registry:** WMCC-001 through WMCC-040  
+**Stage distribution:** 8 / 6 / 7 / 9 / 10  
+**Status:** Executable functional prototype with a separate, optional coupled LIF population reference
 
 ## 1. Purpose and scientific boundary
 
-This subsystem implements five language-processing and control functions:
+The package implements the exact 40-operation sequence in the source document. It connects five interacting subsystems:
 
 1. Linguistic working-memory buffers.
-2. Maintenance of incomplete syntactic structures.
+2. Maintaining incomplete syntactic structures.
 3. Executive control over sentence interpretations.
-4. Resolution of competing semantic interpretations.
+4. Resolving competing semantic interpretations.
 5. Cognitive task switching.
 
-The processor accepts a sentence or a token sequence, optional syntax output, explicit unfinished
-structures, candidate interpretations, goal features, context cues, and a task sequence. It returns
-the preserved buffer contents, open syntactic frames, candidate readings, posterior probabilities,
-abstention state, task transitions, and a 30-operation trace.
+The ordering is an inspectable execution schedule. It does not claim that the brain executes these functions as a rigid serial pipeline; language, memory, attention, and control can interact recurrently and in parallel.
 
-This is a deterministic research prototype. The functional operations are computational models of
-useful information-processing requirements; the biological track is an illustrative population-level
-reference. Neither is a claim that the human brain uses the exact data structures or equations in
-this package.
+The functional implementation is evidence-driven. Supplied syntax, semantic knowledge, contextual features, task history, and new revision evidence remain distinguishable from neutral defaults and surface heuristics. It does not use a trained parser or invent missing constituents, world facts, or reference resolutions.
 
-## 2. The 30 registered operations
+## 2. Canonical 40-operation registry
 
-| Stage | ID range | Operation sequence |
+| Stage | Operation IDs | Exact operation sequence |
 |---|---|---|
-| S1 — Linguistic working-memory buffers | WMC-001–006 | Tokenize and encode; allocate modality-specific buffers; calculate activation; apply decay/capacity; rehearse active items; retrieve context cues |
-| S2 — Maintain incomplete syntactic structures | WMC-007–012 | Extract incomplete frames; build hierarchical stack; track unresolved dependencies; score retrieval cues; bind supported slots; emit open-structure state |
-| S3 — Executive control over sentence interpretations | WMC-013–018 | Prepare hypotheses; measure conflict; allocate control; evaluate goal fit; apply top-down bias; select temporary focus |
-| S4 — Resolve competing semantic interpretations | WMC-019–024 | Integrate evidence; normalize posteriors; run recurrent competition; measure entropy/margin; apply abstention; build resolution report |
-| S5 — Cognitive task switching | WMC-025–030 | Encode task sets; detect switches; calculate switch cost; reconfigure task control; manage interference/resumption; emit task state |
+| **S1 — Linguistic working-memory buffers** | WMCC-001–008 (8) | Initialize cognitive processing environment; receive linguistic information; encode incoming linguistic representations; distribute representations across working-memory buffers; organize and chunk stored information; maintain activation; regulate memory capacity and attention; perform content-addressable retrieval |
+| **S2 — Maintaining incomplete syntactic structures** | WMCC-009–014 (6) | Detect incomplete syntactic structures; generate grammatical expectations; maintain unresolved dependencies; maintain nested syntactic structures; update incomplete structures; maintain dependencies through working-memory updates |
+| **S3 — Executive control over sentence interpretations** | WMCC-015–021 (7) | Maintain cognitive goals; monitor sentence-processing progress; detect competing processing demands; allocate attention; regulate competing representations; determine interpretation acceptance; coordinate processing subsystems |
+| **S4 — Resolving competing semantic interpretations** | WMCC-022–030 (9) | Identify semantic ambiguity; generate alternative interpretations; retrieve supporting semantic knowledge; evaluate grammatical compatibility; evaluate contextual compatibility; calculate the overall evidence supporting each interpretation; allow competing interpretations to interact; select an interpretation or preserve multiple possibilities; revise an interpretation when new information arrives |
+| **S5 — Cognitive task switching** | WMCC-031–040 (10) | Identify the currently active cognitive task; detect when a task switch is necessary; preserve the current task state before switching; activate the new cognitive task; reduce interference from the previous task; monitor the new task and determine when to return; resume suspended tasks; learn from task-switching history; integrate the cognitive state; evaluate whether processing is complete |
 
-Each operation is implemented in ore_working_memory/pipeline.py, has a stable registry ID, records
-its input/output summary in operation_trace, and advances one biological-reference operation when
-simulation is enabled.
+The registry stores each operation's responsibility, inputs, outputs, mathematical form, and qualified biological-reference note. The pipeline emits one trace row for each ID in this exact order. Helper calculations used inside an operation are deliberately not emitted as extra registry operations.
 
-### Stage 1 — Linguistic working-memory buffers
+## 3. Stage implementation
 
-Token input is converted into ordered records while preserving supplied token boundaries. The same
-token references are then maintained in distinct functional channels: phonological-form proxy,
-lexical items, syntactic markers, content-bearing semantic items, and discourse-relevant items.
-These channels are separate software views; they are not asserted to be five literal anatomical buffers.
+### Stage 1 — Linguistic working-memory buffers (8 operations)
 
-For token i at time t, a simple activation estimate is:
+The processor receives the original text or caller-tokenized input and creates ordered token records. It distributes token references into five functional channels:
 
-    a_i(t) = s_i * exp(-lambda * age_i)
+- phonological: phonological-form proxy and ordered input units.
+- lexical_semantic: lexical item references.
+- syntactic: supplied or surface-detected syntactic markers.
+- event_discourse: content-bearing references for event and discourse processing.
+- executive_goal: caller-supplied goal features.
 
-where s_i is a supplied-focus salience multiplier, lambda is the configured decay rate, and age is
-represented by token distance. Each buffer retains at most K active items:
+The channels are software views with cross-references, not five anatomically isolated storage compartments. Chunks preserve their source token positions. Caller-defined chunks are marked as caller-supplied; automatically grouped chunks are marked as surface-contiguity groupings and are not treated as semantic propositions.
 
-    B'_m = TopK(B_m, activation_i, K)
+A simplified activation model is:
 
-Rehearsal refreshes only a small active set:
+\[
+A_i(t)=B_i+\sum_j W_jS_{ji}+\sum_r\rho_rR_{ir}
+-\lambda_i\Delta t-\mu I_i
+\]
 
-    a'_i = min(1, a_i + eta * r_i)
+where retrieval cues and refresh events can increase accessibility, elapsed time can reduce it, and similar active items can produce interference. Buffer limits are engineering resource constraints, not a universal number of words the human brain can store.
 
-Context retrieval ranks items by activation and explicit cue match:
+Capacity and attention are modeled with:
 
-    R_i = alpha * a_i + (1-alpha) * cue_match_i
+\[
+\alpha_i=\frac{\exp(A_i/\tau)}{\sum_j\exp(A_j/\tau)},
+\qquad \sum_i r_i\le K
+\]
 
-The values are software controls, not measured human memory constants or estimates of a person's
-true working-memory capacity.
+Content-addressable retrieval ranks representations from activation and explicit cue match:
 
-**Biological-reference interpretation:** phonological-loop activity, distributed temporal language
-representations, inferior-parietal maintenance/attention, and prefrontal control are represented by
-coupled population labels. Recurrent activity and cue-dependent reinstatement are mechanistic
-analogies, not literal simulations of human rehearsal.
+\[
+P(M_i\mid Q)=\operatorname{softmax}_i\left(\beta\,\operatorname{Match}(Q,M_i)\right)
+\]
 
-### Stage 2 — Maintaining incomplete syntactic structures
+### Stage 2 — Maintaining incomplete syntactic structures (6 operations)
 
-This stage accepts explicit partial phrase/clause frames or unresolved dependencies from an upstream
-syntax processor. An open frame contains a stable ID, label, nesting depth, parent ID, expected slots,
-filled slots, unresolved slots, and optional candidate bindings.
+This stage consumes explicitly supplied partial structures and upstream syntax results. Each open frame retains its ID, label, depth, parent, expected slots, filled slots, unresolved slots, and supplied candidate bindings.
 
-    U_f = E_f set_minus F_f
+\[
+U_t=\{v\in V:\operatorname{complete}(v)=0\}
+\]
 
-where E_f is the set of expected slots and F_f is the set already filled. Frames are ordered by depth
-in a stack. Long-distance dependencies are retained only when upstream evidence marks them unresolved
-or open.
+Nested frames are ordered in a depth-aware stack/agenda, while long-distance dependencies remain explicit. Grammatical expectations are created from declared grammar expectations and unresolved slot labels. Slot-binding candidates are not accepted unless their evidence reaches the configured retrieval threshold:
 
-A candidate c can fill slot s only if:
+\[
+q(c,s)=0.6\,\operatorname{confidence}(c)+0.4\,\operatorname{slotMatch}(c,s)
+\]
 
-    q(c,s) = 0.6 * confidence(c) + 0.4 * slotMatch(c,s)
-    bind(s,c) iff q(c,s) >= retrieval_threshold
+\[
+\operatorname{bind}(s,c)\iff q(c,s)\ge\theta_{\mathrm{retrieval}}
+\]
 
-The processor never generates a missing word to close a frame. If a candidate does not meet the
-configured threshold, the slot remains unresolved in the result.
+The dependency-maintenance operation marks known referenced buffer items for reactivation and emits links when token positions were actually supplied. It does not guess a missing filler or gap location.
 
-**Biological-reference interpretation:** posterior temporal syntactic representations, inferior
-frontal language/control mechanisms, and parietal working-memory/retrieval processes are used as a
-broad functional hypothesis for maintaining expectations across intervening material. A software
-stack is not claimed to exist literally in cortex.
+### Stage 3 — Executive control over sentence interpretations (7 operations)
 
-### Stage 3 — Executive control over sentence interpretations
+The controller maintains a declared comprehension goal and monitors memory availability, syntactic completeness, dependency completion, reference status, semantic consistency, and contextual relevance.
 
-Candidate readings remain distinct records. Conflict combines normalized posterior entropy and the
-margin between the top two preliminary readings:
+An example processing-quality estimate is:
 
-    C = 0.5 * H(p)/log(k) + 0.5 * (1 - (p1-p2))
+\[
+Q_t=\sum_k w_k Z_{tk}
+\]
 
-Control demand combines conflict, unresolved syntax load, and explicit goal priority:
+where the monitored status vector can include syntax, memory availability, reference resolution, semantic consistency, interpretation confidence, and contextual relevance.
 
-    D = clip(0.45*C + 0.35*U + 0.20*G, 0, 1)
+Conflict can be estimated through candidate entropy, the difference between competing activations, unresolved structure load, and overall processing demand:
 
-Candidate features are compared with supplied goal features. The top-down bias is stored separately
-from lexical, semantic, syntactic, discourse, and world evidence:
+\[
+H(P)=-\sum_i P_i\log P_i,
+\qquad
+T_c=w_1H(P)+w_2U+w_3D
+\]
 
-    b(h) = gain * D * (0.65*goalFit(h) + 0.35*prior(h))
+Attention and top-down bias are separate from the source evidence. The processor preserves alternative hypotheses and can defer selection. Coordination messages express requests among memory, syntax, executive control, semantic resolution, and task management without allowing one subsystem to overwrite another's state.
 
-The control-focus operation selects a temporary processing focus but does not delete other hypotheses.
-This separation prevents a control preference from being mistaken for independent semantic evidence.
+### Stage 4 — Resolving competing semantic interpretations (9 operations)
 
-**Biological-reference interpretation:** lateral prefrontal control, anterior cingulate conflict
-monitoring, and frontoparietal attention are broad functional analogies. The implementation does not
-estimate neural activity from an actual person.
+The semantic resolver identifies ambiguity from caller-supplied alternative readings, ambiguity annotations, and upstream structures. If no interpretation candidates are supplied, it creates one neutral surface-reading hypothesis rather than pretending to know its meaning.
 
-### Stage 4 — Resolving competing semantic interpretations
+For each candidate it keeps separate lexical, semantic, grammatical, contextual, knowledge, pragmatic, prior, and goal-bias channels. Semantic knowledge is accepted only from explicit candidate scores or context.semantic_knowledge. Grammar and contextual compatibility use supplied syntax scores, support maps, or context feature mappings; missing evidence remains identified as neutral or unavailable.
 
-For hypothesis h, the initial integrated score is:
+An illustrative evidence score is:
 
-    z_h = 0.20*L_h + 0.28*S_h + 0.20*Y_h + 0.16*D_h + 0.16*W_h + b(h) + 0.05*P_h
+\[
+S_i=w_gG_i+w_lL_i+w_cC_i+w_kK_i+w_pP_i
+\]
 
-where L is lexical evidence, S semantic evidence, Y syntactic evidence, D discourse evidence,
-W supplied world/context evidence, and P the prior. Candidate scores are transformed into a posterior:
+Candidate activation is converted to a posterior distribution and passed through bounded recurrent competition. A reading is selected only when both confidence and top-two margin pass the configured thresholds:
 
-    p(h) = softmax(z_h / T)
+\[
+P^*=\arg\max_i P_i,
+\qquad
+P(P^*)\ge\theta_c,
+\qquad
+P(P^*)-P(P_2)\ge\theta_m
+\]
 
-A damped recurrent update adds a simple lateral-competition term:
+Otherwise the result abstains and preserves ranked alternatives. New information supplied in context.revision_evidence can update named candidate channels and trigger a new posterior and selection pass. No candidate is silently discarded.
 
-    p_(t+1) = (1-rho)*p_t + rho*softmax(z/T - gamma*(1-p_t))
+### Stage 5 — Cognitive task switching (10 operations)
 
-Normalized entropy and top-two margin quantify uncertainty:
+The task manager reads the explicit task sequence or a declared current-task default. Switch decisions and estimated switch costs are retained separately from observed transition costs. Before switching, it creates checkpoints containing references to working-memory items, open syntactic structures, candidate IDs, token position, and the current goal.
 
-    H_n = -sum(p_i*log(p_i+epsilon))/log(k)
-    m = p_1 - p_2
+Task profiles reconfigure the five buffer priorities. Interference reduces the priority of the previous task but does not delete its checkpoint. Completion is marked only when explicit task-completion information is supplied; otherwise it remains unknown. A suspended task can resume when it reappears in the task sequence and the resumption policy permits it.
 
-The processor commits only if both the maximum posterior and the margin exceed their configured
-thresholds. Otherwise, it returns abstention plus the ranked alternatives, evidence channels, and
-convergence trace. One candidate has zero normalized entropy and a margin of one by definition.
+Task-transition estimates are updated only from explicit observations in context.task_history or context.observed_transition_costs. Estimated switch latency is not misrepresented as an observed reaction time.
 
-**Biological-reference interpretation:** distributed temporal semantic representations, inferior
-frontal selection, recurrent excitation/inhibition, and conflict monitoring provide a broad functional
-analogy. The softmax distribution and entropy are software variables, not direct measurements of cortical firing.
+The final integration operation creates a joined, inspectable state. The final completion operation checks input-end status, syntactic completion, semantic readiness, reference status, and unresolved conflict. It can report complete, partial_or_unresolved, or pending_input.
 
-### Stage 5 — Cognitive task switching
+## 4. Functional and biological execution tracks
 
-The task stage reads an explicit task sequence or a single current task from context. A switch occurs
-when the task label changes. Switch cost is an estimate:
+The functional track executes all 40 operations and emits an operation trace with:
 
-    C_switch = C_0 * (1 + inertia*similarity) * (1-cue_strength)
+- Stable WMCC-001–WMCC-040 ID and exact registry name.
+- Functional output summary.
+- Mathematical form used as the operation's computational specification.
+- Qualified biological-reference note.
+- Neural-reference update from the corresponding stage population, when enabled.
 
-where C_0 is a configured baseline cost, inertia is task inertia, similarity is a coarse task-family
-similarity, and cue_strength is the supplied cue strength. The returned unit is milliseconds for
-convenient interpretation, but the output is not a human reaction-time prediction.
+The optional biological-reference track uses eight coupled current-based leaky integrate-and-fire populations:
 
-Task-specific control profiles redistribute software attention weights over phonological, lexical,
-syntactic, semantic, and executive channels. Suspended task records are retained, and resumption is
-reported when a prior task reappears later in the sequence.
+phonological_loop, lexical_maintenance, syntactic_workspace, semantic_workspace, parietal_attention, prefrontal_control, conflict_monitor, and task_set_network.
 
-**Biological-reference interpretation:** frontoparietal control, pre-supplementary motor/cingulo-
-opercular task-set updating, and basal-ganglia gating are used as a deliberately coarse functional
-analogy. No anatomical localization is established by these software outputs.
+It advances once per operation and reports membrane voltage (mV), current (pA), simulated time (ms), firing rate (Hz), spike counts, and activity. The five WMCC stages drive the most relevant populations, while recurrent excitatory and global inhibitory terms allow coupling.
 
-## 3. Biological-reference simulator
+This is a configurable population-level computational hypothesis. It is not a fitted anatomical network, a cellular model of language, or empirical proof that the brain implements the registry's equations.
 
-When WorkingMemoryConfig(simulate_biology=True), the simulator advances a small set of coupled
-current-based leaky integrate-and-fire populations once per WMC operation:
-
-- phonological_loop
-- lexical_maintenance
-- syntactic_workspace
-- semantic_workspace
-- parietal_attention
-- prefrontal_control
-- conflict_monitor
-- task_set_network
-
-A forward-Euler membrane update is used:
-
-    V(t+dt) = V(t) + dt/tau_m * (V_rest - V(t) + 1e-3*R_m*I(t))
-
-Threshold crossing increments a spike count, resets voltage, and starts a refractory interval.
-Recurrent excitation and global inhibition couple the population activities. The simulator reports
-membrane voltage (mV), current (pA), simulated time (ms), firing rate (Hz), spike count, and population
-activity.
-
-Population names, routing weights, and parameters are engineering hypotheses. This implementation
-is not a neuron-by-neuron simulation, not a fitted human language circuit, and not evidence that the
-five software stages map one-to-one onto discrete brain regions. Passing software tests establishes
-code behavior only, not biological validity.
-
-Disable the simulator with:
-
-    WorkingMemoryProcessor(WorkingMemoryConfig(simulate_biology=False))
-
-## 4. API
+## 5. API and example
 
     from ore_working_memory import WorkingMemoryProcessor, WorkingMemoryRequest
 
     request = WorkingMemoryRequest(
-        sequence_id="ambiguous-001",
-        text="I saw her duck.",
+        sequence_id="wmcc-example-001",
+        text="I saw the man with the telescope. He was holding it.",
         interpretations=[
             {
-                "hypothesis_id": "bird",
-                "interpretation": "I saw the duck belonging to her",
-                "lexical_score": 0.8,
-                "semantic_score": 0.75,
-                "syntactic_score": 0.7,
+                "hypothesis_id": "instrument",
+                "interpretation": "I used the telescope to see the man",
+                "syntactic_score": 0.72,
+                "semantic_score": 0.70,
             },
             {
-                "hypothesis_id": "action",
-                "interpretation": "I saw her lower her head",
-                "lexical_score": 0.78,
-                "semantic_score": 0.76,
-                "syntactic_score": 0.72,
+                "hypothesis_id": "possession",
+                "interpretation": "The man had the telescope",
+                "syntactic_score": 0.70,
+                "semantic_score": 0.72,
             },
         ],
-        task_sequence=["reading", "parsing", "semantic_resolution"],
+        task_sequence=["reading", "reference_retrieval", "semantic_resolution"],
+        context={
+            "revision_evidence": {
+                "possession": {"discourse_score": 0.95, "semantic_score": 0.9}
+            }
+        },
     )
     result = WorkingMemoryProcessor().process(request)
     print(result.semantic_resolution["alternatives"])
-    print(result.incomplete_structures)
-    print(result.task_switching)
-    print(len(result.operation_trace))  # 30
+    print(result.task_switching["switch_events"])
+    print(len(result.operation_trace))  # 40
 
-To maintain an unfinished structure, provide explicit evidence:
+Inputs for task completion, unresolved references, semantic knowledge, grammar support, and contextual features are optional and must be supplied explicitly when those channels are to contribute.
 
-    request = WorkingMemoryRequest(
-        sequence_id="open-clause-001",
-        text="The report that the analyst reviewed",
-        partial_structures=[
-            {
-                "structure_id": "relative-1",
-                "label": "relative clause",
-                "expected_slots": ["object"],
-            }
-        ],
-    )
+## 6. Logger and SQLite annotations
 
-The slot remains open until an explicit candidate binding matches it and clears the retrieval threshold.
-An upstream syntax result can be supplied using syntax_result; unresolved_dependencies,
-incomplete_structures, and explicitly unresolved long_distance_dependencies are read when present.
+Every new class and function has a plain-English docstring. The repository's ORE logger indexes these docstrings into its SQLite annotation catalogue when a logged Python entry point runs.
 
-## 5. SQLite annotation logging
+The default local database is:
 
-Every class and function in ore_working_memory has a plain-English Python docstring. The existing
-ORE AST catalogue indexes those docstrings into the annotations table of
-ore_logs/ore_logger.sqlite3. The automatic runtime logger links calls, returns, and exceptions to
-the annotation rows when an ORE entry point is launched with auto-logging enabled. Set ORE_AUTO_LOG=0
-to disable automatic tracing. The SQLite file is runtime output and is intentionally not committed.
+ore_logs/ore_logger.sqlite3
 
-The test suite also invokes sync_repository against a temporary SQLite database and checks that
-class and method annotations were stored with annotation_source='docstring'.
+It is generated at runtime and intentionally ignored by Git. Operation trace rows also contain the registry descriptions and mathematical/biological notes needed to inspect an execution. The SQLite test indexes the repository into a temporary database and checks that the new class/function annotations are persisted with annotation_source='docstring'.
 
-## 6. Validation and limitations
+## 7. Verification
 
-The software tests cover registry order, all 30 trace rows, one neural-reference update per operation,
-bounded modality-specific buffers, activation and rehearsal, explicit incomplete frames, supported-only
-slot binding, unresolved long-distance dependency preservation, semantic alternatives and abstention,
-goal-biased executive focus, task switches and resumption, JSON serialization, docstring completeness,
-and SQLite annotation persistence.
+Run the focused suite and then all repository tests:
 
-The implementation is English-oriented and uses deterministic heuristics. It does not include an
-acoustic phonological encoder, a trained language parser, an episodic-memory database, a learned
-executive controller, or a validated human task-switching model. Behavioral validity requires held-out
-language/task datasets, independent labels, calibration, and baseline comparisons. Biological validity
-requires task-matched neural data, preregistered predictions, and independent replication.
+    python -m pytest tests/test_working_memory.py -q
+    python -m pytest
+
+Tests cover the exact 40-operation name/order, 8/6/7/9/10 stage allocation, one-to-one trace and LIF operation counts, bounded buffers, explicit syntactic binding, unresolved dependencies, ambiguity/abstention, goal bias, semantic knowledge and revision, task checkpoint/resumption, observed transition-cost learning, completion gating, JSON serialization, and SQLite docstring indexing.
+
+Passing these tests demonstrates software behavior and trace integrity only. Biological correspondence and behavioral validity require independent datasets, preregistered predictions, calibrated comparisons, and ablation studies.

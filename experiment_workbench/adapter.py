@@ -12,6 +12,7 @@ import types
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, get_args, get_origin, get_type_hints
 
 from observer import PythonCallObserver, inspect_output
@@ -259,12 +260,25 @@ def accepts_parameter(info: CallableInfo, parameter_name: str) -> bool:
 
 def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[str, Any],
             previous_output: Any = None, runtime_kwargs: dict[str, Any] | None = None,
-            on_event=None, trace_lines: bool = False):
-    """Invoke one component and return raw output plus structured execution observations."""
+            on_event=None, trace_lines: bool = False,
+            log_directory: str | Path | None = None):
+    """Invoke a component and return output, observations, and optional narrative logs."""
     run_id = uuid.uuid4().hex
     started_at = datetime.now(timezone.utc).isoformat()
     started = time.perf_counter()
-    observer = PythonCallObserver(package_name, on_event=on_event, trace_lines=trace_lines)
+    logger = None
+    logging_error = None
+    if log_directory is not None:
+        try:
+            from narration import OREExecutionLogger
+            logger = OREExecutionLogger(
+                log_directory, run_id, package_name, info.label, started_at,
+                on_event=on_event,
+            )
+        except Exception as exc:
+            logging_error = f"{type(exc).__name__}: {exc}"
+    observer_callback = logger.log_python_event if logger is not None else on_event
+    observer = PythonCallObserver(package_name, on_event=observer_callback, trace_lines=trace_lines)
     result = {
         "run_id": run_id, "started_at": started_at, "component": package_name,
         "callable": info.label, "prompt": prompt, "status": "error", "elapsed_ms": None,
@@ -272,6 +286,8 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
         "output": None, "error": None, "traceback": None,
         "profile": {}, "observation": {}, "trace_lines_enabled": trace_lines,
     }
+    if logging_error:
+        result["logging_error"] = logging_error
     try:
         with observer:
             module = importlib.import_module(info.module)
@@ -290,7 +306,10 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
                 function = getattr(instance, info.name)
             else:
                 function = getattr(module, info.name)
-            kwargs = build_arguments(function, prompt, supplied, previous_output, runtime_kwargs)
+            effective_runtime_kwargs = dict(runtime_kwargs or {})
+            if logger is not None and "on_operation" in inspect.signature(function).parameters:
+                effective_runtime_kwargs.setdefault("on_operation", logger.log_operation)
+            kwargs = build_arguments(function, prompt, supplied, previous_output, effective_runtime_kwargs)
             result["arguments"] = kwargs
             result["input_observation"] = inspect_output(kwargs)
             result["output"] = function(**kwargs)
@@ -306,6 +325,16 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
             "trace_count": 0, "numerical_summaries": [], "array_count": 0,
             "warnings": [], "checks": [], "summary": {},
         }
+        if logger is not None:
+            try:
+                logger.log_component_traces(result["observation"].get("trace_rows", []))
+                result["logs"] = logger.finish(
+                    result["status"], result["elapsed_ms"],
+                    result["observation"].get("output_type"),
+                    result.get("error"),
+                )
+            except Exception as exc:
+                result["logging_error"] = f"{type(exc).__name__}: {exc}"
     return result
 
 def json_safe(value: Any, depth: int = 0):

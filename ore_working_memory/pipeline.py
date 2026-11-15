@@ -125,8 +125,8 @@ class WorkingMemoryProcessor:
             self._op_monitor_sentence_progress,
             self._op_measure_conflict,
             self._op_allocate_control,
-            self._op_apply_top_down_bias,
-            self._op_select_control_focus,
+            self._op_regulate_competing_representations,
+            self._op_determine_interpretation_acceptance,
             self._op_coordinate_subsystems,
             self._op_identify_semantic_ambiguity,
             self._op_prepare_interpretations,
@@ -1296,6 +1296,117 @@ class WorkingMemoryProcessor:
         self._record(state, "WMCC-019", {
             "goal_fits": fits,
         }, sum(item["goal_fit"] for item in fits) / max(1, len(fits)))
+
+    def _op_regulate_competing_representations(
+        self, state: dict[str, Any], request: WorkingMemoryRequest,
+    ) -> None:
+        """Apply goal-sensitive excitation and lateral inhibition while retaining every supplied interpretation."""
+        raw_candidates = list(request.interpretations[:self.config.max_interpretations])
+        activations = []
+        if raw_candidates:
+            for index, candidate in enumerate(raw_candidates):
+                prior = _clip(float(candidate.get("prior", 0.5)))
+                base = (
+                    0.20 * _clip(float(candidate.get("lexical_score", 0.5)))
+                    + 0.28 * _clip(float(candidate.get("semantic_score", 0.5)))
+                    + 0.20 * _clip(float(candidate.get("syntactic_score", 0.5)))
+                    + 0.16 * _clip(float(candidate.get("discourse_score", 0.5)))
+                    + 0.16 * _clip(float(candidate.get("world_score", candidate.get("knowledge_score", 0.5))))
+                    + 0.05 * prior
+                )
+                explicit_fit = candidate.get("goal_compatibility")
+                goal_fit = (
+                    _clip(float(explicit_fit))
+                    if explicit_fit is not None
+                    else _cosine_similarity(candidate.get("features", {}), request.goals.get("features", {}))
+                )
+                goal_bias = self.config.control_gain * state["control"].get("control_demand", 0.0) * (
+                    0.65 * goal_fit + 0.35 * prior
+                )
+                activations.append({
+                    "hypothesis_id": str(candidate.get("hypothesis_id", candidate.get("id", f"H-{index + 1:03d}"))),
+                    "interpretation": str(candidate.get("interpretation", candidate.get("label", candidate.get("text", f"hypothesis {index + 1}")))),
+                    "base_activation": base,
+                    "goal_fit": goal_fit,
+                    "goal_bias": goal_bias,
+                    "pre_competition_activation": max(0.0, base + goal_bias),
+                })
+        regulated = []
+        for index, candidate in enumerate(activations):
+            competitors = sum(
+                other["pre_competition_activation"]
+                for other_index, other in enumerate(activations) if other_index != index
+            )
+            normalized_inhibition = self.config.lateral_inhibition * (
+                competitors / max(1, len(activations) - 1)
+            )
+            regulated.append({
+                **candidate,
+                "lateral_inhibition": normalized_inhibition,
+                "regulated_activation": max(
+                    0.0, candidate["pre_competition_activation"] - normalized_inhibition,
+                ),
+            })
+        probabilities = _softmax(
+            [item["regulated_activation"] for item in regulated],
+            self.config.semantic_temperature,
+        )
+        for item, probability in zip(regulated, probabilities):
+            item["regulated_probability"] = probability
+        state["control"]["regulated_hypotheses"] = regulated
+        state["control"]["regulated_posterior"] = probabilities
+        state["control"]["regulated_alternatives_preserved"] = len(regulated)
+        self._record(state, "WMCC-019", {
+            "candidate_count": len(regulated),
+            "regulated_hypotheses": regulated,
+            "posterior_sum": sum(probabilities),
+            "all_alternatives_preserved": True,
+        }, max(probabilities) if probabilities else 0.0)
+
+    def _op_determine_interpretation_acceptance(
+        self, state: dict[str, Any], request: WorkingMemoryRequest,
+    ) -> None:
+        """Make a provisional control decision from regulated candidates without replacing final semantic resolution."""
+        regulated = state["control"].get("regulated_hypotheses", [])
+        probabilities = state["control"].get("regulated_posterior", [])
+        ranked = sorted(
+            zip(regulated, probabilities),
+            key=lambda pair: pair[1], reverse=True,
+        )
+        if ranked:
+            best, confidence = ranked[0]
+            second_probability = ranked[1][1] if len(ranked) > 1 else 0.0
+            margin = confidence - second_probability
+            blocking_conflict = bool(request.context.get("blocking_interpretation_conflict", False))
+            accepted = (
+                confidence >= self.config.confidence_threshold
+                and margin >= self.config.ambiguity_margin
+                and not blocking_conflict
+            )
+            decision = {
+                "status": "provisionally_accepted" if accepted else "continue_evaluation",
+                "accepted": accepted,
+                "hypothesis_id": best["hypothesis_id"] if accepted else None,
+                "focus_hypothesis_id": best["hypothesis_id"],
+                "focus_interpretation": best["interpretation"],
+                "confidence": confidence,
+                "top_two_margin": margin,
+                "confidence_threshold": self.config.confidence_threshold,
+                "margin_threshold": self.config.ambiguity_margin,
+                "blocking_conflict": blocking_conflict,
+                "preserved_alternative_count": len(ranked) - (1 if accepted else 0),
+                "is_final_semantic_decision": False,
+            }
+        else:
+            decision = {
+                "status": "awaiting_candidate_generation", "accepted": False,
+                "hypothesis_id": None, "focus_hypothesis_id": None,
+                "focus_interpretation": None, "confidence": 0.0,
+                "top_two_margin": 0.0, "preserved_alternative_count": 0,
+                "is_final_semantic_decision": False,
+            }
+        state["control"]["provisional_interpretation_decision"] = decision
+        self._record(state, "WMCC-020", decision, decision.get("confidence", 0.0))
 
     def _op_apply_top_down_bias(
         self, state: dict[str, Any], request: WorkingMemoryRequest,

@@ -184,6 +184,7 @@ with left:
                         runtime_kwargs=runtime_kwargs,
                         on_event=event_queue.put,
                         trace_lines=trace_lines,
+                        log_directory=ROOT / "ore_logs",
                     )
 
                 worker = threading.Thread(target=_execute_in_worker, daemon=True)
@@ -207,21 +208,26 @@ with left:
                             last_render = now
                             latest = live_events[-1] if live_events else None
                             with metrics_slot.container():
-                                m1, m2, m3 = st.columns(3)
+                                m1, m2, m3, m4 = st.columns(4)
                                 m1.metric("Observed events", len(live_events))
-                                m2.metric("Function calls", sum(1 for e in live_events if e.get("kind") == "call"))
-                                m3.metric("Errors raised", sum(1 for e in live_events if e.get("kind") == "exception"))
+                                m2.metric("ORE steps", sum(1 for e in live_events if e.get("kind") == "operation"))
+                                m3.metric("Python calls", sum(1 for e in live_events if e.get("kind") == "call"))
+                                m4.metric("Errors raised", sum(1 for e in live_events if e.get("kind") == "exception"))
                             if latest:
                                 stack = latest.get("active_stack", [])
                                 current = stack[-1]["function"] if stack else "Between component calls or finishing."
+                                latest_explanation = latest.get("explanation", "")
                                 active_slot.markdown(
-                                    "**What Python is doing now**\n\n" + current
+                                    ("**Latest ORE explanation**\n\n" + latest_explanation + "\n\n" if latest_explanation else "")
+                                    + "**What Python is doing now**\n\n" + current
                                     + "\n\n**Active call stack**\n"
                                     + ("\n".join(f'{i+1}. {item["function"]}' for i, item in enumerate(stack[-8:])) if stack else "No ORE function is currently active.")
                                 )
                                 rows = [{
                                     "time (ms)": e.get("elapsed_ms"),
                                     "event": e.get("kind"),
+                                    "step": e.get("step", ""),
+                                    "operation / function": e.get("operation") or e.get("function", ""),
                                     "what happened": e.get("explanation"),
                                     "location": f'{e.get("file", "")}:{e.get("line", "")}',
                                     "duration (ms)": e.get("duration_ms", ""),
@@ -283,7 +289,7 @@ with right:
         metrics[0].metric("Elapsed time", f'{result.get("elapsed_ms", 0)} ms')
         metrics[1].metric("Python calls", profile.get("observed_call_count", 0))
         metrics[2].metric("Numeric arrays", obs.get("array_count", 0))
-        tabs = st.tabs(["Overview", "Live debugger", "Stage trace", "Python calls", "Numerics", "Raw result"])
+        tabs = st.tabs(["Overview", "Live debugger", "Narration log", "Stage trace", "Python calls", "Numerics", "Raw result"])
         with tabs[0]:
             st.write("**Run identity**")
             st.code(result.get("run_id", ""), language="text")
@@ -361,6 +367,61 @@ with right:
             st.markdown("- Line: the specific source line Python is executing. Enable line tracing for this slower view.")
 
         with tabs[2]:
+            narrative_events = [
+                e for e in result.get("live_events", [])
+                if e.get("kind") in {"operation", "component_trace"}
+            ]
+            st.markdown("**Plain-language account of ORE's processing steps**")
+            st.caption("N9 operation events are written as their mark() calls occur. Trace rows from other packages are narrated when the component returns them.")
+            if narrative_events:
+                narrative_rows = [{
+                    "elapsed (ms)": e.get("elapsed_ms"),
+                    "step": e.get("step", ""),
+                    "stage": e.get("phase", ""),
+                    "operation": e.get("operation", ""),
+                    "status": e.get("status", ""),
+                    "explanation": e.get("explanation", ""),
+                } for e in narrative_events]
+                st.dataframe(narrative_rows, use_container_width=True, hide_index=True)
+                labels = [
+                    f'{e.get("sequence", i + 1):04d} · {e.get("step", "trace")} · {e.get("title", e.get("operation", "component step"))}'
+                    for i, e in enumerate(narrative_events)
+                ]
+                selected_label = st.selectbox("Inspect a narrated step", labels, key=f'narration_{result.get("run_id")}')
+                selected_event = narrative_events[labels.index(selected_label)]
+                st.subheader(selected_event.get("title", selected_event.get("operation", "Step details")))
+                st.write(selected_event.get("explanation", "No plain-language explanation was supplied."))
+                if selected_event.get("phase_explanation"):
+                    st.caption(selected_event["phase_explanation"])
+                if selected_event.get("status_explanation"):
+                    st.info(selected_event["status_explanation"])
+                if selected_event.get("details"):
+                    st.write("**Recorded technical details**")
+                    st.json(_compact(selected_event["details"]))
+            else:
+                st.info("No declared operation trace was captured for this run. The Python call timeline remains available in the Live debugger tab.")
+            log_meta = result.get("logs", {})
+            if log_meta:
+                st.divider()
+                st.markdown("**Saved background log files**")
+                st.caption(f'Events written: {log_meta.get("event_count", 0)} · Log directory: {Path(log_meta.get("markdown_path", "")).parent}')
+                for key, label, mime in (
+                    ("markdown_path", "Download readable Markdown log", "text/markdown"),
+                    ("jsonl_path", "Download machine-readable JSONL log", "application/x-ndjson"),
+                ):
+                    log_path = Path(log_meta.get(key, ""))
+                    if log_path.is_file():
+                        st.download_button(
+                            label, data=log_path.read_text(encoding="utf-8"),
+                            file_name=log_path.name, mime=mime,
+                            key=f'{key}_{result.get("run_id")}',
+                        )
+                if log_meta.get("logger_errors"):
+                    st.warning("The execution completed, but the logger reported: " + "; ".join(log_meta["logger_errors"]))
+            elif result.get("logging_error"):
+                st.warning("Persistent logging could not be started: " + result["logging_error"])
+
+        with tabs[3]:
             rows = obs.get("trace_rows", [])
             st.caption(f'{obs.get("trace_count", 0)} records extracted from component traces and diagnostics.')
             if rows:
@@ -368,7 +429,7 @@ with right:
             else:
                 st.info("No explicit stage/operation trace was exposed by this result object.")
 
-        with tabs[3]:
+        with tabs[4]:
             events = profile.get("events", [])
             if profile.get("dropped_event_count"):
                 st.warning(f'{profile["dropped_event_count"]} Python call events were omitted at the capture limit.')
@@ -380,7 +441,7 @@ with right:
             else:
                 st.info("No Python calls inside the selected package were captured.")
 
-        with tabs[4]:
+        with tabs[5]:
             arrays = obs.get("numerical_summaries", [])
             if arrays:
                 st.caption("Summaries are calculated from returned NumPy arrays; raw arrays remain unchanged.")
@@ -388,7 +449,7 @@ with right:
             else:
                 st.info("The output did not contain inspectable NumPy arrays.")
 
-        with tabs[5]:
+        with tabs[6]:
             st.caption("Preview is truncated for readability. Download the full JSON report.")
             st.json(result.get("output_preview", _compact(json_safe(result.get("output")))))
             report = {

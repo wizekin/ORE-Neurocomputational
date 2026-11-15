@@ -522,10 +522,20 @@ class ComprehensionProcessor:
         when relevant language and conceptual cues are retrieved.
         """
         words = set(state["discourse_history"]) | set(state["received_tokens"])
-        scores = {
-            event: float(len(words.intersection(cues))) + 0.05
+        cue_counts = {
+            event: len(words.intersection(cues))
             for event, cues in _EVENT_CUES.items()
         }
+        if max(cue_counts.values(), default=0) == 0:
+            # Do not turn absence of evidence into an arbitrary preference for the first event.
+            scores = {event: 0.0 for event in cue_counts}
+            scores["generic"] = 1.0
+        else:
+            scores = {
+                event: float(count) + (0.05 if count else 0.0)
+                for event, count in cue_counts.items()
+            }
+            scores["generic"] = 0.0
         probabilities = _softmax(scores, temperature=0.8)
         best = max(probabilities, key=probabilities.get)
         state["sentence_hypotheses"] = {

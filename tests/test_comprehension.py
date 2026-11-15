@@ -31,6 +31,16 @@ def test_tokenizer_preserves_sentence_boundary_markers() -> None:
     assert tokenize_text("The chef prepared food.") == ["The", "chef", "prepared", "food", "."]
 
 
+def test_unknown_context_defaults_to_generic_event_instead_of_arbitrary_script() -> None:
+    """Ensure missing event cues yield a neutral hypothesis rather than the first registered schema."""
+    processor = ComprehensionProcessor(ComprehensionConfig(simulate_biology=False))
+    result = processor.process(ComprehensionRequest(
+        sequence_id="generic-event-test",
+        text="The glorp blorped.",
+    ))
+    assert result.sentence_interpretations[0]["event_hypothesis"] == "generic"
+
+
 def test_functional_pipeline_executes_all_38_operations_for_each_token() -> None:
     """Check per-token operation traces, mathematical outputs, and final sentence consolidation."""
     processor = ComprehensionProcessor(ComprehensionConfig(simulate_biology=False))

@@ -807,7 +807,8 @@ class CSCProcessor:
         for initial in state["candidate_scores"]:
             concept_id = initial["concept_id"]
             features = self._feature_by_concept[concept_id]
-            semantic_match = _cosine(features, state["semantic_state"])
+            retrieval_state = state.get("controlled_state") or state["semantic_state"]
+            semantic_match = _cosine(features, retrieval_state)
             task_match = (
                 _cosine(features, state["task_state"])
                 if state["task_state"] else 0.5
@@ -820,6 +821,7 @@ class CSCProcessor:
             active_total = sum(features.values()) or 1.0
             feature_match = sum(
                 value * relevance.get(feature, 0.5)
+                * (0.5 + 0.5 * retrieval_state.get(feature, 0.0))
                 for feature, value in features.items()
             ) / active_total
             score = (

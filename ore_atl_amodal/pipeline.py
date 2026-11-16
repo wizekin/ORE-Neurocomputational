@@ -511,17 +511,19 @@ class AmodalATLProcessor:
         request: AmodalATLRequest = state["request"]
         noun = state["noun_text"]
         selected = state["retrieval"]["selected"]
-        concept = next(
-            (item for item in self.concepts
-             if selected and item.concept_id == selected["concept_id"]),
-            None,
-        )
-        if concept is None and noun:
+        concept = None
+        if noun:
             matching = [
                 item for item in self.concepts
                 if self._lexical_score(noun, item) >= 0.95
             ]
             concept = matching[0] if matching else None
+        elif selected:
+            concept = next(
+                (item for item in self.concepts
+                 if item.concept_id == selected["concept_id"]),
+                None,
+            )
         if request.noun_features:
             noun_raw = self._encode_features(request.noun_features, "semantic")
         elif concept is not None:
@@ -628,6 +630,12 @@ class AmodalATLProcessor:
         noun = state["noun_vector"]
         resemblance = (1.0 + _cosine(phrase, noun)) / 2.0
         adjective_type = state["request"].adjective_type
+        if adjective_type == "auto":
+            adjective_type = (
+                "privative"
+                if (state["adjective_text"] or "").casefold() in {"fake", "counterfeit", "imitation"}
+                else "subsective"
+            )
         if not state["adjective_text"]:
             membership = 1.0
         elif adjective_type == "privative":

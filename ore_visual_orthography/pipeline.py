@@ -443,7 +443,7 @@ class VisualOrthographyProcessor:
     ) -> list[dict[str, Any]]:
         """Build the fixed sixteen-row trace with the functional and neural evidence kept distinct."""
         biological_by_id = {
-            item["operation_id"]: item for item in biology_steps
+            item["operation_id"]: item for item in biology_steps if item is not None
         }
         trace: list[dict[str, Any]] = []
         for index, spec in enumerate(OPERATION_REGISTRY, start=1):

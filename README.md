@@ -770,3 +770,56 @@ Run the demonstration from the repository root:
 The demo selects between financial and river meanings of “bank”, indexes all CSC class/function docstrings in the shared `ore_logger` SQLite annotation catalogue, and records the operation/stage trace through `SQLiteRunRecorder`. The documentation is in `docs/CSC_18_STAGE_ARCHITECTURE.md`.
 
 The functional and LIF tracks are transparent computational hypotheses, not a fitted or validated reproduction of human neural activity. Learning is preview-only unless the caller supplies explicit feedback and authorizes an update.
+
+## Hybrid embodied–amodal concept formation — 19 stages
+
+The additive `ore_hybrid_embodied_amodal` package implements the 19-stage hybrid concept-processing specification. It retains modality-specific embodied representations (visual, auditory, motor, somatosensory, affective, linguistic and related channels) while an ATL-inspired hub estimates cross-modal common information. It also preserves route-specific residuals, performs task/context abstraction, top-down spoke reactivation, predictive error correction, response selection, and provenance-gated learning.
+
+Every stage has a stable `HEC-01.01`–`HEC-01.19` ID. Every registered sub-operation has its own stable ID, equation, functional responsibility, and biological-reference note. A separate optional current-based LIF reference reports voltage (mV), current (pA), firing rate (Hz), spikes, and simulated time (ms). These are transparent computational analogues, not a fitted or validated reproduction of human neural activity.
+
+Quick start:
+
+```python
+from ore_hybrid_embodied_amodal import (
+    HybridConcept, HybridEmbodiedAmodalProcessor, HybridRequest,
+)
+
+concept = HybridConcept(
+    concept_id="guitar",
+    label="guitar",
+    category="musical instrument",
+    features={"instrument": 1.0, "strings": 0.9, "music": 0.8},
+    modality_features={
+        "visual": {"strings": 0.9},
+        "auditory": {"music": 0.8},
+        "motor": {"strumming": 0.9},
+    },
+    verified_by="reviewer",
+    source_reference="dataset://concepts/guitar",
+)
+processor = HybridEmbodiedAmodalProcessor([concept])
+result = processor.process(HybridRequest(
+    sequence_id="example-001",
+    modality_inputs={
+        "visual": {"strings": 0.9},
+        "auditory": {"music": 0.8},
+        "motor": {"strumming": 0.9},
+    },
+    task="recognition",
+))
+print(result.selected_concept)
+print(len(result.stage_trace))       # 19
+print(len(result.operation_trace))   # complete sub-operation trace
+```
+
+The package consumes named feature maps from upstream perception; raw image/audio transduction is outside its input contract. Learning is preview-only unless explicitly authorized with reviewer and source provenance.
+
+The ORE SQLite logger stores module/class/function/method docstrings in `ore_logs/ore_logger.sqlite3`. Use `index_hybrid_annotations(".")` to refresh the symbol catalogue and `record_hybrid_result(result, ".")` to persist all operation explanations and the 19-stage run trace.
+
+See [docs/HYBRID_EMBODIED_AMODAL_19_STAGE_ARCHITECTURE.md](docs/HYBRID_EMBODIED_AMODAL_19_STAGE_ARCHITECTURE.md) and run:
+
+```bash
+python -m ore_hybrid_embodied_amodal
+python -m pytest tests/test_hybrid_embodied_amodal.py -q
+python -m pytest
+```

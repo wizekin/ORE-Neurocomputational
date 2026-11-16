@@ -581,6 +581,11 @@ class HubAndSpokeProcessor:
                     for key, value in memory_map.items()
                 }
             remembered = _safe_vector(memory_map, self._vocabulary[modality])
+            association_drive = (
+                self._feature_associations[modality].T
+                @ state["input_vectors"][modality]
+            )
+            remembered = np.clip(remembered + 0.20 * association_drive, 0.0, 1.0)
             current_quality = (
                 float(np.count_nonzero(state["input_vectors"][modality])) /
                 max(1, len(self._vocabulary[modality]))
@@ -974,8 +979,43 @@ class HubAndSpokeProcessor:
             "feature_evidence_counts": {
                 key: dict(value) for key, value in feature_counts.items()
             },
+            "feature_probabilities": {
+                concept_id: {
+                    feature: float(value / max(
+                        sum(item.confidence for item in experiences
+                             if item.concept_id == concept_id),
+                        _EPS,
+                    ))
+                    for feature, value in features.items()
+                }
+                for concept_id, features in feature_counts.items()
+            },
+            "stable_features": {
+                concept_id: sorted(
+                    feature for feature, value in features.items()
+                    if value / max(
+                        sum(item.confidence for item in experiences
+                            if item.concept_id == concept_id),
+                        _EPS,
+                    ) >= 0.5
+                )
+                for concept_id, features in feature_counts.items()
+            },
+            "incidental_features": {
+                concept_id: sorted(
+                    feature for feature, value in features.items()
+                    if value / max(
+                        sum(item.confidence for item in experiences
+                            if item.concept_id == concept_id),
+                        _EPS,
+                    ) < 0.5
+                )
+                for concept_id, features in feature_counts.items()
+            },
             "all_experiences_sourced": all(
-                item.source_reference and item.verified_by for item in experiences
+                item.source_reference not in {"", "unspecified"}
+                and item.verified_by not in {"", "unspecified"}
+                for item in experiences
             ),
         }
 

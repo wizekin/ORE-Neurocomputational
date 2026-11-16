@@ -9,7 +9,8 @@ from .contracts import (
     WordFormEpisode,
 )
 from .pipeline import SemanticCognitionProcessor
-from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore
+from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore, SemanticPrototypeEvidence
+from .source_mapping import SOURCE_COMPONENTS, SOURCE_OPERATION_MAP, source_mapping_as_dicts
 from .registry import OPERATION_REGISTRY, OperationSpec, registry_as_dicts
 
 __all__ = [
@@ -22,6 +23,10 @@ __all__ = [
     "SemanticLIFSimulator",
     "SemanticMemoryStore",
     "MEMORY_OPERATION_REGISTRY",
+    "SemanticPrototypeEvidence",
+    "SOURCE_COMPONENTS",
+    "SOURCE_OPERATION_MAP",
+    "source_mapping_as_dicts",
     "SemanticN8Adapter",
     "SemanticRequest",
     "SemanticResult",

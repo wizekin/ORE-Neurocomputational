@@ -43,7 +43,8 @@ The registry in ore_csc/registry.py gives each stage and operation a stable ID. 
 The functional implementation accepts:
 - A pinned sequence of SemanticConcept records with provenance, aliases, frequency, semantic features, and optional modality-specific features.
 - One text cue or an ordered token sequence.
-- Optional graded contextual features and task-target features.
+- Optional one-dimensional numeric signal samples, transformed with z-score normalization and a real FFT; raw audio decoding and image feature extraction remain external front-end responsibilities.
+- Optional graded current and previous contextual/task feature maps, combined with exponential moving averages.
 - Optional modality feature maps and response options.
 
 Named feature activations are finite values in [0, 1]. The model retains all candidate meanings through initial lexical access. It uses weak frequency priors during candidate activation, then evaluates candidates again using semantic, task, feature, and contextual compatibility.
@@ -116,7 +117,7 @@ The optional LIF simulator includes named populations for sensory input, lexical
 
 The population drive mapping is intended to make assumptions observable and testable. It does not reproduce anatomical connectivity, neuron counts, real firing-rate distributions, or an experimentally fitted human circuit. The exact anatomical boundaries of semantic-control networks and the role of parietal areas are model- and task-dependent. The LIF simulation must therefore be interpreted as a reference model, not evidence that the brain executes these equations or stages literally.
 
-The source document also presents Fourier analysis as an illustrative description of signal transformation. This package starts from text and extracted feature maps; it does not claim to implement biological auditory or visual front ends, raw waveform FFT, or image processing.
+The source document presents Fourier analysis as one possible signal transformation. The package implements a numerical real FFT for caller-supplied one-dimensional signal samples, but does not acquire or decode audio recordings, perform cochlear modeling, or process raw images. Caller-supplied visual and other modality features remain feature-map inputs.
 
 ## 6. Learning safety and reproducibility
 

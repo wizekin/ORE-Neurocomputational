@@ -1174,9 +1174,15 @@ class CSCProcessor:
                     delta_links[left + "|" + right] = delta
             self._retrieval_counts[concept_id] += 1
             self._learned_priors[concept_id] += self.config.learning_rate * reward
+            target_outcome = (reward + 1.0) / 2.0
+            predicted_outcome = _sigmoid(self._control_bias)
+            error_gradient = (
+                (predicted_outcome - target_outcome)
+                * predicted_outcome * (1.0 - predicted_outcome)
+            )
+            control_bias_delta = -self.config.learning_rate * error_gradient
             self._control_bias = float(np.clip(
-                self._control_bias + self.config.learning_rate * (1.0 - reward),
-                -1.0, 1.0
+                self._control_bias + control_bias_delta, -1.0, 1.0
             ))
             self._learning_generation += 1
             learning = {
@@ -1187,6 +1193,10 @@ class CSCProcessor:
                 "hebbian_link_deltas": delta_links,
                 "retrieval_frequency": self._retrieval_counts[concept_id],
                 "learned_prior": self._learned_priors[concept_id],
+                "predicted_outcome": predicted_outcome,
+                "target_outcome": target_outcome,
+                "error_gradient": error_gradient,
+                "control_bias_delta": control_bias_delta,
                 "control_bias": self._control_bias,
                 "learning_generation": self._learning_generation,
                 "long_term_memory_changed": True,

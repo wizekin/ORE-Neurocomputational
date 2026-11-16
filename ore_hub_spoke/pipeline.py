@@ -647,6 +647,13 @@ class HubAndSpokeProcessor:
                             state["spoke_projections"][right],
                         )))
                     )
+        direct_modalities = [
+            modality for modality in MODALITIES
+            if np.any(state["input_vectors"][modality])
+        ]
+        reinstated_modalities = [
+            modality for modality in active if modality not in direct_modalities
+        ]
         state["modality_gates"] = gate_map
         state["cross_modal_disagreement"] = disagreement
         return {
@@ -655,6 +662,9 @@ class HubAndSpokeProcessor:
             "gate_sum": float(sum(gate_map.values())),
             "cross_modal_disagreement": disagreement,
             "active_modalities": active,
+            "direct_input_modalities": direct_modalities,
+            "memory_reinstated_modalities": reinstated_modalities,
+            "missing_channels_encoded_as_negative": False,
         }
 
     def _stage_07_integrate_hub(self, state: dict[str, Any]) -> dict[str, Any]:

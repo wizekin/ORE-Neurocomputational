@@ -20,14 +20,22 @@ from .contracts import WordFormEpisode
 
 
 MEMORY_OPERATION_REGISTRY = (
-    {"operation_id": "SM-001", "name": "Capture word-form episode"},
-    {"operation_id": "SM-002", "name": "Encode word-form and contextual features"},
-    {"operation_id": "SM-003", "name": "Separate similar episodic traces"},
-    {"operation_id": "SM-004", "name": "Bind orthographic, phonological, semantic and context features"},
-    {"operation_id": "SM-005", "name": "Store durable episodic trace"},
-    {"operation_id": "SM-006", "name": "Retrieve and complete episodic traces"},
-    {"operation_id": "SM-007", "name": "Consolidate experience into lexical memory"},
-    {"operation_id": "SM-008", "name": "Strengthen abstract lexical prototypes through experience"},
+    {"operation_id": "SM-001", "source_step_id": "29", "name": "Capture current word-form episode"},
+    {"operation_id": "SM-002", "source_step_id": "30", "name": "Encode episode into memory representation"},
+    {"operation_id": "SM-003", "source_step_id": "31", "name": "Separate similar episodic traces"},
+    {"operation_id": "SM-004", "source_step_id": "32", "name": "Bind orthographic, phonological, semantic and context features"},
+    {"operation_id": "SM-005", "source_step_id": "33", "name": "Store durable episodic memory trace"},
+    {"operation_id": "SM-006", "source_step_id": "34", "name": "Retrieve matching episodic traces"},
+    {"operation_id": "SM-007", "source_step_id": "35", "name": "Perform pattern completion from partial cues"},
+    {"operation_id": "SM-008", "source_step_id": "36", "name": "Send retrieved episodic information into semantic processing"},
+    {"operation_id": "SM-009", "source_step_id": "37", "name": "Collect multiple word-form experiences"},
+    {"operation_id": "SM-010", "source_step_id": "38", "name": "Identify common features across episodes"},
+    {"operation_id": "SM-011", "source_step_id": "39", "name": "Build abstract orthographic representation"},
+    {"operation_id": "SM-012", "source_step_id": "40", "name": "Build abstract phonological representation"},
+    {"operation_id": "SM-013", "source_step_id": "41", "name": "Construct abstract lexical identity"},
+    {"operation_id": "SM-014", "source_step_id": "42", "name": "Strengthen prototype through experience"},
+    {"operation_id": "SM-015", "source_step_id": "43", "name": "Consolidate abstract representation"},
+    {"operation_id": "SM-016", "source_step_id": "44", "name": "Generalize across new experiences"},
 )
 
 
@@ -65,6 +73,56 @@ def _cosine(left: Mapping[str, float], right: Mapping[str, float]) -> float:
 def _json(value: Any) -> str:
     """Serialize stored feature values deterministically."""
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+
+@dataclass(frozen=True, slots=True)
+class SemanticPrototypeEvidence:
+    """Abstract lexical evidence derived from consolidated experiences, not a new episode."""
+
+    episode_id: str
+    orthography: str
+    concept_id: str | None
+    phonological_form: tuple[str, ...]
+    semantic_features: Mapping[str, float]
+    context_features: Mapping[str, float]
+    strength: float
+    recency: float
+    source_reference: str
+    evidence_type: str = "abstract_lexical_prototype"
+    prototype_id: str = ""
+
+
+def _numeric_features(values: Mapping[str, Any]) -> dict[str, float]:
+    """Keep only finite numeric feature entries from an optional context mapping."""
+    features: dict[str, float] = {}
+    for key, raw in values.items():
+        if isinstance(raw, bool):
+            continue
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(value):
+            features[str(key)] = value
+    return features
+
+
+def _sequence_similarity(left: Sequence[str], right: Sequence[str]) -> float:
+    """Return normalized edit similarity for ordered phoneme sequences."""
+    a, b = list(left), list(right)
+    if len(a) < len(b):
+        a, b = b, a
+    previous = list(range(len(b) + 1))
+    for i, item_a in enumerate(a, start=1):
+        current = [i]
+        for j, item_b in enumerate(b, start=1):
+            current.append(min(
+                current[-1] + 1, previous[j] + 1,
+                previous[j - 1] + (item_a != item_b),
+            ))
+        previous = current
+    return max(0.0, 1.0 - previous[-1] / max(len(a), len(b), 1))
 
 
 class SemanticMemoryStore:
@@ -304,6 +362,7 @@ class SemanticMemoryStore:
             (concept_id, concept_id),
         ).fetchall()
         query_profile = _ngrams(normalized)
+        context_features = _numeric_features(context_features or {})
         ranked: list[tuple[float, sqlite3.Row]] = []
         for row in rows:
             form_fit = _cosine(query_profile, _ngrams(row["normalized_form"]))
@@ -330,6 +389,200 @@ class SemanticMemoryStore:
             )
             for row in selected
         ]
+
+    def pattern_complete(
+        self,
+        *,
+        orthography: str | None = None,
+        phonological_form: Sequence[str] = (),
+        semantic_features: Mapping[str, float] | None = None,
+        context_features: Mapping[str, float] | None = None,
+        concept_id: str | None = None,
+        minimum_similarity: float = 0.15,
+    ) -> dict[str, Any]:
+        """Complete missing channels from the best-supported stored episode using partial cues."""
+        normalized = _normalize(orthography or "")
+        phones = tuple(str(phone) for phone in phonological_form)
+        semantic = _numeric_features(semantic_features or {})
+        context = _numeric_features(context_features or {})
+        if not (normalized or phones or semantic or context or concept_id):
+            raise ValueError("pattern completion requires at least one non-empty cue")
+        if not math.isfinite(minimum_similarity) or not 0.0 <= minimum_similarity <= 1.0:
+            raise ValueError("minimum_similarity must lie in [0, 1]")
+        rows = self._connection.execute(
+            "SELECT * FROM episodes WHERE (? IS NULL OR concept_id=?)",
+            (concept_id, concept_id),
+        ).fetchall()
+        query_profile = _ngrams(normalized) if normalized else {}
+        cue_weights = {
+            "orthography": 0.45 if normalized else 0.0,
+            "phonology": 0.25 if phones else 0.0,
+            "semantics": 0.20 if semantic else 0.0,
+            "context": 0.10 if context else 0.0,
+        }
+        active_weight = sum(cue_weights.values()) or 1.0
+        ranked: list[tuple[float, dict[str, float], sqlite3.Row]] = []
+        for row in rows:
+            channels: dict[str, float] = {}
+            if normalized:
+                channels["orthography"] = _cosine(query_profile, _ngrams(row["normalized_form"]))
+            if phones:
+                channels["phonology"] = _sequence_similarity(
+                    phones, tuple(json.loads(row["phonological_form"]))
+                )
+            if semantic:
+                channels["semantics"] = _cosine(
+                    semantic, json.loads(row["semantic_features"])
+                )
+            if context:
+                channels["context"] = _cosine(context, json.loads(row["context_features"]))
+            score = sum(cue_weights[key] * channels.get(key, 0.0) for key in cue_weights) / active_weight
+            score *= 0.65 + 0.35 * float(row["strength"]) * float(row["recency"])
+            ranked.append((score, channels, row))
+        ranked.sort(key=lambda item: (item[0], item[2]["created_at"]), reverse=True)
+        if not ranked or ranked[0][0] < minimum_similarity:
+            result = {
+                "status": "no_supported_completion",
+                "similarity": float(ranked[0][0]) if ranked else 0.0,
+                "completed_episode": None,
+                "completed_channels": [],
+                "candidate_count": len(rows),
+            }
+            self._record("SM-007", "no_supported_completion", {
+                "cue_channels": [key for key, value in cue_weights.items() if value],
+                "minimum_similarity": minimum_similarity,
+                "candidate_count": len(rows),
+            })
+            return result
+        score, channel_scores, row = ranked[0]
+        episode = WordFormEpisode(
+            episode_id=row["episode_id"],
+            orthography=row["orthography"],
+            concept_id=row["concept_id"],
+            phonological_form=tuple(json.loads(row["phonological_form"])),
+            semantic_features=json.loads(row["semantic_features"]),
+            context_features=json.loads(row["context_features"]),
+            strength=float(row["strength"]),
+            recency=float(row["recency"]),
+            source_reference=row["source_reference"],
+        )
+        supplied = {
+            "orthography": bool(normalized), "phonology": bool(phones),
+            "semantics": bool(semantic), "context": bool(context),
+        }
+        completed = [key for key, observed in supplied.items() if not observed]
+        result = {
+            "status": "completed",
+            "similarity": float(score),
+            "channel_scores": channel_scores,
+            "completed_episode": episode,
+            "completed_episode_id": episode.episode_id,
+            "completed_channels": completed,
+            "candidate_count": len(rows),
+            "completion_source": "stored_episodic_trace",
+            "no_unobserved_feature_invention": True,
+        }
+        self._record("SM-007", "executed", {
+            "cue_channels": [key for key, value in cue_weights.items() if value],
+            "channel_scores": channel_scores,
+            "selected_episode_id": episode.episode_id,
+            "completed_channels": completed,
+            "similarity": float(score),
+        }, episode.episode_id)
+        return result
+
+    def record_semantic_feedback(
+        self, query: str, *, episodic_ids: Sequence[str] = (),
+        prototype_ids: Sequence[str] = (), evidence_count: int = 0,
+    ) -> None:
+        """Record that retrieved memory evidence was returned to the semantic inference path."""
+        self._record("SM-008", "executed", {
+            "query": query,
+            "episodic_ids": list(episodic_ids),
+            "prototype_ids": list(prototype_ids),
+            "evidence_count": int(evidence_count),
+            "destination": [
+                "ATL semantic hub", "modality spokes", "distributed semantic features",
+                "phonological representation", "semantic control",
+            ],
+        })
+
+    def generalize(
+        self,
+        *,
+        orthography: str | None = None,
+        phonological_form: Sequence[str] = (),
+        semantic_features: Mapping[str, float] | None = None,
+        context_features: Mapping[str, float] | None = None,
+        limit: int = 4,
+        minimum_similarity: float = 0.15,
+    ) -> list[dict[str, Any]]:
+        """Match a new word-form cue against consolidated abstract lexical prototypes."""
+        normalized = _normalize(orthography or "")
+        phones = tuple(str(phone) for phone in phonological_form)
+        semantic = _numeric_features(semantic_features or {})
+        context = _numeric_features(context_features or {})
+        if not (normalized or phones or semantic or context):
+            raise ValueError("generalization requires at least one non-empty cue")
+        if limit < 1:
+            raise ValueError("limit must be positive")
+        if not math.isfinite(minimum_similarity) or not 0.0 <= minimum_similarity <= 1.0:
+            raise ValueError("minimum_similarity must lie in [0, 1]")
+        rows = self._connection.execute(
+            "SELECT * FROM prototypes ORDER BY prototype_id"
+        ).fetchall()
+        query_profile = _ngrams(normalized) if normalized else {}
+        weights = {
+            "orthography": 0.45 if normalized else 0.0,
+            "phonology": 0.25 if phones else 0.0,
+            "semantics": 0.20 if semantic else 0.0,
+            "context": 0.10 if context else 0.0,
+        }
+        active_weight = sum(weights.values()) or 1.0
+        ranked: list[dict[str, Any]] = []
+        for row in rows:
+            proto_phones = json.loads(row["phonological_profile"])
+            channels: dict[str, float] = {}
+            if normalized:
+                channels["orthography"] = _cosine(
+                    query_profile, json.loads(row["orthographic_profile"])
+                )
+            if phones:
+                expected = tuple(
+                    phone for phone, _ in sorted(proto_phones.items(), key=lambda pair: pair[0])
+                )
+                channels["phonology"] = _sequence_similarity(phones, expected)
+            if semantic:
+                channels["semantics"] = _cosine(
+                    semantic, json.loads(row["semantic_features"])
+                )
+            if context:
+                channels["context"] = _cosine(
+                    context, json.loads(row["context_features"])
+                )
+            score = sum(weights[key] * channels.get(key, 0.0) for key in weights) / active_weight
+            if score < minimum_similarity:
+                continue
+            ranked.append({
+                "prototype_id": row["prototype_id"],
+                "experience_count": int(row["experience_count"]),
+                "similarity": float(score),
+                "channel_scores": channels,
+                "orthographic_profile": json.loads(row["orthographic_profile"]),
+                "phonological_profile": proto_phones,
+                "semantic_features": json.loads(row["semantic_features"]),
+                "context_features": json.loads(row["context_features"]),
+                "generalization_status": "matched_consolidated_prototype",
+            })
+        ranked.sort(key=lambda item: (item["similarity"], item["experience_count"]), reverse=True)
+        matches = ranked[:limit]
+        self._record("SM-016", "matched" if matches else "no_match", {
+            "orthography_cue": normalized,
+            "candidate_prototype_count": len(rows),
+            "returned_prototype_ids": [item["prototype_id"] for item in matches],
+            "minimum_similarity": minimum_similarity,
+        })
+        return matches
 
     def consolidate(self, prototype_id: str | None = None, *,
                     learning_rate: float = 0.20) -> dict[str, Any]:
@@ -407,13 +660,43 @@ class SemanticMemoryStore:
                 "semantic_dimensions": len(semantic), "context_dimensions": len(context),
             })
         self._connection.commit()
-        self._record("SM-007", "executed", {
-            "prototype_groups_consolidated": len(updated), "learning_rate": learning_rate,
-            "groups": updated,
+        prototype_ids = [item["prototype_id"] for item in updated]
+        total_episodes = sum(item["experience_count"] for item in updated)
+        self._record("SM-009", "executed", {
+            "prototype_groups": prototype_ids, "episode_count_collected": total_episodes,
         })
-        self._record("SM-008", "executed", {
-            "strengthened_prototypes": [item["prototype_id"] for item in updated],
-            "experience_driven_update": True,
+        self._record("SM-010", "executed", {
+            "common_feature_dimensions": {
+                item["prototype_id"]: {
+                    "orthographic": item["orthographic_dimensions"],
+                    "phonological": item["phonological_dimensions"],
+                    "semantic": item["semantic_dimensions"],
+                    "context": item["context_dimensions"],
+                } for item in updated
+            },
+            "experience_weighting": "normalized_episode_strength",
+        })
+        self._record("SM-011", "executed", {
+            "orthographic_profiles_built": prototype_ids,
+            "position_sensitive_n_gram_encoding": "ordered_character_bigrams",
+        })
+        self._record("SM-012", "executed", {
+            "phonological_profiles_built": prototype_ids,
+            "phonological_order_policy": "stored episodic sequences remain ordered; aggregate prototype is a unit-frequency profile",
+        })
+        self._record("SM-013", "executed", {
+            "abstract_lexical_identities": prototype_ids,
+            "identity_links": ["orthography", "phonology", "semantics", "context", "episode references"],
+        })
+        self._record("SM-014", "executed", {
+            "experience_strength_updates": total_episodes,
+            "learning_rate": learning_rate,
+            "bounded_strength": True,
+        })
+        self._record("SM-015", "executed", {
+            "consolidated_prototype_count": len(updated),
+            "prototype_ids": prototype_ids,
+            "slow_cortical_rate_approximation": learning_rate,
         })
         return {"updated_prototypes": updated, "learning_rate": learning_rate}
 

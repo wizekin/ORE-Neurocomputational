@@ -1,6 +1,7 @@
 """Master orchestration for seven-stage predictive orthographic processing."""
 from __future__ import annotations
 from typing import Any, Iterable, Mapping
+import math
 import numpy as np
 from ore_n3 import LabeledN2Patch, N3Processor, N3Sequence
 from ore_n3.visual import extract_patch_features

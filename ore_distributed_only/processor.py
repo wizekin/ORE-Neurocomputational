@@ -15,6 +15,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
+from .biology import DistributedLIFConfig, DistributedLIFSimulator
 from .contracts import (
     POPULATIONS,
     POPULATION_ALIASES,
@@ -128,6 +129,10 @@ class DistributedOnlyProcessor:
         self._population_index = {name: i for i, name in enumerate(POPULATIONS)}
         self.population_connectivity = self._initialize_population_connectivity()
         self.within_population_weights = self._initialize_within_population_weights()
+        self.biological_simulator = DistributedLIFSimulator(
+            DistributedLIFConfig(neuron_count=self.population_size),
+            random_seed=self.random_seed,
+        )
         self.auto_log = bool(auto_log)
         self.repository_root = Path(repository_root).expanduser().resolve() if repository_root else Path(__file__).resolve().parents[1]
         self.database_path = Path(database_path).expanduser().resolve() if database_path else self.repository_root / "ore_logs" / "ore_logger.sqlite3"
@@ -308,6 +313,12 @@ class DistributedOnlyProcessor:
             population: float(np.mean(context["activity"][index]))
             for index, population in enumerate(POPULATIONS)
         }
+        biological_event = self.biological_simulator.step(
+            spec.stage_id,
+            means,
+            connectivity=self.population_connectivity,
+        )
+        context.setdefault("biological_trace", []).append(biological_event)
         context["stage_trace"].append({
             "stage_id": spec.stage_id,
             "stage_name": spec.name,
@@ -315,8 +326,9 @@ class DistributedOnlyProcessor:
             "objective": spec.objective,
             "biological_interpretation": spec.biological_interpretation,
             "functional_status": "completed",
-            "biological_status": "computational_analogue",
+            "biological_status": "lif_population_simulation",
             "population_activity": means,
+            "biological_population_activity": biological_event["population_activity"],
             "sub_operation_count": len(spec.operations),
         })
 
@@ -493,6 +505,8 @@ class DistributedOnlyProcessor:
                 self._vectorize(episode.properties.get(population, {}))
                 for population in POPULATIONS
             ])
+            episode_activity[self._population_index["contextual"]] += self._vectorize(episode.context)
+            episode_activity = np.clip(episode_activity, 0.0, 1.0)
             channel_similarities = [
                 _cosine(activity[i], episode_activity[i])
                 for i in range(len(POPULATIONS))
@@ -561,8 +575,9 @@ class DistributedOnlyProcessor:
         """Apply excitatory drive, global competition, nonlinear firing, and divisive normalization."""
         activity = context["activity"]
         excitation = np.maximum(activity, 0.0)
-        global_inhibition = self.inhibition_strength * float(np.mean(excitation))
-        net = np.maximum(excitation - global_inhibition, 0.0)
+        local_pooled_activity = np.mean(excitation, axis=1, keepdims=True)
+        inhibitory_drive = self.inhibition_strength * local_pooled_activity
+        net = np.maximum(excitation - inhibitory_drive, 0.0)
         fired = _sigmoid(6.0 * (net - 0.22))
         fired *= net > 0.0
         pooled = np.mean(fired, axis=1, keepdims=True)
@@ -570,7 +585,7 @@ class DistributedOnlyProcessor:
         context["activity"] = np.clip(normalized, 0.0, 1.0)
         outputs = [
             {"mean_excitatory_drive": float(np.mean(excitation))},
-            {"inhibitory_level": global_inhibition},
+            {"local_inhibitory_drive": inhibitory_drive.astype(float).tolist()},
             {"mean_net_drive": float(np.mean(net))},
             {"mean_nonlinear_response": float(np.mean(fired))},
             {"mean_divisive_gain": float(np.mean(1.0 / (0.35 + pooled)))},
@@ -1044,8 +1059,9 @@ class DistributedOnlyProcessor:
             "interpretation_entropy": context.get("interpretation_entropy", 0.0),
             "scientific_scope": (
                 "Mathematical implementation of a distributed-only theory. "
-                "Biological labels identify candidate mechanisms; parameters are not fitted to neural recordings."
+                "The separate LIF reference track is not fitted to neural recordings."
             ),
+            "biological_simulation": self.biological_simulator.snapshot(),
         }
         result = DistributedSemanticResult(
             interpretation=context.get("interpretation"),

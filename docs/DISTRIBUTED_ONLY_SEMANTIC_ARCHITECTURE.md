@@ -76,11 +76,16 @@ outputs cause an explicit error.
 
 ## Mathematical and biological interpretation
 
-The implementation uses vector activation, bounded nonlinearities, cosine
+The functional track uses vector activation, bounded nonlinearities, cosine
 similarity, population connectivity, recurrent updates, softmax normalization,
 phase-coherence estimates, correlations, Hebbian co-activation, an optional
-spike-timing-dependent update, and lesion masks. These are numerical models or
-analysis readouts. The brain does not literally execute Python, matrix
+spike-timing-dependent update, and lesion masks. A separate current-based
+leaky-integrate-and-fire track simulates each population group with membrane
+voltage (mV), synaptic current (pA), refractory periods (ms), spike counts, and
+firing-rate estimates (Hz) at every semantic stage. These are numerical models or
+analysis readouts. The LIF reference is kept separate from semantic feature
+inference so a spike in the reference simulator is not misrepresented as an
+observed biological neural response. The brain does not literally execute Python, matrix
 multiplication, softmax, cosine similarity, or symbolic formulae. No default
 parameter should be interpreted as a measured human physiological constant.
 

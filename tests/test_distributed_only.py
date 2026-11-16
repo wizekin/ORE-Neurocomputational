@@ -92,6 +92,11 @@ def test_pipeline_executes_all_stages_and_preserves_distributed_populations():
     assert result.observed_indices["linguistic"]
     assert result.episodic_retrieval
     assert result.timing_coordination["global_phase_coherence"] >= 0.0
+    biological = result.diagnostics["biological_simulation"]
+    assert biological["enabled"] is True
+    assert biological["stage_count"] == 21
+    assert biological["numerically_valid"] is True
+    assert "mean_membrane_voltage_mv" in biological["populations"]["auditory"]
     assert result.interpretation in {"violin", "guitar", None}
 
 

@@ -1,6 +1,7 @@
 """ORE distributed-only semantic representation and embodied processing."""
 
 from .annotations import index_distributed_annotations, record_distributed_result
+from .biology import DistributedLIFConfig, DistributedLIFSimulator
 from .contracts import (
     POPULATIONS,
     ConceptPattern,
@@ -16,6 +17,8 @@ __all__ = [
     "POPULATIONS",
     "STAGE_REGISTRY",
     "ConceptPattern",
+    "DistributedLIFConfig",
+    "DistributedLIFSimulator",
     "DistributedOnlyProcessor",
     "DistributedSemanticRequest",
     "DistributedSemanticResult",

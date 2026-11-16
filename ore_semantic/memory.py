@@ -6,7 +6,7 @@ binding, storage, retrieval, consolidation and prototype strengthening.
 """
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import json
 import math

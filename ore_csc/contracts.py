@@ -46,6 +46,10 @@ class CSCRequest:
     context_features: Mapping[str, float] = field(default_factory=dict)
     task_features: Mapping[str, float] = field(default_factory=dict)
     modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
+    signal_samples: Sequence[float] = ()
+    signal_modality: str = "auditory"
+    previous_context_features: Mapping[str, float] = field(default_factory=dict)
+    previous_task_features: Mapping[str, float] = field(default_factory=dict)
     response_options: Sequence[str] = ()
     required_fit: float = 0.65
     feedback_concept_id: str | None = None
@@ -72,8 +76,14 @@ class CSCRequest:
             raise ValueError("response_options must contain non-empty strings")
         if self.feedback_concept_id is not None and not self.feedback_concept_id.strip():
             raise ValueError("feedback_concept_id cannot be empty")
+        if not self.signal_modality.strip():
+            raise ValueError("signal_modality must be non-empty")
+        if any(not math.isfinite(float(sample)) for sample in self.signal_samples):
+            raise ValueError("signal_samples must contain finite numeric values")
         _validate_feature_map("context", self.context_features)
         _validate_feature_map("task", self.task_features)
+        _validate_feature_map("previous context", self.previous_context_features)
+        _validate_feature_map("previous task", self.previous_task_features)
         for modality, features in self.modality_inputs.items():
             if not isinstance(modality, str) or not modality.strip():
                 raise ValueError("modality names must be non-empty")
@@ -97,6 +107,8 @@ class CSCConfig:
     confidence_threshold: float = 0.42
     selection_margin_threshold: float = 0.035
     feature_threshold: float = 0.30
+    context_ema_alpha: float = 0.65
+    task_ema_alpha: float = 0.70
     gain_strength: float = 0.65
     inhibition_strength: float = 0.45
     recurrence_gain: float = 0.30
@@ -123,8 +135,8 @@ class CSCConfig:
             raise ValueError("iteration and population counts must be positive")
         for name in (
             "confidence_threshold", "selection_margin_threshold", "feature_threshold",
-            "gain_strength", "inhibition_strength", "recurrence_gain", "activity_decay",
-            "learning_rate",
+            "context_ema_alpha", "task_ema_alpha", "gain_strength", "inhibition_strength",
+            "recurrence_gain", "activity_decay", "learning_rate",
         ):
             value = float(getattr(self, name))
             if not math.isfinite(value) or not 0.0 <= value <= 1.0:

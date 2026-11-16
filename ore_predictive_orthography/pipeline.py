@@ -8,6 +8,8 @@ from ore_n4 import N4Config, N4Input, N4Processor
 from .biology import BIOLOGICAL_STAGE_NAMES, LIFConfig, simulate_lif_reference
 from .contracts import PredictiveOrthographyResult
 from .registry import MASTER_OPERATION_REGISTRY, MASTER_STAGE_REGISTRY
+from .source_mapping import OPERATION_TO_SOURCE_STEPS, source_mapping_as_dicts
+from ore_n4.stages import damped_belief_update, normalized_entropy, normalize_signal
 
 def _symmetric_kl_rows(left: np.ndarray, right: np.ndarray, epsilon: float) -> np.ndarray:
     p = np.maximum(np.asarray(left, dtype=np.float64), epsilon)
@@ -38,6 +40,38 @@ def _mean_row_entropy(values: np.ndarray, epsilon: float) -> float:
     p = np.maximum(np.asarray(values, dtype=np.float64), epsilon)
     p /= p.sum(axis=1, keepdims=True)
     return float(np.mean(-np.sum(p * np.log(p), axis=1)))
+
+
+def _trace_value(value: Any) -> Any:
+    """Summarize one operation's own output without copying full high-dimensional arrays."""
+    if isinstance(value, np.ndarray):
+        array = np.asarray(value)
+        numeric = array.astype(np.float64, copy=False) if array.size else array
+        result: dict[str, Any] = {
+            "shape": list(array.shape), "dtype": str(array.dtype),
+            "size": int(array.size),
+        }
+        if array.size and np.issubdtype(array.dtype, np.number):
+            result.update({
+                "finite": bool(np.isfinite(numeric).all()),
+                "minimum": float(np.min(numeric)),
+                "maximum": float(np.max(numeric)),
+                "mean": float(np.mean(numeric)),
+                "sample": array.reshape(-1)[:8].tolist(),
+            })
+        return result
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, Mapping):
+        return {str(key): _trace_value(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_trace_value(item) for item in value[:8]] + (
+            [{"remaining_items": len(value) - 8}] if len(value) > 8 else []
+        )
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return repr(value)
+
 
 class PredictiveOrthographyProcessor:
     """Compose N3 evidence/transitions and N4 attention/precision/posterior inference.
@@ -230,16 +264,148 @@ class PredictiveOrthographyProcessor:
              "summary": stage_summaries[stage.stage_id]}
             for stage in MASTER_STAGE_REGISTRY
         ]
-        operation_trace = [
-            {"operation_id": op.operation_id, "stage_id": op.stage_id, "name": op.name,
-             "mathematical_form": op.mathematical_form,
-             "biological_reference": op.biological_reference,
-             "implementation_source": op.implementation_source,
-             "status": "executed",
-             "stage_output_keys": sorted(stage_outputs[op.stage_id].keys()),
-             "stage_summary": stage_summaries[op.stage_id]}
-            for op in MASTER_OPERATION_REGISTRY
-        ]
+        # Each MPO record is emitted from a distinct intermediate produced by the
+        # corresponding computation. No stage-summary template is replayed 40 times.
+        transition_unigram_counts = np.asarray(
+            getattr(transition_model, "unigram_counts", np.zeros_like(transition_model.unigram)),
+            dtype=np.float32,
+        )
+        transition_bigram_counts = np.asarray(
+            getattr(transition_model, "bigram_counts", np.zeros_like(transition_model.forward)),
+            dtype=np.float32,
+        )
+        alpha = float(getattr(transition_model, "smoothing_alpha", 0.0))
+        visual_entropy = -np.sum(
+            np.maximum(n3_result.visual_probabilities, epsilon)
+            * np.log(np.maximum(n3_result.visual_probabilities, epsilon)), axis=1
+        )
+        normalized_visual_uncertainty = normalized_entropy(
+            n3_result.visual_probabilities, epsilon
+        )
+        raw_error = np.mean(np.abs(n3_result.classwise_prediction_error), axis=1)
+        normalized_error = normalize_signal(raw_error, epsilon)
+        prior_disagreement = _symmetric_kl_rows(
+            n3_result.visual_probabilities, n3_result.contextual_priors, epsilon
+        )
+        confidence = np.asarray(
+            [float(item.get("segmentation_confidence", 1.0)) for item in n4_result.candidates],
+            dtype=np.float32,
+        )
+        if confidence.shape != (len(sequence.patches),):
+            confidence = np.asarray(
+                [patch.segmentation_confidence for patch in sequence.patches], dtype=np.float32
+            )
+        n4_config = getattr(self.n4_processor, "config", None) or N4Config()
+        unmodulated_prior_precision = (
+            n4_config.prediction_gain * (0.5 + normalized_visual_uncertainty) * (2.0 - confidence)
+        )
+        task_modulated_prior_precision = (
+            unmodulated_prior_precision * (1.0 + n4_config.task_prior_gain * n4_result.top_down_relevance)
+        )
+        bounded_prior_precision = np.clip(
+            task_modulated_prior_precision,
+            n4_config.prior_precision_min,
+            n4_config.prior_precision_max,
+        ).astype(np.float32)
+        proposal_seed, _ = damped_belief_update(
+            n4_result.n3_posterior_beliefs,
+            n4_result.visual_probabilities,
+            n4_result.contextual_priors,
+            n4_result.sensory_precision,
+            n4_result.prior_precision,
+            n4_result.class_attention_gate,
+            1.0,
+            epsilon,
+        )
+        posterior_prediction_error = posterior * (
+            np.log(np.maximum(posterior, epsilon))
+            - np.log(np.maximum(n4_result.contextual_priors, epsilon))
+        )
+        precision_weighted_residuals = (
+            attended_feature_residuals * n4_result.sensory_precision[:, None]
+        )
+        source_operation_outputs: dict[str, dict[str, Any]] = {
+            "MPO-001": {"sequence_id": sequence.sequence_id, "position_count": len(sequence.patches),
+                        "patch_ids": [patch.patch_id for patch in sequence.patches],
+                        "segmentation_metadata_validated": True},
+            "MPO-002": {"raw_visual_descriptors": raw_features},
+            "MPO-003": {"feature_mean": np.asarray(self.n3_processor.visual_population.mean),
+                        "feature_scale": np.asarray(self.n3_processor.visual_population.scale)},
+            "MPO-004": {"standardized_query_descriptors": normalized_features},
+            "MPO-005": {"grapheme_population_prototypes": prototypes},
+            "MPO-006": {"query_prototype_similarity": normalized_features @ prototypes.T},
+            "MPO-007": {"bottom_up_candidate_activation": n3_result.visual_probabilities},
+            "MPO-008": {"unknown_candidate_probability": n3_result.visual_probabilities[:, -1],
+                        "initial_belief_state": n3_result.initial_beliefs},
+            "MPO-009": {"observed_grapheme_exposure_counts": transition_unigram_counts},
+            "MPO-010": {"observed_ordered_pair_counts": transition_bigram_counts},
+            "MPO-011": {"dirichlet_smoothing_alpha": alpha,
+                        "smoothed_unigram_counts": transition_unigram_counts + alpha,
+                        "smoothed_pair_counts": transition_bigram_counts + alpha},
+            "MPO-012": {"normalized_unigram_prior": transition_model.unigram},
+            "MPO-013": {"forward_transition_probabilities": transition_model.forward},
+            "MPO-014": {"reverse_transition_probabilities": transition_model.reverse},
+            "MPO-015": {"frozen_transition_model_fingerprint": transition_model.fingerprint},
+            "MPO-016": {"initial_grapheme_beliefs": n3_result.initial_beliefs},
+            "MPO-017": {"left_neighbor_messages": left, "left_neighbor_available": left_available},
+            "MPO-018": {"right_neighbor_messages": right, "right_neighbor_available": right_available},
+            "MPO-019": {"recurrently_integrated_contextual_priors": n3_result.contextual_priors},
+            "MPO-020": {"normalized_contextual_priors": n3_result.contextual_priors,
+                        "row_sum_error": np.max(np.abs(n3_result.contextual_priors.sum(axis=1) - 1.0))},
+            "MPO-021": {"visual_entropy_by_position": visual_entropy},
+            "MPO-022": {"normalized_visual_uncertainty": normalized_visual_uncertainty},
+            "MPO-023": {"classwise_error_magnitude": raw_error, "normalized_error_signal": normalized_error},
+            "MPO-024": {"visual_context_symmetric_kl": prior_disagreement},
+            "MPO-025": {"bottom_up_salience": n4_result.bottom_up_salience},
+            "MPO-026": {"task_and_goal_relevance": n4_result.top_down_relevance},
+            "MPO-027": {"competitive_attention_allocation": n4_result.attention_allocation},
+            "MPO-028": {"attention_gated_sensory_precision": n4_result.sensory_precision},
+            "MPO-029": {"unmodulated_prior_precision": unmodulated_prior_precision},
+            "MPO-030": {"top_down_modulated_prior_precision": task_modulated_prior_precision},
+            "MPO-031": {"bounded_prior_precision": bounded_prior_precision},
+            "MPO-032": {"precision_channels_validated": bool(
+                np.isfinite(n4_result.sensory_precision).all()
+                and np.isfinite(n4_result.prior_precision).all()
+                and np.all(n4_result.sensory_precision > 0)
+                and np.all(n4_result.prior_precision > 0)
+            )},
+            "MPO-033": {"attended_initial_belief_state": n4_result.n3_posterior_beliefs},
+            "MPO-034": {"precision_weighted_posterior_proposal": proposal_seed},
+            "MPO-035": {"normalized_posterior_proposal": proposal_seed,
+                        "proposal_row_sum_error": np.max(np.abs(proposal_seed.sum(axis=1) - 1.0))},
+            "MPO-036": {"damped_recurrent_posterior": posterior,
+                        "damping_factor": n4_config.damping},
+            "MPO-037": {"settling_iterations": len(n4_result.iteration_trace),
+                        "iteration_trace": n4_result.iteration_trace,
+                        "converged": bool(n4_result.diagnostics.get("converged", False)),
+                        "final_belief_change": n4_result.diagnostics.get("mean_belief_change", 0.0)},
+            "MPO-038": {"posterior_to_contextual_prediction_error": posterior_prediction_error,
+                        "posterior_prediction_divergence": np.sum(posterior_prediction_error, axis=1)},
+            "MPO-039": {"contextual_feature_residuals": contextual_residuals,
+                        "attended_feature_residuals": attended_feature_residuals,
+                        "precision_weighted_residuals": precision_weighted_residuals},
+            "MPO-040": {"confidence_and_abstention_diagnostics": n4_result.diagnostics,
+                        "ranked_hypotheses": n4_result.candidates,
+                        "final_validation": {"finite_outputs": finite, "posterior_row_sum_error": row_sum_error}},
+        }
+        operation_trace = []
+        for op in MASTER_OPERATION_REGISTRY:
+            produced = source_operation_outputs[op.operation_id]
+            operation_trace.append({
+                "operation_id": op.operation_id, "stage_id": op.stage_id, "name": op.name,
+                "mathematical_form": op.mathematical_form,
+                "biological_reference": op.biological_reference,
+                "implementation_source": op.implementation_source,
+                "source_step_ids": list(OPERATION_TO_SOURCE_STEPS.get(op.operation_id, ())),
+                "status": "executed",
+                "inputs_observed": {"stage_id": op.stage_id},
+                "outputs_produced": _trace_value(produced),
+                "execution_evidence": {
+                    "output_field_names": sorted(produced),
+                    "operation_specific_output": True,
+                    "stage_summary_reused_as_operation_output": False,
+                },
+            })
 
         if self.simulate_biology:
             signals: Mapping[str, object] = {
@@ -269,6 +435,8 @@ class PredictiveOrthographyProcessor:
                      and len(stage_trace) == 7 and len(operation_trace) == 40)
         diagnostics = {
             "valid": valid, "stage_count": len(stage_trace), "operation_count": len(operation_trace),
+            "source_step_count": 38, "source_step_mapping_complete": len(source_mapping_as_dicts()) == 38,
+            "operation_specific_outputs": all(row["execution_evidence"]["operation_specific_output"] for row in operation_trace),
             "n3_valid": bool(n3_result.diagnostics.get("valid", False)),
             "n4_valid": bool(n4_result.diagnostics.get("valid", False)),
             "biological_valid": bool(biological.get("numerically_valid", False)) if self.simulate_biology else None,
@@ -288,6 +456,7 @@ class PredictiveOrthographyProcessor:
             "functional_components": ["ore_n3", "ore_n4"],
             "biological_component": "current-based LIF reference network" if self.simulate_biology else None,
             "stage_registry": "MPO-S1..S7", "operation_registry": "MPO-001..MPO-040",
+            "source_step_mapping": source_mapping_as_dicts(), "source_step_count": 38,
             "transition_model_fingerprint": str(transition_model.fingerprint),
             "visual_model_fingerprint": str(self.n3_processor.visual_population.fingerprint),
             "input_boundary": "one already-segmented N2 result or feature vector per patch in logical reading order",

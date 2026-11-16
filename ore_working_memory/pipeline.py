@@ -12,7 +12,7 @@ from typing import Any, Mapping, Sequence
 from .biology import WorkingMemoryLIFSimulator
 from .contracts import WorkingMemoryConfig, WorkingMemoryRequest, WorkingMemoryResult
 from .registry import OPERATION_REGISTRY, STAGE_REGISTRY, OperationSpec
-from .source_mapping import REPOSITORY_OPERATION_TO_SOURCE, WM_EXTENSION_REGISTRY, source_mapping_as_dicts
+from .source_mapping import REPOSITORY_OPERATION_TO_SOURCE, SOURCE_OPERATION_MAP, WM_EXTENSION_REGISTRY, source_mapping_as_dicts
 
 
 _TOKEN_PATTERN = re.compile(r"\w+(?:['’]\w+)?|[^\w\s]", flags=re.UNICODE)
@@ -1839,13 +1839,45 @@ class WorkingMemoryProcessor:
             "perception": {"phonological": 0.35, "lexical_semantic": 0.20, "syntactic": 0.10, "event_discourse": 0.20, "executive_goal": 0.15},
             "reasoning": {"phonological": 0.10, "lexical_semantic": 0.10, "syntactic": 0.20, "event_discourse": 0.40, "executive_goal": 0.20},
         }
-        profile = profiles.get(family, profiles["language"])
-        state["task"]["task_family"] = family
-        state["task"]["control_weights"] = profile
-        state["task"]["reconfigured_after_switch"] = bool(state["task"].get("switch_events"))
+        switch_events = list(state["task"].get("switch_events", []))
+        switch_detected = bool(switch_events)
+        initial_task_setup = "control_weights" not in state["task"]
+        requested_gate = bool(request.context.get("allow_working_memory_update", True))
+        gate_open = requested_gate and (initial_task_setup or switch_detected)
+        if gate_open:
+            profile = profiles.get(family, profiles["language"])
+            state["task"]["task_family"] = family
+            state["task"]["control_weights"] = profile
+            gate_reason = "initial_task_setup" if initial_task_setup else "permitted_task_switch"
+        else:
+            profile = dict(state["task"].get("control_weights", profiles["language"]))
+            gate_reason = (
+                "explicitly_blocked" if not requested_gate else "no_task_switch_to_apply"
+            )
+        gate = {
+            "open": gate_open,
+            "reason": gate_reason,
+            "switch_detected": switch_detected,
+            "initial_task_setup": initial_task_setup,
+            "update_permission": requested_gate,
+            "target_task": task,
+            "previous_profile_preserved": not gate_open,
+        }
+        state["task"]["working_memory_update_gate"] = gate
+        state["task"]["reconfigured_after_switch"] = bool(switch_detected and gate_open)
         self._record(state, "WMCC-034", {
-            "current_task": task, "task_family": family, "control_weights": profile,
+            "current_task": task, "task_family": family,
+            "control_weights": profile, "working_memory_update_gate": gate,
         }, max(profile.values()))
+        state["source_extension_trace"].append({
+            "operation_id": "WMX-003",
+            "source_operation_id": "WM-SRC-035",
+            "stage_id": "S5",
+            "operation_name": "Open the working-memory updating gate",
+            "status": "opened" if gate_open else "closed",
+            "gate": gate,
+            "updated_control_weights": profile if gate_open else None,
+        })
 
     def _op_manage_task_interference(
         self, state: dict[str, Any], request: WorkingMemoryRequest,

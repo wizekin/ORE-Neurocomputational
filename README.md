@@ -659,3 +659,34 @@ print(len(result.operation_trace))  # 12 operations
 ```
 
 Run `python -m ore_brain_networks` for a deterministic demonstration and `python -m pytest tests/test_brain_networks.py -q` for focused tests. The existing ORE SQLite logger stores class and callable docstrings in `ore_logs/ore_logger.sqlite3` when the package initializes its annotation catalogue. Passing software tests does not establish biological validity.
+
+
+## Visual Processing and Orthographic Representations — five stages / 16 operations
+
+The additive \`ore_visual_orthography\` package implements the sixteen operations from visual image acquisition through Gabor features, abstract letter identity and supervised visual invariance, flexible position coding, position-specific conjunctions, open bigrams, parallel/recurrent letter processing, transposition similarity, lexical competition and stabilization.
+
+Each operation has an ordered \`OVO-001\`–\`OVO-016\` trace with its mathematical operations and a qualified biological-reference explanation. A separate ten-population current-based LIF reference reports membrane voltage, current, firing rate, spikes and elapsed simulation time; it is a configurable computational hypothesis, not an empirically validated brain simulation.
+
+For image-based recognition, supply labelled visual prototypes created from known glyph crops; an unlabelled image is not silently converted to text. An explicit orthographic sequence can instead be provided to test downstream position, conjunction, recurrence and lexical operations.
+
+Quick start:
+
+\`\`\`python
+from ore_visual_orthography import (
+    LexicalCandidate, VisualOrthographyProcessor, VisualOrthographyRequest
+)
+
+processor = VisualOrthographyProcessor()
+result = processor.process(VisualOrthographyRequest(
+    sample_id="reading-001",
+    orthographic_sequence=("j", "u", "d", "g", "e"),
+    comparison_strings=("jugde", "jupte"),
+    lexicon=(LexicalCandidate("judge", frequency=30),),
+    language="en",
+))
+print(len(result.operation_trace))  # 16
+\`\`\`
+
+Run \`python -m ore_visual_orthography\` and \`python -m pytest tests/test_visual_orthography.py -q\`. See [the Stage A-E architecture](docs/VISUAL_ORTHOGRAPHY_STAGES_A_E.md) for the algorithms, equations, biological distinctions, API and limitations.
+
+The package uses the existing ORE AST-backed SQLite annotation catalogue at \`ore_logs/ore_logger.sqlite3\`; its docstrings are indexed as annotations for every class and callable.

@@ -307,6 +307,9 @@ def test_zeroed_modalities_and_no_context_cannot_select_from_frequency_prior(
     assert stage_6["retrieval_evidence_available"] is False
     assert all(value == 0.0 for value in stage_6["retrieved_feature_activation"].values())
     assert all(row["posterior"] == 0.0 for row in result.candidate_scores)
+    stage_13 = result.stage_outputs["HEC-01.13"]
+    assert stage_13["category_evidence_available"] is False
+    assert all(value == 0.0 for value in stage_13["category_posteriors"].values())
 
 
 def test_request_rejects_nonfinite_or_out_of_range_feature_values() -> None:

@@ -88,6 +88,7 @@ class LexicalAccessProcessor:
         *,
         morphemes: Sequence[Any] = (),
         morpheme_category_cues: Mapping[str, Mapping[str, float]] | None = None,
+        morpheme_affix_categories: Mapping[str, str] | None = None,
         config: LexicalAccessConfig | None = None,
     ) -> None:
         self.entries = tuple(lexicon)
@@ -113,6 +114,25 @@ class LexicalAccessProcessor:
         unknown_cues = set(self.morpheme_category_cues) - set(self.morpheme_by_id)
         if unknown_cues:
             raise ValueError(f"category cues reference unknown morphemes: {sorted(unknown_cues)}")
+        self.morpheme_affix_categories = {
+            str(morpheme_id): str(category).strip().casefold()
+            for morpheme_id, category in (morpheme_affix_categories or {}).items()
+        }
+        unknown_affix_categories = set(self.morpheme_affix_categories) - set(self.morpheme_by_id)
+        if unknown_affix_categories:
+            raise ValueError(
+                f"affix categories reference unknown morphemes: {sorted(unknown_affix_categories)}"
+            )
+        invalid_affix_categories = {
+            morpheme_id: category for morpheme_id, category in self.morpheme_affix_categories.items()
+            if category not in {"derivational", "inflectional"}
+            or self.morpheme_by_id[morpheme_id].morpheme_type not in {"prefix", "suffix"}
+        }
+        if invalid_affix_categories:
+            raise ValueError(
+                "affix categories must classify known prefixes/suffixes as derivational or inflectional: "
+                f"{invalid_affix_categories}"
+            )
 
     def _entry_frequencies(self) -> list[float]:
         return [max(0.0, float(entry.frequency) + float(getattr(entry, "exposure_count", 0.0)))
@@ -290,6 +310,9 @@ class LexicalAccessProcessor:
                 components.append({
                     "morpheme_id": str(record.morpheme_id), "form": str(record.form),
                     "morpheme_type": str(record.morpheme_type),
+                    "affix_category": self.morpheme_affix_categories.get(
+                        str(record.morpheme_id), "unspecified"
+                    ) if record.morpheme_type in {"prefix", "suffix"} else "not_applicable",
                     "semantic_features": _bounded_features(getattr(record, "semantic_features", {})),
                     "frequency": float(record.frequency), "productivity": float(record.productivity),
                     "verified_by": str(getattr(record, "verified_by", "unspecified")),
@@ -299,6 +322,19 @@ class LexicalAccessProcessor:
             prefix_record = self.morpheme_by_id.get(str(hypothesis.get("prefix_id"))) if hypothesis.get("prefix_id") else None
             suffix_record = self.morpheme_by_id.get(str(hypothesis.get("suffix_id"))) if hypothesis.get("suffix_id") else None
             affixes = [item for item in (prefix_record, suffix_record) if item is not None]
+            component_by_id = {item["morpheme_id"]: item for item in components}
+            derivational_affixes = [
+                component_by_id[str(item.morpheme_id)] for item in affixes
+                if self.morpheme_affix_categories.get(str(item.morpheme_id)) == "derivational"
+            ]
+            inflectional_affixes = [
+                component_by_id[str(item.morpheme_id)] for item in affixes
+                if self.morpheme_affix_categories.get(str(item.morpheme_id)) == "inflectional"
+            ]
+            unspecified_affixes = [
+                component_by_id[str(item.morpheme_id)] for item in affixes
+                if str(item.morpheme_id) not in self.morpheme_affix_categories
+            ]
             composed = dict(stem_features)
             contributions = {"stem": dict(stem_features)}
             for affix in affixes:
@@ -322,7 +358,12 @@ class LexicalAccessProcessor:
                 "kind": str(hypothesis["kind"]), "stem": str(hypothesis["stem"]),
                 "stem_entry_ids": list(hypothesis["stem_entry_ids"]),
                 "stem_morpheme_id": hypothesis.get("root_morpheme_id"),
-                "components": components, "stem_features": stem_features,
+                "components": components,
+                "derivational_affixes": derivational_affixes,
+                "inflectional_affixes": inflectional_affixes,
+                "unspecified_affixes": unspecified_affixes,
+                "affix_classification_source": "explicit_caller_inventory" if (derivational_affixes or inflectional_affixes) else "unclassified",
+                "stem_features": stem_features,
                 "composed_features": _bounded_features(composed),
                 "feature_contributions": contributions,
                 "category_cues": _bounded_features(category_cues),
@@ -365,6 +406,35 @@ class LexicalAccessProcessor:
                 )
             ]
             affix_support = sum(affix_terms) / len(affix_terms) if affix_terms else 0.5
+            component_affixes = [
+                component for component in retrieved_item.get("components", [])
+                if component.get("morpheme_type") in {"prefix", "suffix"}
+            ]
+            derivational_components = [
+                component for component in component_affixes
+                if component.get("affix_category") == "derivational"
+            ]
+            inflectional_components = [
+                component for component in component_affixes
+                if component.get("affix_category") == "inflectional"
+            ]
+            unspecified_components = [
+                component for component in component_affixes
+                if component.get("affix_category") == "unspecified"
+            ]
+            def class_support(items: Sequence[Mapping[str, Any]]) -> float:
+                """Calculate normalized frequency-productivity support within one affix class."""
+                if not items:
+                    return 0.0
+                terms = [
+                    (math.log1p(float(item["frequency"])) / math.log1p(max_affix_frequency))
+                    * float(item["productivity"])
+                    for item in items
+                ]
+                return sum(terms) / len(terms)
+            derivational_support = class_support(derivational_components)
+            inflectional_support = class_support(inflectional_components)
+            unspecified_support = class_support(unspecified_components)
             composed_features = retrieved_item.get("composed_features", {})
             semantic_fit = _cosine(composed_features, active_semantic_features)
             category_cues = retrieved_item.get("category_cues", {})
@@ -374,6 +444,9 @@ class LexicalAccessProcessor:
                 + cfg.stem_frequency_gain * stem_support
                 + cfg.affix_frequency_gain * affix_support
                 + cfg.affix_productivity_gain * affix_support
+                + 0.5 * cfg.affix_productivity_gain * (
+                    derivational_support + inflectional_support
+                )
                 + cfg.semantic_consistency_gain * semantic_fit
                 + cfg.category_consistency_gain * category_fit
                 + cfg.morphology_gain * float(hypothesis["structural_validity"])
@@ -386,6 +459,13 @@ class LexicalAccessProcessor:
                 "morpheme_ids": list(hypothesis["morpheme_ids"]),
                 "reconstruction": str(hypothesis["reconstruction"]),
                 "stem_support": stem_support, "affix_support": affix_support,
+                "derivational_affix_support": derivational_support,
+                "inflectional_affix_support": inflectional_support,
+                "unspecified_affix_support": unspecified_support,
+                "derivational_affix_ids": [item["morpheme_id"] for item in derivational_components],
+                "inflectional_affix_ids": [item["morpheme_id"] for item in inflectional_components],
+                "unspecified_affix_ids": [item["morpheme_id"] for item in unspecified_components],
+                "affix_classification_complete": not unspecified_components,
                 "semantic_compatibility": semantic_fit, "category_compatibility": category_fit,
                 "score": score,
             })
@@ -699,7 +779,13 @@ class LexicalAccessProcessor:
         mark(20, {"stem_records": [{"hypothesis_id": item["hypothesis_id"], "stem": item["stem"],
                                      "entry_ids": item["stem_entry_ids"], "root_morpheme_id": item["stem_morpheme_id"]} for item in retrieved]},
              {"morphological": min(1.0, len(retrieved) / 3.0)})
-        mark(21, {"affix_records": [{"hypothesis_id": item["hypothesis_id"], "components": item["components"]} for item in retrieved]},
+        mark(21, {"affix_records": [{
+                    "hypothesis_id": item["hypothesis_id"], "components": item["components"],
+                    "derivational_affixes": item["derivational_affixes"],
+                    "inflectional_affixes": item["inflectional_affixes"],
+                    "unspecified_affixes": item["unspecified_affixes"],
+                    "classification_source": item["affix_classification_source"],
+                } for item in retrieved]},
              {"morphological": max((len(item["components"]) / 3.0 for item in retrieved), default=0.0)})
         mark(22, {"component_semantic_and_category_cues": [{"hypothesis_id": item["hypothesis_id"],
                                                               "stem_features": item["stem_features"],
@@ -790,6 +876,10 @@ class LexicalAccessProcessor:
             "timestamp_ms": request.timestamp_ms,
             "parameters": cfg.to_dict(),
             "inventory_policy": "read-only; only caller-supplied lexical entries and morphemes are used",
+            "affix_classification_policy": (
+                "derivational and inflectional affixes are distinguished only when explicitly "
+                "classified by morpheme_affix_categories; unclassified affixes remain unspecified"
+            ),
             "biological_scope": "generic seven-population recurrent LIF reference; not fitted to human data",
         }
         return LexicalAccessResult(

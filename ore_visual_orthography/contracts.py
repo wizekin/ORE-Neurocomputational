@@ -76,7 +76,7 @@ class LetterPrototype:
         )
         if mean.shape != variance.shape or np.any(variance <= 0.0):
             raise ValueError("prototype variance must be positive and match prototype mean")
-        object.__setattr__(self, "label", _normalize_sequence(self.label)[0])
+        object.__setattr__(self, "label", "".join(_normalize_sequence(self.label)))
         object.__setattr__(self, "mean", tuple(float(item) for item in mean))
         object.__setattr__(self, "variance", tuple(float(item) for item in variance))
         object.__setattr__(self, "form_id", str(self.form_id))

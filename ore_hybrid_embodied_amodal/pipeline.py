@@ -110,8 +110,8 @@ class HybridEmbodiedAmodalProcessor:
             features=dict(getattr(item, "semantic_features", {}) or {}),
             modality_features=dict(getattr(item, "modality_features", {}) or {}),
             category=str(
-                getattr(item, "lexical_category", None)
-                or getattr(item, "prototype_id", None)
+                getattr(item, "prototype_id", None)
+                or getattr(item, "lexical_category", None)
                 or "unknown"
             ),
             aliases=tuple(getattr(item, "aliases", ()) or ()),
@@ -548,17 +548,23 @@ class HybridEmbodiedAmodalProcessor:
 
         # Stage 9: estimate precision/reliability, apply task gates, and combine available projections.
         reliability: dict[str, float] = {}
+        eligible_modalities: list[str] = []
         reliability_logits: list[float] = []
         for modality in projected:
             uncertainty = float(request.modality_uncertainty.get(modality, 0.25))
             reliability[modality] = 1.0 / (uncertainty * uncertainty + 1e-6)
             task_weight = float(request.task_modality_weights.get(modality, 1.0))
-            reliability_logits.append(math.log(reliability[modality]) + math.log(max(task_weight, 1e-6)))
+            if task_weight > 0.0:
+                eligible_modalities.append(modality)
+                reliability_logits.append(
+                    math.log(reliability[modality]) + math.log(task_weight)
+                )
         modality_weight_values = _softmax(reliability_logits, temperature=1.0)
-        modality_weights = {
+        modality_weights = {modality: 0.0 for modality in projected}
+        modality_weights.update({
             modality: float(weight)
-            for modality, weight in zip(projected, modality_weight_values)
-        }
+            for modality, weight in zip(eligible_modalities, modality_weight_values)
+        })
         combined_input = sum(
             (modality_weights[m] * projected[m] for m in projected),
             np.zeros(self.config.hub_dimensions, dtype=np.float64),

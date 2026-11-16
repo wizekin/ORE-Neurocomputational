@@ -659,3 +659,61 @@ print(len(result.operation_trace))  # 12 operations
 ```
 
 Run `python -m ore_brain_networks` for a deterministic demonstration and `python -m pytest tests/test_brain_networks.py -q` for focused tests. The existing ORE SQLite logger stores class and callable docstrings in `ore_logs/ore_logger.sqlite3` when the package initializes its annotation catalogue. Passing software tests does not establish biological validity.
+
+
+## Integrated sensory and perceptual processing — six stages / 39 operations
+
+The additive `ore_sensory_perception` package implements the six-stage algorithm from
+`Integrated Brain Sensory and Perceptual Processing Algorithm.txt` as a 39-operation
+visual-and-auditory pipeline. Stages 1–2 detect candidate text regions and segment
+character-like visual structures; Stages 3–4 process sound and extract time-varying
+acoustic features; Stage 5 estimates distributed phonetic-feature evidence; Stage 6
+maintains, updates and selects language-specific phoneme hypotheses.
+
+The visual and auditory modalities remain separate until an explicit shared-language
+readout. The visual path produces glyph/letter hypotheses rather than claiming general OCR.
+It requires caller-supplied grapheme prototypes and orthographic priors to assign labels.
+The auditory path accepts a waveform and sample rate; a caller may supply a language- and
+dialect-specific `PhonemeSpec` inventory, speaker baselines and phonetic context. An
+English-oriented fallback inventory is provided only for demonstration. Uncertain decisions
+are preserved and the decoder can abstain rather than force a phoneme label.
+
+All 39 operations have stable `ISP-001`–`ISP-039` identifiers, per-operation mathematical
+descriptions, biological analogues, and ordered functional traces. A separate configurable,
+recurrent 16-population current-based LIF reference model reports membrane voltage, current,
+spikes, firing rates and simulated time. This is a computational biological analogue, not
+a literal brain simulation or measured EEG/MEG/fMRI/electrophysiology.
+
+### Quick start
+
+```python
+import numpy as np
+from ore_sensory_perception import SensoryPerceptionProcessor, SensoryRequest
+
+image = np.ones((80, 240), dtype=float)
+image[20:25, 15:220:8] = 0.0
+time = np.arange(8000) / 16000.0
+audio = 0.4 * np.sin(2 * np.pi * 180 * time)
+
+request = SensoryRequest(
+    sample_id="example-001",
+    visual_image=image,
+    auditory_waveform=audio,
+    sample_rate_hz=16000,
+)
+result = SensoryPerceptionProcessor().process(request)
+print(len(result.operation_trace))  # 39
+print(len(result.biological_trace))  # 39 when simulation is enabled
+```
+
+The default annotation registration synchronizes Python module, class, function and method
+docstrings into the repository-wide `ore_logger.annotations` table in
+`ore_logs/ore_logger.sqlite3`. A custom path can be supplied for isolated tests, and
+`ORE_LOGGER_DB` overrides the default database location. No sensory-specific database is
+created. The execution logger records symbol metadata and stage summaries; it does not
+persist raw images or audio arrays as event metadata.
+
+Run `python -m ore_sensory_perception` for a synthetic smoke demonstration and
+`python -m pytest tests/test_sensory_perception.py -q` for focused tests. See
+`docs/SENSORY_PERCEPTUAL_6_STAGE_ARCHITECTURE.md` for the complete registry, operation
+equations, biological qualifications, API, and validation boundaries.

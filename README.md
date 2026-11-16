@@ -724,3 +724,18 @@ equations, biological qualifications, API, and validation boundaries.
 The additive `ore_hub_spoke` package implements the 21-stage semantic integration algorithm with separate functional and current-based LIF reference tracks. It includes seven modality spokes, reliability-weighted nonlinear hub integration, recurrent stabilization, feedback, cross-modal invariance, semantic control, explicit experience learning, and distinct hub/spoke/connection lesion experiments. It reuses `ore_semantic.SemanticConcept` and the existing SQLite logger.
 
 See [the 21-stage architecture and API](docs/HUB_AND_SPOKE_21_STAGE_ARCHITECTURE.md). Run the focused suite with `python -m pytest tests/test_hub_spoke.py -q`, or launch the demonstration with `python -m ore_hub_spoke`.
+
+
+## Controlled Semantic Cognition (CSC) — 18 stages
+
+The additive `ore_csc/` package implements an 18-stage Controlled Semantic Cognition algorithm with a functional semantic-control pipeline and an optional current-based LIF population reference. It uses the existing provenance-tracked `SemanticConcept` contract from `ore_semantic` and keeps CSC separate from the existing 44-operation semantic-cognition and 21-stage hub-and-spoke packages.
+
+The CSC stages cover sensory/linguistic input, parallel candidate activation, distributed semantic memory, ATL integration, context and task representation, control-demand estimation, semantic-control recruitment, targeted retrieval, feature amplification/inhibition, weak-knowledge retrieval, candidate evaluation, competition/selection, monitoring and feedback, semantic integration, response generation, and authorized adaptation. The registry enumerates 78 operations with mathematical equations, functional responsibilities, and biological-reference notes.
+
+Run the demonstration from the repository root:
+
+    python -m ore_csc
+
+The demo selects between financial and river meanings of “bank”, indexes all CSC class/function docstrings in the shared `ore_logger` SQLite annotation catalogue, and records the operation/stage trace through `SQLiteRunRecorder`. The documentation is in `docs/CSC_18_STAGE_ARCHITECTURE.md`.
+
+The functional and LIF tracks are transparent computational hypotheses, not a fitted or validated reproduction of human neural activity. Learning is preview-only unless the caller supplies explicit feedback and authorizes an update.

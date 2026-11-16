@@ -12,7 +12,10 @@ from typing import Any, Mapping, Sequence
 from .biology import WorkingMemoryLIFSimulator
 from .contracts import WorkingMemoryConfig, WorkingMemoryRequest, WorkingMemoryResult
 from .registry import OPERATION_REGISTRY, STAGE_REGISTRY, OperationSpec
-from .source_mapping import REPOSITORY_OPERATION_TO_SOURCE, SOURCE_OPERATION_MAP, WM_EXTENSION_REGISTRY, source_mapping_as_dicts
+from .source_mapping import (
+    REPOSITORY_OPERATION_TO_SOURCE, SOURCE_OPERATION_MAP,
+    WM_EXTENSION_REGISTRY, source_mapping_as_dicts,
+)
 
 
 _TOKEN_PATTERN = re.compile(r"\w+(?:['’]\w+)?|[^\w\s]", flags=re.UNICODE)
@@ -309,7 +312,13 @@ class WorkingMemoryProcessor:
             "operation_name": "Evaluate semantic prediction error",
             "status": "evaluated" if error_value is not None else "not_observed",
             "prediction_error": error_value,
-            "error_metric": "total_variation_distance" if predicted is not None else "caller_scalar",
+            "error_metric": (
+                "total_variation_distance"
+                if evidence["prediction_source"] == "explicit_predicted_distribution_total_variation"
+                else "caller_supplied_scalar"
+                if evidence["prediction_source"] == "caller_supplied_scalar_error"
+                else None
+            ),
             "evidence": evidence,
             "does_not_fabricate_missing_prediction": True,
         }
@@ -1842,7 +1851,10 @@ class WorkingMemoryProcessor:
         switch_events = list(state["task"].get("switch_events", []))
         switch_detected = bool(switch_events)
         initial_task_setup = "control_weights" not in state["task"]
-        requested_gate = bool(request.context.get("allow_working_memory_update", True))
+        requested_gate_value = request.context.get("allow_working_memory_update", True)
+        if not isinstance(requested_gate_value, bool):
+            raise TypeError("context.allow_working_memory_update must be a boolean")
+        requested_gate = requested_gate_value
         gate_open = requested_gate and (initial_task_setup or switch_detected)
         if gate_open:
             profile = profiles.get(family, profiles["language"])

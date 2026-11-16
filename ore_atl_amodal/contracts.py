@@ -174,7 +174,7 @@ class AmodalATLRequest:
     adjective: str | None = None
     noun_features: Mapping[str, float] = field(default_factory=dict)
     adjective_features: Mapping[str, float] = field(default_factory=dict)
-    adjective_type: str = "subsective"
+    adjective_type: str = "auto"
     learning_experiences: Sequence[Mapping[str, Any]] = ()
     learning_authorized: bool = False
     source_reference: str = "unspecified"
@@ -197,8 +197,8 @@ class AmodalATLRequest:
         validate_feature_map("context", self.context_features)
         validate_feature_map("noun", self.noun_features)
         validate_feature_map("adjective", self.adjective_features)
-        if self.adjective_type not in {"subsective", "privative"}:
-            raise ValueError("adjective_type must be 'subsective' or 'privative'")
+        if self.adjective_type not in {"auto", "subsective", "privative"}:
+            raise ValueError("adjective_type must be 'auto', 'subsective', or 'privative'")
         if not self.source_reference.strip():
             raise ValueError("source_reference must be non-empty")
 

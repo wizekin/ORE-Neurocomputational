@@ -154,9 +154,7 @@ class HubAndSpokeRequest:
             or any(not isinstance(token, str) or not token.strip() for token in self.tokens)
         ):
             raise ValueError("tokens must be a non-empty sequence of non-empty strings")
-        if self.text is None and self.tokens is None and not self.modality_inputs:
-            raise ValueError("provide a word-form cue or at least one modality input")
-        if not self.task.strip():
+        if self.task.strip() == "":
             raise ValueError("task must be non-empty")
         if self.text is None and self.tokens is None and not self.modality_inputs:
             raise ValueError("provide at least one word-form or modality input")

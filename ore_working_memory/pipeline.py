@@ -12,6 +12,7 @@ from typing import Any, Mapping, Sequence
 from .biology import WorkingMemoryLIFSimulator
 from .contracts import WorkingMemoryConfig, WorkingMemoryRequest, WorkingMemoryResult
 from .registry import OPERATION_REGISTRY, STAGE_REGISTRY, OperationSpec
+from .source_mapping import REPOSITORY_OPERATION_TO_SOURCE, WM_EXTENSION_REGISTRY, source_mapping_as_dicts
 
 
 _TOKEN_PATTERN = re.compile(r"\w+(?:['’]\w+)?|[^\w\s]", flags=re.UNICODE)
@@ -165,6 +166,11 @@ class WorkingMemoryProcessor:
         for operation in operations:
             operation(state, request)
 
+        # Source operations 28 and 30 are deliberately additive: prediction error
+        # requires explicit prior evidence, and consolidation requires an accepted reading.
+        self._evaluate_semantic_prediction_error(state, request)
+        self._consolidate_selected_interpretation(state, request)
+
         biological = self._simulator.snapshot() if self._simulator else {
             "model": "disabled", "operation_count": 0, "layers": {},
             "scope": "Neural-reference simulation was disabled by configuration.",
@@ -206,6 +212,10 @@ class WorkingMemoryProcessor:
             "semantic_entropy": state["resolution"].get("normalized_entropy", 0.0),
             "task_switch_count": len(state["task"].get("switch_events", [])),
             "processing_complete": state.get("processing_completion", {}).get("complete", False),
+            "source_operation_count": len(SOURCE_OPERATION_MAP),
+            "source_operation_mapping_complete": len(source_mapping_as_dicts()) == 39,
+            "source_extension_operation_count": len(state["source_extension_trace"]),
+            "source_extension_ids": [row["operation_id"] for row in state["source_extension_trace"]],
             "warnings": warnings,
         }
         metadata = {
@@ -213,6 +223,9 @@ class WorkingMemoryProcessor:
             "configuration": self.config.to_dict(),
             "biological_scope": biological.get("scope", ""),
             "operation_registry": "WMCC-001..WMCC-040 from Brain Language Algorithm.md",
+            "source_operation_mapping": source_mapping_as_dicts(),
+            "source_extension_registry": [dict(row) for row in WM_EXTENSION_REGISTRY],
+            "source_extension_trace": state["source_extension_trace"],
             "inference_scope": (
                 "Rule-based and evidence-driven software prototype. It is not a validated theory "
                 "of human working memory or a general-purpose language parser."
@@ -240,9 +253,107 @@ class WorkingMemoryProcessor:
         )
         state["trace"].append({
             "operation_id": spec.operation_id, "stage_id": spec.stage_id,
-            "operation_name": spec.operation_name, "functional_output": dict(output),
+            "operation_name": spec.operation_name,
+            "source_operation_ids": list(REPOSITORY_OPERATION_TO_SOURCE.get(operation_id, ())),
+            "functional_output": dict(output),
             "mathematical_form": spec.mathematical_form,
             "biological_reference": spec.biological_reference, "biological_update": neural,
+        })
+
+    def _evaluate_semantic_prediction_error(
+        self, state: dict[str, Any], request: WorkingMemoryRequest,
+    ) -> None:
+        """Compare the resolved posterior with an explicitly supplied semantic prediction."""
+        supplied_error = request.context.get("semantic_prediction_error")
+        predicted = request.context.get("predicted_interpretation_distribution")
+        evidence: dict[str, Any] = {
+            "observed_posterior": {
+                candidate["hypothesis_id"]: float(candidate.get("posterior", 0.0))
+                for candidate in state["candidates"]
+            },
+            "prediction_source": "not_supplied",
+        }
+        error_value: float | None = None
+        if supplied_error is not None:
+            error_value = float(supplied_error)
+            if not math.isfinite(error_value) or not 0.0 <= error_value <= 1.0:
+                raise ValueError("semantic_prediction_error must be finite and lie in [0, 1]")
+            evidence["prediction_source"] = "caller_supplied_scalar_error"
+            evidence["caller_error"] = error_value
+        elif isinstance(predicted, Mapping):
+            predicted_values = {}
+            for candidate_id, raw in predicted.items():
+                value = float(raw)
+                if not math.isfinite(value) or value < 0.0:
+                    raise ValueError("predicted_interpretation_distribution must contain finite non-negative values")
+                predicted_values[str(candidate_id)] = value
+            total = sum(predicted_values.values())
+            if total <= 0.0:
+                raise ValueError("predicted_interpretation_distribution must contain positive mass")
+            expected = {key: value / total for key, value in predicted_values.items()}
+            observed = evidence["observed_posterior"]
+            all_ids = set(expected) | set(observed)
+            error_value = 0.5 * sum(
+                abs(float(observed.get(key, 0.0)) - float(expected.get(key, 0.0)))
+                for key in all_ids
+            )
+            evidence["prediction_source"] = "explicit_predicted_distribution_total_variation"
+            evidence["predicted_distribution"] = expected
+            evidence["observed_distribution_normalized"] = bool(
+                not observed or math.isclose(sum(observed.values()), 1.0, abs_tol=1e-7)
+            )
+        row = {
+            "operation_id": "WMX-001",
+            "source_operation_id": "WM-SRC-028",
+            "stage_id": "S4",
+            "operation_name": "Evaluate semantic prediction error",
+            "status": "evaluated" if error_value is not None else "not_observed",
+            "prediction_error": error_value,
+            "error_metric": "total_variation_distance" if predicted is not None else "caller_scalar",
+            "evidence": evidence,
+            "does_not_fabricate_missing_prediction": True,
+        }
+        state["resolution"]["semantic_prediction_error"] = row
+        state["source_extension_trace"].append(row)
+
+    def _consolidate_selected_interpretation(
+        self, state: dict[str, Any], request: WorkingMemoryRequest,
+    ) -> None:
+        """Consolidate an accepted interpretation into an inspectable active cognitive record."""
+        selected_id = state["resolution"].get("selected_hypothesis_id")
+        selected = state["resolution"].get("selected")
+        candidate = next(
+            (item for item in state["candidates"] if item["hypothesis_id"] == selected_id),
+            None,
+        )
+        consolidated = bool(selected_id and selected is not None and candidate is not None
+                            and not state["resolution"].get("abstained", True))
+        record = None
+        if consolidated:
+            record = {
+                "hypothesis_id": selected_id,
+                "interpretation": selected,
+                "posterior": float(candidate.get("posterior", 0.0)),
+                "evidence": next(
+                    (dict(item) for item in state.get("evidence_ledger", [])
+                     if item.get("hypothesis_id") == selected_id), {},
+                ),
+                "consolidation_scope": "current_working_memory_episode_only",
+                "durable_episodic_storage": False,
+            }
+            state["resolution"]["consolidated_interpretation"] = record
+        else:
+            state["resolution"]["consolidated_interpretation"] = None
+        state["source_extension_trace"].append({
+            "operation_id": "WMX-002",
+            "source_operation_id": "WM-SRC-030",
+            "stage_id": "S4",
+            "operation_name": "Consolidate selected interpretation",
+            "status": "consolidated" if consolidated else "held_unresolved",
+            "consolidated_record": record,
+            "preserved_alternative_count": max(0, len(state["candidates"]) - (1 if consolidated else 0)),
+            "abstention_preserved": not consolidated,
+            "durable_episodic_storage": False,
         })
 
     def _run_silently(self, state: dict[str, Any], operation: Any,
@@ -267,6 +378,7 @@ class WorkingMemoryProcessor:
             "grammatical_expectations": [], "incomplete_report": {},
             "control": {}, "candidates": [], "posterior": [], "candidate_scores": [],
             "resolution": {}, "task": {}, "coordination_messages": [], "warnings": [],
+            "source_extension_trace": [],
         })
         state["cognitive_state"] = {
             "initialized": True, "subsystems": [

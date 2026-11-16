@@ -717,3 +717,10 @@ Run `python -m ore_sensory_perception` for a synthetic smoke demonstration and
 `python -m pytest tests/test_sensory_perception.py -q` for focused tests. See
 `docs/SENSORY_PERCEPTUAL_6_STAGE_ARCHITECTURE.md` for the complete registry, operation
 equations, biological qualifications, API, and validation boundaries.
+
+
+## 21-stage Hub-and-Spoke Semantic Concept Integration
+
+The additive `ore_hub_spoke` package implements the 21-stage semantic integration algorithm with separate functional and current-based LIF reference tracks. It includes seven modality spokes, reliability-weighted nonlinear hub integration, recurrent stabilization, feedback, cross-modal invariance, semantic control, explicit experience learning, and distinct hub/spoke/connection lesion experiments. It reuses `ore_semantic.SemanticConcept` and the existing SQLite logger.
+
+See [the 21-stage architecture and API](docs/HUB_AND_SPOKE_21_STAGE_ARCHITECTURE.md). Run the focused suite with `python -m pytest tests/test_hub_spoke.py -q`, or launch the demonstration with `python -m ore_hub_spoke`.

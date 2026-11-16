@@ -865,9 +865,16 @@ class HybridEmbodiedAmodalProcessor:
         best_probability = candidate_rows[0]["posterior"] if candidate_rows else 0.0
         second_probability = candidate_rows[1]["posterior"] if len(candidate_rows) > 1 else 0.0
         confidence_margin = best_probability - second_probability
+        # Do not let a frequency prior alone manufacture recognition when all
+        # modality channels are gated off and no contextual evidence is present.
+        decision_evidence = (
+            float(np.linalg.norm(combined_input)) > epsilon
+            or float(np.linalg.norm(context_hub)) > epsilon
+        )
         selected_row = (
             candidate_rows[0]
             if candidate_rows
+            and decision_evidence
             and best_probability >= self.config.confidence_threshold
             and confidence_margin >= self.config.selection_margin
             else None
@@ -987,6 +994,7 @@ class HybridEmbodiedAmodalProcessor:
         revised_selected = (
             revised_candidates[0]
             if revised_candidates
+            and decision_evidence
             and revised_best >= self.config.confidence_threshold
             and revised_margin >= self.config.selection_margin
             else None
@@ -1216,6 +1224,7 @@ class HybridEmbodiedAmodalProcessor:
             "missing_modalities": sorted(set(MODALITIES_FOR_DIAGNOSTICS) - set(original)),
             "selected": final_selected is not None,
             "abstained": final_selected is None,
+            "decision_evidence_available": decision_evidence,
             "mean_prediction_error": mean_error,
             "invariance_loss": invariance_loss,
             "biological_numerically_valid": biological.get("numerically_valid", False),

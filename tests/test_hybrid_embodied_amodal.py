@@ -303,6 +303,9 @@ def test_zeroed_modalities_and_no_context_cannot_select_from_frequency_prior(
     assert result.selected_concept is None
     assert result.diagnostics["abstained"] is True
     assert result.diagnostics["decision_evidence_available"] is False
+    stage_6 = result.stage_outputs["HEC-01.06"]
+    assert stage_6["retrieval_evidence_available"] is False
+    assert all(value == 0.0 for value in stage_6["retrieved_feature_activation"].values())
 
 
 def test_request_rejects_nonfinite_or_out_of_range_feature_values() -> None:

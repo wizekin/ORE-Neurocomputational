@@ -9,7 +9,7 @@
 
 This package implements the source algorithm as an additive subsystem in ORE-Neurocomputational. It does not replace \`ore_semantic\` (the existing 44-operation concept-access subsystem), \`ore_reading\`, or the N1–N9 packages. It reuses the existing \`ore_semantic.SemanticConcept\` and \`WordFormEpisode\` contracts so existing concept inventories can be passed into the new pipeline.
 
-The new package makes the source document's 21-stage sequence explicit, including the portions that are not just concept recognition:
+The new package makes the source document's 21-stage sequence explicit, including the portions that are not just concept recognition. It consumes **pre-extracted, named feature maps**; raw image pixels, audio waveforms, video, and sensor streams must be processed by upstream perception modules before they are supplied as spoke evidence. This keeps the semantic integration layer separate from low-level sensory transduction:
 
 - concurrent modality-specific input and seven semantic spokes;
 - associative memory retrieval and spoke-to-hub projections;
@@ -181,7 +181,7 @@ For a category \(C\), the current prototype feature value is the arithmetic cent
 P_C(f)=\frac{1}{|C|}\sum_{c\in C} f_c
 \]
 
-The task-control stage applies caller-supplied relevance and irrelevance weights:
+The task-control stage applies caller-supplied relevance and irrelevance weights. It also recalculates modality gates from the task-relevance signal while retaining the unmodified bottom-up gates for comparison:
 
 \[
 a_i' = \operatorname{clip}

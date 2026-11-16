@@ -124,7 +124,7 @@ def test_derivational_and_inflectional_affixes_are_explicitly_separated():
     assert ranked["inflectional_affix_support"] > 0.0
     assert ranked["affix_classification_complete"] is True
     assert result.operation_trace[20]["operation_id"] == "BLA-021"
-    assert result.operation_trace[20]["output"][0]["classification_source"] == "explicit_caller_inventory"
+    assert result.operation_trace[20]["output"]["affix_records"][0]["classification_source"] == "explicit_caller_inventory"
 
 
 def test_unclassified_affixes_are_not_guessed_to_be_derivational_or_inflectional():

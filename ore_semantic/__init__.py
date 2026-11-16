@@ -9,6 +9,7 @@ from .contracts import (
     WordFormEpisode,
 )
 from .pipeline import SemanticCognitionProcessor
+from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore
 from .registry import OPERATION_REGISTRY, OperationSpec, registry_as_dicts
 
 __all__ = [
@@ -19,6 +20,8 @@ __all__ = [
     "SemanticConfig",
     "SemanticCognitionProcessor",
     "SemanticLIFSimulator",
+    "SemanticMemoryStore",
+    "MEMORY_OPERATION_REGISTRY",
     "SemanticN8Adapter",
     "SemanticRequest",
     "SemanticResult",

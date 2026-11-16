@@ -14,6 +14,7 @@ import numpy as np
 from .biology import POPULATIONS, SemanticLIFSimulator
 from .contracts import SemanticConfig, SemanticConcept, SemanticRequest, SemanticResult, WordFormEpisode
 from .registry import OPERATION_REGISTRY
+from .source_mapping import SOURCE_COMPONENTS, source_mapping_as_dicts
 from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore, SemanticPrototypeEvidence
 
 _EPS = 1e-9
@@ -931,6 +932,12 @@ class SemanticCognitionProcessor:
             "concept_count": len(self.concepts),
             "persistent_memory_enabled": self.memory_store is not None,
             "persistent_episode_count": self.memory_store.episode_count() if self.memory_store is not None else 0,
+            "semantic_source_components": [
+                {"component_id": row[0], "name": row[1], "start_step": row[2], "end_step": row[3]}
+                for row in SOURCE_COMPONENTS
+            ],
+            "semantic_source_operation_mapping": source_mapping_as_dicts(),
+            "semantic_source_operation_count": len(source_mapping_as_dicts()),
             "persistent_memory_operation_registry": (
                 [dict(row) for row in MEMORY_OPERATION_REGISTRY]
                 if self.memory_store is not None else []

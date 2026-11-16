@@ -14,6 +14,7 @@ import numpy as np
 from .biology import POPULATIONS, SemanticLIFSimulator
 from .contracts import SemanticConfig, SemanticConcept, SemanticRequest, SemanticResult, WordFormEpisode
 from .registry import OPERATION_REGISTRY
+from .memory import SemanticMemoryStore
 
 _EPS = 1e-9
 _MODALITY_POPULATION = {
@@ -160,8 +161,11 @@ class SemanticCognitionProcessor:
         self,
         concepts: Iterable[SemanticConcept] = (),
         config: SemanticConfig | None = None,
+        memory_store: SemanticMemoryStore | None = None,
     ) -> None:
+        """Initialize read-only semantic inference with an optional explicit-learning memory store."""
         self.config = config or SemanticConfig()
+        self.memory_store = memory_store
         self.concepts = tuple(concepts)
         ids = [item.concept_id for item in self.concepts]
         if len(ids) != len(set(ids)):
@@ -334,10 +338,30 @@ class SemanticCognitionProcessor:
             return group, 0.0
         return group, _cosine(concept.semantic_features, prototype["features"])
 
+    def learn_word_form_episode(self, orthography: str, **episode_fields: Any) -> WordFormEpisode:
+        """Explicitly capture and store one observed word-form experience."""
+        if self.memory_store is None:
+            raise RuntimeError("learn_word_form_episode requires a configured SemanticMemoryStore")
+        return self.memory_store.capture_word_form(orthography, **episode_fields)
+
+    def consolidate_memory(self, prototype_id: str | None = None, *,
+                           learning_rate: float = 0.20) -> dict[str, Any]:
+        """Explicitly consolidate stored episodes into durable abstract lexical prototypes."""
+        if self.memory_store is None:
+            raise RuntimeError("consolidate_memory requires a configured SemanticMemoryStore")
+        return self.memory_store.consolidate(prototype_id, learning_rate=learning_rate)
+
     def process(self, request: SemanticRequest) -> SemanticResult:
         tokens = _tokenize(request)
         if not tokens:
             raise ValueError("request produced no word tokens")
+        episodes_by_token: dict[str, tuple[WordFormEpisode, ...]] = {}
+        for token in tokens:
+            persistent = (
+                self.memory_store.recall(token, context_features=request.context)
+                if self.memory_store is not None else []
+            )
+            episodes_by_token[token] = tuple(request.episodes) + tuple(persistent)
         original_text = request.text if request.text is not None else " ".join(request.tokens or ())
         normalized_tokens = tuple(_normalize(token) for token in tokens)
         normalized_text = " ".join(normalized_tokens)
@@ -389,7 +413,7 @@ class SemanticCognitionProcessor:
         candidate_sets: list[list[dict[str, Any]]] = []
         episode_records: list[dict[str, Any]] = []
         for token in tokens:
-            candidates, retrieved = self._retrieve_candidates(token, request.episodes)
+            candidates, retrieved = self._retrieve_candidates(token, episodes_by_token[token])
             candidate_sets.append(candidates)
             episode_records.extend({**row, "token": token} for row in retrieved)
         tick(7, {"tokens_with_lexical_candidates": sum(bool(row) for row in candidate_sets)},
@@ -832,6 +856,8 @@ class SemanticCognitionProcessor:
             "biological_model": "current-based LIF population reference",
             "model_fingerprint": self.model_fingerprint,
             "concept_count": len(self.concepts),
+            "persistent_memory_enabled": self.memory_store is not None,
+            "persistent_episode_count": self.memory_store.episode_count() if self.memory_store is not None else 0,
             "config": self.config.to_dict(),
             "source_reference": request.source_reference,
             "language": request.language,

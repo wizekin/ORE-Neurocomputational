@@ -407,16 +407,40 @@ class CSCProcessor:
         modality_state = {
             name: _feature_map(values) for name, values in request.modality_inputs.items()
         }
-        state["input_state"] = _merge_maps(
-            *modality_state.values(),
-            {"token:" + token: 1.0 for token in state["tokens"]},
-        )
+        fourier_bins = 0
+        signal_mean = 0.0
+        signal_std = 0.0
+        if request.signal_samples:
+            samples = np.asarray(request.signal_samples, dtype=np.float64)
+            signal_mean = float(np.mean(samples))
+            signal_std = float(np.std(samples))
+            standardized = (samples - signal_mean) / (signal_std + _EPS)
+            spectrum = np.abs(np.fft.rfft(standardized))
+            scale = float(np.max(spectrum)) if spectrum.size else 0.0
+            normalized_spectrum = spectrum / (scale + _EPS)
+            signal_features = {
+                "spectral_bin_{0}".format(index): float(value)
+                for index, value in enumerate(normalized_spectrum)
+            }
+            modality_state.setdefault(request.signal_modality, {}).update(signal_features)
+            fourier_bins = len(signal_features)
+        temporal_tokens = {
+            "token:" + token: float(math.exp(-0.08 * (len(state["tokens"]) - index - 1)))
+            for index, token in enumerate(state["tokens"])
+        }
+        state["input_state"] = _merge_maps(*modality_state.values(), temporal_tokens)
         return {
             "tokens": list(state["tokens"]),
             "token_count": len(state["tokens"]),
             "modalities_received": sorted(modality_state),
             "input_feature_count": len(state["input_state"]),
-            "input_normalization": "features validated in [0, 1]; raw signal transforms are outside this API",
+            "fourier_bins": fourier_bins,
+            "signal_sample_count": len(request.signal_samples),
+            "signal_mean": signal_mean,
+            "signal_standard_deviation": signal_std,
+            "z_score_normalization": bool(request.signal_samples),
+            "temporal_token_weights": temporal_tokens,
+            "input_normalization": "z-score and normalized real FFT for optional samples; bounded feature maps otherwise",
         }
 
     def _stage_02(
@@ -539,14 +563,25 @@ class CSCProcessor:
         feedback_reward: float | None,
     ) -> dict[str, Any]:
         """Accumulate explicit context and token cues, then compute contextual candidate fit."""
-        context = dict(state["context_state"])
+        current_context = dict(state["context_state"])
         token_set = set(state["tokens"])
         for feature in {
             item for values in self._feature_by_concept.values() for item in values
         }:
             if feature in token_set:
-                context[feature] = max(context.get(feature, 0.0), 0.7)
-        context = _merge_maps(context)
+                current_context[feature] = max(current_context.get(feature, 0.0), 0.7)
+        previous_context = _feature_map(request.previous_context_features)
+        if previous_context:
+            alpha = self.config.context_ema_alpha
+            context = {
+                key: float(np.clip(
+                    alpha * previous_context.get(key, 0.0)
+                    + (1.0 - alpha) * current_context.get(key, 0.0), 0.0, 1.0
+                ))
+                for key in set(previous_context) | set(current_context)
+            }
+        else:
+            context = _merge_maps(current_context)
         state["context_state"] = context
         context_scores = {
             concept.concept_id: _cosine(
@@ -559,7 +594,8 @@ class CSCProcessor:
             "context_features": context,
             "context_similarity": context_scores,
             "context_source": "caller features plus exact feature-token matches only",
-            "context_accumulation_alpha": 0.65,
+            "context_accumulation_alpha": self.config.context_ema_alpha,
+            "previous_context_supplied": bool(previous_context),
         }
 
     def _stage_06(
@@ -567,7 +603,19 @@ class CSCProcessor:
         feedback_reward: float | None,
     ) -> dict[str, Any]:
         """Create a task target and rank features by task relevance."""
-        target = _merge_maps(state["task_state"])
+        current_task = dict(state["task_state"])
+        previous_task = _feature_map(state["request"].previous_task_features)
+        if previous_task:
+            alpha = self.config.task_ema_alpha
+            target = {
+                key: float(np.clip(
+                    alpha * previous_task.get(key, 0.0)
+                    + (1.0 - alpha) * current_task.get(key, 0.0), 0.0, 1.0
+                ))
+                for key in set(previous_task) | set(current_task)
+            }
+        else:
+            target = _merge_maps(current_task)
         context = state["context_state"]
         relevance: dict[str, float] = {}
         features = set(state["feature_activation"]) | set(target)
@@ -585,6 +633,8 @@ class CSCProcessor:
             "feature_task_match": relevance,
             "priority_weights": priorities,
             "context_retained_separately": context,
+            "previous_task_supplied": bool(previous_task),
+            "task_maintenance_alpha": self.config.task_ema_alpha,
         }
 
     def _stage_07(
@@ -666,8 +716,10 @@ class CSCProcessor:
             relevance = {feature: 0.5 for feature in activation}
         gains = {
             feature: float(np.clip(
-                0.45 + self.config.gain_strength * relevance.get(feature, 0.0)
-                * state["control_activity"],
+                0.20 + self.config.gain_strength * _sigmoid(
+                    4.0 * (relevance.get(feature, 0.0) - 0.35)
+                    + 2.0 * state["control_activity"]
+                ),
                 0.0, 1.0
             ))
             for feature in activation
@@ -766,9 +818,16 @@ class CSCProcessor:
                 for feature, value in activation.items()
             ], 0.6)
             feature_names = list(activation)
+            priority_by_feature = {
+                feature: probability * max(len(activation), 1)
+                for feature, probability in zip(feature_names, priority)
+            }
             next_state = {}
             for feature, value in activation.items():
-                drive = gains.get(feature, 0.45) * incoming.get(feature, 0.0)
+                drive = (
+                    gains.get(feature, 0.45) * incoming.get(feature, 0.0)
+                    * (0.5 + priority_by_feature.get(feature, 0.0))
+                )
                 retained = 0.72 * value
                 inhibited = state["feature_inhibition"].get(feature, 0.0) * 0.15
                 next_state[feature] = float(np.clip(

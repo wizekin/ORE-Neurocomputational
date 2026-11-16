@@ -200,7 +200,7 @@ N4 is an algorithmic research approximation. Its attention and precision paramet
 
 ## N9 integrated neurocomputational ORE (120 operations)
 
-The additive \`ore_n9\` package coordinates the available N1-N4 processors and
+The additive `ore_n9` package coordinates the available N1-N4 processors and
 provides explicit adapter contracts for the later lexical, contextual and
 semantic components. It records an inspectable 120-operation trace, preserves
 visual probabilities separately from top-down posterior beliefs, bounds
@@ -210,7 +210,7 @@ N9 expects already-localized patches in logical reading order. It does not
 silently invent a character segmenter. Each patch may contain a grayscale
 image, an N2 result, a feature vector, or caller-supplied grapheme probabilities.
 
-\`\`\`python
+```python
 from ore_n9 import N9Patch, N9Processor, N9Request
 
 request = N9Request(
@@ -225,18 +225,18 @@ request = N9Request(
 result = N9Processor().process(request)
 print(result.decision)
 print(len(result.operation_trace))  # 120
-\`\`\`
+```
 
 For image patches, provide each already-localized grayscale crop as
-\`N9Patch("id", image=crop)\`; N9 runs the repository's N1 and N2 pipelines.
-To use learned grapheme recognition, pass a fitted \`N3Processor\` through
-\`N9Adapters(n3=...)\`; N9 then applies N4 attention/precision gating. N5-N8
+`N9Patch("id", image=crop)`; N9 runs the repository's N1 and N2 pipelines.
+To use learned grapheme recognition, pass a fitted `N3Processor` through
+`N9Adapters(n3=...)`; N9 then applies N4 attention/precision gating. N5-N8
 are optional, explicitly injected adapters and are marked unavailable when
 not configured. N6 resolves lexical hypotheses, the syntax adapter parses
 provided grammatical evidence, N7 supplies discourse/context predictions,
 and N8 composes typed semantic graphs and propositions.
 
-\`\`\`python
+```python
 from ore_n9 import N9Adapters, N9Processor
 
 processor = N9Processor(adapters=N9Adapters(
@@ -246,9 +246,9 @@ processor = N9Processor(adapters=N9Adapters(
     n7=context_adapter,
     n8=semantic_adapter,
 ))
-\`\`\`
+```
 
-Learning is disabled unless \`learning_authorized=True\`. An N5 adapter is
+Learning is disabled unless `learning_authorized=True`. An N5 adapter is
 deep-copied before a child-model proposal; the active parent model is checked
 for mutation. Software tests do not establish real-corpus accuracy or
 biological validity. See [docs/N9_ARCHITECTURE.md](docs/N9_ARCHITECTURE.md).
@@ -743,13 +743,13 @@ The functional and LIF tracks are transparent computational hypotheses, not a fi
 
 ## Hybrid embodied–amodal concept formation — 19 stages
 
-The additive \`ore_hybrid_embodied_amodal\` package implements the 19-stage hybrid concept-processing specification. It retains modality-specific embodied representations (visual, auditory, motor, somatosensory, affective, linguistic and related channels) while an ATL-inspired hub estimates cross-modal common information. It also preserves route-specific residuals, performs task/context abstraction, top-down spoke reactivation, predictive error correction, response selection, and provenance-gated learning.
+The additive `ore_hybrid_embodied_amodal` package implements the 19-stage hybrid concept-processing specification. It retains modality-specific embodied representations (visual, auditory, motor, somatosensory, affective, linguistic and related channels) while an ATL-inspired hub estimates cross-modal common information. It also preserves route-specific residuals, performs task/context abstraction, top-down spoke reactivation, predictive error correction, response selection, and provenance-gated learning.
 
-Every stage has a stable \`HEC-01.01\`–\`HEC-01.19\` ID. Every registered sub-operation has its own stable ID, equation, functional responsibility, and biological-reference note. A separate optional current-based LIF reference reports voltage (mV), current (pA), firing rate (Hz), spikes, and simulated time (ms). These are transparent computational analogues, not a fitted or validated reproduction of human neural activity.
+Every stage has a stable `HEC-01.01`–`HEC-01.19` ID. Every registered sub-operation has its own stable ID, equation, functional responsibility, and biological-reference note. A separate optional current-based LIF reference reports voltage (mV), current (pA), firing rate (Hz), spikes, and simulated time (ms). These are transparent computational analogues, not a fitted or validated reproduction of human neural activity.
 
 Quick start:
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import (
     HybridConcept, HybridEmbodiedAmodalProcessor, HybridRequest,
 )
@@ -780,16 +780,16 @@ result = processor.process(HybridRequest(
 print(result.selected_concept)
 print(len(result.stage_trace))       # 19
 print(len(result.operation_trace))   # complete sub-operation trace
-\`\`\`
+```
 
 The package consumes named feature maps from upstream perception; raw image/audio transduction is outside its input contract. Learning is preview-only unless explicitly authorized with reviewer and source provenance.
 
-The ORE SQLite logger stores module/class/function/method docstrings in \`ore_logs/ore_logger.sqlite3\`. Use \`index_hybrid_annotations(".")\` to refresh the symbol catalogue and \`record_hybrid_result(result, ".")\` to persist all operation explanations and the 19-stage run trace.
+The ORE SQLite logger stores module/class/function/method docstrings in `ore_logs/ore_logger.sqlite3`. Use `index_hybrid_annotations(".")` to refresh the symbol catalogue and `record_hybrid_result(result, ".")` to persist all operation explanations and the 19-stage run trace.
 
 See [docs/HYBRID_EMBODIED_AMODAL_19_STAGE_ARCHITECTURE.md](docs/HYBRID_EMBODIED_AMODAL_19_STAGE_ARCHITECTURE.md) and run:
 
-\`\`\`bash
+```bash
 python -m ore_hybrid_embodied_amodal
 python -m pytest tests/test_hybrid_embodied_amodal.py -q
 python -m pytest
-\`\`\`
+```

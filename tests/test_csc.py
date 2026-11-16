@@ -195,11 +195,11 @@ def test_signal_fft_and_context_task_ema_are_executed_and_reported() -> None:
     assert "auditory" in fourth["spoke_names"]
     assert any(key.startswith("spectral_bin_") for key in fourth["hub_state"])
     assert fifth["previous_context_supplied"] is True
-    assert fifth["context_features"]["RIVER"] == pytest.approx(0.65)
-    assert fifth["context_features"]["WATER"] == pytest.approx(0.07)
+    assert fifth["context_features"]["river"] == pytest.approx(0.65)
+    assert fifth["context_features"]["water"] == pytest.approx(0.07)
     assert sixth["previous_task_supplied"] is True
-    assert sixth["task_features"]["RIVER"] == pytest.approx(0.70)
-    assert sixth["task_features"]["SHORE"] == pytest.approx(0.09)
+    assert sixth["task_features"]["river"] == pytest.approx(0.70)
+    assert sixth["task_features"]["shore"] == pytest.approx(0.09)
 
 
 def test_result_serialization_contains_full_stage_and_operation_traces() -> None:

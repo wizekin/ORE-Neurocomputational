@@ -168,6 +168,8 @@ def test_learning_is_preview_only_without_authorization_and_requires_feedback() 
     assert learned.learning["committed"] is True
     assert learned.learning["learning_generation"] == 1
     assert learned.learning["feedback_concept_id"] == "river-bank"
+    assert learned.learning["error_gradient"] != 0.0
+    assert learned.learning["control_bias_delta"] > 0.0
 
 
 def test_signal_fft_and_context_task_ema_are_executed_and_reported() -> None:

@@ -516,6 +516,13 @@ class CSCProcessor:
         spoke_maps: dict[str, dict[str, float]] = {}
         for modality, values in request.modality_inputs.items():
             spoke_maps[modality] = _feature_map(values)
+        if request.signal_samples:
+            spectral_features = {
+                feature: value
+                for feature, value in state["input_state"].items()
+                if feature.startswith("spectral_bin_")
+            }
+            spoke_maps.setdefault(request.signal_modality, {}).update(spectral_features)
         for concept in self.concepts:
             for modality, values in concept.modality_features.items():
                 spoke_maps.setdefault(modality, {})
@@ -563,6 +570,7 @@ class CSCProcessor:
         feedback_reward: float | None,
     ) -> dict[str, Any]:
         """Accumulate explicit context and token cues, then compute contextual candidate fit."""
+        request: CSCRequest = state["request"]
         current_context = dict(state["context_state"])
         token_set = set(state["tokens"])
         for feature in {

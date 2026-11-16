@@ -177,6 +177,7 @@ class SemanticMemoryStore:
                 experience_count INTEGER NOT NULL,
                 orthographic_profile TEXT NOT NULL,
                 phonological_profile TEXT NOT NULL,
+                phonological_sequence TEXT NOT NULL DEFAULT '[]',
                 semantic_features TEXT NOT NULL,
                 context_features TEXT NOT NULL,
                 updated_at TEXT NOT NULL
@@ -191,6 +192,13 @@ class SemanticMemoryStore:
             );
             """
         )
+        columns = {
+            row["name"] for row in self._connection.execute("PRAGMA table_info(prototypes)")
+        }
+        if "phonological_sequence" not in columns:
+            self._connection.execute(
+                "ALTER TABLE prototypes ADD COLUMN phonological_sequence TEXT NOT NULL DEFAULT '[]'"
+            )
         self._connection.commit()
 
     def _record(self, operation_id: str, status: str, evidence: Mapping[str, Any],
@@ -542,13 +550,14 @@ class SemanticMemoryStore:
         ranked: list[dict[str, Any]] = []
         for row in rows:
             proto_phones = json.loads(row["phonological_profile"])
+            prototype_sequence = tuple(json.loads(row["phonological_sequence"]))
             channels: dict[str, float] = {}
             if normalized:
                 channels["orthography"] = _cosine(
                     query_profile, json.loads(row["orthographic_profile"])
                 )
             if phones:
-                expected = tuple(
+                expected = prototype_sequence or tuple(
                     phone for phone, _ in sorted(proto_phones.items(), key=lambda pair: pair[0])
                 )
                 channels["phonology"] = _sequence_similarity(phones, expected)
@@ -570,6 +579,7 @@ class SemanticMemoryStore:
                 "channel_scores": channels,
                 "orthographic_profile": json.loads(row["orthographic_profile"]),
                 "phonological_profile": proto_phones,
+                "phonological_sequence": list(prototype_sequence),
                 "semantic_features": json.loads(row["semantic_features"]),
                 "context_features": json.loads(row["context_features"]),
                 "generalization_status": "matched_consolidated_prototype",
@@ -607,16 +617,30 @@ class SemanticMemoryStore:
             phon: dict[str, float] = {}
             semantic: dict[str, float] = {}
             context: dict[str, float] = {}
+            ordered_episodes: list[tuple[tuple[str, ...], float]] = []
             for row in rows:
                 weight = max(float(row["strength"]), 1e-6) / total
+                episode_phones = tuple(json.loads(row["phonological_form"]))
+                if episode_phones:
+                    ordered_episodes.append((episode_phones, weight))
                 for target, features in (
                     (ortho, _ngrams(row["normalized_form"])),
-                    (phon, {phone: 1.0 for phone in json.loads(row["phonological_form"])}),
+                    (phon, {phone: 1.0 for phone in episode_phones}),
                     (semantic, json.loads(row["semantic_features"])),
                     (context, json.loads(row["context_features"])),
                 ):
                     for key, value in features.items():
                         target[key] = target.get(key, 0.0) + weight * float(value)
+            representative_sequence: tuple[str, ...] = ()
+            if ordered_episodes:
+                # Select a weighted medoid sequence so the prototype retains learned phoneme order.
+                representative_sequence = max(
+                    ordered_episodes,
+                    key=lambda candidate: sum(
+                        other_weight * _sequence_similarity(candidate[0], other_sequence)
+                        for other_sequence, other_weight in ordered_episodes
+                    ),
+                )[0]
             old = self._connection.execute(
                 "SELECT * FROM prototypes WHERE prototype_id=?", (group,)
             ).fetchone()
@@ -635,17 +659,19 @@ class SemanticMemoryStore:
             self._connection.execute(
                 """INSERT INTO prototypes(
                     prototype_id, experience_count, orthographic_profile,
-                    phonological_profile, semantic_features, context_features, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    phonological_profile, phonological_sequence,
+                    semantic_features, context_features, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(prototype_id) DO UPDATE SET
                     experience_count=excluded.experience_count,
                     orthographic_profile=excluded.orthographic_profile,
                     phonological_profile=excluded.phonological_profile,
+                    phonological_sequence=excluded.phonological_sequence,
                     semantic_features=excluded.semantic_features,
                     context_features=excluded.context_features,
                     updated_at=excluded.updated_at""",
                 (group, experience_count, _json(ortho), _json(phon),
-                 _json(semantic), _json(context), now),
+                 _json(list(representative_sequence)), _json(semantic), _json(context), now),
             )
             # Consolidation increases accessibility without exceeding the bounded strength scale.
             for row in rows:
@@ -682,7 +708,8 @@ class SemanticMemoryStore:
         })
         self._record("SM-012", "executed", {
             "phonological_profiles_built": prototype_ids,
-            "phonological_order_policy": "stored episodic sequences remain ordered; aggregate prototype is a unit-frequency profile",
+            "ordered_phonological_prototypes_built": prototype_ids,
+            "phonological_order_policy": "weighted medoid of stored ordered phonological sequences",
         })
         self._record("SM-013", "executed", {
             "abstract_lexical_identities": prototype_ids,

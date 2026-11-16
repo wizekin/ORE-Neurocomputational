@@ -145,8 +145,8 @@ class HubAndSpokeRequest:
         """Validate the request while preserving original text and caller token boundaries."""
         if not self.sequence_id.strip():
             raise ValueError("sequence_id must be non-empty")
-        if (self.text is None) == (self.tokens is None):
-            raise ValueError("provide exactly one of text or tokens")
+        if self.text is not None and self.tokens is not None:
+            raise ValueError("provide text or tokens, not both")
         if self.text is not None and not self.text.strip():
             raise ValueError("text cannot be empty")
         if self.tokens is not None and (
@@ -154,9 +154,11 @@ class HubAndSpokeRequest:
             or any(not isinstance(token, str) or not token.strip() for token in self.tokens)
         ):
             raise ValueError("tokens must be a non-empty sequence of non-empty strings")
+        if self.text is None and self.tokens is None and not self.modality_inputs:
+            raise ValueError("provide a word-form cue or at least one modality input")
         if not self.task.strip():
             raise ValueError("task must be non-empty")
-        if not self.modality_inputs and not (self.text or self.tokens):
+        if self.text is None and self.tokens is None and not self.modality_inputs:
             raise ValueError("provide at least one word-form or modality input")
         _normalize_modalities(self.modality_inputs)
         validate_feature_map("context", self.context_features)

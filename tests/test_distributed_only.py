@@ -97,6 +97,7 @@ def test_pipeline_executes_all_stages_and_preserves_distributed_populations():
     assert biological["stage_count"] == 21
     assert biological["numerically_valid"] is True
     assert "mean_membrane_voltage_mv" in biological["populations"]["auditory"]
+    assert biological["populations"]["auditory"]["spike_count"] > 0
     assert result.interpretation in {"violin", "guitar", None}
 
 

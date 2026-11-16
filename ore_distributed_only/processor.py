@@ -313,9 +313,15 @@ class DistributedOnlyProcessor:
             population: float(np.mean(context["activity"][index]))
             for index, population in enumerate(POPULATIONS)
         }
+        biological_drives = {
+            population: float(np.clip(
+                np.linalg.norm(context["activity"][index]), 0.0, 1.0
+            ))
+            for index, population in enumerate(POPULATIONS)
+        }
         biological_event = self.biological_simulator.step(
             spec.stage_id,
-            means,
+            biological_drives,
             connectivity=self.population_connectivity,
         )
         context.setdefault("biological_trace", []).append(biological_event)
@@ -328,6 +334,7 @@ class DistributedOnlyProcessor:
             "functional_status": "completed",
             "biological_status": "lif_population_simulation",
             "population_activity": means,
+            "biological_input_drive": biological_drives,
             "biological_population_activity": biological_event["population_activity"],
             "sub_operation_count": len(spec.operations),
         })

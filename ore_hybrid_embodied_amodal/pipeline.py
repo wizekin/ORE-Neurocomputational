@@ -122,9 +122,12 @@ class HybridEmbodiedAmodalProcessor:
 
     def _all_concepts(self) -> tuple[HybridConcept, ...]:
         """Combine immutable caller prototypes with previously authorized learned prototypes."""
-        return self.concepts + tuple(
-            value["concept"] for value in self._learned_memory.values()
-        )
+        combined = {concept.concept_id: concept for concept in self.concepts}
+        combined.update({
+            concept_id: value["concept"]
+            for concept_id, value in self._learned_memory.items()
+        })
+        return tuple(combined.values())
 
     def _vocabulary(self, request: HybridRequest) -> tuple[str, ...]:
         """Collect a deterministic feature vocabulary from inputs, context, memory, and concepts."""
@@ -153,13 +156,26 @@ class HybridEmbodiedAmodalProcessor:
         cached = self._projection_cache.get(key)
         if cached is not None:
             return cached
-        digest = hashlib.sha256(name.encode("utf-8")).digest()
-        seed_offset = int.from_bytes(digest[:4], "little")
-        rng = np.random.default_rng(self.config.random_seed + seed_offset)
-        matrix = rng.normal(
+        # A shared semantic basis aligns feature dimensions across modalities. Small,
+        # deterministic route perturbations allow modality-specific structure without
+        # making identical named features orthogonal merely because they came from
+        # different input channels.
+        base_rng = np.random.default_rng(self.config.random_seed + 1709)
+        base = base_rng.normal(
             0.0, 1.0 / math.sqrt(max(input_size, 1)),
             (self.config.hub_dimensions, input_size),
         )
+        if name in MODALITIES_FOR_DIAGNOSTICS:
+            digest = hashlib.sha256(name.encode("utf-8")).digest()
+            seed_offset = int.from_bytes(digest[:4], "little")
+            route_rng = np.random.default_rng(self.config.random_seed + seed_offset)
+            perturbation = route_rng.normal(
+                0.0, 0.025 / math.sqrt(max(input_size, 1)),
+                (self.config.hub_dimensions, input_size),
+            )
+            matrix = base + perturbation
+        else:
+            matrix = base
         self._projection_cache[key] = matrix
         return matrix
 
@@ -1008,13 +1024,26 @@ class HybridEmbodiedAmodalProcessor:
                     for name in vocabulary
                 }
             )
+            target_shared_vector = _vector(shared, vocabulary)
+            target_hub_vector = self._projection("__semantic__", feature_count) @ target_shared_vector
+            mapping_proposals: dict[str, float] = {}
+            for modality, feature_map in example.modality_inputs.items():
+                input_vector = _vector(feature_map, vocabulary)
+                mapping = self._projection(modality, feature_count)
+                mapping_error = target_hub_vector - mapping @ input_vector
+                gradient_update = np.outer(mapping_error, input_vector)
+                hebbian_update = np.outer(target_hub_vector, input_vector)
+                mapping_proposals[modality] = float(example.confidence * self.config.learning_rate * np.linalg.norm(
+                    gradient_update + 0.10 * hebbian_update
+                ))
             learning_proposals.append({
                 "concept_id": example.concept_id,
                 "confidence": example.confidence,
                 "hebbian_update_norm": float(example.confidence * np.linalg.norm(
-                    _vector(shared, vocabulary)
+                    target_shared_vector
                 )),
-                "stabilization": "confidence-weighted prototype integration with bounded association updates",
+                "mapping_update_norms": mapping_proposals,
+                "stabilization": "error-driven plus Hebbian update with weight decay and clipping",
                 "verified_by": example.verified_by,
                 "source_reference": example.source_reference,
             })
@@ -1026,6 +1055,18 @@ class HybridEmbodiedAmodalProcessor:
             if not request.learning_authorized or not provenance_ok:
                 blocked_examples += 1
                 continue
+            # Commit spoke-to-hub mapping changes only after explicit authorization
+            # and provenance validation. This is a bounded software learning rule.
+            for modality, feature_map in example.modality_inputs.items():
+                input_vector = _vector(feature_map, vocabulary)
+                mapping = self._projection(modality, feature_count)
+                mapping_error = target_hub_vector - mapping @ input_vector
+                gradient_update = np.outer(mapping_error, input_vector)
+                hebbian_update = np.outer(target_hub_vector, input_vector)
+                delta = example.confidence * self.config.learning_rate * (
+                    gradient_update + 0.10 * hebbian_update
+                ) - self.config.weight_decay * mapping
+                mapping[:] = np.clip(mapping + delta, -3.0, 3.0)
             existing = self._learned_memory.get(example.concept_id)
             old_weight = float(existing["weight"]) if existing else 0.0
             new_weight = example.confidence

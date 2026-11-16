@@ -866,6 +866,103 @@ class SyntaxProcessor:
             "abstention_count": sum(item["abstained"] for item in resolved),
         }
 
+    def _release_resolved_dependency_memory(self, links):
+        """Release only strongly linked dependencies and retain unresolved retrieval cues."""
+        release_threshold = 0.75
+        released = []
+        retained = []
+        for link in links:
+            is_releasable = link["status"] == "linked" and float(link.get("score", 0.0)) >= release_threshold
+            link["memory_status"] = "released_after_resolution" if is_releasable else "retained_for_retrieval"
+            link["memory_release_threshold"] = release_threshold
+            if is_releasable:
+                released.append(link["filler_index"])
+            else:
+                retained.append(link["filler_index"])
+        return {
+            "release_threshold": release_threshold,
+            "released_dependency_count": len(released),
+            "retained_dependency_count": len(retained),
+            "released_filler_indices": released,
+            "retained_filler_indices": retained,
+            "unresolved_cues_preserved": bool(retained),
+        }
+
+    def _manage_nested_competing_dependencies(self, links):
+        """Annotate nested spans and competition groups without deleting alternative gap sites."""
+        parents = list(range(len(links)))
+
+        def find(index):
+            while parents[index] != index:
+                parents[index] = parents[parents[index]]
+                index = parents[index]
+            return index
+
+        def union(left, right):
+            a, b = find(left), find(right)
+            if a != b:
+                parents[b] = a
+
+        nested_pairs = []
+        competing_pairs = []
+        spans = []
+        for link in links:
+            head = link.get("head_index")
+            filler = int(link["filler_index"])
+            spans.append((min(filler, int(head)) if head is not None else filler,
+                          max(filler, int(head)) if head is not None else filler))
+        for left in range(len(links)):
+            for right in range(left + 1, len(links)):
+                a0, a1 = spans[left]
+                b0, b1 = spans[right]
+                nested = (a0 < b0 < b1 < a1) or (b0 < a0 < a1 < b1)
+                same_filler = links[left]["filler_index"] == links[right]["filler_index"]
+                same_target = (
+                    links[left].get("head_index") is not None
+                    and links[left].get("head_index") == links[right].get("head_index")
+                )
+                if nested:
+                    nested_pairs.append((left, right))
+                if same_filler or same_target:
+                    competing_pairs.append((left, right))
+                    union(left, right)
+        groups = {}
+        for index, link in enumerate(links):
+            root = find(index)
+            groups.setdefault(root, []).append(index)
+        competition_group_for = {}
+        group_number = 0
+        for members in groups.values():
+            if len(members) > 1:
+                group_number += 1
+                group_id = f"dependency-competition-{group_number}"
+                for member in members:
+                    competition_group_for[member] = group_id
+        for index, link in enumerate(links):
+            link["nested_with"] = [
+                other if pair[0] == index else pair[0]
+                for pair in nested_pairs for other in [pair[1]]
+                if pair[0] == index or pair[1] == index
+            ]
+            link["competition_group"] = competition_group_for.get(index)
+            sites = list(link.get("candidate_sites", ()))
+            if sites:
+                scores = [max(-50.0, min(50.0, float(site.get("score", 0.0)))) for site in sites]
+                peak = max(scores)
+                exponentials = [math.exp(score - peak) for score in scores]
+                total = sum(exponentials) or 1.0
+                for site, value in zip(sites, exponentials):
+                    site["competition_probability"] = value / total
+                link["candidate_sites"] = sites
+            link["alternatives_preserved"] = len(sites) > 1 or link["status"] == "unresolved"
+        return {
+            "nested_pair_count": len(nested_pairs),
+            "competing_pair_count": len(competing_pairs),
+            "competition_group_count": group_number,
+            "alternative_hypothesis_count": sum(len(item.get("candidate_sites", ())) for item in links),
+            "unresolved_links_retained": sum(item["status"] == "unresolved" for item in links),
+        }
+
     def _long_distance_dependencies(self, tokens, selected, predicate_arguments, trace, simulator):
         tags = self._best_tags(selected)
         predicates = [int(frame["predicate_index"]) for frame in predicate_arguments]
@@ -936,6 +1033,8 @@ class SyntaxProcessor:
                     "remote": True, "candidate_sites": candidate_sites[:4],
                     "status": "unresolved", "basic_dependency_tree_modified": False,
                 })
+        memory_release = self._release_resolved_dependency_memory(links)
+        nested_competition = self._manage_nested_competing_dependencies(links)
         self._trace_stage(9, [
             {"filler_count": len(fillers), "fillers": [{"index": i, "word": w, "type": t} for i, w, t in fillers]},
             {"predicate_clause_candidates": len(predicates)},
@@ -943,6 +1042,8 @@ class SyntaxProcessor:
             {"gap_scoring": "role fit + valency + intervening-subject cue - distance penalty"},
             {"remote_link_count": sum(link["status"] == "linked" for link in links)},
             {"unresolved_filler_count": sum(link["status"] == "unresolved" for link in links)},
+            {"memory_release": memory_release},
+            {"nested_and_competing_dependencies": nested_competition},
         ], drives={"working_memory": 0.9, "frontal_control": 0.82, "dependency_relations": 0.55,
                    "prediction_error": 0.5},
            trace=trace, simulator=simulator)
@@ -1004,6 +1105,9 @@ class SyntaxProcessor:
             "complete_constituency_parse": bool(constituency_parses and constituency_parses[0]["label"] == "S"),
             "unresolved_pos_count": sum(bool(item["abstained"]) for item in resolved_pos),
             "unresolved_long_distance_count": sum(link["status"] == "unresolved" for link in long_distance),
+            "released_dependency_memory_count": sum(link.get("memory_status") == "released_after_resolution" for link in long_distance),
+            "nested_dependency_links": sum(bool(link.get("nested_with")) for link in long_distance),
+            "competing_dependency_groups": len({link.get("competition_group") for link in long_distance if link.get("competition_group")}),
             "warnings": [
                 "The grammar and lexical inventory are compact, rule-based and English-oriented.",
                 "Posterior-like values are model scores, not corpus-calibrated probabilities.",

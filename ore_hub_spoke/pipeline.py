@@ -515,6 +515,24 @@ class HubAndSpokeProcessor:
         """Retrieve concepts and episodes, then blend current and remembered feature patterns."""
         request: HubAndSpokeRequest = state["request"]
         retrieved = self._concept_candidates(request.concept_cue, request.episodes)
+        raw_evidence = self._normalized_inputs(request)
+        if not request.concept_cue and raw_evidence:
+            sensory_matches = []
+            for row in retrieved:
+                concept = row["concept"]
+                fits = [
+                    _map_cosine(evidence, self._concept_modality_features(concept, modality))
+                    for modality, evidence in raw_evidence.items()
+                ]
+                input_fit = max(fits, default=0.0)
+                if input_fit > 0.0:
+                    row["input_fit"] = float(input_fit)
+                    sensory_matches.append(row)
+            retrieved = sorted(
+                sensory_matches,
+                key=lambda item: (item["input_fit"], item["concept"].frequency),
+                reverse=True,
+            )[:self.config.max_candidates]
         state["retrieved_candidates"] = retrieved
         episode_rows = []
         episode_memory: dict[str, float] = defaultdict(float)
@@ -540,7 +558,12 @@ class HubAndSpokeProcessor:
             total_weight = 0.0
             for row in retrieved:
                 concept: SemanticConcept = row["concept"]
-                weight = max(float(row["lexical_similarity"]), float(row["episode_fit"]), 0.05)
+                weight = max(
+                    float(row["lexical_similarity"]),
+                    float(row["episode_fit"]),
+                    float(row.get("input_fit", 0.0)),
+                    0.05,
+                )
                 if concept.concept_id in self._experience_memory:
                     saved = self._experience_memory[concept.concept_id].get(modality, {})
                     for feature, value in saved.items():

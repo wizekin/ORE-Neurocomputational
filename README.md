@@ -248,6 +248,37 @@ processor = N9Processor(adapters=N9Adapters(
 ))
 \`\`\`
 
+
+### Ready-made language adapter stack
+
+The \`ore_n9.adapters\` module connects the existing 36-operation lexical
+access processor, 58-operation syntax processor, 54-operation sentence semantic
+composition processor, and the existing 39-operation N7 discourse adapter.
+The sentence semantic adapter is distinct from the concept-only
+\`SemanticN8Adapter\`: it returns predicate/argument propositions and a typed
+sentence graph. All processors still require caller-supplied lexical, concept,
+and predicate-frame inventories appropriate to the target language/domain.
+
+\`\`\`python
+from ore_n9 import N9Adapters, N9Processor, build_n9_language_adapters
+
+adapters = build_n9_language_adapters(
+    lexical_access=lexical_access_processor,
+    syntax=syntax_processor,
+    semantic_composition=semantic_composition_processor,
+    discourse=discourse_processor,
+    base_adapters=N9Adapters(n3=fitted_n3_processor),
+)
+result = N9Processor(adapters=adapters).process(request)
+print(result.propositions)
+print(result.context_model)
+\`\`\`
+
+The factory preserves supplied N1-N5 adapters, creates N6/N7/N8 and syntax
+bridges, and does not create a lexicon or invent world knowledge. The focused
+end-to-end test compares "musician tunes instrument" with "musician tunes
+microwave" using an explicit predicate selectional-preference frame.
+
 Learning is disabled unless \`learning_authorized=True\`. An N5 adapter is
 deep-copied before a child-model proposal; the active parent model is checked
 for mutation. Software tests do not establish real-corpus accuracy or

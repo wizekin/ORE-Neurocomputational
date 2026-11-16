@@ -444,15 +444,25 @@ class HybridEmbodiedAmodalProcessor:
                 "familiarity": familiarity,
                 "activation": activation,
             })
-        memory_posterior = _softmax(
-            [row["activation"] for row in pattern_rows], temperature=0.25
+        # Associative memory requires a retrieval cue. Familiarity/frequency is a
+        # prior that can bias a cue-driven search, but it must not activate a concept
+        # when the current modalities, context, and task provide no evidence at all.
+        retrieval_evidence = (
+            float(np.linalg.norm(current_pattern)) > epsilon
+            or float(np.linalg.norm(context_vector)) > epsilon
+            or float(np.linalg.norm(task_vector)) > epsilon
+        )
+        memory_posterior = (
+            _softmax([row["activation"] for row in pattern_rows], temperature=0.25)
+            if retrieval_evidence else np.zeros(len(pattern_rows), dtype=np.float64)
         )
         for row, probability in zip(pattern_rows, memory_posterior):
             row["posterior"] = float(probability)
         retrieved_memory = (
             sum((float(p) * vector for p, vector in zip(memory_posterior, pattern_vectors)),
                 np.zeros(feature_count, dtype=np.float64))
-            if pattern_vectors else np.zeros(feature_count, dtype=np.float64)
+            if retrieval_evidence and pattern_vectors
+            else np.zeros(feature_count, dtype=np.float64)
         )
         memory_blended = {
             m: 0.85 * values + 0.15 * retrieved_memory
@@ -460,12 +470,14 @@ class HybridEmbodiedAmodalProcessor:
         }
         self._record_stage(6, {
             "retrieved_concepts": pattern_rows,
+            "retrieval_evidence_available": retrieval_evidence,
             "retrieved_feature_activation": _as_feature_map(retrieved_memory, vocabulary),
             "memory_blended_representations": {
                 m: _as_feature_map(v, vocabulary) for m, v in memory_blended.items()
             },
             "step_evidence": [
                 {"stored_patterns_compared": len(pattern_rows)},
+                {"retrieval_evidence_available": retrieval_evidence},
                 {"top_memory_candidates": [row["concept_id"] for row in sorted(
                     pattern_rows, key=lambda row: row["posterior"], reverse=True
                 )[:5]]},

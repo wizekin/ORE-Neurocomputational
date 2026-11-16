@@ -74,6 +74,25 @@ def test_biological_track_can_be_disabled_without_changing_functional_contract()
     assert np.allclose(with_biology.posterior_beliefs, without_biology.posterior_beliefs)
     assert np.allclose(without_biology.posterior_beliefs.sum(axis=1), 1.0, atol=1e-5)
 
+
+def test_operation_trace_has_unique_outputs_and_complete_source_step_mapping():
+    from ore_predictive_orthography.source_mapping import SOURCE_STEP_MAP
+
+    result = _build_processor(simulate_biology=False).process(_sequence())
+    assert len(SOURCE_STEP_MAP) == 38
+    assert result.diagnostics["source_step_mapping_complete"] is True
+    assert result.diagnostics["operation_specific_outputs"] is True
+    assert all(row["source_step_ids"] for row in result.operation_trace)
+    assert all(row["outputs_produced"] for row in result.operation_trace)
+    assert all(
+        row["execution_evidence"]["stage_summary_reused_as_operation_output"] is False
+        for row in result.operation_trace
+    )
+    output_fields = [tuple(row["execution_evidence"]["output_field_names"])
+                     for row in result.operation_trace]
+    assert len(set(output_fields)) > 1
+    assert result.operation_trace[8]["outputs_produced"]["observed_grapheme_exposure_counts"]["size"] > 0
+
 def test_unfitted_n3_processor_is_rejected_before_inference():
     processor = PredictiveOrthographyProcessor(N3Processor(), simulate_biology=False)
     with pytest.raises(RuntimeError, match="fit the N3 processor"):

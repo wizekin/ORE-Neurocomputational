@@ -296,7 +296,8 @@ class SyntaxN9Adapter:
                     if tag and math.isfinite(value) and 0.0 <= value <= 1.0:
                         canonical[tag] = value
             if canonical:
-                lexical_evidence[index] = {"pos_candidates": canonical}
+                # SyntaxRequest.lexical_evidence[index] is a flat POS->score map.
+                lexical_evidence[index] = canonical
             features = _finite_feature_map(row.get("semantic_features", {}))
             if features:
                 semantic_features[index] = features

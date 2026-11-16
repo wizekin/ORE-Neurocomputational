@@ -848,11 +848,21 @@ class HubAndSpokeProcessor:
             for source, targets in self.associations.items()
             for target, weight in targets.items()
         ]
+        taxonomy_edges = [
+            {
+                "source": concept.concept_id,
+                "target": f"prototype:{concept.prototype_id}",
+                "kind": "prototype_membership",
+                "lexical_category": concept.lexical_category,
+            }
+            for concept in self.concepts if concept.prototype_id
+        ]
         state["concept_comparisons"] = comparisons
         state["category_prototypes"] = prototypes
         return {
             "concept_comparisons": comparisons,
             "category_prototypes": prototypes,
+            "taxonomic_membership_edges": taxonomy_edges,
             "explicit_association_edges": relation_edges,
             "association_provenance": "caller_supplied_only",
         }
@@ -873,7 +883,26 @@ class HubAndSpokeProcessor:
             ))
             if controlled >= self.config.feature_threshold:
                 selected[feature] = controlled
+        if request.task_relevance:
+            control_logits = []
+            for modality in MODALITIES:
+                values = state["refined_spokes"][modality]
+                relevance = sum(
+                    float(value) * float(request.task_relevance.get(feature, 0.0))
+                    for feature, value in zip(self._vocabulary[modality], values)
+                )
+                control_logits.append(
+                    math.log(max(state["modality_gates"][modality], _EPS)) + relevance
+                )
+            controlled_weights = _softmax(control_logits, self.config.modality_temperature)
+            controlled_gates = {
+                modality: float(controlled_weights[index])
+                for index, modality in enumerate(MODALITIES)
+            }
+        else:
+            controlled_gates = dict(state["modality_gates"])
         state["controlled_features"] = selected
+        state["controlled_modality_gates"] = controlled_gates
         controlled_scores = self._score_candidates(
             state["hub_state"], state["retrieved_candidates"],
             state["raw_inputs"], request.context_features, selected,
@@ -887,6 +916,7 @@ class HubAndSpokeProcessor:
         return {
             "task": request.task,
             "selected_features": selected,
+            "controlled_modality_gates": controlled_gates,
             "suppressed_feature_count": sum(
                 1 for key, value in request.irrelevant_features.items() if value > 0
             ),

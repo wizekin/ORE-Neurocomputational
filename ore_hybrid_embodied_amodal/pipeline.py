@@ -297,9 +297,22 @@ class HybridEmbodiedAmodalProcessor:
                 "prediction_fit": prediction_fit_value,
                 "score": score,
             })
-        posterior = _softmax(raw_scores, temperature=0.20)
+        # A softmax over a single stored concept would otherwise report 1.0
+        # even when every evidence channel is zero. Frequency is a prior, not
+        # independent evidence that a concept is currently present.
+        evidence_available = (
+            float(np.linalg.norm(hub)) > 1e-8
+            or float(np.linalg.norm(context)) > 1e-8
+            or float(np.linalg.norm(task)) > 1e-8
+            or any(float(value) > 1e-8 for value in (prediction_fit or {}).values())
+        )
+        posterior = (
+            _softmax(raw_scores, temperature=0.20)
+            if evidence_available else np.zeros(len(rows), dtype=np.float64)
+        )
         for row, probability in zip(rows, posterior):
             row["posterior"] = float(probability)
+            row["evidence_available"] = evidence_available
         rows.sort(key=lambda row: row["posterior"], reverse=True)
         return rows
 
@@ -836,15 +849,18 @@ class HybridEmbodiedAmodalProcessor:
             adapted + self.config.prediction_update_rate * prediction_error_hub
         )
         mean_error = float(np.mean(list(prediction_error_norms.values()))) if prediction_error_norms else 0.0
-        prediction_fit = {
-            concept.concept_id: max(
-                0.0,
-                1.0 - float(np.linalg.norm(
-                    current_pattern - self._concept_vector(concept, vocabulary)
-                )) / math.sqrt(feature_count),
-            )
-            for concept in concepts
-        }
+        prediction_fit = (
+            {
+                concept.concept_id: max(
+                    0.0,
+                    1.0 - float(np.linalg.norm(
+                        current_pattern - self._concept_vector(concept, vocabulary)
+                    )) / math.sqrt(feature_count),
+                )
+                for concept in concepts
+            }
+            if retrieval_evidence else {concept.concept_id: 0.0 for concept in concepts}
+        )
         bayesian_rows = self._rank_concepts(
             predictive_hub, vocabulary, context_vector, task_vector, concepts, prediction_fit
         )

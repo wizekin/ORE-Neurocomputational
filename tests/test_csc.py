@@ -170,6 +170,38 @@ def test_learning_is_preview_only_without_authorization_and_requires_feedback() 
     assert learned.learning["feedback_concept_id"] == "river-bank"
 
 
+def test_signal_fft_and_context_task_ema_are_executed_and_reported() -> None:
+    """Verify optional numeric signal samples, temporal input, and history EMAs reach the hub."""
+    processor = _processor()
+    request = CSCRequest(
+        sequence_id="signal-history",
+        text="bank",
+        task="geographical interpretation",
+        context_features={"WATER": 0.2},
+        task_features={"SHORE": 0.3},
+        signal_samples=(0.0, 1.0, 0.0, -1.0, 0.0, 1.0, 0.0, -1.0),
+        signal_modality="auditory",
+        previous_context_features={"RIVER": 1.0},
+        previous_task_features={"RIVER": 1.0},
+    )
+    result = processor.process(request)
+    first = result.stage_outputs["CSC-01"]
+    fourth = result.stage_outputs["CSC-04"]
+    fifth = result.stage_outputs["CSC-05"]
+    sixth = result.stage_outputs["CSC-06"]
+
+    assert first["fourier_bins"] == 5
+    assert first["z_score_normalization"] is True
+    assert "auditory" in fourth["spoke_names"]
+    assert any(key.startswith("spectral_bin_") for key in fourth["hub_state"])
+    assert fifth["previous_context_supplied"] is True
+    assert fifth["context_features"]["RIVER"] == pytest.approx(0.65)
+    assert fifth["context_features"]["WATER"] == pytest.approx(0.07)
+    assert sixth["previous_task_supplied"] is True
+    assert sixth["task_features"]["RIVER"] == pytest.approx(0.70)
+    assert sixth["task_features"]["SHORE"] == pytest.approx(0.09)
+
+
 def test_result_serialization_contains_full_stage_and_operation_traces() -> None:
     """Ensure result data can be serialized without NumPy or non-finite objects."""
     result = _processor().process(_request("json"))

@@ -383,13 +383,30 @@ class SemanticCompositionN8Adapter:
         representation = result_payload["sentence_representation"]
 
         nodes: list[dict[str, Any]] = []
+        semantic_word_rows = {
+            int(row["token_index"]): row
+            for row in result_payload.get("word_concepts", [])
+        }
         for node in representation.get("nodes", []):
             node_id = str(node.get("node_id", "")).strip()
             node_type = str(node.get("node_type", "semantic"))
             if not node_id:
                 continue
+            node_payload = dict(node)
+            if node_type == "word_concept":
+                try:
+                    token_index = int(node.get("token_index", -1))
+                except (TypeError, ValueError):
+                    token_index = -1
+                word_row = semantic_word_rows.get(token_index, {})
+                features = dict(word_row.get("selected_features", {}))
+                node_payload["semantic_features"] = features
+                if max(features.get("HUMAN", 0.0), features.get("PERSON", 0.0)) >= 0.5:
+                    node_type = "person"
+                else:
+                    node_type = "concept"
             nodes.append({
-                **dict(node),
+                **node_payload,
                 "id": node_id,
                 "type": node_type,
                 "label": str(node.get("label") or node.get("predicate") or node.get("surface") or node_id),
@@ -420,7 +437,11 @@ class SemanticCompositionN8Adapter:
                     role = f"{base_role}_{suffix}"
                     suffix += 1
                 entity_id = argument.get("entity_id")
-                argument_map[role] = str(entity_id or argument.get("surface", ""))
+                token_index = int(argument.get("token_index", -1))
+                # Sentence-graph token nodes are the shared entity references
+                # consumed by N9 graph validation and the N7 discourse adapter.
+                graph_entity_id = f"token:{token_index}" if token_index >= 0 else entity_id
+                argument_map[role] = str(graph_entity_id or argument.get("surface", ""))
                 compatibility = compatibility_by_argument.get((
                     predicate_index, int(argument.get("token_index", -1))
                 ), {})

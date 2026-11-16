@@ -285,6 +285,26 @@ def test_annotations_and_operation_events_are_written_to_sqlite(
     assert linked_annotations > 0
 
 
+
+
+def test_zeroed_modalities_and_no_context_cannot_select_from_frequency_prior(
+    guitar_concept: HybridConcept,
+) -> None:
+    """Abstain when all incoming channels are silent and no contextual evidence exists."""
+    request = HybridRequest(
+        sequence_id="no-evidence",
+        modality_inputs={"visual": {"shape": 0.0}, "auditory": {"sound": 0.0}},
+        task="recognition",
+        response_mode="recognition",
+    )
+    result = HybridEmbodiedAmodalProcessor(
+        [guitar_concept], HybridConfig(simulate_biology=False)
+    ).process(request)
+    assert result.selected_concept is None
+    assert result.diagnostics["abstained"] is True
+    assert result.diagnostics["decision_evidence_available"] is False
+
+
 def test_request_rejects_nonfinite_or_out_of_range_feature_values() -> None:
     """Reject malformed input before the pipeline can introduce invalid numerical states."""
     with pytest.raises(ValueError):

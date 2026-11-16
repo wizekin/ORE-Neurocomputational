@@ -940,9 +940,8 @@ class SyntaxProcessor:
                     competition_group_for[member] = group_id
         for index, link in enumerate(links):
             link["nested_with"] = [
-                other if pair[0] == index else pair[0]
-                for pair in nested_pairs for other in [pair[1]]
-                if pair[0] == index or pair[1] == index
+                pair[1] if pair[0] == index else pair[0]
+                for pair in nested_pairs if index in pair
             ]
             link["competition_group"] = competition_group_for.get(index)
             sites = list(link.get("candidate_sites", ()))

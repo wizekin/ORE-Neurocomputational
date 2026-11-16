@@ -14,7 +14,7 @@ import numpy as np
 from .biology import POPULATIONS, SemanticLIFSimulator
 from .contracts import SemanticConfig, SemanticConcept, SemanticRequest, SemanticResult, WordFormEpisode
 from .registry import OPERATION_REGISTRY
-from .memory import SemanticMemoryStore
+from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore, SemanticPrototypeEvidence
 
 _EPS = 1e-9
 _MODALITY_POPULATION = {
@@ -203,7 +203,7 @@ class SemanticCognitionProcessor:
     def _retrieve_candidates(
         self,
         token: str,
-        episodes: Sequence[WordFormEpisode],
+        episodes: Sequence[Any],
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         normalized = _normalize(token)
         accumulated: dict[str, dict[str, Any]] = {}
@@ -214,6 +214,7 @@ class SemanticCognitionProcessor:
                 "exact_match": True,
                 "episode_fit": 0.0,
                 "episode_ids": [],
+                "prototype_evidence_ids": [],
                 "phonological_cues": [],
             }
         for concept in self.concepts:
@@ -228,6 +229,7 @@ class SemanticCognitionProcessor:
                     "exact_match": False,
                     "episode_fit": 0.0,
                     "episode_ids": [],
+                    "prototype_evidence_ids": [],
                     "phonological_cues": [],
                 }
 
@@ -240,6 +242,8 @@ class SemanticCognitionProcessor:
             if similarity < self.config.candidate_similarity_floor:
                 continue
             weighted_match = similarity * episode.strength * episode.recency
+            evidence_type = getattr(episode, "evidence_type", "episodic_word_form")
+            prototype_id = getattr(episode, "prototype_id", None)
             retrieved_episodes.append({
                 "episode_id": episode.episode_id,
                 "orthography": episode.orthography,
@@ -248,19 +252,33 @@ class SemanticCognitionProcessor:
                 "retrieval_strength": float(weighted_match),
                 "phonological_form": list(episode.phonological_form),
                 "source_reference": episode.source_reference,
+                "evidence_type": evidence_type,
+                "prototype_id": prototype_id,
             })
-            concept = self._by_id.get(episode.concept_id or "")
-            if concept is not None:
+            direct_concept = self._by_id.get(episode.concept_id or "")
+            matching_concepts = (
+                [direct_concept] if direct_concept is not None else
+                [
+                    entry for entry in self.concepts
+                    if evidence_type == "abstract_lexical_prototype"
+                    and entry.prototype_id == prototype_id
+                ]
+            )
+            for concept in matching_concepts:
                 item = accumulated.setdefault(concept.concept_id, {
                     "entry": concept,
                     "lexical_similarity": 0.0,
                     "exact_match": False,
                     "episode_fit": 0.0,
                     "episode_ids": [],
+                    "prototype_evidence_ids": [],
                     "phonological_cues": [],
                 })
                 item["episode_fit"] = max(float(item["episode_fit"]), weighted_match)
-                item["episode_ids"].append(episode.episode_id)
+                if evidence_type == "abstract_lexical_prototype":
+                    item["prototype_evidence_ids"].append(str(prototype_id))
+                else:
+                    item["episode_ids"].append(episode.episode_id)
                 if episode.phonological_form:
                     item["phonological_cues"].append(list(episode.phonological_form))
         candidates = list(accumulated.values())
@@ -355,12 +373,49 @@ class SemanticCognitionProcessor:
         tokens = _tokenize(request)
         if not tokens:
             raise ValueError("request produced no word tokens")
-        episodes_by_token: dict[str, tuple[WordFormEpisode, ...]] = {}
+        episodes_by_token: dict[str, tuple[Any, ...]] = {}
+        memory_prototypes_by_token: dict[str, list[dict[str, Any]]] = {}
         for token in tokens:
-            persistent = (
-                self.memory_store.recall(token, context_features=request.context)
-                if self.memory_store is not None else []
-            )
+            persistent: list[Any] = []
+            prototype_matches: list[dict[str, Any]] = []
+            if self.memory_store is not None:
+                persistent.extend(
+                    self.memory_store.recall(token, context_features=request.context)
+                )
+                completion = self.memory_store.pattern_complete(
+                    orthography=token, context_features=request.context
+                )
+                if completion.get("status") == "completed":
+                    completed_episode = completion["completed_episode"]
+                    if all(item.episode_id != completed_episode.episode_id for item in persistent):
+                        persistent.append(completed_episode)
+                prototype_matches = self.memory_store.generalize(
+                    orthography=token, context_features=request.context,
+                    limit=3, minimum_similarity=0.25,
+                )
+                for prototype in prototype_matches:
+                    persistent.append(SemanticPrototypeEvidence(
+                        episode_id=f"prototype:{prototype['prototype_id']}",
+                        orthography=token,
+                        concept_id=None,
+                        phonological_form=tuple(prototype.get("phonological_sequence", ())),
+                        semantic_features=dict(prototype["semantic_features"]),
+                        context_features=dict(prototype["context_features"]),
+                        strength=float(np.clip(0.4 + 0.4 * prototype["similarity"], 0.0, 1.0)),
+                        recency=1.0,
+                        source_reference=f"abstract_lexical_prototype:{prototype['prototype_id']}",
+                        prototype_id=str(prototype["prototype_id"]),
+                    ))
+                self.memory_store.record_semantic_feedback(
+                    token,
+                    episodic_ids=[
+                        item.episode_id for item in persistent
+                        if getattr(item, "evidence_type", None) != "abstract_lexical_prototype"
+                    ],
+                    prototype_ids=[item["prototype_id"] for item in prototype_matches],
+                    evidence_count=len(persistent),
+                )
+            memory_prototypes_by_token[token] = prototype_matches
             episodes_by_token[token] = tuple(request.episodes) + tuple(persistent)
         original_text = request.text if request.text is not None else " ".join(request.tokens or ())
         normalized_tokens = tuple(_normalize(token) for token in tokens)
@@ -677,6 +732,23 @@ class SemanticCognitionProcessor:
                 "activation": activation,
                 "source": "frequency_weighted_read_only_concept_aggregate",
             })
+        for token, matched_prototypes in memory_prototypes_by_token.items():
+            for prototype in matched_prototypes:
+                prototype_records.append({
+                    "prototype_id": prototype["prototype_id"],
+                    "lexical_category": None,
+                    "member_concept_ids": [
+                        concept.concept_id for concept in self.concepts
+                        if concept.prototype_id == prototype["prototype_id"]
+                    ],
+                    "member_count": prototype["experience_count"],
+                    "features": dict(prototype["semantic_features"]),
+                    "activation": float(prototype["similarity"]),
+                    "source": "sqlite_consolidated_experience_generalization",
+                    "matched_token": token,
+                    "orthographic_profile": prototype["orthographic_profile"],
+                    "phonological_sequence": prototype["phonological_sequence"],
+                })
         prototype_records.sort(key=lambda row: row["activation"], reverse=True)
         tick(40, {"prototype_count": len(prototype_records)},
              {"abstract_prototype": min(1.0, len(prototype_records) / max(len(self._prototypes), 1))})
@@ -747,6 +819,7 @@ class SemanticCognitionProcessor:
                     "prototype_id": item["prototype_id"],
                     "prototype_fit": float(item["prototype_fit"]),
                     "episode_ids": list(item["episode_ids"]),
+                    "prototype_evidence_ids": list(item.get("prototype_evidence_ids", [])),
                     "phonological_cues": list(item["phonological_cues"]),
                     "source_reference": entry.source_reference,
                 })
@@ -858,6 +931,13 @@ class SemanticCognitionProcessor:
             "concept_count": len(self.concepts),
             "persistent_memory_enabled": self.memory_store is not None,
             "persistent_episode_count": self.memory_store.episode_count() if self.memory_store is not None else 0,
+            "persistent_memory_operation_registry": (
+                [dict(row) for row in MEMORY_OPERATION_REGISTRY]
+                if self.memory_store is not None else []
+            ),
+            "persistent_memory_operation_trace": (
+                self.memory_store.operation_trace[-256:] if self.memory_store is not None else []
+            ),
             "config": self.config.to_dict(),
             "source_reference": request.source_reference,
             "language": request.language,

@@ -42,7 +42,7 @@ _STAGE_ROWS = (
     ("S6", "Subject/object assignment", 6, "Predicate-centred grammatical argument frames", "left inferior frontal and posterior temporal argument mapping"),
     ("S7", "Agent/patient thematic roles", 6, "Role distributions for event participants", "temporal semantic features and event/action networks"),
     ("S8", "Syntactic ambiguity resolution", 7, "Updated POS/parse beliefs, margin and alternatives", "recurrent frontotemporal competition and control"),
-    ("S9", "Long-distance dependency processing", 6, "Filler-gap links and unresolved dependencies", "phonological/syntactic working memory and frontal control"),
+    ("S9", "Long-distance dependency processing", 8, "Filler-gap links and unresolved dependencies", "phonological/syntactic working memory and frontal control"),
 )
 
 # Each tuple: operation, executable responsibility, mathematical sketch, biological reference.
@@ -112,6 +112,8 @@ _ROWS = (
     ("Score filler-gap compatibility", "Combine role fit, clause membership, valency, distance and intervening-subject evidence.", "score(f,g)=role_fit+valency+clause_fit-lambda*distance", "Frontal control prioritizes plausible retrieval targets across intervening words."),
     ("Create enhanced remote dependency", "Attach a non-tree enhanced arc from the filler to the best supported gap predicate.", "edge=(head=predicate, dependent=filler, relation=role, remote=True)", "A maintained filler representation is linked to a later syntactic retrieval site."),
     ("Validate binding and unresolved cases", "Check index validity, preserve the basic tree, and report ambiguity when no gap clears threshold.", "valid(edge) and basic_tree_unchanged; abstain if max_score<tau", "Monitoring detects retrieval failure or competing gap hypotheses."),
+    ("Release resolved long-distance dependency memory", "Release active retrieval support only for confidently linked dependencies; retain open, weak or unresolved records and keep an audit summary.", "release(D_i)=1 iff linked(D_i) and score(D_i)>=theta_release; otherwise retain(D_i)", "Cue-based retrieval and working-memory updating; software release is not neuronal deletion."),
+    ("Manage nested and competing long-distance dependencies", "Detect interval nesting and shared-filler/shared-target competition, group alternatives, rank competing sites and preserve unresolved hypotheses.", "nest(i,j)=I[a_i<a_j<b_j<b_i or a_j<a_i<b_i<b_j]; P(site|D)=softmax(score/T)", "Hierarchical working-memory maintenance and recurrent frontotemporal competition are candidate functional analogies."),
 )
 
 STAGE_REGISTRY = tuple(
@@ -124,7 +126,7 @@ _cursor = 1
 for (stage_id, stage_name, _, _, _), start, end in zip(
     _STAGE_ROWS,
     (1, 8, 14, 21, 27, 32, 38, 44, 51),
-    (7, 13, 20, 26, 31, 37, 43, 50, 56),
+    (7, 13, 20, 26, 31, 37, 43, 50, 58),
 ):
     for operation_name, responsibility, equation, biology in _ROWS[start - 1:end]:
         _operation_rows.append(OperationSpec(

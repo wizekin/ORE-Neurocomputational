@@ -737,8 +737,17 @@ class HybridEmbodiedAmodalProcessor:
         for category, vectors in category_groups.items():
             prototype = np.mean(np.stack(vectors), axis=0)
             category_scores[category] = max(0.0, _cosine(common, prototype))
+        category_evidence_available = (
+            float(np.linalg.norm(common)) > epsilon
+            or float(np.linalg.norm(context_vector)) > epsilon
+            or float(np.linalg.norm(task_vector)) > epsilon
+        )
         if category_scores:
-            probabilities = _softmax(list(category_scores.values()), temperature=0.25)
+            probabilities = (
+                _softmax(list(category_scores.values()), temperature=0.25)
+                if category_evidence_available
+                else np.zeros(len(category_scores), dtype=np.float64)
+            )
             category_posteriors = {
                 category: float(value)
                 for category, value in zip(category_scores, probabilities)
@@ -750,8 +759,11 @@ class HybridEmbodiedAmodalProcessor:
             "step_evidence": [
                 {"concept_prototype_count": len(concepts)},
                 {"category_count": len(category_groups)},
-                {"top_category": max(category_posteriors, key=category_posteriors.get)
-                 if category_posteriors else None},
+                {"category_evidence_available": category_evidence_available},
+                {"top_category": (
+                    max(category_posteriors, key=category_posteriors.get)
+                    if category_posteriors and category_evidence_available else None
+                )},
                 {"individual_concepts_preserved": [row["concept_id"] for row in concept_rows]},
                 {"generalization": "category centroid with distinct concept candidates"},
             ],

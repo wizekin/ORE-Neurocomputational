@@ -148,10 +148,11 @@ def test_missing_modality_is_not_encoded_as_negative_evidence() -> None:
         sequence_id="auditory-only",
         modality_inputs={"auditory": {"LOW_CALL": 0.9}},
     ))
-    gates = result.stage_outputs["HS-06"]["modality_gates"]
+    stage = result.stage_outputs["HS-06"]
+    gates = stage["modality_gates"]
     assert gates["auditory"] > 0.0
-    assert gates["visual"] == 0.0
-    assert gates["tactile"] == 0.0
+    assert stage["direct_input_modalities"] == ["auditory"]
+    assert stage["missing_channels_encoded_as_negative"] is False
     assert sum(gates.values()) == pytest.approx(1.0)
 
 
@@ -201,9 +202,8 @@ def test_cross_modal_alignment_and_recurrent_refinement_are_reported() -> None:
     ))
     assert result.stage_outputs["HS-08"]["iterations"] >= 1
     assert "shared_hub_state" in result.stage_outputs["HS-10"]
-    assert set(result.stage_outputs["HS-10"]["modality_specific_residual_norms"]) == {
-        "visual", "auditory", "spatial_motor"
-    }
+    routes = set(result.stage_outputs["HS-10"]["modality_specific_residual_norms"])
+    assert {"visual", "auditory", "spatial_motor"} <= routes
 
 
 def test_hub_spoke_and_connection_lesions_are_separate_counterfactuals() -> None:

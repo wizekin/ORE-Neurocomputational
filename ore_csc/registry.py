@@ -54,7 +54,7 @@ STAGE_REGISTRY: tuple[StageSpec, ...] = (
         "Convert available sensory, linguistic, and caller-supplied modality evidence into a normalized input state.",
         "Auditory and visual association pathways, somatosensory systems, and language-related cortex provide distributed input features. Fourier and normalization equations are engineering analogies, not literal neural instructions.",
         (
-            ("transform_signal", "X(f) = sum_t x(t) exp(-i 2 pi f t / N)", "Represent optional signal-like input in feature space; the core API accepts already extracted features rather than raw audio or pixels."),
+            ("transform_signal", "X(f) = sum_t x(t) exp(-i 2 pi f t / N)", "Z-score caller-supplied numeric samples and transform them with a real FFT; audio decoding and raw image extraction remain external front ends."),
             ("extract_feature_vector", "x = [x_1, ..., x_n]", "Preserve token, modality, and context features as named graded evidence."),
             ("normalize_feature_scale", "x_hat_i = (x_i - mu_i) / (sigma_i + epsilon)", "Normalize numeric features safely while keeping public activations bounded."),
             ("integrate_temporal_input", "X_t = sum_tau alpha_tau x_(t-tau)", "Carry ordered tokens and the current cue into one request-level input representation."),

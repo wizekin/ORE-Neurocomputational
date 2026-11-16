@@ -33,7 +33,7 @@ _DEFAULT_PHONEMES = tuple(
     )
 )
 _MANNER_INDEX = {name: i for i, name in enumerate(("stop","fricative","nasal","approximant","affricate","vowel"))}
-_PLACE_INDEX = {name: i for i, name in enumerate(("bilabial","labiodental","dental","alveolar","postalveolar","palatal","velar","glottal"))}
+_PLACE_INDEX = {name: i for i, name in enumerate(("bilabial","labiodental","alveolar","postalveolar","palatal","velar","glottal","unknown"))}
 
 
 def _safe_log(values: np.ndarray, epsilon: float = 1e-10) -> np.ndarray:

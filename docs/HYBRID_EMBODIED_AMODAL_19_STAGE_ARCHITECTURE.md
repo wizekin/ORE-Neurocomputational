@@ -1,8 +1,8 @@
 # Hybrid Embodied–Amodal Concept Formation and Processing — 19 stages
 
-**Package:** \`ore_hybrid_embodied_amodal/\`  
-**Registry:** \`ORE-HEC-19\`  
-**Source specification:** Google Drive file \`Hybrid Embodied–Amodal Concept Formation and Processing.txt\`  
+**Package:** `ore_hybrid_embodied_amodal/`  
+**Registry:** `ORE-HEC-19`  
+**Source specification:** Google Drive file `Hybrid Embodied–Amodal Concept Formation and Processing.txt`  
 **Implementation:** functional computational pipeline plus a separate optional current-based LIF reference  
 **Status:** research-oriented software approximation; not a biologically validated model
 
@@ -19,7 +19,7 @@ The 19-stage sequence is a traceable computational decomposition. It is not a cl
 
 ## 2. The 19-stage registry
 
-The canonical registry in \`ore_hybrid_embodied_amodal/registry.py\` uses stage IDs \`HEC-01.01\`–\`HEC-01.19\`. Each stage contains ordered substeps with stable IDs such as \`HEC-01.07.03\`. Each substep carries a functional responsibility, a mathematical expression, and a stage-level biological reference.
+The canonical registry in `ore_hybrid_embodied_amodal/registry.py` uses stage IDs `HEC-01.01`–`HEC-01.19`. Each stage contains ordered substeps with stable IDs such as `HEC-01.07.03`. Each substep carries a functional responsibility, a mathematical expression, and a stage-level biological reference.
 
 | Stage | Name | Main functional work | Biological reference |
 |---:|---|---|---|
@@ -45,13 +45,13 @@ The canonical registry in \`ore_hybrid_embodied_amodal/registry.py\` uses stage 
 
 The registry is the programmatic source of truth:
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import STAGE_REGISTRY, ALL_OPERATIONS, registry_as_dicts
 
 assert len(STAGE_REGISTRY) == 19
 print(len(ALL_OPERATIONS))
 print(registry_as_dicts()[6])  # Stage 7 and its ordered substeps
-\`\`\`
+```
 
 ## 3. Mathematical operations
 
@@ -244,7 +244,7 @@ The equations below are computational forms of the source's proposals. They are 
 
 Inputs to this package are **named feature maps**, not raw pixels or raw audio. Raw acquisition/transduction and low-level feature extraction belong to the upstream perception stages.
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import (
     HybridConcept,
     HybridEmbodiedAmodalProcessor,
@@ -287,13 +287,13 @@ print(len(result.stage_trace))       # 19
 print(len(result.operation_trace))   # all registered substeps
 print(result.modality_residuals)     # modality-specific unique information
 print(result.common_representation)  # shared ATL-inspired state
-\`\`\`
+```
 
-Existing ORE \`SemanticConcept\` objects can be supplied directly; the processor adapts their \`semantic_features\`, \`modality_features\`, aliases, category, frequency and provenance fields without changing the old package contract.
+Existing ORE `SemanticConcept` objects can be supplied directly; the processor adapts their `semantic_features`, `modality_features`, aliases, category, frequency and provenance fields without changing the old package contract.
 
 ### Explicit experience learning
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import HybridLearningExample
 
 experience = HybridLearningExample(
@@ -316,13 +316,13 @@ learning_request = HybridRequest(
 )
 learned = processor.process(learning_request)
 print(learned.learning["status"])  # committed, only with valid authorization/provenance
-\`\`\`
+```
 
-Without \`learning_authorized=True\`, updates are preview-only. Examples without reviewer and source provenance are blocked. The execution logger does not authorize or persist semantic learning.
+Without `learning_authorized=True`, updates are preview-only. Examples without reviewer and source provenance are blocked. The execution logger does not authorize or persist semantic learning.
 
 ### Configure biological reference
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import HybridConfig, HybridEmbodiedAmodalProcessor
 
 config = HybridConfig(
@@ -334,15 +334,15 @@ config = HybridConfig(
 processor = HybridEmbodiedAmodalProcessor([concept], config)
 result = processor.process(request)
 print(result.biological["layers"]["atl_transmodal_hub"])
-\`\`\`
+```
 
-The LIF reference reports membrane voltage (mV), synaptic current (pA), firing rate (Hz), spike counts, and simulated time (ms). The dimensional conversion \(1\,M\Omega \times 1\,pA=10^{-3}\,mV\) is explicit in code. This is a generic population reference, not a fitted simulation of the named anatomical systems. Disable it with \`HybridConfig(simulate_biology=False)\`.
+The LIF reference reports membrane voltage (mV), synaptic current (pA), firing rate (Hz), spike counts, and simulated time (ms). The dimensional conversion \(1\,M\Omega \times 1\,pA=10^{-3}\,mV\) is explicit in code. This is a generic population reference, not a fitted simulation of the named anatomical systems. Disable it with `HybridConfig(simulate_biology=False)`.
 
 ## 5. SQLite annotations and operation/run trace
 
 The package integrates with the existing repository-wide ORE logger. It does not introduce a separate database or table format.
 
-\`\`\`python
+```python
 from ore_hybrid_embodied_amodal import (
     index_hybrid_annotations,
     record_hybrid_result,
@@ -356,31 +356,31 @@ print(annotation_report["hybrid_symbol_count"])
 run_report = record_hybrid_result(result, repository_root=".")
 print(run_report["run_id"])
 print(run_report["operation_count"])
-\`\`\`
+```
 
 Default database:
 
-\`\`\`text
+```text
 ore_logs/ore_logger.sqlite3
-\`\`\`
+```
 
-The existing AST catalogue stores each class/function/method explanation once in \`annotations\`; run events link to symbol annotations through foreign keys. The new package supplies docstrings for its classes and callables, plus explicit operation-level explanations with equations and biological references. Raw input feature values and full neural arrays are not written to run-event metadata.
+The existing AST catalogue stores each class/function/method explanation once in `annotations`; run events link to symbol annotations through foreign keys. The new package supplies docstrings for its classes and callables, plus explicit operation-level explanations with equations and biological references. Raw input feature values and full neural arrays are not written to run-event metadata.
 
 Run the built-in demonstration from the repository root:
 
-\`\`\`bash
+```bash
 python -m ore_hybrid_embodied_amodal
-\`\`\`
+```
 
 ## 6. Tests and validation
 
 Install and test:
 
-\`\`\`bash
+```bash
 python -m pip install -e ".[dev]"
 python -m pytest tests/test_hybrid_embodied_amodal.py -q
 python -m pytest
-\`\`\`
+```
 
 The focused tests cover:
 - exact 19-stage order and unique operation IDs;
@@ -389,7 +389,7 @@ The focused tests cover:
 - task attention, inhibition, and contextual output;
 - preview-only and provenance-gated learning;
 - optional LIF units, numerical validity, and stage trace;
-- compatibility with the existing \`SemanticConcept\` contract;
+- compatibility with the existing `SemanticConcept` contract;
 - SQLite symbol annotations and operation/run events;
 - invalid/non-finite input rejection.
 

@@ -521,7 +521,7 @@ class VisualOrthographyProcessor:
 
         # Stage A / Step 2: generate orientation- and spatial-frequency-sensitive feature maps.
         if request.visual_image is not None:
-            visual_output = self.visual_processor.process(request.visual_image)
+            visual_output = self.visual_processor.process(image)
             feature_stack = np.asarray(visual_output["feature_stack"], dtype=np.float64)
             functional["stage_a"]["early_visual_features"] = visual_output
             statuses[2] = "completed"

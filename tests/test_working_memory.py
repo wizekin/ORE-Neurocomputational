@@ -160,6 +160,92 @@ def test_executive_control_retains_goal_bias_separately_from_evidence() -> None:
     assert "goal_bias" in result.semantic_resolution["evidence_channels"]
 
 
+
+def test_39_source_operations_map_to_canonical_trace_and_missing_semantic_steps_execute() -> None:
+    """Trace source operation IDs while explicitly evaluating prediction error and consolidation."""
+    from ore_working_memory.source_mapping import SOURCE_OPERATION_MAP, WM_EXTENSION_REGISTRY
+
+    request = WorkingMemoryRequest(
+        sequence_id="source-coverage-001",
+        text="The scientist examined the sample.",
+        interpretations=[
+            {
+                "hypothesis_id": "h1", "interpretation": "careful scientific examination",
+                "lexical_score": 0.95, "semantic_score": 0.96, "syntactic_score": 0.94,
+                "discourse_score": 0.92, "world_score": 0.95, "prior": 0.95,
+                "pragmatic_score": 0.95,
+            },
+            {
+                "hypothesis_id": "h2", "interpretation": "casual observation",
+                "lexical_score": 0.15, "semantic_score": 0.15, "syntactic_score": 0.12,
+                "discourse_score": 0.10, "world_score": 0.12, "prior": 0.10,
+                "pragmatic_score": 0.10,
+            },
+        ],
+        context={"predicted_interpretation_distribution": {"h1": 0.75, "h2": 0.25}},
+    )
+    result = _no_biology().process(request)
+
+    assert len(SOURCE_OPERATION_MAP) == 39
+    assert len(WM_EXTENSION_REGISTRY) == 3
+    assert result.diagnostics["source_operation_mapping_complete"] is True
+    assert result.diagnostics["source_extension_operation_count"] == 3
+    assert set(result.diagnostics["source_extension_ids"]) == {"WMX-001", "WMX-002", "WMX-003"}
+    assert all("source_operation_ids" in row for row in result.operation_trace)
+    assert result.operation_trace[1]["source_operation_ids"] == ["WM-SRC-001"]
+
+    prediction_error = next(
+        row for row in result.metadata["source_extension_trace"] if row["operation_id"] == "WMX-001"
+    )
+    assert prediction_error["status"] == "evaluated"
+    assert prediction_error["error_metric"] == "total_variation_distance"
+    assert 0.0 <= prediction_error["prediction_error"] <= 1.0
+    consolidation = next(
+        row for row in result.metadata["source_extension_trace"] if row["operation_id"] == "WMX-002"
+    )
+    if result.semantic_resolution["selected"] is None:
+        assert consolidation["status"] == "held_unresolved"
+    else:
+        assert consolidation["status"] == "consolidated"
+        assert consolidation["consolidated_record"]["durable_episodic_storage"] is False
+
+
+def test_working_memory_update_gate_honors_explicit_task_switch_permission() -> None:
+    """Keep the prior task-control profile when an explicit update-gate veto is supplied."""
+    request = WorkingMemoryRequest(
+        sequence_id="update-gate-001",
+        text="The sentence remains available.",
+        task_sequence=["reading", "parsing"],
+        context={"previous_task": "reading", "allow_working_memory_update": False},
+    )
+    result = _no_biology().process(request)
+    gate = result.task_switching["working_memory_update_gate"]
+    extension = next(
+        row for row in result.metadata["source_extension_trace"] if row["operation_id"] == "WMX-003"
+    )
+
+    assert gate["switch_detected"] is True
+    assert gate["update_permission"] is False
+    assert gate["open"] is False
+    assert gate["reason"] == "explicitly_blocked"
+    assert extension["status"] == "closed"
+    assert result.task_switching["reconfigured_after_switch"] is False
+
+
+def test_semantic_prediction_error_is_not_fabricated_without_a_prediction_signal() -> None:
+    """Return an explicit not-observed status when no prior prediction is supplied."""
+    result = _no_biology().process(WorkingMemoryRequest(
+        sequence_id="prediction-unavailable-001",
+        text="The student read the book.",
+    ))
+    prediction = next(
+        row for row in result.metadata["source_extension_trace"] if row["operation_id"] == "WMX-001"
+    )
+    assert prediction["status"] == "not_observed"
+    assert prediction["prediction_error"] is None
+    assert prediction["does_not_fabricate_missing_prediction"] is True
+
+
 def test_task_switching_records_switch_cost_and_resumption() -> None:
     """Detect task changes and report explicit cost, interference, and resumed task state."""
     request = WorkingMemoryRequest(

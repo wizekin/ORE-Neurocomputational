@@ -13,6 +13,9 @@ class OrthographicTransitionModel:
     forward: np.ndarray
     reverse: np.ndarray
     fingerprint: str
+    unigram_counts: np.ndarray | None = None
+    bigram_counts: np.ndarray | None = None
+    smoothing_alpha: float = 0.0
 
     @classmethod
     def fit(cls, class_names: tuple[str, ...], sequences: Iterable[Iterable[str]],
@@ -45,8 +48,11 @@ class OrthographicTransitionModel:
         fingerprint = hashlib.sha256(
             json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
-        return cls(names, unigram.astype(np.float32), forward.astype(np.float32),
-                   reverse.astype(np.float32), fingerprint)
+        return cls(
+            names, unigram.astype(np.float32), forward.astype(np.float32),
+            reverse.astype(np.float32), fingerprint,
+            unigram_counts.astype(np.float32), bigram_counts.astype(np.float32), float(alpha),
+        )
 
     def predict_from_left(self, left_belief: np.ndarray) -> np.ndarray:
         """P(current | uncertain left neighbor)."""

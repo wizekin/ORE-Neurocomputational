@@ -86,6 +86,61 @@ def test_competing_morphological_alternatives_are_preserved_and_can_abstain():
     assert result.preferred_morphology is None
 
 
+
+def test_derivational_and_inflectional_affixes_are_explicitly_separated():
+    """Keep derivation and inflection as distinct evidence channels when inventory labels them."""
+    work = LexicalEntry(
+        "work", "work", frequency=30,
+        meanings=(LexicalMeaning("work-activity", {"ACTIVITY": 1.0, "WORK": 1.0}),),
+        lexical_category="verb", language="en",
+    )
+    re_prefix = MorphemeEntry(
+        "re-prefix", "re", "prefix", {"REPETITION": 1.0},
+        frequency=12, productivity=0.8,
+    )
+    plural_s = MorphemeEntry(
+        "s-inflection", "s", "suffix", {"PRESENT_THIRD_PERSON": 1.0},
+        frequency=25, productivity=0.95,
+    )
+    processor = LexicalAccessProcessor(
+        [work],
+        morphemes=[re_prefix, plural_s],
+        morpheme_affix_categories={
+            "re-prefix": "derivational",
+            "s-inflection": "inflectional",
+        },
+        config=LexicalAccessConfig(simulate_biology=False),
+    )
+    result = processor.process(LexicalAccessRequest("reworks", "reworks", language="en"))
+    segmented = next(item for item in result.stem_affix_retrieval if item["stem"] == "work")
+
+    assert [item["morpheme_id"] for item in segmented["derivational_affixes"]] == ["re-prefix"]
+    assert [item["morpheme_id"] for item in segmented["inflectional_affixes"]] == ["s-inflection"]
+    ranked = next(item for item in result.morphological_alternatives
+                  if item["hypothesis_id"] == segmented["hypothesis_id"])
+    assert ranked["derivational_affix_ids"] == ["re-prefix"]
+    assert ranked["inflectional_affix_ids"] == ["s-inflection"]
+    assert ranked["derivational_affix_support"] > 0.0
+    assert ranked["inflectional_affix_support"] > 0.0
+    assert ranked["affix_classification_complete"] is True
+    assert result.operation_trace[20]["operation_id"] == "BLA-021"
+    assert result.operation_trace[20]["output"]["affix_records"][0]["classification_source"] == "explicit_caller_inventory"
+
+
+def test_unclassified_affixes_are_not_guessed_to_be_derivational_or_inflectional():
+    """Preserve legacy morpheme inventories and avoid fabricated morphological classes."""
+    root = LexicalEntry("cat", "cat", frequency=10, lexical_category="noun")
+    suffix = MorphemeEntry("plural-s", "s", "suffix", {"PLURAL": 1.0})
+    result = LexicalAccessProcessor(
+        [root], morphemes=[suffix],
+        config=LexicalAccessConfig(simulate_biology=False),
+    ).process(LexicalAccessRequest("cats", "cats"))
+
+    segmented = next(item for item in result.stem_affix_retrieval if item["stem"] == "cat")
+    assert segmented["derivational_affixes"] == []
+    assert segmented["inflectional_affixes"] == []
+    assert [item["morpheme_id"] for item in segmented["unspecified_affixes"]] == ["plural-s"]
+
 def test_incremental_activation_has_one_frame_per_character_and_bounded_activities():
     cat = LexicalEntry("cat", "cat", frequency=24, lexical_category="noun")
     cats = LexicalEntry("cats", "cats", frequency=16, lexical_category="noun")

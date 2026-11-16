@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Modular biologically motivated ORE visual, orthographic and semantic research pipelines"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = "MIT"
 authors = [{name = "Wizekin / ORE contributors"}]
 dependencies = ["numpy>=1.24", "scipy>=1.10"]
 

@@ -74,6 +74,66 @@ def test_biological_track_can_be_disabled_without_changing_functional_contract()
     assert np.allclose(with_biology.posterior_beliefs, without_biology.posterior_beliefs)
     assert np.allclose(without_biology.posterior_beliefs.sum(axis=1), 1.0, atol=1e-5)
 
+
+def test_operation_trace_has_unique_outputs_and_complete_source_step_mapping():
+    from ore_predictive_orthography.source_mapping import SOURCE_STEP_MAP
+
+    result = _build_processor(simulate_biology=False).process(_sequence())
+    assert len(SOURCE_STEP_MAP) == 38
+    assert result.diagnostics["source_step_mapping_complete"] is True
+    assert result.diagnostics["operation_specific_outputs"] is True
+    assert all(row["source_step_ids"] for row in result.operation_trace)
+    assert all(row["outputs_produced"] for row in result.operation_trace)
+    assert all(
+        row["execution_evidence"]["stage_summary_reused_as_operation_output"] is False
+        for row in result.operation_trace
+    )
+    output_fields = [tuple(row["execution_evidence"]["output_field_names"])
+                     for row in result.operation_trace]
+    assert len(set(output_fields)) > 1
+    assert result.operation_trace[8]["outputs_produced"]["observed_grapheme_exposure_counts"]["size"] > 0
+
+
+def test_prediction_diagnostics_feed_an_explicit_next_processing_cycle():
+    """Use MPO stage-7.7 residuals and uncertainty as validated cues for a subsequent sequence."""
+    processor = _build_processor(simulate_biology=False)
+    first = processor.process(_sequence())
+    feedback = processor.feedback_for_next_cycle(first)
+
+    assert feedback["source_operation_id"] == "MPO-040"
+    assert feedback["source_step_id"] == "7.7"
+    assert feedback["source_sequence_id"] == first.sequence_id
+    assert feedback["bottom_up_salience"].shape == (3,)
+    assert feedback["task_relevance"].shape == (3,)
+    assert feedback["seed_attention"].shape == (3,)
+    assert np.all((feedback["bottom_up_salience"] >= 0.0) &
+                  (feedback["bottom_up_salience"] <= 1.0))
+
+    second = processor.process(_sequence(), feedback=feedback)
+    assert second.diagnostics["feedback_consumed"] is True
+    assert second.metadata["next_cycle_feedback_input"]["source_sequence_id"] == first.sequence_id
+    assert second.diagnostics["valid"] is True
+
+
+def test_feedback_shape_and_range_are_validated_before_n4_processing():
+    """Reject feedback that cannot align with the next sequence's reading positions."""
+    processor = _build_processor(simulate_biology=False)
+    with pytest.raises(ValueError, match="length 3"):
+        processor.process(_sequence(), feedback={"seed_attention": np.array([0.1, 0.2])})
+    with pytest.raises(ValueError, match="lie in \\[0, 1\\]"):
+        processor.process(_sequence(), feedback={"task_relevance": np.array([0.1, 1.2, 0.2])})
+
+
+def test_every_registered_predictive_operation_is_covered_by_a_source_step():
+    """Require at least one source operation mapping for each MPO operation."""
+    from ore_predictive_orthography.source_mapping import OPERATION_TO_SOURCE_STEPS
+
+    assert set(OPERATION_TO_SOURCE_STEPS) == {
+        f"MPO-{index:03d}" for index in range(1, 41)
+    }
+    assert all(OPERATION_TO_SOURCE_STEPS.values())
+
+
 def test_unfitted_n3_processor_is_rejected_before_inference():
     processor = PredictiveOrthographyProcessor(N3Processor(), simulate_biology=False)
     with pytest.raises(RuntimeError, match="fit the N3 processor"):

@@ -115,10 +115,31 @@ class PredictiveOrthographyProcessor:
         goal_class_weights: np.ndarray | None = None,
         seed_attention: np.ndarray | None = None,
         segmentation_confidence: np.ndarray | None = None,
+        feedback: Mapping[str, Any] | None = None,
     ) -> PredictiveOrthographyResult:
         """Run all seven stages on already-segmented patches in logical reading order."""
         if not isinstance(sequence, N3Sequence):
             raise TypeError("sequence must be an N3Sequence")
+        feedback_sequence_id = None
+        if feedback is not None:
+            if not isinstance(feedback, Mapping):
+                raise TypeError("feedback must be a mapping returned by feedback_for_next_cycle")
+            feedback_sequence_id = feedback.get("source_sequence_id")
+            expected_length = len(sequence.patches)
+            for key in ("bottom_up_salience", "task_relevance", "seed_attention"):
+                if key not in feedback:
+                    continue
+                values = np.asarray(feedback[key], dtype=np.float32)
+                if values.shape != (expected_length,) or not np.isfinite(values).all():
+                    raise ValueError(f"feedback[{key!r}] must be a finite vector of length {expected_length}")
+                if np.any(values < 0.0) or np.any(values > 1.0):
+                    raise ValueError(f"feedback[{key!r}] values must lie in [0, 1]")
+            if bottom_up_salience is None and "bottom_up_salience" in feedback:
+                bottom_up_salience = np.asarray(feedback["bottom_up_salience"], dtype=np.float32)
+            if task_relevance is None and "task_relevance" in feedback:
+                task_relevance = np.asarray(feedback["task_relevance"], dtype=np.float32)
+            if seed_attention is None and "seed_attention" in feedback:
+                seed_attention = np.asarray(feedback["seed_attention"], dtype=np.float32)
         transition_model = getattr(self.n3_processor, "transition_model", None)
         if transition_model is None:
             raise RuntimeError("fit the N3 processor before running predictive orthography")
@@ -437,6 +458,7 @@ class PredictiveOrthographyProcessor:
             "valid": valid, "stage_count": len(stage_trace), "operation_count": len(operation_trace),
             "source_step_count": 38, "source_step_mapping_complete": len(source_mapping_as_dicts()) == 38,
             "operation_specific_outputs": all(row["execution_evidence"]["operation_specific_output"] for row in operation_trace),
+            "feedback_consumed": feedback is not None,
             "n3_valid": bool(n3_result.diagnostics.get("valid", False)),
             "n4_valid": bool(n4_result.diagnostics.get("valid", False)),
             "biological_valid": bool(biological.get("numerically_valid", False)) if self.simulate_biology else None,
@@ -457,6 +479,11 @@ class PredictiveOrthographyProcessor:
             "biological_component": "current-based LIF reference network" if self.simulate_biology else None,
             "stage_registry": "MPO-S1..S7", "operation_registry": "MPO-001..MPO-040",
             "source_step_mapping": source_mapping_as_dicts(), "source_step_count": 38,
+            "next_cycle_feedback_input": {
+                "supplied": feedback is not None,
+                "source_sequence_id": feedback_sequence_id,
+                "explicit_arguments_take_precedence": True,
+            },
             "transition_model_fingerprint": str(transition_model.fingerprint),
             "visual_model_fingerprint": str(self.n3_processor.visual_population.fingerprint),
             "input_boundary": "one already-segmented N2 result or feature vector per patch in logical reading order",
@@ -478,3 +505,44 @@ class PredictiveOrthographyProcessor:
             attended_feature_residuals=attended_feature_residuals, stage_outputs=stage_outputs,
             stage_trace=stage_trace, operation_trace=operation_trace, biological=biological,
             diagnostics=diagnostics, metadata=metadata)
+
+    def feedback_for_next_cycle(
+        self, result: PredictiveOrthographyResult,
+    ) -> dict[str, Any]:
+        """Convert prediction residuals and posterior uncertainty into explicit next-cycle cues.
+
+        The caller remains responsible for deciding whether a later sequence belongs to the
+        same reading stream and for supplying the returned feedback to process(feedback=...).
+        """
+        if not isinstance(result, PredictiveOrthographyResult):
+            raise TypeError("result must be a PredictiveOrthographyResult")
+        posterior = np.asarray(result.posterior_beliefs, dtype=np.float32)
+        if posterior.ndim != 2 or posterior.shape[0] == 0:
+            raise ValueError("result posterior must contain at least one position")
+        epsilon = float(getattr(getattr(self.n4_processor, "config", None), "epsilon", 1e-8))
+        probabilities = np.maximum(posterior.astype(np.float64), epsilon)
+        probabilities /= probabilities.sum(axis=1, keepdims=True)
+        entropy = -np.sum(probabilities * np.log(probabilities), axis=1)
+        max_entropy = math.log(max(2, posterior.shape[1]))
+        normalized_uncertainty = np.clip(entropy / max_entropy, 0.0, 1.0)
+        residual = np.linalg.norm(
+            np.asarray(result.attended_feature_residuals, dtype=np.float64), axis=1
+        )
+        error_salience = normalize_signal(residual, epsilon)
+        uncertainty = normalize_signal(normalized_uncertainty, epsilon)
+        combined = normalize_signal(0.6 * error_salience + 0.4 * uncertainty, epsilon)
+        return {
+            "source_operation_id": "MPO-040",
+            "source_step_id": "7.7",
+            "source_sequence_id": result.sequence_id,
+            "bottom_up_salience": combined.astype(np.float32),
+            "task_relevance": error_salience.astype(np.float32),
+            "seed_attention": uncertainty.astype(np.float32),
+            "feedback_evidence": {
+                "residual_norms": residual.astype(np.float32),
+                "normalized_posterior_uncertainty": uncertainty.astype(np.float32),
+                "policy": "normalized attended-feature residual and posterior uncertainty",
+                "no_character_identity_is_synthesized": True,
+            },
+        }
+

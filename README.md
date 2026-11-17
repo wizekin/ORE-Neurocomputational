@@ -904,3 +904,58 @@ See [the distributed-only architecture and API](docs/DISTRIBUTED_ONLY_SEMANTIC_A
 Run focused tests with python -m pytest tests/test_distributed_only.py -q.
 
 
+
+
+## Language comprehension — Point 1: Perceptual processing (12 steps)
+
+The additive `ore_language_comprehension` package implements the first point from
+`Language_Comprehension_Brain_Algorithms_Parts_01-15.md`: transform available auditory
+and/or visual input into ordered, uncertainty-aware phonetic and orthographic form
+hypotheses for downstream lexical access.
+
+It exposes a source-level 12-step functional trace (`LC-P01-01`–`LC-P01-12`) and
+reuses the existing `ore_sensory_perception` package for its 39 low-level visual and
+auditory operations (`ISP-001`–`ISP-039`). When enabled, the 16-population LIF
+reference simulation is retained as a separate biological trace. Functional outputs,
+simulated voltage/current/firing-rate summaries, and actual human measurements are
+never conflated.
+
+Auditory phonetic segments and visual glyph candidates remain separate unless explicit
+cross-modal alignment is provided by the caller. Label assignment requires the relevant
+caller-supplied phoneme inventory or grapheme prototypes. Point 1 does not retrieve
+lexical meaning, construct syntax, compose propositions, or infer speaker intent.
+
+Quick start:
+
+```python
+import numpy as np
+from ore_sensory_perception import PhonemeSpec, SensoryConfig, SensoryRequest
+from ore_language_comprehension import Point1PerceptualProcessor
+
+sample_rate = 16000.0
+time = np.arange(4800) / sample_rate
+request = SensoryRequest(
+    sample_id="example-001",
+    auditory_waveform=0.3 * np.sin(2 * np.pi * 180 * time),
+    sample_rate_hz=sample_rate,
+    phoneme_inventory=(
+        PhonemeSpec("a", "vowel", voiced=True, vowel_height="open"),
+        PhonemeSpec("m", "nasal", place="bilabial", voiced=True),
+    ),
+)
+result = Point1PerceptualProcessor(
+    config=SensoryConfig(simulate_biology=True)
+).process(request)
+print(len(result.functional_trace))  # 12
+print(len(result.sensory_operation_trace))  # 39
+```
+
+Processor initialization registers the package and sensory dependency class/function
+docstrings in the existing `ore_logger.annotations` SQLite catalogue
+(default: `ore_logs/ore_logger.sqlite3`; override with `ORE_LOGGER_DB` or
+`database_path`). It does not create a separate annotation database.
+
+Run `python -m ore_language_comprehension` for the demonstration and
+`python -m pytest tests/test_language_comprehension_point01.py -q` for focused tests.
+See [the Point 1 architecture and mathematical/biological qualifications]
+(docs/LANGUAGE_COMPREHENSION_POINT_01.md).

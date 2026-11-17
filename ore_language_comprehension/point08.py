@@ -337,10 +337,20 @@ class Point8Request:
         """Build a request from any subset of the prior seven stage result objects."""
         if not isinstance(stage_results, Mapping):
             raise TypeError("stage_results must be a mapping")
-        normalized = {
-            str(name): _mapping(value, f"{name}_result")
-            for name, value in stage_results.items()
+        aliases = {
+            "point1": "sensory", "point01": "sensory", "sensory": "sensory",
+            "point2": "lexical", "point02": "lexical", "lexical": "lexical",
+            "point3": "syntactic", "point03": "syntactic", "syntax": "syntactic",
+            "syntactic": "syntactic",
+            "point4": "semantic", "point04": "semantic", "semantic": "semantic",
+            "point5": "discourse", "point05": "discourse", "contextual": "discourse",
+            "point6": "working_memory", "point06": "working_memory",
+            "point7": "memory", "point07": "memory",
         }
+        normalized = {}
+        for name, value in stage_results.items():
+            key = aliases.get(str(name).casefold(), str(name))
+            normalized[key] = _mapping(value, f"{name}_result")
         return cls(sequence_id=sequence_id, stage_outputs=normalized, **overrides)
 
 
@@ -520,10 +530,11 @@ class Point8CrossStageIntegrator:
                 continue
             old_score = _bounded_score(prior.get("confidence"))
             new_score = _bounded_score(item.get("confidence"))
-            combined = 1.0 - (1.0 - old_score) * (1.0 - new_score)
+            # Repeated activation of the same candidate is not new evidence.
+            # Keep the strongest supplied confidence without inflating it by repetition.
             if new_score >= old_score:
                 prior.update(deepcopy(item))
-            prior["confidence"] = max(old_score, min(combined, 1.0))
+            prior["confidence"] = max(old_score, new_score)
         ranked = sorted(
             merged.values(),
             key=lambda item: (_bounded_score(item.get("confidence")), item["candidate_id"]),
@@ -745,11 +756,16 @@ class Point8CrossStageIntegrator:
         unresolved: Sequence[Mapping[str, Any]],
         task: Mapping[str, Any],
         errors: Mapping[str, float],
+        supplied_items: Sequence[Any] = (),
     ) -> list[dict[str, Any]]:
         """Refresh active proposition and dependency accessibility under a configurable capacity."""
         sources = self.state.propositions + self.state.inferred_propositions + [
             _candidate(item, "unresolved", index) for index, item in enumerate(unresolved)
         ]
+        sources.extend(
+            _candidate(item, "working_memory", index)
+            for index, item in enumerate(supplied_items)
+        )
         previous = {item["candidate_id"]: item for item in self.state.working_memory}
         interference = sum(errors.values()) / max(1, len(errors))
         refreshed = []
@@ -996,7 +1012,17 @@ class Point8CrossStageIntegrator:
         })
 
         # Step 6: merge discourse/situation evidence and current propositions.
-        state.discourse_model = self._update_situation_model(request.context, state.propositions)
+        context_update = dict(request.context)
+        discourse_input = _stage_value(stage, ("discourse", "contextual", "situation_model", "discourse_model"))
+        if isinstance(discourse_input, Mapping):
+            nested = discourse_input.get("enriched_interpretation", discourse_input)
+            if isinstance(nested, Mapping):
+                context_update.update({key: deepcopy(value) for key, value in nested.items()
+                                       if key not in context_update})
+        memory_input = _stage_value(stage, ("memory", "retrieved_memories", "memory_cues"))
+        if memory_input is not None:
+            context_update["memory_cues"] = deepcopy(_sequence(memory_input))
+        state.discourse_model = self._update_situation_model(context_update, state.propositions)
         state.speaker_model.update({
             key: deepcopy(value) for key, value in request.speaker_model.items()
             if key not in state.speaker_model or state.speaker_model[key] in (None, "", [], {})
@@ -1063,8 +1089,12 @@ class Point8CrossStageIntegrator:
         })
 
         # Step 12: refresh active propositions while preserving pointers to less-active items.
+        supplied_wm = _stage_value(stage, ("working_memory", "working_memory_state", "active_items"))
         state.working_memory = self._update_working_memory(
-            state.unresolved, request.task, state.prediction_errors
+            state.unresolved,
+            request.task,
+            state.prediction_errors,
+            _sequence(supplied_wm),
         )
         self._record(trace, 12, {
             "active_item_count": len(state.working_memory),
@@ -1102,16 +1132,24 @@ class Point8CrossStageIntegrator:
                 _mapping(request.later_evidence["context"], "later_evidence.context"),
                 state.propositions,
             )
+        if later_updates:
+            quality = self._quality(request.task, state.prediction_errors)
+            finalized = self._finalize(quality)
+            routing = self._route(request, finalized)
         self._record(trace, 16, {
             "later_evidence_received": bool(request.later_evidence),
             "revision_outcomes": later_updates,
             "revision_history_count": len(state.revision_log),
+            "interpretation_rechecked": bool(later_updates),
         })
 
         # Step 17: construct memory routing data; Point 7 remains responsible for storage policy.
         if routing.get("memory_handoff") is not None and finalized is not None:
-            routing["memory_handoff"]["proposition"] = deepcopy(
-                finalized["selected_literal_proposition"]["content"]
+            selected_content = finalized["selected_literal_proposition"]["content"]
+            routing["memory_handoff"]["proposition"] = (
+                deepcopy(dict(selected_content))
+                if isinstance(selected_content, Mapping)
+                else {"content": deepcopy(selected_content)}
             )
         self._record(trace, 17, {
             "episodic_handoff_prepared": "episodic_memory" in routing["routes"],

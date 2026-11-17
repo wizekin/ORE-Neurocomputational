@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import sqlite3
-
 import pytest
 
 from ore_language_comprehension.point07 import (
@@ -167,6 +165,8 @@ def test_point6_factory_preserves_handoff_and_lif_reference_is_labelled_as_analo
     )
     assert request.proposition["active_propositions"] == [{"predicate": "LEAVE"}]
     assert request.context["point6_handoff"]["situation_model"] == {"events": ["leave"]}
+    assert request.context["situation_model"] == {"events": ["leave"]}
+    assert request.components[0]["provenance"] == "explicit"
 
     biology = Point7LIFReference(population_size=3).run(operation_count=28)
     assert len(biology["population_names"]) == 10

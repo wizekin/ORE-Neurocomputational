@@ -828,7 +828,14 @@ class Point9NeuralArchitectureCoordinator:
         cue_tokens = set(task.get("mentalizing_cues", ())) if isinstance(task.get("mentalizing_cues", ()), (list, tuple, set)) else set()
         cue_tokens = {str(item).casefold() for item in cue_tokens}
         matched = sorted((text_tokens & belief_terms) | cue_tokens)
-        explicit_task = bool(task.get("mentalizing_required", False) or task.get("asks_belief_or_intention", False))
+        explicit_social_evidence = bool(
+            set(matched) & {"sarcastic", "sarcasm", "irony", "ironic", "deceive", "deceived"}
+        )
+        explicit_task = bool(
+            task.get("mentalizing_required", False)
+            or task.get("asks_belief_or_intention", False)
+            or explicit_social_evidence
+        )
         agent_information = _bounded(task.get("agent_reference_strength", 0.0))
         perspective = _bounded(task.get("perspective_dependence", 0.0))
         intention = _bounded(task.get("intention_relevance", 0.0))

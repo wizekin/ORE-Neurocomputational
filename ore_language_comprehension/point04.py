@@ -136,7 +136,7 @@ _POINT4_TO_SMC: dict[int, tuple[int, ...]] = {
     10: (6, 23, 24, 42),
     11: tuple(range(7, 31)) + (49, 50, 51),
     12: (18, 29),
-    13: tuple(range(49, 55)),
+    13: tuple(range(43, 55)),
     14: (53, 54),
 }
 

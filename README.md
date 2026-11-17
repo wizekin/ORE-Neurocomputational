@@ -1072,3 +1072,66 @@ situation, world-knowledge inference, speaker intention, sarcasm and irony remai
 Run `python -m pytest tests/test_language_comprehension_point04.py -q` for the focused acceptance
 suite. See [the Point 4 architecture, mathematical operations, biological-reference mapping and API]
 (docs/LANGUAGE_COMPREHENSION_POINT_04.md).
+
+
+## Language comprehension — Point 5: Contextual and pragmatic integration (20 steps)
+
+Point 5 implements the fifth source point as a 20-step adapter over ORE's established
+ore_discourse eight-stage / 39-operation processor. Point5ContextualPragmaticIntegrator
+accepts the literal proposition and unresolved alternatives from Point 4 together with
+explicit discourse history, entities, common ground, speaker model, scene evidence, world
+knowledge, prosody and conversation goals.
+
+The adapter preserves literal meaning separately from discourse links, coreference,
+situation/event structure, temporal relations, coherence, speaker-intention hypotheses,
+indirect speech acts and irony hypotheses. It maps the 39 underlying operations onto 20
+source-level functional and biological-reference records. The existing coupled nine-population
+current-based LIF simulator is reused; it is a deterministic computational reference, not
+measured or anatomically fitted human neural data.
+
+The inference policy is conservative: caller-supplied evidence takes precedence, unsupported
+facts are not invented, and pragmatic interpretations remain defeasible. Missing context is
+left unknown. The compact discourse engine uses transparent text heuristics for some
+operations, so its output is an inspectable research approximation rather than a validated
+model of all human pragmatic comprehension.
+
+Point 5 registers ore_language_comprehension and ore_discourse definitions in the existing
+ore_logger.annotations SQLite table (ore_logs/ore_logger.sqlite3); it does not create a
+separate annotation database.
+
+Quick start:
+
+```python
+from ore_discourse import DiscourseConfig
+from ore_language_comprehension import (
+    Point5Request, Point5ContextualPragmaticIntegrator,
+)
+
+request = Point5Request(
+    sequence_id="dialogue-001",
+    sentences=["The deployment failed.", "Great work on the release!"],
+    prior_turns=["The team expected the release to succeed."],
+    prosody={1: {"intonation_mismatch": 0.8, "exaggeration": 0.6}},
+)
+result = Point5ContextualPragmaticIntegrator(
+    DiscourseConfig(simulate_biology=False)
+).process(request)
+
+print(len(result.functional_trace))  # 20
+print(result.enriched_interpretation["irony_hypotheses"])
+print(result.handoff["target"])  # Point 6
+```
+
+To connect the actual Point 4 output, use
+Point5Request.from_point4_result(sequence_id, point4_result, sentences=[...], ...).
+The sentence text is required because Point 4's structured proposition is not a substitute
+for the surface discourse history.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point05.py -q
+```
+
+See docs/LANGUAGE_COMPREHENSION_POINT_05.md for architecture, equations, biological mapping
+and limitations.

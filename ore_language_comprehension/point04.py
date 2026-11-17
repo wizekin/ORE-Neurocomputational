@@ -288,6 +288,8 @@ def _derive_predicate_frames(
             preferences = raw.get("selectional_preferences", {})
             if not isinstance(preferences, Mapping):
                 preferences = {}
+            meaning_rows = candidate.get("meaning_candidates", ()) or ()
+            first_meaning = meaning_rows[0] if meaning_rows and isinstance(meaning_rows[0], Mapping) else {}
             frame = PredicateFrame(
                 predicate=label,
                 roles=roles,
@@ -298,8 +300,8 @@ def _derive_predicate_frames(
                     if isinstance(features, Mapping) and str(role) in roles
                 },
                 predicate_concept_id=(
-                    f"{candidate.get('entry_id')}::{candidate.get('meaning_candidates', [{}])[0].get('meaning_id')}"
-                    if candidate.get("entry_id") and candidate.get("meaning_candidates") else None
+                    f"{candidate.get('entry_id')}::{first_meaning.get('meaning_id')}"
+                    if candidate.get("entry_id") and first_meaning.get("meaning_id") else None
                 ),
                 source_reference=str(raw.get("source_reference", candidate.get("source_reference", "upstream-point2-lexical-frame"))),
             )
@@ -1073,8 +1075,7 @@ class Point4SemanticComposer:
             ]
             rates = [
                 float(item.get("mean_firing_rate_hz", 0.0))
-                for row in selected
-                if isinstance((row := item), Mapping)
+                for item in selected if isinstance(item, Mapping)
             ]
             output.append({
                 "operation_id": specification["operation_id"],

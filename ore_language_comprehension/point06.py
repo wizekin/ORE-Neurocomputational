@@ -508,22 +508,22 @@ class Point6PropositionalWorkingMemory:
         outputs = (
             {"received_text": request.text, "point5_literal_and_enriched_tracks": request.point5_interpretation},
             {"tokens": result.tokens, "token_count": result.diagnostics.get("token_count")},
-            {"coreference": enriched.get("coreference", []), "situation_entities": result.context if hasattr(result, "context") else request.context.get("situation_model", {})},
+            {"coreference": enriched.get("coreference", []), "situation_entities": request.context.get("situation_model", {}).get("people", []), "situation_events": request.context.get("situation_model", {}).get("events", [])},
             {"literal_propositions": literal.get("propositions", []), "predicate_graph": literal.get("proposition_graph", {})},
-            {"operators": literal.get("operators", {}), "modifiers_and_roles": literal.get("thematic_roles", [])},
+            {"operators": literal.get("operators", {}), "predicate_graph_edges": literal.get("proposition_graph", {}).get("edges", []), "modifiers_and_roles": [edge for edge in literal.get("proposition_graph", {}).get("edges", []) if "role" in str(edge.get("edge_type", "")).casefold() or "modifier" in str(edge.get("edge_type", "")).casefold()]},
             {"literal_proposition": literal, "pragmatic_enrichment": enriched, "provenance_policy": enriched.get("inference_policy", {})},
             {"discourse_links": enriched.get("discourse_links", []), "temporal_relations": enriched.get("temporal_relations", [])},
-            {"situation_model": result.context.get("situation_model", {}) if hasattr(result, "context") else request.context.get("situation_model", {})},
+            {"situation_model": request.context.get("situation_model", {})},
             {"semantic_resolution": result.semantic_resolution, "evidence_ledger": result.semantic_resolution.get("evidence_ledger", [])},
             {"buffer_sizes": result.diagnostics.get("buffer_sizes", {}), "incomplete_structures": result.incomplete_structures},
             {"buffers": result.buffers, "activation_and_rehearsal": {name: [{"token": item.get("token"), "activation": item.get("activation"), "rehearsal_count": item.get("rehearsal_count")} for item in rows] for name, rows in result.buffers.items()}},
             {"incremental_request_text": request.text, "token_positions": list(range(len(result.tokens))), "incremental_processing_scope": "per-request sequence; not a streaming cross-call state"},
             {"interference_estimates": {name: [{"token": item.get("token"), "similarity_interference": item.get("similarity_interference", 0.0)} for item in rows] for name, rows in result.buffers.items()}},
-            {"retrieval_candidates": result.incomplete_structures.get("pending_dependencies", []), "buffer_references": result.incomplete_structures.get("structures", [])},
+            {"retrieval_candidates": result.incomplete_structures.get("pending_dependencies", []), "buffer_references": result.incomplete_structures.get("frames", [])},
             {"completion": result.incomplete_structures, "unresolved_slot_count": result.diagnostics.get("unresolved_slot_count", 0)},
             {"chunk_count": result.diagnostics.get("chunk_count", 0), "buffers": result.buffers, "compression_scope": "canonical engine's chunking and bounded buffer records"},
             {"executive_control": result.executive_control, "task_switching": result.task_switching},
-            {"active_buffers": result.buffers, "situation_model": request.context.get("situation_model", {}), "unresolved": result.semantic_resolution.get("ranked_interpretations", []), "temporary_only": True},
+            {"active_buffers": result.buffers, "situation_model": request.context.get("situation_model", {}), "unresolved": result.semantic_resolution.get("alternatives", []), "temporary_only": True},
         )
         return to_jsonable(outputs[index - 1])
 

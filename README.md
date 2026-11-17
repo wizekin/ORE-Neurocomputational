@@ -1329,3 +1329,23 @@ Possible biological implementations are described separately from analyst-side s
 See [Point 14 documentation](docs/LANGUAGE_COMPREHENSION_POINT_14.md) and run:
 
     python -m pytest tests/test_language_comprehension_point14.py -q
+
+
+## Language comprehension — Point 15: temporal, network, and causal research
+
+The source-ordered 25-stage Point 15 research workflow investigates unresolved
+mechanisms rather than adding another cognitive processing stage. It organizes
+falsifiable hypotheses, experimental conditions, event timing, multimodal neural
+measurements, temporal overlap, candidate network connectivity, ethical causal
+perturbation evidence, cross-population validity, and held-out prediction.
+
+See [docs/LANGUAGE_COMPREHENSION_POINT_15.md](docs/LANGUAGE_COMPREHENSION_POINT_15.md)
+for the data contract, mathematical operations, biological-reference track, tests,
+and scientific limitations. The implementation is available in
+`ore_language_comprehension.point15` and exports `Point15Request`,
+`Point15MechanisticResearchProcessor`, and `register_point15_annotations`.
+
+The research processor does not diagnose, infer unmeasured neural states, treat
+connectivity as causality, or claim that statistical abstractions are literal
+neuronal computations. Annotation registration reuses the shared
+`ore_logger.annotations` SQLite table.

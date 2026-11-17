@@ -959,3 +959,272 @@ Run `python -m ore_language_comprehension` for the demonstration and
 `python -m pytest tests/test_language_comprehension_point01.py -q` for focused tests.
 See [the Point 1 architecture and mathematical/biological qualifications]
 (docs/LANGUAGE_COMPREHENSION_POINT_01.md).
+
+
+## Language comprehension — Point 2: Lexical access (12 steps)
+
+The additive `ore_language_comprehension` package now implements the second source point:
+retrieve word-level lexical entries, meanings, grammatical properties and possible senses from
+the uncertain spoken/written forms produced by Point 1.
+
+`Point2LexicalAccessProcessor` exposes **12 source-level steps**
+(`LC-P02-01`–`LC-P02-12`) and reuses `ore_lexical_access` for its established
+seven-stage, 36-operation lexical engine (`BLA-001`–`BLA-036)). It also aggregates that
+engine's seven-population current-based LIF reference activity into a separate 12-step
+biological trace. Functional outputs and simulated activity are kept distinct from human
+neural measurements.
+
+Visual glyph alternatives are beam-composed into orthographic form candidates. Auditory
+phoneme alternatives are matched only to pronunciations explicitly supplied in
+`LexicalEntry.phonemes`; the implementation does not invent pronunciations from spelling.
+Both routes can converge on the same lexical entry ID. Word-level semantic features, morphology,
+lexical category, stored grammatical properties, homonymy and polysemy alternatives are returned
+without constructing sentence syntax or predicate-argument structure.
+
+The processor accepts the Point 1 result directly:
+
+```python
+from ore_language_comprehension import Point2LexicalAccessProcessor, Point2Request
+from ore_lexical_context import LexicalEntry, LexicalMeaning
+
+lexicon = (
+    LexicalEntry(
+        "cat", "cat", frequency=24, phonemes=("k", "æ", "t"),
+        meanings=(LexicalMeaning("feline", {"ANIMAL": 1.0, "FELINE": 1.0}),),
+        lexical_category="noun", language="en",
+        verified_by="your-lexicon-source",
+        source_reference="dataset://your-lexicon/cat",
+    ),
+)
+request = Point2Request.from_point1_result(
+    "reading-001", point1_result, lexicon, language="en"
+)
+result = Point2LexicalAccessProcessor().process(request)
+print(len(result.functional_trace))  # 12
+print(result.lexical_candidates)
+```
+
+On initialization, Point 2 registers docstrings for the language-comprehension package,
+`ore_lexical_access`, and `ore_lexical_context` in the existing
+`ore_logger.annotations` SQLite table. No separate Point 2 annotation database is created.
+
+Run `python -m pytest tests/test_language_comprehension_point02.py -q` for the focused
+acceptance suite. See
+[the Point 2 architecture, equations, biological reference and API](docs/LANGUAGE_COMPREHENSION_POINT_02.md).
+
+## Language comprehension — Point 3: Syntactic parsing (12 steps)
+
+The additive `ore_language_comprehension` package now adapts the third source point to ORE's
+existing `ore_syntax` subsystem. `Point3SyntacticParser` runs the 12 source-level steps
+(`LC-P03-01`–`LC-P03-12)) while reusing the syntax engine's nine stages and 58 lower-level
+operations for POS candidates, phrase grouping, dependency relations, constituency alternatives,
+hierarchy, ambiguity revision, and long-distance dependencies.
+
+The adapter accepts one Point 2 lexical result per token through
+`Point3Request.from_point2_results`, or accepts explicit lexical items with category alternatives,
+morphology, inherited confidence, and optional boundary/prosodic cues. It adds explicit
+morphosyntactic feature checks and graded agreement penalties when the required features were
+supplied. Missing features remain unknown. A separate optional LIF reference track aggregates the
+existing syntax-network operations into 12 source-level records.
+
+Point 3 exposes only grammatical structure for the next semantic-composition stage. It does not
+expose predicate-argument semantic interpretations, thematic/event roles, a sentence proposition,
+or discourse/pragmatic meaning. The compact syntax grammar is English-oriented, and model scores
+are not calibrated human probabilities.
+
+On initialization, Point 3 registers all `ore_language_comprehension` and `ore_syntax` class and
+function docstrings in the existing `ore_logger.annotations` SQLite table. It uses the same
+`ore_logs/ore_logger.sqlite3` database; it does not create a new annotation database.
+
+Run `python -m pytest tests/test_language_comprehension_point03.py -q` for the focused acceptance
+suite. See [the Point 3 architecture, equations, biological track and API]
+(docs/LANGUAGE_COMPREHENSION_POINT_03.md).
+
+## Language comprehension — Point 4: Semantic composition (14 steps)
+
+The additive `ore_language_comprehension` package now implements the fourth source point as a
+14-step adapter over the existing `ore_semantic_composition` nine-stage / 54-operation engine.
+`Point4SemanticComposer` consumes Point 3 syntactic dependencies and the Point 2 semantic sense
+candidates embedded in the Point 3 lexical records. It creates sentence-level event propositions,
+entity/event variables, predicate argument and thematic-role links, modifier/property relations,
+negation/modality/quantifier scopes, semantic compatibility reports, competing readings, and a
+validated proposition graph.
+
+The adapter uses caller-supplied or explicitly embedded predicate frames where possible. It does
+not equate grammatical subject with Agent or object with Patient as a universal rule. Missing
+semantic features remain missing rather than being invented. If no explicit predicate frame exists,
+the underlying semantic engine uses a documented generic fallback, so role conclusions should be
+treated as provisional.
+
+Point 4 recomputes each available word prefix through the existing composition engine and records
+the evolving partial proposition, new/revised events, modifier links, and open argument slots. This
+is an inspectable incremental approximation rather than a persistent neural-state simulation. The
+existing nine-population LIF reference can be aggregated into 14 source-level biological records;
+it is kept separate from the functional proposition output and is not measured human neural data.
+
+Point 4 registers its class and function docstrings in the shared `ore_logger.annotations` SQLite
+table, indexing `ore_language_comprehension`, `ore_semantic_composition`, `ore_semantic`, and
+`ore_syntax`. It reuses `ore_logs/ore_logger.sqlite3`; no separate annotation database is created.
+
+The public output intentionally stops at literal sentence meaning. Discourse history, physical
+situation, world-knowledge inference, speaker intention, sarcasm and irony remain for Point 5.
+
+Run `python -m pytest tests/test_language_comprehension_point04.py -q` for the focused acceptance
+suite. See [the Point 4 architecture, mathematical operations, biological-reference mapping and API]
+(docs/LANGUAGE_COMPREHENSION_POINT_04.md).
+
+
+## Language comprehension — Point 5: Contextual and pragmatic integration (20 steps)
+
+Point 5 implements the fifth source point as a 20-step adapter over ORE's established
+ore_discourse eight-stage / 39-operation processor. Point5ContextualPragmaticIntegrator
+accepts the literal proposition and unresolved alternatives from Point 4 together with
+explicit discourse history, entities, common ground, speaker model, scene evidence, world
+knowledge, prosody and conversation goals.
+
+The adapter preserves literal meaning separately from discourse links, coreference,
+situation/event structure, temporal relations, coherence, speaker-intention hypotheses,
+indirect speech acts and irony hypotheses. It maps the 39 underlying operations onto 20
+source-level functional and biological-reference records. The existing coupled nine-population
+current-based LIF simulator is reused; it is a deterministic computational reference, not
+measured or anatomically fitted human neural data.
+
+The inference policy is conservative: caller-supplied evidence takes precedence, unsupported
+facts are not invented, and pragmatic interpretations remain defeasible. Missing context is
+left unknown. The compact discourse engine uses transparent text heuristics for some
+operations, so its output is an inspectable research approximation rather than a validated
+model of all human pragmatic comprehension.
+
+Point 5 registers ore_language_comprehension and ore_discourse definitions in the existing
+ore_logger.annotations SQLite table (ore_logs/ore_logger.sqlite3); it does not create a
+separate annotation database.
+
+Quick start:
+
+```python
+from ore_discourse import DiscourseConfig
+from ore_language_comprehension import (
+    Point5Request, Point5ContextualPragmaticIntegrator,
+)
+
+request = Point5Request(
+    sequence_id="dialogue-001",
+    sentences=["The deployment failed.", "Great work on the release!"],
+    prior_turns=["The team expected the release to succeed."],
+    prosody={1: {"intonation_mismatch": 0.8, "exaggeration": 0.6}},
+)
+result = Point5ContextualPragmaticIntegrator(
+    DiscourseConfig(simulate_biology=False)
+).process(request)
+
+print(len(result.functional_trace))  # 20
+print(result.enriched_interpretation["irony_hypotheses"])
+print(result.handoff["target"])  # Point 6
+```
+
+To connect the actual Point 4 output, use
+Point5Request.from_point4_result(sequence_id, point4_result, sentences=[...], ...).
+The sentence text is required because Point 4's structured proposition is not a substitute
+for the surface discourse history.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point05.py -q
+```
+
+See docs/LANGUAGE_COMPREHENSION_POINT_05.md for architecture, equations, biological mapping
+and limitations.
+
+
+## Language comprehension — Point 6: Propositional working-memory representation and maintenance (18 steps)
+
+Point 6 adds an 18-step source-level adapter over ORE's established
+ore_working_memory five-stage / 40-operation processor. Point6PropositionalWorkingMemory
+accepts the contextual interpretation from Point 5, preserves its literal and inferred
+content separately, and passes the available proposition, situation, task and uncertainty
+evidence into bounded working-memory buffers and cognitive-control operations.
+
+The 18-step trace maps the 40 canonical WMCC operations in order. It also exposes the
+working-memory engine's two additive source-extension records for semantic prediction error
+and temporary interpretation consolidation. The adapter reports proposition candidates,
+entity/event links, role and operator evidence, provenance, discourse/situation relations,
+buffer activation and rehearsal, interference estimates, unresolved structures, semantic
+competition, control demand and task state.
+
+The result is explicitly temporary: no durable episodic or semantic memory write is performed.
+The implementation is per-request rather than a persistent streaming state across separate
+calls. Its eight-population current-based LIF reference is a computational analogy, not a
+measured or anatomically fitted human neural model.
+
+Point 6 registers ore_language_comprehension and ore_working_memory definitions in the
+existing ore_logger.annotations SQLite table (ore_logs/ore_logger.sqlite3), not a new database.
+
+Quick start:
+
+```python
+from ore_working_memory import WorkingMemoryConfig
+from ore_language_comprehension import (
+    Point6Request, Point6PropositionalWorkingMemory,
+)
+
+request = Point6Request(
+    sequence_id="working-memory-001",
+    text="Maya said that Omar had left.",
+    partial_structures=[{
+        "structure_id": "embedded-clause",
+        "label": "embedded proposition",
+        "expected_slots": ["content"],
+        "filled_slots": ["content"],
+    }],
+)
+result = Point6PropositionalWorkingMemory(
+    WorkingMemoryConfig(simulate_biology=False)
+).process(request)
+
+print(len(result.functional_trace))  # 18
+print(result.working_memory_state["buffers"].keys())
+print(result.handoff["durable_storage_performed"])  # False
+```
+
+To consume Point 5 directly, use
+Point6Request.from_point5_result(sequence_id, point5_result). It reads the surface sentences
+from the Point 5 discourse result and carries forward the literal proposition, discourse
+links, coreference, situation model, common ground, unresolved alternatives and task context.
+An explicit surface text may be supplied when the Point 5 result has no sentence list.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point06.py -q
+```
+
+See docs/LANGUAGE_COMPREHENSION_POINT_06.md for the 18 steps, mathematical models,
+biological-reference mapping, API and limitations.
+
+
+## Language comprehension Point 7 — long-term memory and decision use
+
+The additive Point 7 implementation receives the structured proposition from Point 6 and
+separates episodic encoding, semantic-knowledge candidates, retrieval, question answering,
+and action planning. It exposes 28 ordered operations, preserves component-level provenance
+and confidence, and abstains when evidence is insufficient.
+
+Episodic traces and semantic candidates use separate SQLite tables through
+`Point7MemoryStore`. The default is process-local `:memory:`; provide a database path to
+persist records across restarts. This memory database is separate from the shared
+`ore_logger.annotations` catalogue.
+
+The optional ten-population current-based LIF reference includes hippocampal-binding,
+entorhinal, perirhinal, parahippocampal, neocortical-semantic, medial-prefrontal,
+dorsolateral-prefrontal, anterior-cingulate, orbitofrontal, and basal-ganglia functional
+populations. It is a simplified biological analogy, not a fitted or validated human circuit.
+
+See [docs/LANGUAGE_COMPREHENSION_POINT_07.md](docs/LANGUAGE_COMPREHENSION_POINT_07.md)
+for the 28-step algorithm, equations, scientific qualifications, and API examples.
+
+Run the focused Point 7 tests:
+
+```bash
+python -m pytest tests/test_language_comprehension_point07.py -q
+```

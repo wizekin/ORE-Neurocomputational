@@ -823,6 +823,7 @@ class Point9NeuralArchitectureCoordinator:
             "context": context,
             "proposition": proposition,
             "task": {key: value for key, value in task.items() if key not in {"options", "constraints"}},
+            "observed_evidence": request.observed_evidence,
         })
         cue_tokens = set(task.get("mentalizing_cues", ())) if isinstance(task.get("mentalizing_cues", ()), (list, tuple, set)) else set()
         cue_tokens = {str(item).casefold() for item in cue_tokens}
@@ -1017,6 +1018,10 @@ class Point9NeuralArchitectureCoordinator:
             drive = _bounded(drives.get(name, 0.0))
             raw = drive + self_recurrence + self.recurrent_gain * incoming
             activation = math.tanh(raw)
+            # A sub-threshold social-inference gate must prevent incidental
+            # recurrent traffic from activating the mentalizing system.
+            if name == "mentalizing" and mentalizing_gate < 0.5:
+                activation = 0.0
             updated[name] = _bounded(activation)
         for name in POINT9_SYSTEM_NAMES:
             self._update_system(

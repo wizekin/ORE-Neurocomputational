@@ -835,13 +835,16 @@ class Point9NeuralArchitectureCoordinator:
         cue_strength = min(1.0, len(matched) / 3.0)
         mental_score = min(1.0, 0.25 * cue_strength + 0.20 * agent_information
                            + 0.25 * perspective + 0.20 * intention + 0.10 * literal_gap)
-        mental_gate = 1.0 if explicit_task else _sigmoid(8.0 * (mental_score - self.mentalizing_threshold))
+        mental_threshold = _bounded(request.person_profile.get("mentalizing_threshold", self.mentalizing_threshold), self.mentalizing_threshold)
+        executive_threshold = _bounded(request.person_profile.get("executive_threshold", self.executive_threshold), self.executive_threshold)
+        mental_gate = 1.0 if explicit_task else _sigmoid(8.0 * (mental_score - mental_threshold))
         mental = {
             "score": mental_score,
             "gate": mental_gate,
             "engaged": explicit_task or mental_gate >= 0.5,
             "explicit_task_override": explicit_task,
             "matched_cues": matched,
+            "threshold_used": mental_threshold,
             "status": "conditionally_recruited" if explicit_task or mental_gate >= 0.5 else "not_forced_for_literal_task",
         }
 
@@ -862,9 +865,10 @@ class Point9NeuralArchitectureCoordinator:
         demand = min(1.0, 0.25 * ambiguous + 0.20 * open_dependencies
                      + 0.25 * memory_load + 0.15 * conflict
                      + 0.10 * time_pressure + 0.05 * task_control)
-        executive_gate = _sigmoid(8.0 * (demand - self.executive_threshold))
+        executive_gate = _sigmoid(8.0 * (demand - executive_threshold))
         executive = {
             "demand": demand,
+            "threshold_used": executive_threshold,
             "gate": executive_gate,
             "engaged": executive_gate >= 0.5,
             "components": {
@@ -985,9 +989,13 @@ class Point9NeuralArchitectureCoordinator:
         confidence: Mapping[str, float],
         mentalizing_gate: float,
         executive_gate: float,
+        communication_graph: Mapping[str, Any],
     ) -> dict[str, Any]:
         """Apply one recurrent graph update using prior-time activity and gated sparse messages."""
-        weights = dict(POINT9_DEFAULT_CONNECTIONS)
+        weights = {
+            (str(edge["source"]), str(edge["target"])): float(edge["weight"])
+            for edge in communication_graph.get("edges", [])
+        }
         previous = {
             name: _bounded(record.get("activation", 0.0))
             for name, record in self.state.systems.items()
@@ -1149,7 +1157,13 @@ class Point9NeuralArchitectureCoordinator:
         conflict = max(
             [_bounded(item.get("conflict", 0.0)) for item in request.unresolved] + [0.0]
         )
-        threshold = _bounded(request.task.get("interpretation_threshold", self.interpretation_threshold))
+        threshold = _bounded(
+            request.task.get(
+                "interpretation_threshold",
+                request.person_profile.get("interpretation_threshold", self.interpretation_threshold),
+            ),
+            self.interpretation_threshold,
+        )
         adequate = bool(selected) and confidence >= threshold and conflict < 0.75 and not unresolved_critical
         return {
             "adequate": adequate,
@@ -1336,7 +1350,10 @@ class Point9NeuralArchitectureCoordinator:
         self._record(trace, 8, executive_demand)
 
         # Step 9: construct a sparse functional communication graph.
-        graph = self._communication_graph(request.communication_weights)
+        profile_weights = request.person_profile.get("communication_weights", {})
+        combined_weights = dict(profile_weights) if isinstance(profile_weights, Mapping) else {}
+        combined_weights.update(request.communication_weights)
+        graph = self._communication_graph(combined_weights)
         state.communication_graph = deepcopy(graph)
         self._record(trace, 9, graph)
 
@@ -1368,7 +1385,7 @@ class Point9NeuralArchitectureCoordinator:
         confidence = {name: drives[name] for name in POINT9_SYSTEM_NAMES}
         recurrent = self._update_system_states(
             drives, representations, sources, confidence,
-            mental_demand["gate"], executive_demand["gate"],
+            mental_demand["gate"], executive_demand["gate"], graph,
         )
         self._record(trace, 10, recurrent)
 
@@ -1451,6 +1468,14 @@ class Point9NeuralArchitectureCoordinator:
         # Step 19: retain individual profile and localizer evidence without demographic inference.
         self._record(trace, 19, {
             "individual_profile_fields": sorted(state.individual_profile.keys()),
+            "personalized_thresholds": {
+                "mentalizing": mental_demand.get("threshold_used"),
+                "executive": executive_demand.get("threshold_used"),
+                "interpretation": sufficiency.get("threshold"),
+            },
+            "subject_specific_communication_overrides": sorted(
+                (request.person_profile.get("communication_weights", {}) or {}).keys()
+            ) if isinstance(request.person_profile.get("communication_weights", {}), Mapping) else [],
             "localization_status": localization["status"],
             "lateralization_claim": state.individual_profile.get("lateralization", "not_supplied"),
             "demographic_anatomy_inference_performed": False,

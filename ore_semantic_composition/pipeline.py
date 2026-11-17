@@ -598,6 +598,9 @@ class SemanticCompositionProcessor:
                 if not 0 <= dependent < len(tokens):
                     continue
                 relation = arc["relation"]
+                dependent_pos = (self._pos_at(syntax, dependent) or "").upper()
+                if relation in {"punct", "punctuation"} or dependent_pos in {"PUNCT", "SYM"}:
+                    continue
                 role = _ROLE_BY_DEPENDENCY.get(relation, "Oblique" if relation.startswith("obl") else "Theme")
                 arguments.append({
                     "token_index": dependent, "token": tokens[dependent],
@@ -1018,10 +1021,10 @@ class SemanticCompositionProcessor:
             head = det_dependents[0] if det_dependents else fallback_head
             domains.append({
                 **cue,
-                "domain_head_index": head if 0 <= head < len(tokens) else None,
-                "domain_head": tokens[head] if 0 <= head < len(tokens) else None,
-                "domain_concept_id": word_concepts[head]["selected_concept_id"] if 0 <= head < len(tokens) else None,
-                "domain_features": word_concepts[head]["selected_features"] if 0 <= head < len(tokens) else {},
+                "domain_head_index": head if head is not None and 0 <= head < len(tokens) else None,
+                "domain_head": tokens[head] if head is not None and 0 <= head < len(tokens) else None,
+                "domain_concept_id": word_concepts[head]["selected_concept_id"] if head is not None and 0 <= head < len(tokens) else None,
+                "domain_features": word_concepts[head]["selected_features"] if head is not None and 0 <= head < len(tokens) else {},
                 "domain_source": "dependency_determiner_arc" if det_dependents else "nearest_following_nominal_fallback",
             })
         self._record(38, {"quantified_domain_count": len(domains)})

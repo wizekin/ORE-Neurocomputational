@@ -1039,3 +1039,36 @@ function docstrings in the existing `ore_logger.annotations` SQLite table. It us
 Run `python -m pytest tests/test_language_comprehension_point03.py -q` for the focused acceptance
 suite. See [the Point 3 architecture, equations, biological track and API]
 (docs/LANGUAGE_COMPREHENSION_POINT_03.md).
+
+## Language comprehension — Point 4: Semantic composition (14 steps)
+
+The additive `ore_language_comprehension` package now implements the fourth source point as a
+14-step adapter over the existing `ore_semantic_composition` nine-stage / 54-operation engine.
+`Point4SemanticComposer` consumes Point 3 syntactic dependencies and the Point 2 semantic sense
+candidates embedded in the Point 3 lexical records. It creates sentence-level event propositions,
+entity/event variables, predicate argument and thematic-role links, modifier/property relations,
+negation/modality/quantifier scopes, semantic compatibility reports, competing readings, and a
+validated proposition graph.
+
+The adapter uses caller-supplied or explicitly embedded predicate frames where possible. It does
+not equate grammatical subject with Agent or object with Patient as a universal rule. Missing
+semantic features remain missing rather than being invented. If no explicit predicate frame exists,
+the underlying semantic engine uses a documented generic fallback, so role conclusions should be
+treated as provisional.
+
+Point 4 recomputes each available word prefix through the existing composition engine and records
+the evolving partial proposition, new/revised events, modifier links, and open argument slots. This
+is an inspectable incremental approximation rather than a persistent neural-state simulation. The
+existing nine-population LIF reference can be aggregated into 14 source-level biological records;
+it is kept separate from the functional proposition output and is not measured human neural data.
+
+Point 4 registers its class and function docstrings in the shared `ore_logger.annotations` SQLite
+table, indexing `ore_language_comprehension`, `ore_semantic_composition`, `ore_semantic`, and
+`ore_syntax`. It reuses `ore_logs/ore_logger.sqlite3`; no separate annotation database is created.
+
+The public output intentionally stops at literal sentence meaning. Discourse history, physical
+situation, world-knowledge inference, speaker intention, sarcasm and irony remain for Point 5.
+
+Run `python -m pytest tests/test_language_comprehension_point04.py -q` for the focused acceptance
+suite. See [the Point 4 architecture, mathematical operations, biological-reference mapping and API]
+(docs/LANGUAGE_COMPREHENSION_POINT_04.md).

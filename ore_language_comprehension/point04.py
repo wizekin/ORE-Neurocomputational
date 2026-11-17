@@ -926,6 +926,7 @@ class Point4SemanticComposer:
         self,
         argument_frames: Sequence[Mapping[str, Any]],
         propositions: Sequence[Mapping[str, Any]],
+        thematic_roles: Sequence[Mapping[str, Any]],
         request: Point4Request,
     ) -> list[dict[str, Any]]:
         """Distinguish filled required roles from pending or unexpressed roles using explicit frames."""
@@ -939,10 +940,13 @@ class Point4SemanticComposer:
             explicit = frame_by_predicate.get(predicate.casefold())
             required = tuple(explicit.required_roles) if explicit else ()
             role_status = dict(frame.get("role_status", {}))
-            filled = {
-                str(role) for role, status in role_status.items()
-                if status == "filled"
+            selected_roles = {
+                str(item.get("selected_role"))
+                for item in thematic_roles
+                if int(item.get("predicate_index", -1)) == int(frame.get("predicate_index", -2))
+                and item.get("selected_role") is not None
             }
+            filled = selected_roles
             filled_required = [role for role in required if role in filled]
             missing = [role for role in required if role not in filled]
             if not explicit:
@@ -1144,7 +1148,7 @@ class Point4SemanticComposer:
             propositions, thematic_roles, word_concepts
         )
         completeness = self._proposition_completeness(
-            predicate_arguments, propositions, request
+            predicate_arguments, propositions, thematic_roles, request
         )
 
         # Add wrapper-level modifier/property edges to the existing directed graph.

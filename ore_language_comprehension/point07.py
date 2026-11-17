@@ -450,7 +450,7 @@ class Point7MemoryDecisionProcessor:
         # Semantic route: one example becomes a pending candidate unless explicitly verified.
         semantic_candidate = None
         if "semantic" in routes:
-            asserted = all(x["provenance"] in {"explicit", "entailed", "reported"} for x in valid_components)
+            asserted = bool(valid_components) and all(x["provenance"] in {"explicit", "entailed", "reported"} for x in valid_components)
             semantic_candidate = {
                 "claim": proposition.get("claim", proposition.get("predicate", proposition)),
                 "claim_key": str(proposition.get("claim_key") or proposition.get("predicate") or _json(proposition)),

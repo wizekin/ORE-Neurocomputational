@@ -91,3 +91,12 @@ __all__ += [
     "Point9LIFReference", "Point9NeuralArchitectureCoordinator",
     "register_point09_annotations",
 ]
+
+
+from .point10 import POINT10_METHODS, POINT10_STEP_SPECS, Point10EvidenceValidator, Point10Request, Point10Result
+from .annotations import register_point10_annotations
+
+__all__ += [
+    "POINT10_METHODS", "POINT10_STEP_SPECS", "Point10Request", "Point10Result",
+    "Point10EvidenceValidator", "register_point10_annotations",
+]

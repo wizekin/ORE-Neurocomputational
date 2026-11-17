@@ -76,6 +76,8 @@ def _score(record: Mapping[str, Any]) -> float | None:
     """Read a normalized task score without turning missing responses into zero."""
     for key in ("score", "accuracy", "correct"):
         value = record.get(key)
+        if key == "correct" and isinstance(value, bool):
+            return float(value)
         number = _finite(value)
         if number is not None:
             return min(1.0, max(0.0, number))

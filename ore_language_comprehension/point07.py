@@ -88,6 +88,7 @@ def _similarity(left: Any, right: Any) -> float:
 
 
 def _confidence(value: Any, default: float = 0.5) -> float:
+    """Validate and normalize a confidence value, using a bounded fallback for invalid input."""
     try:
         number = float(value)
     except (TypeError, ValueError):
@@ -110,6 +111,7 @@ class Point7Request:
     outcome_feedback: Mapping[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        """Validate request fields and freeze caller-provided sequences into stable snapshots."""
         if not isinstance(self.sequence_id, str) or not self.sequence_id.strip():
             raise ValueError("sequence_id must be non-empty")
         for name in ("proposition", "context", "task", "outcome_feedback"):
@@ -169,6 +171,7 @@ class Point7MemoryStore:
     """Separate episodic and semantic SQLite stores; defaults to process-local memory."""
 
     def __init__(self, database_path: str = ":memory:") -> None:
+        """Initialize the SQLite memory store and create its episodic, semantic, and feedback tables."""
         self.database_path = database_path
         if database_path != ":memory:" and not database_path.startswith("file:"):
             Path(database_path).expanduser().parent.mkdir(parents=True, exist_ok=True)
@@ -190,6 +193,7 @@ class Point7MemoryStore:
         self._db.commit()
 
     def add_episode(self, sequence_id: str, payload: Mapping[str, Any]) -> str:
+        """Persist one episodic trace and return its stable trace identifier."""
         trace_id = str(uuid.uuid4())
         with self._lock, self._db:
             self._db.execute(
@@ -199,6 +203,7 @@ class Point7MemoryStore:
         return trace_id
 
     def add_semantic_candidate(self, payload: Mapping[str, Any], *, verified: bool = False) -> str:
+        """Persist a general-knowledge candidate with its verification status and provenance."""
         knowledge_id = str(uuid.uuid4())
         claim_key = str(payload.get("claim_key") or _json(payload.get("claim", payload)))
         status = "accepted" if verified else "pending_verification"
@@ -210,11 +215,13 @@ class Point7MemoryStore:
         return knowledge_id
 
     def episodes(self) -> list[dict[str, Any]]:
+        """Return stored episodic traces in insertion order, decoding their structured payloads."""
         with self._lock:
             rows = self._db.execute("SELECT * FROM episodic_traces ORDER BY created_order").fetchall()
         return [{"trace_id": row["trace_id"], "sequence_id": row["sequence_id"], **json.loads(row["payload"])} for row in rows]
 
     def semantic_records(self) -> list[dict[str, Any]]:
+        """Return semantic knowledge records with their verification metadata."""
         with self._lock:
             rows = self._db.execute("SELECT * FROM semantic_knowledge ORDER BY created_order").fetchall()
         return [{**json.loads(row["payload"]), "knowledge_id": row["knowledge_id"], "status": row["status"]} for row in rows]
@@ -245,6 +252,7 @@ class Point7MemoryStore:
         return feedback_id
 
     def feedback_events(self) -> list[dict[str, Any]]:
+        """Return separately stored outcome-feedback records for later analysis."""
         with self._lock:
             rows = self._db.execute("SELECT * FROM outcome_feedback ORDER BY created_order").fetchall()
         return [
@@ -253,6 +261,7 @@ class Point7MemoryStore:
         ]
 
     def close(self) -> None:
+        """Close the SQLite connection and release the store lock."""
         with self._lock:
             self._db.close()
 
@@ -268,6 +277,7 @@ class Point7LIFReference:
     )
 
     def __init__(self, population_size: int = 12, dt_ms: float = 1.0, seed: int = 7) -> None:
+        """Initialize the SQLite memory store and create its episodic, semantic, and feedback tables."""
         if population_size < 2 or dt_ms <= 0:
             raise ValueError("population_size must be >= 2 and dt_ms must be positive")
         self.population_size = population_size
@@ -334,6 +344,7 @@ class Point7Result:
     biological_summary: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize the Point 7 result into a JSON-compatible mapping for downstream stages."""
         return {
             "sequence_id": self.sequence_id,
             "functional_trace": self.functional_trace,
@@ -361,6 +372,7 @@ class Point7MemoryDecisionProcessor:
         decision_margin: float = 0.10,
         episodic_threshold: float = 0.60,
     ) -> None:
+        """Initialize the SQLite memory store and create its episodic, semantic, and feedback tables."""
         if not 0.0 <= decision_margin <= 1.0:
             raise ValueError("decision_margin must be in [0, 1]")
         if not 0.0 <= episodic_threshold <= 1.0:
@@ -373,6 +385,7 @@ class Point7MemoryDecisionProcessor:
 
     @staticmethod
     def _components(request: Point7Request) -> list[dict[str, Any]]:
+        """Normalize proposition components and retain source, confidence, and scope metadata."""
         if request.components:
             return [dict(item) for item in request.components]
         raw = request.proposition.get("components", [])
@@ -382,6 +395,7 @@ class Point7MemoryDecisionProcessor:
 
     @staticmethod
     def _event_core(request: Point7Request, components: list[dict[str, Any]]) -> dict[str, Any]:
+        """Extract the event predicate, participant roles, and outcome without filling missing fields."""
         proposition = request.proposition
         roles = proposition.get("semantic_roles", proposition.get("arguments", {}))
         if not isinstance(roles, Mapping):
@@ -405,6 +419,7 @@ class Point7MemoryDecisionProcessor:
         context = dict(request.context)
 
         def record(index: int, output: Any) -> None:
+            """Append one numbered source-level operation and its intermediate output to the functional trace."""
             spec = POINT7_STEP_SPECS[index]
             trace.append({
                 "step": index + 1,

@@ -314,9 +314,24 @@ class _DefinitionCollector:
             self._visit_nested_definitions(child, parent)
 
 
-def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> dict[str, int]:
-    """Index all tracked-looking Python source files and refresh changed symbols."""
+def sync_repository(
+    database: LoggerDatabase,
+    repository_root: str | Path,
+    include_paths: set[str] | None = None,
+) -> dict[str, int]:
+    """Index Python files, optionally restricting work to selected repository-relative paths.
+
+    When include_paths is supplied, only those files/directories are visited and stale
+    records are removed only within that same scope. This keeps package-specific indexing
+    from scanning or deleting unrelated repository annotations.
+    """
     root = Path(repository_root).resolve()
+    scopes = {Path(item).as_posix().strip("/") for item in include_paths or set()}
+
+    def in_scope(relative: str) -> bool:
+        if not scopes:
+            return True
+        return any(relative == scope or relative.startswith(scope + "/") for scope in scopes)
     files_seen = 0
     files_indexed = 0
     symbols_written = 0
@@ -330,15 +345,26 @@ def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> di
         }
 
     for folder, directories, filenames in os.walk(root):
-        directories[:] = [
-            name for name in directories
-            if name not in _SKIP_PARTS and not name.startswith(".")
-        ]
+        folder_relative = Path(folder).relative_to(root).as_posix()
+        if scopes:
+            directories[:] = [
+                name for name in directories
+                if name not in _SKIP_PARTS
+                and not name.startswith(".")
+                and in_scope((Path(folder_relative) / name).as_posix())
+            ]
+        else:
+            directories[:] = [
+                name for name in directories
+                if name not in _SKIP_PARTS and not name.startswith(".")
+            ]
         for filename in filenames:
             if not filename.endswith(".py"):
                 continue
             full_path = Path(folder) / filename
             relative = full_path.relative_to(root).as_posix()
+            if not in_scope(relative):
+                continue
             valid_paths.add(relative)
             files_seen += 1
             try:
@@ -433,7 +459,10 @@ def sync_repository(database: LoggerDatabase, repository_root: str | Path) -> di
         old_paths = {
             row["source_path"] for row in connection.execute("SELECT source_path FROM source_files")
         }
-        missing = old_paths - valid_paths
+        missing = {
+            relative for relative in old_paths - valid_paths
+            if in_scope(relative)
+        }
         for relative in missing:
             connection.execute("DELETE FROM annotations WHERE source_path=?", (relative,))
             connection.execute("DELETE FROM source_files WHERE source_path=?", (relative,))

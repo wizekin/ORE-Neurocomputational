@@ -827,3 +827,26 @@ arithmetic. The simulated LIF activity is not human neural recording; the N400
 signal is an integration-difficulty proxy, not measured EEG. Learning updates
 are preview-only unless `allow_learning=True` is explicitly set, and the
 impairment stages are model interventions rather than clinical predictions.
+
+## 21-stage Distributed-Only Semantic Representation
+
+The additive ore_distributed_only package implements the distributed-only
+alternative to the Hub-and-Spoke model. It represents concepts as separate
+visual, auditory, action, tactile, affective, linguistic, contextual, and
+spatial population patterns, with recurrent inter-population connectivity and
+no central semantic storage vector. Its 21 ordered stages cover signal and
+feature encoding, associative reactivation, action/affect/episodic retrieval,
+recurrent excitation/inhibition, timing coordination, distributed cell
+assemblies, pattern completion, category competition, context/task modulation,
+learning, redundancy, and network-lesion analysis.
+
+The package also runs a separate current-based leaky-integrate-and-fire
+population reference at every stage. Each registered sub-operation includes
+its mathematical expression and biological reference. The existing
+ore_logger AST catalogue stores package module, class, and function
+annotations, while operation and stage execution traces are written to the
+shared ore_logs/ore_logger.sqlite3 database.
+
+See [the distributed-only architecture and API](docs/DISTRIBUTED_ONLY_SEMANTIC_ARCHITECTURE.md).
+Run focused tests with python -m pytest tests/test_distributed_only.py -q.
+

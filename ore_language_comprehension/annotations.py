@@ -265,3 +265,37 @@ def register_point07_annotations(
         "annotation_source": "python_docstring_and_ast_signature",
         "storage": "ore_logger.annotations SQLite table",
     }
+
+
+
+def register_point08_annotations(
+    repository_root: str | Path | None = None,
+    database_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Index Point 8 integration definitions in ORE's shared SQLite annotation catalogue.
+
+    The recurrent integrator is registered in the existing repository-wide annotations table.
+    It does not create a Point 8-specific database or persist working-memory state.
+    """
+    from ore_logger import LoggerDatabase, sync_repository
+
+    root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else Path(__file__).resolve().parents[1]
+    )
+    target = Path(
+        database_path
+        or os.environ.get("ORE_LOGGER_DB")
+        or root / "ore_logs" / "ore_logger.sqlite3"
+    ).expanduser().resolve()
+    database = LoggerDatabase(target)
+    modules = ["ore_language_comprehension"]
+    report = sync_repository(database, root, include_paths=set(modules))
+    return {
+        **report,
+        "database_path": str(target),
+        "modules": modules,
+        "annotation_source": "python_docstring_and_ast_signature",
+        "storage": "ore_logger.annotations SQLite table",
+    }

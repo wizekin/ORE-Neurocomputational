@@ -8,6 +8,7 @@ from .annotations import (
     register_point05_annotations,
     register_point06_annotations,
     register_point07_annotations,
+    register_point08_annotations,
 )
 from .point01 import POINT1_STEP_SPECS, Point1PerceptualProcessor, Point1Result
 from .point02 import POINT2_STEP_SPECS, Point2LexicalAccessProcessor, Point2Request, Point2Result
@@ -51,4 +52,22 @@ __all__ = [
     "POINT7_STEP_SPECS", "Point7Request", "Point7Result", "Point7MemoryStore",
     "Point7LIFReference", "Point7MemoryDecisionProcessor", "Point7Processor",
     "register_point07_annotations",
+]
+
+from .point08 import (
+    POINT8_STAGE_NAMES,
+    POINT8_STEP_SPECS,
+    Point8CrossStageIntegrator,
+    Point8LIFReference,
+    Point8Processor,
+    Point8Request,
+    Point8Result,
+    Point8State,
+)
+
+__all__ += [
+    "POINT8_STAGE_NAMES", "POINT8_STEP_SPECS",
+    "Point8Request", "Point8State", "Point8Result",
+    "Point8LIFReference", "Point8CrossStageIntegrator", "Point8Processor",
+    "register_point08_annotations",
 ]

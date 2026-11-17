@@ -323,5 +323,5 @@ def test_visual_region_uses_clear_glyph_gaps_as_candidate_word_boundaries() -> N
         },
         lexicon=(_cat_entry(), dog),
     ))
-    assert {item["form"] for item in result.form_candidates} == {"cat", "dog"}
+    assert [item["form"] for item in result.form_candidates] == ["cat", "dog"]
     assert {item["entry_id"] for item in result.lexical_candidates} == {"cat", "dog"}

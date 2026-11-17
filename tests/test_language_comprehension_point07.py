@@ -217,6 +217,7 @@ def test_retrieval_reactivates_episode_and_feedback_is_persisted_separately() ->
         )
     )
     assert retrieved.retrieved_memories
+    assert "immediate_answer" not in retrieved.routes
     assert retrieved.retrieved_memories[0]["reactivation_count"] == 1
     assert store.episodes()[0]["trace_strength"] > 0.25
 

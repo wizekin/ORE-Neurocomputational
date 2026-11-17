@@ -128,7 +128,7 @@ def test_competing_interpretations_can_remain_unresolved() -> None:
     result = _no_biology().process(request)
 
     assert result.working_memory_state["semantic_resolution"]["abstained"] is True
-    assert len(result.working_memory_state["semantic_resolution"]["ranked_interpretations"]) == 2
+    assert len(result.working_memory_state["semantic_resolution"]["alternatives"]) == 2
     assert result.diagnostics["valid"] is True
 
 

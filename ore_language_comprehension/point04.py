@@ -8,7 +8,7 @@ partial proposition states over each growing word prefix.
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from itertools import product
+from itertools import islice, product
 import math
 from typing import Any, Mapping, Sequence
 
@@ -234,6 +234,22 @@ def _derive_concepts(
                     "upstream_lexical_probability": max(0.0, min(1.0, float(candidate.get("posterior", 0.0)))),
                     "upstream_sense_probability": max(0.0, min(1.0, float(sense.get("posterior_within_entry", 1.0)))),
                     "gloss": str(sense.get("gloss", "")),
+                })
+                candidate_ids.append(concept_id)
+        if not candidate_ids and item.get("semantic_features"):
+            features = _bounded_features(item.get("semantic_features"))
+            if features:
+                concept_id = str(item.get("concept_id", f"token-{token_index}::supplied"))
+                concepts_by_id.setdefault(concept_id, {
+                    "concept_id": concept_id,
+                    "label": token_form,
+                    "aliases": (token_form,),
+                    "semantic_features": features,
+                    "lexical_category": str(item.get("lexical_category", "unknown")),
+                    "frequency": max(0.01, float(item.get("frequency", 1.0) or 1.0)),
+                    "language": str(item.get("language", "und")),
+                    "verified_by": str(item.get("verified_by", "caller-supplied")),
+                    "source_reference": str(item.get("source_reference", "unspecified")),
                 })
                 candidate_ids.append(concept_id)
         if candidate_ids:
@@ -864,7 +880,10 @@ class Point4SemanticComposer:
                     }
                     for sense, role in product(sense_options, role_options)
                 ])
-            combinations = list(product(*argument_options)) if argument_options else [()]
+            combinations = (
+                list(islice(product(*argument_options), self.max_candidate_readings))
+                if argument_options else [()]
+            )
             for predicate_sense in predicate_senses:
                 for combination in combinations:
                     arguments = []

@@ -136,7 +136,30 @@ class Point7Request:
         proposition.update(overrides.pop("proposition", {}))
         context = dict(overrides.pop("context", {}))
         context.setdefault("point6_handoff", handoff)
-        components = overrides.pop("components", ())
+        context.setdefault("working_memory_state", handoff.get("working_memory_state", {}))
+        components = list(overrides.pop("components", ()))
+        if not components:
+            active = handoff.get("active_propositions", [])
+            if isinstance(active, Sequence) and not isinstance(active, (str, bytes)):
+                for index, item in enumerate(active):
+                    if isinstance(item, Mapping):
+                        content = item.get("text", item.get("predicate", item))
+                        components.append({
+                            "component_id": f"point6-literal-{index + 1}",
+                            "content": content,
+                            "provenance": "explicit",
+                            "confidence": _confidence(item.get("confidence", 0.5)),
+                        })
+            alternatives = handoff.get("unresolved_alternatives", [])
+            if isinstance(alternatives, Sequence) and not isinstance(alternatives, (str, bytes)):
+                for index, item in enumerate(alternatives):
+                    if isinstance(item, Mapping):
+                        components.append({
+                            "component_id": f"point6-unresolved-{index + 1}",
+                            "content": item.get("interpretation", item.get("label", item)),
+                            "provenance": "unresolved",
+                            "confidence": _confidence(item.get("prior", item.get("confidence", 0.5))),
+                        })
         return cls(sequence_id=sequence_id, proposition=proposition, components=components, context=context, **overrides)
 
 
@@ -575,7 +598,8 @@ class Point7MemoryDecisionProcessor:
             "episodic_memory_count": len(self.store.episodes()),
             "semantic_memory_count": len(self.store.semantic_records()),
             "durable_storage_enabled": self.store.database_path != ":memory:",
-            "durable_storage_written": bool(episodic_payload or semantic_candidate),
+            "durable_storage_written": bool((episodic_payload or semantic_candidate) and self.store.database_path != ":memory:"),
+            "memory_store_write": bool(episodic_payload or semantic_candidate),
             "temporary_working_memory_is_not_long_term_memory": True,
             "biological_reference_is_measured_human_data": False,
             "warnings": [

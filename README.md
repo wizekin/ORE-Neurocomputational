@@ -1201,3 +1201,30 @@ python -m pytest tests/test_language_comprehension_point06.py -q
 
 See docs/LANGUAGE_COMPREHENSION_POINT_06.md for the 18 steps, mathematical models,
 biological-reference mapping, API and limitations.
+
+
+## Language comprehension Point 7 — long-term memory and decision use
+
+The additive Point 7 implementation receives the structured proposition from Point 6 and
+separates episodic encoding, semantic-knowledge candidates, retrieval, question answering,
+and action planning. It exposes 28 ordered operations, preserves component-level provenance
+and confidence, and abstains when evidence is insufficient.
+
+Episodic traces and semantic candidates use separate SQLite tables through
+`Point7MemoryStore`. The default is process-local `:memory:`; provide a database path to
+persist records across restarts. This memory database is separate from the shared
+`ore_logger.annotations` catalogue.
+
+The optional ten-population current-based LIF reference includes hippocampal-binding,
+entorhinal, perirhinal, parahippocampal, neocortical-semantic, medial-prefrontal,
+dorsolateral-prefrontal, anterior-cingulate, orbitofrontal, and basal-ganglia functional
+populations. It is a simplified biological analogy, not a fitted or validated human circuit.
+
+See [docs/LANGUAGE_COMPREHENSION_POINT_07.md](docs/LANGUAGE_COMPREHENSION_POINT_07.md)
+for the 28-step algorithm, equations, scientific qualifications, and API examples.
+
+Run the focused Point 7 tests:
+
+```bash
+python -m pytest tests/test_language_comprehension_point07.py -q
+```

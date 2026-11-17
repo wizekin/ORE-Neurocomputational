@@ -149,12 +149,12 @@ class Point7MemoryStore:
         self._db = sqlite3.connect(database_path, check_same_thread=False)
         self._db.row_factory = sqlite3.Row
         self._db.execute("""CREATE TABLE IF NOT EXISTS episodic_traces (
-            trace_id TEXT PRIMARY KEY, sequence_id TEXT NOT NULL, payload TEXT NOT NULL,
-            created_order INTEGER PRIMARY KEY AUTOINCREMENT
+            created_order INTEGER PRIMARY KEY AUTOINCREMENT, trace_id TEXT UNIQUE NOT NULL,
+            sequence_id TEXT NOT NULL, payload TEXT NOT NULL
         )""")
         self._db.execute("""CREATE TABLE IF NOT EXISTS semantic_knowledge (
-            knowledge_id TEXT PRIMARY KEY, claim_key TEXT NOT NULL, payload TEXT NOT NULL,
-            status TEXT NOT NULL, created_order INTEGER PRIMARY KEY AUTOINCREMENT
+            created_order INTEGER PRIMARY KEY AUTOINCREMENT, knowledge_id TEXT UNIQUE NOT NULL,
+            claim_key TEXT NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL
         )""")
         self._db.commit()
 
@@ -227,7 +227,7 @@ class Point7LIFReference:
                 start = pop_index * self.population_size
                 end = start + self.population_size
                 # Input profile changes across memory encoding, retrieval and choice.
-                base = 5.0 + 5.0 * (0.5 + 0.5 * math.sin(phase * math.pi + pop_index * 0.37))
+                base = 14.0 + 10.0 * (0.5 + 0.5 * math.sin(phase * math.pi + pop_index * 0.37))
                 current[start:end] = base + rng.normal(0.0, 0.25, self.population_size)
             active = refractory == 0
             voltage[active] += (self.dt_ms / tau_m) * (

@@ -200,7 +200,7 @@ N4 is an algorithmic research approximation. Its attention and precision paramet
 
 ## N9 integrated neurocomputational ORE (120 operations)
 
-The additive \`ore_n9\` package coordinates the available N1-N4 processors and
+The additive `ore_n9` package coordinates the available N1-N4 processors and
 provides explicit adapter contracts for the later lexical, contextual and
 semantic components. It records an inspectable 120-operation trace, preserves
 visual probabilities separately from top-down posterior beliefs, bounds
@@ -210,7 +210,7 @@ N9 expects already-localized patches in logical reading order. It does not
 silently invent a character segmenter. Each patch may contain a grayscale
 image, an N2 result, a feature vector, or caller-supplied grapheme probabilities.
 
-\`\`\`python
+```python
 from ore_n9 import N9Patch, N9Processor, N9Request
 
 request = N9Request(
@@ -225,18 +225,18 @@ request = N9Request(
 result = N9Processor().process(request)
 print(result.decision)
 print(len(result.operation_trace))  # 120
-\`\`\`
+```
 
 For image patches, provide each already-localized grayscale crop as
-\`N9Patch("id", image=crop)\`; N9 runs the repository's N1 and N2 pipelines.
-To use learned grapheme recognition, pass a fitted \`N3Processor\` through
-\`N9Adapters(n3=...)\`; N9 then applies N4 attention/precision gating. N5-N8
+`N9Patch("id", image=crop)`; N9 runs the repository's N1 and N2 pipelines.
+To use learned grapheme recognition, pass a fitted `N3Processor` through
+`N9Adapters(n3=...)`; N9 then applies N4 attention/precision gating. N5-N8
 are optional, explicitly injected adapters and are marked unavailable when
 not configured. N6 resolves lexical hypotheses, the syntax adapter parses
 provided grammatical evidence, N7 supplies discourse/context predictions,
 and N8 composes typed semantic graphs and propositions.
 
-\`\`\`python
+```python
 from ore_n9 import N9Adapters, N9Processor
 
 processor = N9Processor(adapters=N9Adapters(
@@ -246,20 +246,20 @@ processor = N9Processor(adapters=N9Adapters(
     n7=context_adapter,
     n8=semantic_adapter,
 ))
-\`\`\`
+```
 
 
 ### Ready-made language adapter stack
 
-The \`ore_n9.adapters\` module connects the existing 36-operation lexical
+The `ore_n9.adapters` module connects the existing 36-operation lexical
 access processor, 58-operation syntax processor, 54-operation sentence semantic
 composition processor, and the existing 39-operation N7 discourse adapter.
 The sentence semantic adapter is distinct from the concept-only
-\`SemanticN8Adapter\`: it returns predicate/argument propositions and a typed
+`SemanticN8Adapter`: it returns predicate/argument propositions and a typed
 sentence graph. All processors still require caller-supplied lexical, concept,
 and predicate-frame inventories appropriate to the target language/domain.
 
-\`\`\`python
+```python
 from ore_n9 import N9Adapters, N9Processor, build_n9_language_adapters
 
 adapters = build_n9_language_adapters(
@@ -272,14 +272,14 @@ adapters = build_n9_language_adapters(
 result = N9Processor(adapters=adapters).process(request)
 print(result.propositions)
 print(result.context_model)
-\`\`\`
+```
 
 The factory preserves supplied N1-N5 adapters, creates N6/N7/N8 and syntax
 bridges, and does not create a lexicon or invent world knowledge. The focused
 end-to-end test compares "musician tunes instrument" with "musician tunes
 microwave" using an explicit predicate selectional-preference frame.
 
-Learning is disabled unless \`learning_authorized=True\`. An N5 adapter is
+Learning is disabled unless `learning_authorized=True`. An N5 adapter is
 deep-copied before a child-model proposal; the active parent model is checked
 for mutation. Software tests do not establish real-corpus accuracy or
 biological validity. See [docs/N9_ARCHITECTURE.md](docs/N9_ARCHITECTURE.md).
@@ -823,3 +823,84 @@ python -m ore_hybrid_embodied_amodal
 python -m pytest tests/test_hybrid_embodied_amodal.py -q
 python -m pytest
 ```
+
+
+## Distributed Neural Semantic Composition and Integration — 36 stages
+
+The additive `ore_distributed_semantics` package implements the 36-stage
+algorithm described in the source document. It includes lexical and conceptual
+activation, modality-specific feature retrieval, cross-modal association,
+bilateral ATL-style semantic convergence, abstraction, associative graph
+propagation, phrase composition, thematic roles, selectional compatibility,
+contextual prediction, ambiguity control, AG/posterior-temporal integration,
+prediction error, an explicitly labeled N400 difficulty proxy, reanalysis,
+episodic and schema retrieval, discourse integration, semantic learning,
+developmental/aging and multilingual adaptation, five impairment simulations,
+and assessment.
+
+The registry provides **36 stages and 108 mathematically described operations**
+with stable identifiers (DS-01 through DS-36). Functional semantic processing
+and a separate 14-population current-based LIF reference simulation produce
+distinct traces. Every package class and function has a docstring for the
+existing SQLite annotation catalogue.
+
+Quick start:
+
+    from ore_semantic.contracts import SemanticConcept
+    from ore_distributed_semantics import (
+        DistributedSemanticProcessor,
+        DistributedSemanticRequest,
+    )
+
+    concept = SemanticConcept(
+        concept_id="violin",
+        label="violin",
+        semantic_features={"ARTIFACT": 1.0, "MUSICAL_INSTRUMENT": 1.0},
+        verified_by="example",
+        source_reference="example://violin",
+    )
+    processor = DistributedSemanticProcessor([concept])
+    result = processor.process(
+        DistributedSemanticRequest(sequence_id="demo-001", text="violin")
+    )
+    print(len(result.stage_trace))      # 36
+    print(len(result.operation_trace))  # 108
+
+Run the demonstration with `python -m ore_distributed_semantics` and the
+focused tests with `python -m pytest tests/test_distributed_semantics.py -q`.
+The package reuses `ore_logger/ore_logs/ore_logger.sqlite3` and its standard
+`annotations`, `runs`, and `events` tables; no separate database is created.
+The demonstration indexes symbol docstrings and records the operation/stage
+trace. See [the complete architecture, equations, biological references,
+API, and validation boundaries](docs/DISTRIBUTED_NEURAL_SEMANTIC_36_STAGE_ARCHITECTURE.md).
+
+Scientific qualification: vector, graph, probabilistic and LIF calculations
+are explicit computational approximations, not claims about literal neuronal
+arithmetic. The simulated LIF activity is not human neural recording; the N400
+signal is an integration-difficulty proxy, not measured EEG. Learning updates
+are preview-only unless `allow_learning=True` is explicitly set, and the
+impairment stages are model interventions rather than clinical predictions.
+
+## 21-stage Distributed-Only Semantic Representation
+
+The additive ore_distributed_only package implements the distributed-only
+alternative to the Hub-and-Spoke model. It represents concepts as separate
+visual, auditory, action, tactile, affective, linguistic, contextual, and
+spatial population patterns, with recurrent inter-population connectivity and
+no central semantic storage vector. Its 21 ordered stages cover signal and
+feature encoding, associative reactivation, action/affect/episodic retrieval,
+recurrent excitation/inhibition, timing coordination, distributed cell
+assemblies, pattern completion, category competition, context/task modulation,
+learning, redundancy, and network-lesion analysis.
+
+The package also runs a separate current-based leaky-integrate-and-fire
+population reference at every stage. Each registered sub-operation includes
+its mathematical expression and biological reference. The existing
+ore_logger AST catalogue stores package module, class, and function
+annotations, while operation and stage execution traces are written to the
+shared ore_logs/ore_logger.sqlite3 database.
+
+See [the distributed-only architecture and API](docs/DISTRIBUTED_ONLY_SEMANTIC_ARCHITECTURE.md).
+Run focused tests with python -m pytest tests/test_distributed_only.py -q.
+
+

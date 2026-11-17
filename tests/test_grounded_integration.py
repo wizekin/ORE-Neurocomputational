@@ -82,6 +82,21 @@ def test_all_22_stages_run_and_emit_optional_biological_reference():
     json.dumps(result.to_dict(), default=str)
 
 
+def test_absent_language_modality_is_not_fabricated():
+    """Verify image-only input remains image-only after distributional stage processing."""
+    processor = GroundedSemanticIntegrationProcessor(
+        GroundedSemanticConfig(hidden_dim=32, simulate_biology=False)
+    )
+    request = GroundedSemanticRequest(
+        sample_id="vision-only",
+        modality_inputs={"visual": {"wings": 0.9, "feathers": 0.8}},
+        task="recognize",
+    )
+    result = processor.process(request)
+    assert result.diagnostics["modalities_present"] == ["visual"]
+    assert result.stage_outputs["GS-03"]["lexical_vector"] is None
+
+
 def test_learning_updates_word_transitions_graph_and_retrievable_memory():
     """Verify that repeated experiences alter associative state and enable later prediction."""
     processor = GroundedSemanticIntegrationProcessor(

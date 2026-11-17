@@ -305,13 +305,17 @@ class GroundedSemanticIntegrationProcessor:
         pooled_counts: Counter[str] = Counter()
         for counts in local_counts.values():
             pooled_counts.update(counts)
-        lexical_vector = (
-            feature_vector(pooled_counts, self.config.hidden_dim)
-            if pooled_counts else hashed_text_vector(" ".join(tokens), self.config.hidden_dim)
-        )
-        if "linguistic" in state["vectors"]:
-            lexical_vector = unit_normalize(0.5 * state["vectors"]["linguistic"] + 0.5 * lexical_vector)
-        state["vectors"]["linguistic"] = lexical_vector
+        lexical_vector = None
+        if tokens:
+            lexical_vector = (
+                feature_vector(pooled_counts, self.config.hidden_dim)
+                if pooled_counts else hashed_text_vector(" ".join(tokens), self.config.hidden_dim)
+            )
+            if "linguistic" in state["vectors"]:
+                lexical_vector = unit_normalize(
+                    0.5 * state["vectors"]["linguistic"] + 0.5 * lexical_vector
+                )
+            state["vectors"]["linguistic"] = lexical_vector
         return {
             "tokens": tokens,
             "distributional_contexts": distributional,

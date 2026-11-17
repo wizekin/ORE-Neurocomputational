@@ -499,6 +499,7 @@ class Point8CrossStageIntegrator:
         self.quality_threshold = float(quality_threshold)
         self.revision_margin = float(revision_margin)
         self.state = Point8State()
+        self.state.strategy["revision_margin"] = self.revision_margin
         self.lif = Point8LIFReference(population_size, steps_per_operation) if simulate_biology else None
 
     def reset(self) -> None:

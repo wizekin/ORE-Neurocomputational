@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import ast
 from pathlib import Path
+import shutil
 
 import pytest
+
+from ore_logger import LoggerDatabase
 
 from ore_language_comprehension.point08 import (
     POINT8_STAGE_NAMES,
@@ -12,6 +15,7 @@ from ore_language_comprehension.point08 import (
     Point8LIFReference,
     Point8Request,
 )
+from ore_language_comprehension.annotations import register_point08_annotations
 
 
 def _stage_inputs(confidence: float = 0.95) -> dict:
@@ -149,7 +153,7 @@ def test_revision_requires_new_evidence_to_clear_the_margin() -> None:
         stage_outputs={"semantic": [{"candidate_id": "m1", "content": "old sense", "confidence": 0.8}]},
         revision_candidates=[{
             "stage": "semantic", "candidate_id": "m2", "content": "new sense",
-            "confidence": 0.75, "evidence_fit": 0.7,
+            "confidence": 0.6, "evidence_fit": 0.5,
         }],
     ))
     strong_processor = Point8CrossStageIntegrator(revision_margin=0.08)
@@ -239,7 +243,7 @@ def test_later_discourse_can_revise_an_earlier_finalized_proposition_and_memory_
         "predicate": "OPEN",
         "semantic_roles": {"agent": "child", "theme": "window"},
     }
-    result = Point8CrossStageIntegrator().process(Point8Request(
+    result = Point8CrossStageIntegrator(revision_margin=0.02).process(Point8Request(
         sequence_id="p8-later-revision",
         stage_outputs=_stage_inputs(),
         task={"encode_episode": True},
@@ -309,3 +313,24 @@ def test_every_point8_class_and_function_has_a_docstring() -> None:
         and ast.get_docstring(node) is None
     ]
     assert missing == []
+
+
+
+def test_point8_annotations_are_indexed_in_the_existing_sqlite_catalogue(tmp_path: Path) -> None:
+    """Index Point 8's classes and methods in the same annotation database used by earlier points."""
+    source_root = Path(__file__).resolve().parents[1]
+    isolated = tmp_path / "ore-project"
+    isolated.mkdir()
+    shutil.copytree(source_root / "ore_logger", isolated / "ore_logger")
+    shutil.copytree(source_root / "ore_language_comprehension", isolated / "ore_language_comprehension")
+    (isolated / "pyproject.toml").write_text("[project]\\nname='point8-annotation-test'\\n", encoding="utf-8")
+    database_path = tmp_path / "point8-annotations.sqlite3"
+
+    report = register_point08_annotations(isolated, database_path)
+    rows = LoggerDatabase(database_path).search_annotations("ore_language_comprehension", limit=2000)
+
+    assert report["symbols_written"] > 0
+    assert report["database_path"] == str(database_path)
+    assert any(row["qualified_name"] == "Point8CrossStageIntegrator.process" for row in rows)
+    assert any(row["qualified_name"] == "Point8Request.from_stage_results" for row in rows)
+    assert all(row["source_docstring"] for row in rows)

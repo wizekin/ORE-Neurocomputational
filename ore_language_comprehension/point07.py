@@ -180,6 +180,10 @@ class Point7MemoryStore:
             created_order INTEGER PRIMARY KEY AUTOINCREMENT, knowledge_id TEXT UNIQUE NOT NULL,
             claim_key TEXT NOT NULL, payload TEXT NOT NULL, status TEXT NOT NULL
         )""")
+        self._db.execute("""CREATE TABLE IF NOT EXISTS outcome_feedback (
+            created_order INTEGER PRIMARY KEY AUTOINCREMENT, feedback_id TEXT UNIQUE NOT NULL,
+            sequence_id TEXT NOT NULL, payload TEXT NOT NULL
+        )""")
         self._db.commit()
 
     def add_episode(self, sequence_id: str, payload: Mapping[str, Any]) -> str:
@@ -211,6 +215,39 @@ class Point7MemoryStore:
         with self._lock:
             rows = self._db.execute("SELECT * FROM semantic_knowledge ORDER BY created_order").fetchall()
         return [{**json.loads(row["payload"]), "knowledge_id": row["knowledge_id"], "status": row["status"]} for row in rows]
+
+    def update_episode(self, trace_id: str, updates: Mapping[str, Any]) -> None:
+        """Update reactivation/consolidation metadata without rewriting event provenance."""
+        with self._lock, self._db:
+            row = self._db.execute(
+                "SELECT payload FROM episodic_traces WHERE trace_id=?", (trace_id,)
+            ).fetchone()
+            if row is None:
+                return
+            payload = json.loads(row["payload"])
+            payload.update(dict(updates))
+            self._db.execute(
+                "UPDATE episodic_traces SET payload=? WHERE trace_id=?",
+                (_json(payload), trace_id),
+            )
+
+    def add_feedback(self, sequence_id: str, payload: Mapping[str, Any]) -> str:
+        """Persist an outcome/prediction comparison separately from semantic facts."""
+        feedback_id = str(uuid.uuid4())
+        with self._lock, self._db:
+            self._db.execute(
+                "INSERT INTO outcome_feedback(feedback_id,sequence_id,payload) VALUES(?,?,?)",
+                (feedback_id, sequence_id, _json(payload)),
+            )
+        return feedback_id
+
+    def feedback_events(self) -> list[dict[str, Any]]:
+        with self._lock:
+            rows = self._db.execute("SELECT * FROM outcome_feedback ORDER BY created_order").fetchall()
+        return [
+            {"feedback_id": row["feedback_id"], "sequence_id": row["sequence_id"], **json.loads(row["payload"])}
+            for row in rows
+        ]
 
     def close(self) -> None:
         with self._lock:
@@ -427,6 +464,10 @@ class Point7MemoryDecisionProcessor:
                 "source_provenance": [x["provenance"] for x in valid_components],
                 "confidence_by_component": [x["confidence"] for x in valid_components],
                 "encoding_status": "initial_labile_trace_not_guaranteed_permanent",
+                "reactivation_count": 0,
+                "trace_strength": 0.25,
+                "interference": 0.0,
+                "consolidation_status": "labile",
                 "item_features": sorted(_tokens(event_core)),
                 "context_features": sorted(_tokens(context)),
                 "relations": proposition.get("relations", proposition.get("discourse_relations", [])),
@@ -495,7 +536,25 @@ class Point7MemoryDecisionProcessor:
             record(17, {"candidate_count": len(retrieved), "scores": [x["score"] for x in retrieved]})
             for item in retrieved:
                 item["completion_status"] = "no_missing_fields_invented"
-            record(18, {"pattern_completion": "linked fields returned only when present in stored trace", "candidate_count": len(retrieved)})
+                if item.get("memory_type") == "episodic" and item.get("trace_id"):
+                    reactivations = int(item.get("reactivation_count", 0)) + 1
+                    strength = min(
+                        1.0,
+                        max(0.0, float(item.get("trace_strength", 0.25)) + 0.05
+                            - 0.01 * float(item.get("interference", 0.0))),
+                    )
+                    consolidation_status = "reactivated" if reactivations >= 1 else "labile"
+                    self.store.update_episode(item["trace_id"], {
+                        "reactivation_count": reactivations,
+                        "trace_strength": strength,
+                        "consolidation_status": consolidation_status,
+                    })
+                    item.update({
+                        "reactivation_count": reactivations,
+                        "trace_strength": strength,
+                        "consolidation_status": consolidation_status,
+                    })
+            record(18, {"pattern_completion": "stored links only; episodic retrieval increments reactivation metadata", "candidate_count": len(retrieved)})
             best = retrieved[0]["score"] if retrieved else 0.0
             second = retrieved[1]["score"] if len(retrieved) > 1 else 0.0
             retrieved_ambiguous = bool(len(retrieved) > 1 and best - second < self.decision_margin)
@@ -589,7 +648,12 @@ class Point7MemoryDecisionProcessor:
             observed = feedback.get("observed_outcome")
             if isinstance(predicted, (int, float)) and isinstance(observed, (int, float)):
                 prediction_error = float(observed - predicted)
-        record(27, {"feedback_received": bool(feedback), "prediction_error": prediction_error, "memory_update": "feedback retained in result; caller controls subsequent verified learning"})
+        feedback_id = self.store.add_feedback(request.sequence_id, {
+            **feedback,
+            "prediction_error": prediction_error,
+            "learning_policy": "separate_feedback_record; no automatic semantic fact rewrite",
+        }) if feedback else None
+        record(27, {"feedback_received": bool(feedback), "feedback_id": feedback_id, "prediction_error": prediction_error, "memory_update": "feedback persisted separately; no automatic semantic fact rewrite"})
 
         biological = self.lif.run(len(POINT7_STEP_SPECS)) if self.lif else {}
         diagnostics = {
@@ -598,6 +662,7 @@ class Point7MemoryDecisionProcessor:
             "operation_count": len(POINT7_STEP_SPECS),
             "episodic_memory_count": len(self.store.episodes()),
             "semantic_memory_count": len(self.store.semantic_records()),
+            "outcome_feedback_count": len(self.store.feedback_events()),
             "durable_storage_enabled": self.store.database_path != ":memory:",
             "durable_storage_written": bool((episodic_payload or semantic_candidate) and self.store.database_path != ":memory:"),
             "memory_store_write": bool(episodic_payload or semantic_candidate),

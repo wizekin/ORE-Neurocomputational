@@ -184,3 +184,16 @@ def test_invalid_provenance_is_reported_without_crashing() -> None:
     )
     assert result.diagnostics["valid"] is True
     assert result.functional_trace[1]["output"]["invalid_provenance_count"] == 1
+
+
+def test_semantic_verification_flag_without_source_components_does_not_accept_claim() -> None:
+    store = Point7MemoryStore()
+    result = Point7MemoryDecisionProcessor(store).process(
+        Point7Request(
+            sequence_id="p7-unsubstantiated",
+            proposition={"predicate": "UNSUPPORTED_CLAIM", "claim": "unverified general rule"},
+            task={"generalizable_knowledge": True, "semantic_verified": True},
+        )
+    )
+    assert result.semantic_candidate is not None
+    assert store.semantic_records()[0]["status"] == "pending_verification"

@@ -1284,3 +1284,12 @@ Run the focused acceptance suite:
 ```bash
 python -m pytest tests/test_language_comprehension_point09.py -q
 ```
+
+
+## Language comprehension research algorithms — Point 10
+
+Point 10 validates language-comprehension mechanisms using supplied behavioral, fMRI, EEG/ERP, MEG, lesion, stimulation, and computational evidence. It is a scientific analysis workflow, not another sentence-processing stage or a brain simulation. It records 15 operations from operationalizing a hypothesis to producing a calibrated, falsifiable report, with method-specific limitations and safeguards against double-counting dependent datasets.
+
+See [Point 10 documentation](docs/LANGUAGE_COMPREHENSION_POINT_10.md) and run:
+
+    python -m pytest tests/test_language_comprehension_point10.py

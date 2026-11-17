@@ -100,3 +100,24 @@ __all__ += [
     "POINT10_METHODS", "POINT10_STEP_SPECS", "Point10Request", "Point10Result",
     "Point10EvidenceValidator", "register_point10_annotations",
 ]
+
+
+from .point11 import (
+    POINT11_DEFAULT_CONNECTIONS,
+    POINT11_DEMAND_KEYS,
+    POINT11_STEP_SPECS,
+    POINT11_SYSTEMS,
+    Point11FunctionalSeparationCoordinator,
+    Point11LIFReference,
+    Point11Request,
+    Point11Result,
+    Point11State,
+)
+from .annotations import register_point11_annotations
+
+__all__ += [
+    "POINT11_DEFAULT_CONNECTIONS", "POINT11_DEMAND_KEYS", "POINT11_STEP_SPECS",
+    "POINT11_SYSTEMS", "Point11Request", "Point11State", "Point11Result",
+    "Point11LIFReference", "Point11FunctionalSeparationCoordinator",
+    "register_point11_annotations",
+]

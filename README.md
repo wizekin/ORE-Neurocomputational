@@ -1293,3 +1293,12 @@ Point 10 validates language-comprehension mechanisms using supplied behavioral, 
 See [Point 10 documentation](docs/LANGUAGE_COMPREHENSION_POINT_10.md) and run:
 
     python -m pytest tests/test_language_comprehension_point10.py
+
+
+## Language comprehension research algorithms — Point 11
+
+Point 11 separates core language-selective computations from sensory, conceptual, mentalizing, multiple-demand, and memory contributions while allowing conditional information exchange. It preserves literal-versus-inferred provenance, individual localizer information, task-dependent right-hemisphere contributions, and optional LIF reference dynamics. This is a functional architecture approximation, not a literal neural-routing claim.
+
+See [Point 11 documentation](docs/LANGUAGE_COMPREHENSION_POINT_11.md) and run:
+
+    python -m pytest tests/test_language_comprehension_point11.py

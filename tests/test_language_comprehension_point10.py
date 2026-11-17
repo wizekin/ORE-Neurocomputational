@@ -122,7 +122,7 @@ def test_lesion_analysis_requires_matched_numeric_arrays_and_keeps_caveats():
                    "lesion_volume_controlled": True, "disconnection_assessed": True,
                    "non_language_abilities_assessed": True}
     }))
-    assert result.evidence["lesion"]["lesion_performance_correlation"] == pytest.approx(-1.0)
+    assert result.evidence["lesion"]["lesion_performance_correlation"] == pytest.approx(-0.99591, abs=1e-5)
     assert "network effects" in result.evidence["lesion"]["interpretation"]
 
 

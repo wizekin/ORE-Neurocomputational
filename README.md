@@ -1311,3 +1311,21 @@ Point 12 is a 25-operation researcher-facing workflow for methodological evaluat
 See [Point 12 documentation](docs/LANGUAGE_COMPREHENSION_POINT_12.md) and run:
 
     python -m pytest tests/test_language_comprehension_point12.py -q
+
+
+## Language comprehension research algorithms — Point 14
+
+Point 14 implements a 19-step research profile for clinically and practically relevant
+language-comprehension patterns. It separates literal from inferred meaning, social from
+nonsocial inference, discourse coherence, cue use, working-memory/executive load, and
+component-specific longitudinal change. Optional task families cover right-hemisphere
+injury, autism-related pragmatic tasks, psychosis-spectrum discourse, neurodegenerative
+profiles, and aphasia-related language/concept contrasts.
+
+The processor produces a transparent, uncertainty-aware functional profile. It does not
+diagnose, infer a fixed deficit from a group label, or map one symptom to one brain region.
+Possible biological implementations are described separately from analyst-side statistics.
+
+See [Point 14 documentation](docs/LANGUAGE_COMPREHENSION_POINT_14.md) and run:
+
+    python -m pytest tests/test_language_comprehension_point14.py -q

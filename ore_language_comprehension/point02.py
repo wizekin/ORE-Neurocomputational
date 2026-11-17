@@ -457,6 +457,8 @@ class Point2LexicalAccessProcessor:
         """Beam-compose time-ordered phoneme alternatives into candidate spoken word forms."""
         auditory = hypotheses.get("auditory", {}) if isinstance(hypotheses, Mapping) else {}
         segments = list(auditory.get("form_hypotheses", []))
+        if not segments:
+            return []
         beam: list[tuple[tuple[str, ...], float, list[Any]]] = [((), 1.0, [])]
         for segment in segments:
             options = list(segment.get("alternatives", []))

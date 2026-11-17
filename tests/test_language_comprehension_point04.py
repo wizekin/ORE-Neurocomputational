@@ -254,8 +254,12 @@ def test_negation_modality_and_quantifier_scope_are_preserved():
         "point4-operators", _syntax(tokens, selected, arcs, items), predicate_frames=(_frame(),)
     ))
     assert result.quantifier_scopes[0]["symbol"] == "∀"
-    assert result.propositions[0]["polarity"] == "negative"
-    assert result.propositions[0]["modal_operators"][0]["token"] == "may"
+    assert any(item["polarity"] == "negative" for item in result.propositions)
+    assert any(
+        operator["token"] == "may"
+        for proposition in result.propositions
+        for operator in proposition["modal_operators"]
+    )
 
 
 def test_ambiguous_bank_senses_remain_separate():

@@ -71,3 +71,23 @@ __all__ += [
     "Point8LIFReference", "Point8CrossStageIntegrator", "Point8Processor",
     "register_point08_annotations",
 ]
+
+
+from .point09 import (
+    POINT9_DEFAULT_CONNECTIONS,
+    POINT9_STEP_SPECS,
+    POINT9_SYSTEM_NAMES,
+    Point9LIFReference,
+    Point9NeuralArchitectureCoordinator,
+    Point9Request,
+    Point9Result,
+    Point9State,
+)
+from .annotations import register_point09_annotations
+
+__all__ += [
+    "POINT9_DEFAULT_CONNECTIONS", "POINT9_STEP_SPECS", "POINT9_SYSTEM_NAMES",
+    "Point9Request", "Point9State", "Point9Result",
+    "Point9LIFReference", "Point9NeuralArchitectureCoordinator",
+    "register_point09_annotations",
+]

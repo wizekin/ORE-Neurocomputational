@@ -1258,3 +1258,29 @@ Run the focused acceptance suite:
 ```bash
 python -m pytest tests/test_language_comprehension_point08.py -q
 ```
+
+
+## Language comprehension Point 9 — neural architecture and functional division of labour
+
+Point 9 is a distributed network-level model, not another serial linguistic stage.
+`Point9NeuralArchitectureCoordinator` coordinates perceptual, language, conceptual
+knowledge, working-memory, mentalizing, executive-control, and episodic/contextual
+systems through a sparse functional communication graph and recurrent state updates.
+It keeps literal propositions separate from inferred mental-state candidates and
+conditionally recruits social and executive support according to task demands.
+
+The twenty operations provide an inspectable trace of evidence intake, system drives,
+recurrent integration, typed prediction-error routing, contextual and working-memory
+support, interpretation sufficiency, downstream handoffs, and diagnostics. Optional
+individual-localizer and time-series inputs are used only when actually supplied;
+the implementation does not infer neural localization from demographic information.
+The optional seven-population LIF reference is a simulation, not measured human data.
+
+See [docs/LANGUAGE_COMPREHENSION_POINT_09.md](docs/LANGUAGE_COMPREHENSION_POINT_09.md)
+for all operations, mathematical approximations, API examples, and scientific limits.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point09.py -q
+```

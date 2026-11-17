@@ -298,12 +298,15 @@ class Point3Request:
                 "form": str(form),
                 "lexical_candidates": candidates,
                 "category_candidates": {
-                    _category_name(row.get("lexical_category", "X")):
-                    float(row.get("posterior", 0.0))
+                    {"category": _category_name(row.get("lexical_category", "X")),
+                     "posterior": float(row.get("posterior", 0.0))}
                     for row in candidates
                 },
                 "confidence": float(best.get("form_reliability", data.get("confidence", 0.0))),
-                "morphology": best.get("lexical_properties", {}),
+                "morphology": {
+                    **dict(best.get("lexical_properties", {}).get("morphological_features", {})),
+                    **dict(best.get("lexical_properties", {}).get("grammatical_features", {})),
+                } if isinstance(best.get("lexical_properties", {}), Mapping) else {},
                 "source_reference": best.get("source_reference"),
             })
         return cls(sequence_id=sequence_id, lexical_items=items, **kwargs)
@@ -431,8 +434,14 @@ class Point3SyntacticParser:
         if left is None or right is None:
             return None
         if isinstance(left, Mapping) and isinstance(right, Mapping):
-            left_keys = {str(key) for key, value in left.items() if float(value) > 0.0}
-            right_keys = {str(key) for key, value in right.items() if float(value) > 0.0}
+            left_keys = {
+                str(key) for key, value in left.items()
+                if (float(value) > 0.0 if isinstance(value, (int, float)) else bool(value))
+            }
+            right_keys = {
+                str(key) for key, value in right.items()
+                if (float(value) > 0.0 if isinstance(value, (int, float)) else bool(value))
+            }
             if not left_keys or not right_keys:
                 return None
             return 1.0 if left_keys & right_keys else 0.0

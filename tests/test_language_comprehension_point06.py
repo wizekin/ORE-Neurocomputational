@@ -85,10 +85,11 @@ def test_point6_has_eighteen_steps_and_maps_all_forty_operations() -> None:
     assert sum(
         len(row["underlying_working_memory_operation_ids"])
         for row in result.functional_trace
-    ) == 42  # 40 canonical operations plus two explicit source extensions
+    ) == 40 + result.diagnostics["source_extension_count"]
     assert result.diagnostics["underlying_working_memory_operation_count"] == 40
     assert result.diagnostics["underlying_operation_order_valid"] is True
-    assert result.diagnostics["source_extension_ids"] == ["WMX-001", "WMX-002"]
+    assert set(result.diagnostics["source_extension_ids"]) == {"WMX-001", "WMX-002", "WMX-003"}
+    assert result.diagnostics["source_extension_count"] == 3
     assert result.diagnostics["valid"] is True
 
 
@@ -113,7 +114,7 @@ def test_unfilled_semantic_role_is_kept_as_an_open_working_memory_slot() -> None
     incomplete = result.working_memory_state["incomplete_structures"]
     assert incomplete["unresolved_slot_count"] == 1
     assert incomplete["complete"] is False
-    assert incomplete["structures"][0]["unresolved_slots"] == ["Recipient"]
+    assert incomplete["frames"][0]["unresolved_slots"] == ["Recipient"]
 
 
 def test_competing_interpretations_can_remain_unresolved() -> None:
@@ -130,6 +131,7 @@ def test_competing_interpretations_can_remain_unresolved() -> None:
     assert result.working_memory_state["semantic_resolution"]["abstained"] is True
     assert len(result.working_memory_state["semantic_resolution"]["alternatives"]) == 2
     assert result.diagnostics["valid"] is True
+    assert "underlying_engine_valid" in result.diagnostics
 
 
 def test_point6_is_temporary_and_does_not_write_durable_memory() -> None:

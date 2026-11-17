@@ -388,3 +388,38 @@ def register_point11_annotations(
         "annotation_source": "python_docstring_and_ast_signature",
         "storage": "ore_logger.annotations SQLite table",
     }
+
+
+def register_point12_annotations(
+    repository_root: str | Path | None = None,
+    database_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Index Point 12 public classes and functions in ORE's shared SQLite annotation catalogue.
+
+    The synchronization is scoped to ore_language_comprehension and reuses the existing
+    repository-wide annotations table; no separate Point 12 database is created.
+    """
+    from ore_logger import LoggerDatabase, sync_repository
+
+    root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else Path(__file__).resolve().parents[1]
+    )
+    target = Path(
+        database_path
+        or os.environ.get("ORE_LOGGER_DB")
+        or root / "ore_logs" / "ore_logger.sqlite3"
+    ).expanduser().resolve()
+    report = sync_repository(
+        LoggerDatabase(target),
+        root,
+        include_paths={"ore_language_comprehension"},
+    )
+    return {
+        **report,
+        "database_path": str(target),
+        "modules": ["ore_language_comprehension"],
+        "annotation_source": "python_docstring_and_ast_signature",
+        "storage": "ore_logger.annotations SQLite table",
+    }

@@ -165,3 +165,20 @@ __all__ += [
     "POINT14_STEP_SPECS", "Point14Request", "Point14Result",
     "Point14ClinicalProfileProcessor", "register_point14_annotations",
 ]
+
+
+from .point15 import (
+    POINT15_HYPOTHESES,
+    POINT15_STAGES,
+    POINT15_STEP_NAMES,
+    Point15MechanisticResearchProcessor,
+    Point15Request,
+    Point15Result,
+    register_point15_annotations,
+)
+
+__all__ += [
+    "POINT15_HYPOTHESES", "POINT15_STAGES", "POINT15_STEP_NAMES",
+    "Point15Request", "Point15Result", "Point15MechanisticResearchProcessor",
+    "register_point15_annotations",
+]

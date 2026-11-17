@@ -323,7 +323,7 @@ def test_point8_annotations_are_indexed_in_the_existing_sqlite_catalogue(tmp_pat
     isolated.mkdir()
     shutil.copytree(source_root / "ore_logger", isolated / "ore_logger")
     shutil.copytree(source_root / "ore_language_comprehension", isolated / "ore_language_comprehension")
-    (isolated / "pyproject.toml").write_text("[project]\\nname='point8-annotation-test'\\n", encoding="utf-8")
+    (isolated / "pyproject.toml").write_text("[project]\nname='point8-annotation-test'\n", encoding="utf-8")
     database_path = tmp_path / "point8-annotations.sqlite3"
 
     report = register_point08_annotations(isolated, database_path)

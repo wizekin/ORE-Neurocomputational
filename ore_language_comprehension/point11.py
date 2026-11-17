@@ -270,7 +270,7 @@ class Point11FunctionalSeparationCoordinator:
             values.extend(_bounded(task.get(key, 0.0)) for key in fields)
             profile[dimension] = max(values)
             components[dimension] = {key: _bounded(task.get(key, supplied.get(dimension, 0.0))) for key in fields}
-        cues = {"belief", "believe", "intention", "intend", "perspective", "sarcasm", "irony", "deceive", "thinks", "knows"}
+        cues = {"belief", "believe", "intention", "intend", "perspective", "sarcasm", "sarcastic", "irony", "ironic", "deceive", "deceived", "thinks", "knows"}
         context_text = " ".join(str(request.context.get(k, "")) for k in ("text", "discourse", "speaker", "situation")).casefold()
         cue_matches = sorted(word for word in cues if word in context_text)
         if task.get("mentalizing_required", False):

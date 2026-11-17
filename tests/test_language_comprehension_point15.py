@@ -30,6 +30,8 @@ def make_request(**kwargs):
             {"participant_id":"p1","region":"frontal","signal":"frontal","time":130,"event_time":120,"value":0.8,"modality":"EEG"},
             {"participant_id":"p1","region":"temporal","signal":"temporal","time":150,"event_time":120,"value":0.7,"modality":"EEG"},
             {"participant_id":"p1","region":"frontal","signal":"frontal","time":150,"event_time":120,"value":0.6,"modality":"EEG"},
+            {"participant_id":"p1","region":"temporal","signal":"temporal","time":170,"event_time":120,"value":0.4,"modality":"EEG"},
+            {"participant_id":"p1","region":"frontal","signal":"frontal","time":170,"event_time":120,"value":0.3,"modality":"EEG"},
         ],
         "network_edges":[{"source":"temporal","target":"frontal","weight":0.4,"time":130,"kind":"effective"}],
         "interventions":[{"method":"TMS","target":"frontal","outcome":0.6,"control_outcome":0.9,"approved":True}],

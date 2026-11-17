@@ -770,3 +770,60 @@ Run the demonstration from the repository root:
 The demo selects between financial and river meanings of “bank”, indexes all CSC class/function docstrings in the shared `ore_logger` SQLite annotation catalogue, and records the operation/stage trace through `SQLiteRunRecorder`. The documentation is in `docs/CSC_18_STAGE_ARCHITECTURE.md`.
 
 The functional and LIF tracks are transparent computational hypotheses, not a fitted or validated reproduction of human neural activity. Learning is preview-only unless the caller supplies explicit feedback and authorizes an update.
+
+
+## Distributed Neural Semantic Composition and Integration — 36 stages
+
+The additive \`ore_distributed_semantics\` package implements the 36-stage
+algorithm described in the source document. It includes lexical and conceptual
+activation, modality-specific feature retrieval, cross-modal association,
+bilateral ATL-style semantic convergence, abstraction, associative graph
+propagation, phrase composition, thematic roles, selectional compatibility,
+contextual prediction, ambiguity control, AG/posterior-temporal integration,
+prediction error, an explicitly labeled N400 difficulty proxy, reanalysis,
+episodic and schema retrieval, discourse integration, semantic learning,
+developmental/aging and multilingual adaptation, five impairment simulations,
+and assessment.
+
+The registry provides **36 stages and 108 mathematically described operations**
+with stable identifiers (DS-01 through DS-36). Functional semantic processing
+and a separate 14-population current-based LIF reference simulation produce
+distinct traces. Every package class and function has a docstring for the
+existing SQLite annotation catalogue.
+
+Quick start:
+
+    from ore_semantic.contracts import SemanticConcept
+    from ore_distributed_semantics import (
+        DistributedSemanticProcessor,
+        DistributedSemanticRequest,
+    )
+
+    concept = SemanticConcept(
+        concept_id="violin",
+        label="violin",
+        semantic_features={"ARTIFACT": 1.0, "MUSICAL_INSTRUMENT": 1.0},
+        verified_by="example",
+        source_reference="example://violin",
+    )
+    processor = DistributedSemanticProcessor([concept])
+    result = processor.process(
+        DistributedSemanticRequest(sequence_id="demo-001", text="violin")
+    )
+    print(len(result.stage_trace))      # 36
+    print(len(result.operation_trace))  # 108
+
+Run the demonstration with \`python -m ore_distributed_semantics\` and the
+focused tests with \`python -m pytest tests/test_distributed_semantics.py -q\`.
+The package reuses \`ore_logger/ore_logs/ore_logger.sqlite3\` and its standard
+\`annotations\`, \`runs\`, and \`events\` tables; no separate database is created.
+The demonstration indexes symbol docstrings and records the operation/stage
+trace. See [the complete architecture, equations, biological references,
+API, and validation boundaries](docs/DISTRIBUTED_NEURAL_SEMANTIC_36_STAGE_ARCHITECTURE.md).
+
+Scientific qualification: vector, graph, probabilistic and LIF calculations
+are explicit computational approximations, not claims about literal neuronal
+arithmetic. The simulated LIF activity is not human neural recording; the N400
+signal is an integration-difficulty proxy, not measured EEG. Learning updates
+are preview-only unless \`allow_learning=True\` is explicitly set, and the
+impairment stages are model interventions rather than clinical predictions.

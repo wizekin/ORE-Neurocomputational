@@ -959,3 +959,55 @@ Run `python -m ore_language_comprehension` for the demonstration and
 `python -m pytest tests/test_language_comprehension_point01.py -q` for focused tests.
 See [the Point 1 architecture and mathematical/biological qualifications]
 (docs/LANGUAGE_COMPREHENSION_POINT_01.md).
+
+
+## Language comprehension — Point 2: Lexical access (12 steps)
+
+The additive `ore_language_comprehension` package now implements the second source point:
+retrieve word-level lexical entries, meanings, grammatical properties and possible senses from
+the uncertain spoken/written forms produced by Point 1.
+
+`Point2LexicalAccessProcessor` exposes **12 source-level steps**
+(`LC-P02-01`–`LC-P02-12`) and reuses `ore_lexical_access` for its established
+seven-stage, 36-operation lexical engine (`BLA-001`–`BLA-036)). It also aggregates that
+engine's seven-population current-based LIF reference activity into a separate 12-step
+biological trace. Functional outputs and simulated activity are kept distinct from human
+neural measurements.
+
+Visual glyph alternatives are beam-composed into orthographic form candidates. Auditory
+phoneme alternatives are matched only to pronunciations explicitly supplied in
+`LexicalEntry.phonemes`; the implementation does not invent pronunciations from spelling.
+Both routes can converge on the same lexical entry ID. Word-level semantic features, morphology,
+lexical category, stored grammatical properties, homonymy and polysemy alternatives are returned
+without constructing sentence syntax or predicate-argument structure.
+
+The processor accepts the Point 1 result directly:
+
+```python
+from ore_language_comprehension import Point2LexicalAccessProcessor, Point2Request
+from ore_lexical_context import LexicalEntry, LexicalMeaning
+
+lexicon = (
+    LexicalEntry(
+        "cat", "cat", frequency=24, phonemes=("k", "æ", "t"),
+        meanings=(LexicalMeaning("feline", {"ANIMAL": 1.0, "FELINE": 1.0}),),
+        lexical_category="noun", language="en",
+        verified_by="your-lexicon-source",
+        source_reference="dataset://your-lexicon/cat",
+    ),
+)
+request = Point2Request.from_point1_result(
+    "reading-001", point1_result, lexicon, language="en"
+)
+result = Point2LexicalAccessProcessor().process(request)
+print(len(result.functional_trace))  # 12
+print(result.lexical_candidates)
+```
+
+On initialization, Point 2 registers docstrings for the language-comprehension package,
+`ore_lexical_access`, and `ore_lexical_context` in the existing
+`ore_logger.annotations` SQLite table. No separate Point 2 annotation database is created.
+
+Run `python -m pytest tests/test_language_comprehension_point02.py -q` for the focused
+acceptance suite. See
+[the Point 2 architecture, equations, biological reference and API](docs/LANGUAGE_COMPREHENSION_POINT_02.md).

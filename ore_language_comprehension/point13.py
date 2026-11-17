@@ -688,8 +688,8 @@ class Point13IndividualizedProcessor:
                     (1.0 - learning_rate) * float(old_values[0])
                     + learning_rate * new_value
                 )
-            elif old_values.size:
-                new_value = float(old_values[0])
+            # A previous estimate is not presented as a current measurement when
+            # this component has no new evidence. Missing remains unknown.
             updated[key] = new_value
         profile = {
             "participant_id": request.participant_id,

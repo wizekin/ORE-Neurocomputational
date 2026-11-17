@@ -324,8 +324,85 @@ class Point2LexicalAccessProcessor:
         value = float(candidate.get("confidence", candidate.get("probability", 0.0)))
         return min(1.0, max(0.0, value))
 
+    def _visual_word_segments(
+        self,
+        glyphs: Sequence[Mapping[str, Any]],
+    ) -> list[tuple[int, list[Mapping[str, Any]], str]]:
+        """Group ordered glyphs into line/word candidates using only clear Point 1 geometry gaps.
+
+        The gap heuristic is deliberately conservative. It only proposes a split when the
+        horizontal whitespace exceeds a fraction of the median glyph width. When bounding boxes
+        are missing or unreliable, it returns one unresolved region segment instead of guessing.
+        """
+        usable = []
+        heights = []
+        widths = []
+        for glyph in glyphs:
+            bbox = glyph.get("bounding_box_y0_x0_y1_x1")
+            if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
+                continue
+            y0, x0, y1, x1 = [float(value) for value in bbox]
+            if y1 <= y0 or x1 <= x0:
+                continue
+            usable.append((glyph, y0, x0, y1, x1))
+            heights.append(y1 - y0)
+            widths.append(x1 - x0)
+        if len(usable) != len(glyphs) or not usable:
+            ordered = sorted(
+                glyphs,
+                key=lambda item: int((item.get("position_code") or {}).get("ordinal_position", 0)),
+            )
+            return [(0, ordered, "word_boundary_unresolved_no_complete_glyph_geometry")]
+
+        median_height = sorted(heights)[len(heights) // 2]
+        median_width = sorted(widths)[len(widths) // 2]
+        line_tolerance = max(2.0, 0.55 * median_height)
+        rows: list[list[tuple[Mapping[str, Any], float, float, float, float]]] = []
+        for item in sorted(usable, key=lambda value: ((value[1] + value[3]) / 2.0, value[2])):
+            center_y = (item[1] + item[3]) / 2.0
+            target = None
+            best_distance = float("inf")
+            for row in rows:
+                row_center = sum((member[1] + member[3]) / 2.0 for member in row) / len(row)
+                distance = abs(center_y - row_center)
+                if distance <= line_tolerance and distance < best_distance:
+                    target = row
+                    best_distance = distance
+            if target is None:
+                rows.append([item])
+            else:
+                target.append(item)
+
+        segments: list[tuple[int, list[Mapping[str, Any]], str]] = []
+        word_gap_threshold = max(2.0, 0.45 * median_width)
+        for line_index, row in enumerate(rows):
+            row.sort(key=lambda value: value[2])
+            current: list[Mapping[str, Any]] = []
+            previous_right: float | None = None
+            word_index = 0
+            for item in row:
+                glyph, _, left, _, right = item
+                gap = left - previous_right if previous_right is not None else 0.0
+                if current and gap > word_gap_threshold:
+                    segments.append((
+                        line_index * 1000 + word_index,
+                        current,
+                        "candidate_word_boundary_from_clear_point1_horizontal_gap",
+                    ))
+                    word_index += 1
+                    current = []
+                current.append(glyph)
+                previous_right = right
+            if current:
+                segments.append((
+                    line_index * 1000 + word_index,
+                    current,
+                    "candidate_word_boundary_from_clear_point1_horizontal_gap",
+                ))
+        return segments
+
     def _visual_forms(self, hypotheses: Mapping[str, Any]) -> list[dict[str, Any]]:
-        """Beam-compose position-ordered grapheme alternatives into uncertain visual word-form candidates."""
+        """Beam-compose position-ordered grapheme alternatives into uncertainty-aware word-form candidates."""
         visual = hypotheses.get("visual", {}) if isinstance(hypotheses, Mapping) else {}
         glyphs = list(visual.get("form_hypotheses", []))
         grouped: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
@@ -334,39 +411,45 @@ class Point2LexicalAccessProcessor:
             grouped[region].append(item)
         forms: list[dict[str, Any]] = []
         for region, rows in grouped.items():
-            rows.sort(key=lambda item: int((item.get("position_code") or {}).get("ordinal_position", 0)))
-            beam: list[tuple[str, float, list[str]]] = [("", 1.0, [])]
-            for glyph in rows:
-                options = list(glyph.get("candidates", []))
-                options = [
-                    (str(option.get("grapheme", option.get("label", ""))),
-                     max(0.0, float(option.get("probability", 0.0))))
-                    for option in options
-                    if str(option.get("grapheme", option.get("label", "")))
-                ]
-                total = sum(probability for _, probability in options)
-                if not options or total <= 0.0:
-                    beam = []
-                    break
-                options = [(grapheme, probability / total) for grapheme, probability in options]
-                expanded = [
-                    (prefix + grapheme, score * probability, glyph_ids + [str(glyph.get("glyph_id", ""))])
-                    for prefix, score, glyph_ids in beam
-                    for grapheme, probability in options
-                ]
-                expanded.sort(key=lambda item: item[1], reverse=True)
-                beam = expanded[:self.top_k]
-            for form, confidence, glyph_ids in beam:
-                forms.append({
-                    "modality": "visual",
-                    "form": unicodedata.normalize("NFC", form).casefold(),
-                    "observed_form": form,
-                    "confidence": confidence,
-                    "region_id": region,
-                    "glyph_ids": glyph_ids,
-                    "boundary_status": "Point 1 glyph/region segmentation estimate",
-                    "evidence_origin": "point1",
-                })
+            segments = self._visual_word_segments(rows)
+            for segment_index, (_, segment_glyphs, boundary_status) in enumerate(segments):
+                beam: list[tuple[str, float, list[str]]] = [("", 1.0, [])]
+                ordered_glyphs = sorted(
+                    segment_glyphs,
+                    key=lambda item: int((item.get("position_code") or {}).get("ordinal_position", 0)),
+                )
+                for glyph in ordered_glyphs:
+                    options = list(glyph.get("candidates", []))
+                    options = [
+                        (str(option.get("grapheme", option.get("label", ""))),
+                         max(0.0, float(option.get("probability", 0.0))))
+                        for option in options
+                        if str(option.get("grapheme", option.get("label", "")))
+                    ]
+                    total = sum(probability for _, probability in options)
+                    if not options or total <= 0.0:
+                        beam = []
+                        break
+                    options = [(grapheme, probability / total) for grapheme, probability in options]
+                    expanded = [
+                        (prefix + grapheme, score * probability, glyph_ids + [str(glyph.get("glyph_id", ""))])
+                        for prefix, score, glyph_ids in beam
+                        for grapheme, probability in options
+                    ]
+                    expanded.sort(key=lambda item: item[1], reverse=True)
+                    beam = expanded[:self.top_k]
+                for form, confidence, glyph_ids in beam:
+                    forms.append({
+                        "modality": "visual",
+                        "form": unicodedata.normalize("NFC", form).casefold(),
+                        "observed_form": form,
+                        "confidence": confidence,
+                        "region_id": region,
+                        "word_segment_index": segment_index,
+                        "glyph_ids": glyph_ids,
+                        "boundary_status": boundary_status,
+                        "evidence_origin": "point1",
+                    })
         forms.sort(key=lambda item: item["confidence"], reverse=True)
         return forms[:self.max_form_candidates]
 

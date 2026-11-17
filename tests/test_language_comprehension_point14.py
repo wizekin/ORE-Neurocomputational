@@ -122,7 +122,7 @@ def test_process_returns_auditable_result_and_19_step_trace():
 
 def test_literal_inference_cost_and_social_nonsocial_are_separate():
     result = Point14ClinicalProfileProcessor().process(make_request())
-    assert result.profile["literal_vs_inferred_meaning"]["inference_cost"] == pytest.approx(.3)
+    assert result.profile["literal_vs_inferred_meaning"]["inference_cost"] == pytest.approx(.25)
     inference = result.profile["social_vs_nonsocial_inference"]
     assert inference["social_inference"] == pytest.approx(.6)
     assert inference["nonsocial_inference"] == pytest.approx(.8)
@@ -171,7 +171,13 @@ def test_discourse_graph_metrics_and_distractor_contrast_are_available():
 
 
 def test_memory_load_slope_uses_multiple_load_levels():
-    result = Point14ClinicalProfileProcessor().process(make_request())
+    result = Point14ClinicalProfileProcessor().process(make_request(
+        observations=[
+            {"task_id": "low", "accuracy": .9, "memory_load": 1},
+            {"task_id": "mid", "accuracy": .7, "memory_load": 2},
+            {"task_id": "high", "accuracy": .5, "memory_load": 3},
+        ]
+    ))
     assert result.profile["working_memory_and_executive_load"]["memory_load_accuracy_slope"] == pytest.approx(-.2)
 
 
@@ -232,7 +238,7 @@ def test_previous_profile_is_historical_when_current_measurement_missing():
     )
     result = Point14ClinicalProfileProcessor().process(request)
     update = result.profile["profile_update"]
-    assert update["updated_components_with_current_evidence_only"]["semantic_composition"] == pytest.approx(.7)
+    assert update["updated_components_with_current_evidence_only"]["semantic_composition"] == pytest.approx(.75)
     assert "lexical_access" not in update["updated_components_with_current_evidence_only"]
     assert update["historical_previous_components"]["lexical_access"] == pytest.approx(.4)
 

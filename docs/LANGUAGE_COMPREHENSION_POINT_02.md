@@ -40,10 +40,14 @@ compose a proposition, or infer speaker intention.
 ### Visual route
 
 Point 1's position-ordered grapheme candidates are beam-composed into candidate orthographic forms.
-The candidate generator retains the originating glyph IDs, region, order and confidence. Each
-visual form is compared with the caller-supplied lexical inventory using the existing lexical
-engine's Unicode-normalized form lookup, bounded edit-distance search, orthographic similarity,
-stored frequency and familiarity terms.
+The candidate generator retains the originating glyph IDs, region, order and confidence. When
+Point 1 supplies complete glyph bounding boxes, clear horizontal whitespace gaps and row changes
+are used as *candidate* word boundaries. This is a conservative geometric heuristic, not a
+guaranteed segmentation; when glyph geometry is incomplete, the adapter preserves the region-level
+sequence and explicitly marks the word boundary unresolved. Each visual form is compared with the
+caller-supplied lexical inventory using the existing lexical engine's Unicode-normalized form
+lookup, bounded edit-distance search, orthographic similarity, stored frequency and familiarity
+terms.
 
 A missing or unlabelled grapheme is not replaced with an invented character. The route requires
 Point 1 to supply grapheme labels (normally via caller-supplied prototypes).

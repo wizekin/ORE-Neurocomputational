@@ -121,3 +121,12 @@ __all__ += [
     "Point11LIFReference", "Point11FunctionalSeparationCoordinator",
     "register_point11_annotations",
 ]
+
+
+from .point12 import POINT12_METHODS, POINT12_STEP_SPECS, Point12ModelEvaluator, Point12Request, Point12Result
+from .annotations import register_point12_annotations
+
+__all__ += [
+    "POINT12_METHODS", "POINT12_STEP_SPECS", "Point12Request", "Point12Result",
+    "Point12ModelEvaluator", "register_point12_annotations",
+]

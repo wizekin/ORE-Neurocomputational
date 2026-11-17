@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 import inspect
-import sqlite3
+import shutil
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -16,6 +17,7 @@ from ore_language_comprehension import (
     register_point10_annotations,
 )
 from ore_language_comprehension import point10
+from ore_logger import LoggerDatabase
 
 
 def request(**overrides):
@@ -241,12 +243,18 @@ def test_all_public_point10_functions_and_classes_have_docstrings():
 
 
 def test_annotation_registration_uses_shared_sqlite_catalogue(tmp_path):
-    db = tmp_path / "annotations.sqlite3"
-    report = register_point10_annotations(repository_root=tmp_path, database_path=db)
-    assert report["storage"] == "ore_logger.annotations SQLite table"
-    assert db.exists()
-    with sqlite3.connect(db) as connection:
-        tables = {row[0] for row in connection.execute(
-            "SELECT name FROM sqlite_master WHERE type='table'"
-        )}
-    assert "annotations" in tables
+    source_root = Path(__file__).resolve().parents[1]
+    isolated = tmp_path / "ore-project"
+    isolated.mkdir()
+    shutil.copytree(source_root / "ore_logger", isolated / "ore_logger")
+    shutil.copytree(source_root / "ore_language_comprehension", isolated / "ore_language_comprehension")
+    database_path = tmp_path / "point10-annotations.sqlite3"
+
+    report = register_point10_annotations(isolated, database_path)
+    rows = LoggerDatabase(database_path).search_annotations("ore_language_comprehension", limit=2500)
+
+    assert report["symbols_written"] > 0
+    assert report["database_path"] == str(database_path)
+    assert any(row["qualified_name"] == "Point10EvidenceValidator.process" for row in rows)
+    assert any(row["qualified_name"] == "Point10Request.__post_init__" for row in rows)
+    assert all(row["source_docstring"] for row in rows)

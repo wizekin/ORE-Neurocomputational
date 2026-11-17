@@ -47,6 +47,12 @@ def test_point3_registry_contains_twelve_ordered_steps_with_math_and_biology() -
     ]
     assert all(item["mathematical_operations"] for item in POINT3_STEP_SPECS)
     assert all(item["biological_reference"] for item in POINT3_STEP_SPECS)
+    assert "SYN-057" in __import__(
+        "ore_language_comprehension.point03", fromlist=["_POINT3_TO_SYN"]
+    )._POINT3_TO_SYN[8]
+    assert "SYN-058" in __import__(
+        "ore_language_comprehension.point03", fromlist=["_POINT3_TO_SYN"]
+    )._POINT3_TO_SYN[8]
 
 
 def test_active_sentence_builds_phrases_and_grammatical_dependencies() -> None:
@@ -63,6 +69,11 @@ def test_active_sentence_builds_phrases_and_grammatical_dependencies() -> None:
 
     assert result.diagnostics["valid"] is True
     assert len(result.functional_trace) == 12
+    assert len(result.incremental_updates) == len(request.lexical_items)
+    assert result.incremental_updates[0]["prefix_end_exclusive"] == 1
+    assert len(result.incremental_updates[0]["selected_pos"]) == 1
+    assert result.incremental_updates[-1]["partial_parse_is_final_sentence_parse"] is True
+    assert result.diagnostics["incremental_prefix_count_matches_tokens"] is True
     assert [item["operation_id"] for item in result.functional_trace] == [
         f"LC-P03-{index:02d}" for index in range(1, 13)
     ]

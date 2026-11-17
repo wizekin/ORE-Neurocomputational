@@ -249,7 +249,7 @@ def test_annotation_registration_uses_shared_sqlite_catalogue(tmp_path):
     shutil.copytree(source_root / "ore_logger", isolated / "ore_logger")
     shutil.copytree(source_root / "ore_language_comprehension", isolated / "ore_language_comprehension")
     shutil.copytree(source_root / "ore_brain_networks", isolated / "ore_brain_networks")
-    (isolated / "pyproject.toml").write_text("[project]\\nname='point10-annotation-test'\\n", encoding="utf-8")
+    (isolated / "pyproject.toml").write_text("[project]\nname='point10-annotation-test'\n", encoding="utf-8")
     database_path = tmp_path / "point10-annotations.sqlite3"
 
     report = register_point10_annotations(isolated, database_path)

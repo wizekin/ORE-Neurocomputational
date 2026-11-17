@@ -297,11 +297,11 @@ class Point3Request:
             items.append({
                 "form": str(form),
                 "lexical_candidates": candidates,
-                "category_candidates": {
+                "category_candidates": [
                     {"category": _category_name(row.get("lexical_category", "X")),
                      "posterior": float(row.get("posterior", 0.0))}
                     for row in candidates
-                },
+                ],
                 "confidence": float(best.get("form_reliability", data.get("confidence", 0.0))),
                 "morphology": {
                     **dict(best.get("lexical_properties", {}).get("morphological_features", {})),

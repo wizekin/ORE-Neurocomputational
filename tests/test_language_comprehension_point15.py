@@ -22,6 +22,7 @@ def make_request(**kwargs):
         "behavioural_trials":[
             {"condition":"literal","context":"neutral","outcome":1.0,"response_time":800,"split":"train"},
             {"condition":"pragmatic","context":"supportive","outcome":0.8,"response_time":950,"split":"train"},
+            {"condition":"pragmatic","context":"neutral","outcome":0.6,"response_time":980,"split":"train"},
             {"condition":"test","context":"supportive","outcome":1.0,"predicted_probability":0.9,"split":"held_out"},
         ],
         "neural_records":[

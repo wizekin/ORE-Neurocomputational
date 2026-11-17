@@ -13,7 +13,6 @@ import numpy as np
 
 from ore_sensory_perception import SensoryConfig, SensoryPerceptionProcessor, SensoryRequest
 from ore_sensory_perception.contracts import to_jsonable
-from ore_sensory_perception.registry import OPERATION_REGISTRY
 
 
 POINT1_STEP_SPECS: tuple[dict[str, Any], ...] = (
@@ -421,9 +420,15 @@ class Point1PerceptualProcessor:
 
     def _step_11_attention(self, request: SensoryRequest, result: Any) -> dict[str, Any]:
         """Expose caller-supplied attention and prior effects while keeping early prediction separate from meaning."""
+        attended_streams = result.auditory_output.get("attended_auditory_streams", [])
+        auditory_weights = [
+            item.get("attention_weight")
+            for item in attended_streams
+            if item.get("attention_weight") is not None
+        ]
         return {
             "visual_attention_weights": to_jsonable(result.visual_output.get("visual_attention_weights", [])),
-            "auditory_attention_weights": to_jsonable(result.auditory_output.get("auditory_attention_weights", [])),
+            "auditory_attention_weights": to_jsonable(auditory_weights),
             "visual_attention_input_supplied": bool(request.visual_attention),
             "auditory_attention_input_supplied": bool(request.auditory_attention),
             "orthographic_prior_supplied": bool(request.orthographic_prior),

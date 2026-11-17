@@ -13,6 +13,7 @@ import math
 import sqlite3
 import threading
 import uuid
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -169,6 +170,8 @@ class Point7MemoryStore:
 
     def __init__(self, database_path: str = ":memory:") -> None:
         self.database_path = database_path
+        if database_path != ":memory:" and not database_path.startswith("file:"):
+            Path(database_path).expanduser().parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
         self._db = sqlite3.connect(database_path, check_same_thread=False)
         self._db.row_factory = sqlite3.Row

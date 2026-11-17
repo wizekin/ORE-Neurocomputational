@@ -294,3 +294,34 @@ def test_point2_annotations_are_indexed_in_the_existing_sqlite_catalogue(tmp_pat
     assert any(row["symbol_kind"] == "function" for row in rows)
     assert any(row["qualified_name"] == "Point2LexicalAccessProcessor.process" for row in rows)
     assert all(row["source_docstring"] for row in rows)
+
+
+
+def test_visual_region_uses_clear_glyph_gaps_as_candidate_word_boundaries() -> None:
+    """Split a multiword text region only when Point 1 bounding boxes show clear whitespace."""
+    text = "catdog"
+    glyphs = []
+    x_positions = (0, 7, 14, 32, 39, 46)
+    for index, (character, x0) in enumerate(zip(text, x_positions)):
+        glyphs.append({
+            "glyph_id": f"gap-glyph-{index}",
+            "region_id": "two-word-region",
+            "bounding_box_y0_x0_y1_x1": [10, x0, 20, x0 + 6],
+            "position_code": {"ordinal_position": index},
+            "candidates": [{"grapheme": character, "probability": 0.99}],
+        })
+    dog = LexicalEntry(
+        "dog", "dog", frequency=20,
+        meanings=(LexicalMeaning("canine", {"ANIMAL": 1.0, "CANINE": 1.0}),),
+        lexical_category="noun", language="en",
+    )
+    result = _processor().process(Point2Request(
+        sequence_id="point2-word-boundary",
+        form_hypotheses={
+            "visual": {"form_hypotheses": glyphs},
+            "auditory": {"form_hypotheses": []},
+        },
+        lexicon=(_cat_entry(), dog),
+    ))
+    assert {item["form"] for item in result.form_candidates} == {"cat", "dog"}
+    assert {item["entry_id"] for item in result.lexical_candidates} == {"cat", "dog"}

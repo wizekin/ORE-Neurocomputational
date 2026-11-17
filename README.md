@@ -828,7 +828,6 @@ signal is an integration-difficulty proxy, not measured EEG. Learning updates
 are preview-only unless `allow_learning=True` is explicitly set, and the
 impairment stages are model interventions rather than clinical predictions.
 
-
 ## 21-stage Distributed-Only Semantic Representation
 
 The additive ore_distributed_only package implements the distributed-only
@@ -850,3 +849,4 @@ shared ore_logs/ore_logger.sqlite3 database.
 
 See [the distributed-only architecture and API](docs/DISTRIBUTED_ONLY_SEMANTIC_ARCHITECTURE.md).
 Run focused tests with python -m pytest tests/test_distributed_only.py -q.
+

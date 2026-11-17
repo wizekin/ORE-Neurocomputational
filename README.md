@@ -1302,3 +1302,12 @@ Point 11 separates core language-selective computations from sensory, conceptual
 See [Point 11 documentation](docs/LANGUAGE_COMPREHENSION_POINT_11.md) and run:
 
     python -m pytest tests/test_language_comprehension_point11.py
+
+
+## Language comprehension research algorithms — Point 12
+
+Point 12 is a 25-operation researcher-facing workflow for methodological evaluation, competing-hypothesis testing, confound auditing, measurement interpretation, model comparison, and calibrated reporting. It keeps statistical procedures separate from biological neural operations and refuses to rank hypotheses without comparable supplied likelihoods.
+
+See [Point 12 documentation](docs/LANGUAGE_COMPREHENSION_POINT_12.md) and run:
+
+    python -m pytest tests/test_language_comprehension_point12.py -q

@@ -448,7 +448,7 @@ class Point7MemoryDecisionProcessor:
             routes.append("episodic")
         if task.get("generalizable_knowledge", False):
             routes.append("semantic")
-        if task.get("requires_answer", False) or request.query:
+        if task.get("requires_answer", False):
             routes.append("immediate_answer")
         if task.get("requires_action_plan", False) or request.feasible_options:
             routes.append("decision")

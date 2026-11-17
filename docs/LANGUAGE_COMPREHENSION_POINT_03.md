@@ -15,8 +15,14 @@ representation, grammatical subject/object relations, ambiguity resolution, and 
 dependencies. Point 3 maps those operations into the source document's 12 algorithmic steps
 (`LC-P03-01`–`LC-P03-12`).
 
-The adapter accepts one ordered lexical item per word. Each item can provide a surface form,
-candidate grammatical categories, morphology, and inherited confidence. Use
+The adapter accepts one ordered lexical item per word. As each word arrives, it reparses the
+available prefix and records the changing categories, phrase groupings, dependency links, parse
+alternatives, active expectations, unresolved dependencies, and any category/attachment revisions.
+This is an incremental-prefix approximation: the current prefix is recomputed through the existing
+batch syntax engine, rather than preserving a mutable parser state inside that engine. The
+intermediate prefixes run without LIF dynamics; the final prefix can run the biological reference
+once. Each item can provide a surface form, candidate grammatical categories, morphology, and
+inherited confidence. Use
 `Point3Request.from_point2_results` when a preceding Point 2 result is available for each token;
 alternatively, pass `lexical_items` directly.
 

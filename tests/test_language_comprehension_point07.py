@@ -197,3 +197,35 @@ def test_semantic_verification_flag_without_source_components_does_not_accept_cl
     )
     assert result.semantic_candidate is not None
     assert store.semantic_records()[0]["status"] == "pending_verification"
+
+
+def test_retrieval_reactivates_episode_and_feedback_is_persisted_separately() -> None:
+    store = Point7MemoryStore()
+    processor = Point7MemoryDecisionProcessor(store)
+    processor.process(
+        Point7Request(
+            sequence_id="p7-reactivation",
+            proposition=_proposition(),
+            task={"encode_episode": True},
+        )
+    )
+    retrieved = processor.process(
+        Point7Request(
+            sequence_id="p7-retrieval",
+            proposition={},
+            query="apologized",
+        )
+    )
+    assert retrieved.retrieved_memories
+    assert retrieved.retrieved_memories[0]["reactivation_count"] == 1
+    assert store.episodes()[0]["trace_strength"] > 0.25
+
+    feedback = processor.process(
+        Point7Request(
+            sequence_id="p7-feedback",
+            proposition={},
+            outcome_feedback={"predicted_outcome": 0.8, "observed_outcome": 0.5},
+        )
+    )
+    assert feedback.functional_trace[-1]["output"]["prediction_error"] == pytest.approx(-0.3)
+    assert store.feedback_events()[0]["sequence_id"] == "p7-feedback"

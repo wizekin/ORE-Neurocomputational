@@ -492,6 +492,8 @@ def _stage_16(state: State, request: DistributedSemanticRequest, processor: "Dis
     """Apply task-sensitive relevance gating and reduce competition without deleting stored knowledge."""
     impairment = _clip(float(request.intervention.get("semantic_control_impairment", 0.0)))
     gate_gain = 1.0 - impairment
+    required_confidence = _clip(processor.config.confidence_threshold + 0.35 * impairment)
+    required_margin = _clip(processor.config.margin_threshold + 0.20 * impairment)
     selected: dict[str, dict[str, Any]] = {}
     margins: dict[str, float] = {}
     for token, records in state["candidate_posteriors"].items():
@@ -501,7 +503,7 @@ def _stage_16(state: State, request: DistributedSemanticRequest, processor: "Dis
             runner_up = ranked[1]["probability"] if len(ranked) > 1 else 0.0
             margin = max(0.0, float(top["probability"]) - float(runner_up))
             margins[token] = margin
-            if float(top["probability"]) >= processor.config.confidence_threshold and margin >= processor.config.margin_threshold * gate_gain:
+            if float(top["probability"]) >= required_confidence and margin >= required_margin:
                 selected[token] = top
     state["selected_by_token"] = selected
     state["control_state"] = {"impairment": impairment, "gain": gate_gain, "selected_count": len(selected)}
@@ -723,6 +725,7 @@ def _stage_30(state: State, request: DistributedSemanticRequest, processor: "Dis
         for feature, strength in features.items():
             target[feature] = _clip(target.get(feature, 0.0) + processor.config.learning_rate * strength)
         proposal["applied"] = True
+        processor.model_generation += 1
     state["education_reinforcement"] = proposal
     return {"education_reinforcement": proposal, "activity": coverage}
 
@@ -791,9 +794,12 @@ def _stage_36(state: State, request: DistributedSemanticRequest, processor: "Dis
     modality_scores = list(state["cross_modal_scores"].values())
     consistency = float(np.mean(modality_scores)) if modality_scores else None
     entropy = float(state.get("ambiguity_entropy", 0.0))
+    modeled_latency = float(state.get("aging_profile", {}).get("adapted_latency_ms_proxy", 0.0))
     evaluation = {
         "target_accuracy": correct / total if total else None,
         "target_count": total,
+        "modeled_latency_ms_proxy": modeled_latency or None,
+        "modeled_speed_proxy_per_ms": (1.0 / modeled_latency) if modeled_latency > 0.0 else None,
         "cross_modal_consistency_proxy": consistency,
         "candidate_entropy_nats": entropy,
         "relation_count": len(state.get("relational_graph", ())),

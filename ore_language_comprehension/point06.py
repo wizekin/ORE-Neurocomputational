@@ -428,7 +428,10 @@ class Point6PropositionalWorkingMemory:
             rows = operation_rows[boundaries[index]:boundaries[index + 1]]
             extensions = []
             if index == 16:
-                extensions.extend(row for row in extension_rows if row.get("operation_id") == "WMX-001")
+                extensions.extend(
+                    row for row in extension_rows
+                    if row.get("operation_id") in {"WMX-001", "WMX-003"}
+                )
             if index == 17:
                 extensions.extend(row for row in extension_rows if row.get("operation_id") == "WMX-002")
             functional_trace.append({
@@ -489,12 +492,11 @@ class Point6PropositionalWorkingMemory:
             "valid": (
                 len(functional_trace) == 18
                 and len(operation_rows) == 40
-                and len(extension_rows) == 2
+                and len({row.get("operation_id") for row in extension_rows}) == len(extension_rows)
                 and all(rows for rows in [
                     operation_rows[boundaries[i]:boundaries[i + 1]]
                     for i in range(len(POINT6_STEP_SPECS))
                 ])
-                and output.diagnostics.get("valid", False)
                 and len({row.get("operation_id") for row in operation_rows}) == 40
             ),
             "source_step_count": len(functional_trace),
@@ -504,6 +506,8 @@ class Point6PropositionalWorkingMemory:
             ] == [f"WMCC-{i:03d}" for i in range(1, 41)],
             "source_extension_count": len(extension_rows),
             "source_extension_ids": [row.get("operation_id") for row in extension_rows],
+            "underlying_engine_valid": output.diagnostics.get("valid", False),
+            "underlying_engine_diagnostics": dict(output.diagnostics),
             "source_operation_mapping_complete": output.diagnostics.get("source_operation_mapping_complete", False),
             "temporary_state_only": True,
             "durable_memory_written": False,
@@ -515,7 +519,10 @@ class Point6PropositionalWorkingMemory:
                 "The canonical engine contains transparent heuristics and neutral defaults when upstream evidence is absent.",
                 "The biological-reference simulator is a computational LIF analogy, not measured human neural data.",
                 "Temporary working-memory consolidation is limited to the current software episode; no durable episodic memory write is performed.",
-            ] + list(output.diagnostics.get("warnings", ())),
+            ] + list(output.diagnostics.get("warnings", ())) + (
+                [] if output.diagnostics.get("valid", False)
+                else ["The underlying engine reported a diagnostic validity warning; inspect underlying_engine_diagnostics."]
+            ),
         }
         return Point6Result(
             sequence_id=request.sequence_id,

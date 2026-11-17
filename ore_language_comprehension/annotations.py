@@ -86,3 +86,40 @@ def register_point02_annotations(
         "annotation_source": "python_docstring_and_ast_signature",
         "storage": "ore_logger.annotations SQLite table",
     }
+
+
+def register_point03_annotations(
+    repository_root: str | Path | None = None,
+    database_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Index Point 3 and the shared syntax engine classes/functions in ORE's SQLite annotation table.
+
+    Scoped synchronization refreshes only ore_language_comprehension and ore_syntax. Point 1 and
+    Point 2 annotations remain in the same repository-wide annotations table; no new database is
+    created for the syntactic-parsing stage.
+    """
+    from ore_logger import LoggerDatabase, sync_repository
+
+    root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else Path(__file__).resolve().parents[1]
+    )
+    target = Path(
+        database_path
+        or os.environ.get("ORE_LOGGER_DB")
+        or root / "ore_logs" / "ore_logger.sqlite3"
+    ).expanduser().resolve()
+    database = LoggerDatabase(target)
+    report = sync_repository(
+        database,
+        root,
+        include_paths={"ore_language_comprehension", "ore_syntax"},
+    )
+    return {
+        **report,
+        "database_path": str(target),
+        "modules": ["ore_language_comprehension", "ore_syntax"],
+        "annotation_source": "python_docstring_and_ast_signature",
+        "storage": "ore_logger.annotations SQLite table",
+    }

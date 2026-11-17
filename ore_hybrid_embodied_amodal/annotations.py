@@ -16,11 +16,11 @@ def index_hybrid_annotations(
     repository_root: str | Path,
     database_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Index every module, class, function, and method docstring into the shared ORE catalogue."""
+    """Index this package's module, class, function, and method docstrings into the shared ORE catalogue."""
     root = Path(repository_root).expanduser().resolve()
     target = Path(database_path) if database_path else root / "ore_logs" / "ore_logger.sqlite3"
     database = LoggerDatabase(target)
-    report = sync_repository(database, root)
+    report = sync_repository(database, root, include_paths={"ore_hybrid_embodied_amodal"})
     with database.connect() as connection:
         rows = connection.execute(
             """

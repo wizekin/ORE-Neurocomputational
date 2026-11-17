@@ -14,7 +14,15 @@ from .point03 import POINT3_STEP_SPECS, Point3Request, Point3Result, Point3Synta
 from .point04 import POINT4_STEP_SPECS, Point4Request, Point4Result, Point4SemanticComposer
 from .point05 import POINT5_STEP_SPECS, Point5ContextualPragmaticIntegrator, Point5Request, Point5Result
 from .point06 import POINT6_STEP_SPECS, Point6PropositionalWorkingMemory, Point6Request, Point6Result
-from .point07 import (\n    POINT7_STEP_SPECS,\n    Point7LIFReference,\n    Point7MemoryDecisionProcessor,\n    Point7MemoryStore,\n    Point7Processor,\n    Point7Request,\n    Point7Result,\n)\nfrom .point01 import (
+from .point07 import (
+    POINT7_STEP_SPECS,
+    Point7LIFReference,
+    Point7MemoryDecisionProcessor,
+    Point7MemoryStore,
+    Point7Processor,
+    Point7Request,
+    Point7Result,
+)\nfrom .point01 import (
     POINT1_STEP_SPECS,
     Point1PerceptualProcessor,
     Point1Result,

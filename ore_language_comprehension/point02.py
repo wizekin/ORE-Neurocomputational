@@ -485,10 +485,7 @@ class Point2LexicalAccessProcessor:
             frequency = max(0.0, float(entry.frequency) + float(getattr(entry, "exposure_count", 0.0)))
             frequency_strength = math.log1p(frequency) / max_log_frequency
             likelihood = math.exp(-2.0 * distance / max(len(phonemes), len(stored), 1))
-            score = (
-                math.log(max(likelihood * float(form.get("confidence", 0.0)), 1e-12))
-                + self.config.frequency_prior_gain * frequency_strength
-            )
+            score = math.log(max(likelihood * float(form.get("confidence", 0.0)), 1e-12))
             rows.append({
                 "entry": entry,
                 "entry_id": str(entry.entry_id),
@@ -528,7 +525,7 @@ class Point2LexicalAccessProcessor:
                         "form_match": float(item["orthographic_likelihood"]),
                         "form_similarity": float(item["orthographic_similarity"]),
                         "frequency_strength": float(item["frequency_strength"]),
-                        "route_prior": float(item["posterior"]),
+                        "route_prior": 1.0,
                     }
                     for item in result.lexical_identity_candidates
                 }
@@ -622,7 +619,7 @@ class Point2LexicalAccessProcessor:
                 score = (
                     math.log(max(form_confidence, 1e-12))
                     + math.log(max(form_match, 1e-12))
-                    + math.log(max(float(identity.get("posterior", 0.0)), 1e-12))
+                    + math.log(max(float(evidence.get("route_prior", 1.0)), 1e-12))
                     + self.config.frequency_prior_gain * frequency_strength
                     + reliability_adjusted_context
                     + self.config.morphology_gain * morphology_support

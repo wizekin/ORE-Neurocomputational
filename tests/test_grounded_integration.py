@@ -78,7 +78,7 @@ def test_all_22_stages_run_and_emit_optional_biological_reference():
     assert result.stage_outputs["GS-09"]["selected_meaning"] == "bird_animal"
     assert result.stage_outputs["GS-21"]["evaluated"] is True
     assert result.stage_outputs["GS-22"]["target_dimension"] == "generalization"
-    assert "computational analogy" in result.diagnostics["scientific_scope"].lower()
+    assert "computational approximation" in result.diagnostics["scientific_scope"].lower()
     json.dumps(result.to_dict(), default=str)
 
 

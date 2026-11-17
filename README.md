@@ -1011,3 +1011,31 @@ On initialization, Point 2 registers docstrings for the language-comprehension p
 Run `python -m pytest tests/test_language_comprehension_point02.py -q` for the focused
 acceptance suite. See
 [the Point 2 architecture, equations, biological reference and API](docs/LANGUAGE_COMPREHENSION_POINT_02.md).
+
+## Language comprehension — Point 3: Syntactic parsing (12 steps)
+
+The additive `ore_language_comprehension` package now adapts the third source point to ORE's
+existing `ore_syntax` subsystem. `Point3SyntacticParser` runs the 12 source-level steps
+(`LC-P03-01`–`LC-P03-12)) while reusing the syntax engine's nine stages and 58 lower-level
+operations for POS candidates, phrase grouping, dependency relations, constituency alternatives,
+hierarchy, ambiguity revision, and long-distance dependencies.
+
+The adapter accepts one Point 2 lexical result per token through
+`Point3Request.from_point2_results`, or accepts explicit lexical items with category alternatives,
+morphology, inherited confidence, and optional boundary/prosodic cues. It adds explicit
+morphosyntactic feature checks and graded agreement penalties when the required features were
+supplied. Missing features remain unknown. A separate optional LIF reference track aggregates the
+existing syntax-network operations into 12 source-level records.
+
+Point 3 exposes only grammatical structure for the next semantic-composition stage. It does not
+expose predicate-argument semantic interpretations, thematic/event roles, a sentence proposition,
+or discourse/pragmatic meaning. The compact syntax grammar is English-oriented, and model scores
+are not calibrated human probabilities.
+
+On initialization, Point 3 registers all `ore_language_comprehension` and `ore_syntax` class and
+function docstrings in the existing `ore_logger.annotations` SQLite table. It uses the same
+`ore_logs/ore_logger.sqlite3` database; it does not create a new annotation database.
+
+Run `python -m pytest tests/test_language_comprehension_point03.py -q` for the focused acceptance
+suite. See [the Point 3 architecture, equations, biological track and API]
+(docs/LANGUAGE_COMPREHENSION_POINT_03.md).

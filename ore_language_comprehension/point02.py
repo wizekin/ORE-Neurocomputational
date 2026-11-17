@@ -450,7 +450,7 @@ class Point2LexicalAccessProcessor:
                         "boundary_status": boundary_status,
                         "evidence_origin": "point1",
                     })
-        forms.sort(key=lambda item: item["confidence"], reverse=True)
+        # Preserve the source's spatial/ordinal order; confidence ranks alternatives within a word.
         return forms[:self.max_form_candidates]
 
     def _auditory_forms(self, hypotheses: Mapping[str, Any]) -> list[dict[str, Any]]:

@@ -130,3 +130,19 @@ __all__ += [
     "POINT12_METHODS", "POINT12_STEP_SPECS", "Point12Request", "Point12Result",
     "Point12ModelEvaluator", "register_point12_annotations",
 ]
+
+from .point13 import (
+    POINT13_COMPONENTS,
+    POINT13_STEP_NAMES,
+    POINT13_STEP_SPECS,
+    Point13IndividualizedProcessor,
+    Point13Request,
+    Point13Result,
+    register_point13_annotations,
+)
+
+__all__ += [
+    "POINT13_COMPONENTS", "POINT13_STEP_NAMES", "POINT13_STEP_SPECS",
+    "Point13Request", "Point13Result", "Point13IndividualizedProcessor",
+    "register_point13_annotations",
+]

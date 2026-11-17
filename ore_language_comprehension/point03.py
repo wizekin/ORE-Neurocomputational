@@ -112,7 +112,7 @@ _POINT3_TO_SYN: dict[int, tuple[str, ...]] = {
     6: ("SYN-015", "SYN-017", "SYN-018")
        + tuple(f"SYN-{index:03d}" for index in range(32, 38)),
     7: ("SYN-001", "SYN-004", "SYN-005", "SYN-015", "SYN-016", "SYN-017", "SYN-018"),
-    8: tuple(f"SYN-{index:03d}" for index in range(51, 57)),
+    8: tuple(f"SYN-{index:03d}" for index in range(51, 59)),
     9: tuple(f"SYN-{index:03d}" for index in range(44, 51)),
     10: tuple(f"SYN-{index:03d}" for index in range(44, 51)),
     11: tuple(f"SYN-{index:03d}" for index in range(47, 51)),
@@ -319,6 +319,7 @@ class Point3Result:
     sequence_id: str
     tokens: Sequence[str]
     lexical_item_records: Sequence[Mapping[str, Any]]
+    incremental_updates: Sequence[Mapping[str, Any]]
     pos_candidates: Sequence[Sequence[Mapping[str, Any]]]
     selected_pos: Sequence[Mapping[str, Any]]
     constituent_groups: Sequence[Mapping[str, Any]]
@@ -346,6 +347,7 @@ class Point3Result:
             "sequence_id": self.sequence_id,
             "tokens": self.tokens,
             "lexical_item_records": self.lexical_item_records,
+            "incremental_updates": self.incremental_updates,
             "pos_candidates": self.pos_candidates,
             "selected_pos": self.selected_pos,
             "constituent_groups": self.constituent_groups,
@@ -700,15 +702,91 @@ class Point3SyntacticParser:
             for item in request.lexical_items
             if item.get("category_candidates")
         }
-        syntax_result = SyntaxProcessor(lexicon=lexicon, config=self.config).process(
-            SyntaxRequest(
-                sequence_id=request.sequence_id,
-                tokens=tuple(tokens),
-                language=request.language,
-                lexical_evidence=lexical_evidence,
-                source_reference=request.source_reference,
+        incremental_updates: list[dict[str, Any]] = []
+        previous_pos: dict[int, str] = {}
+        previous_dependencies: dict[int, tuple[Any, Any, str]] = {}
+        syntax_result = None
+        for prefix_end in range(1, len(tokens) + 1):
+            # Prefixes are parsed without LIF dynamics. The complete final prefix runs the
+            # configured biological reference once, keeping functional and biological tracks
+            # separate without multiplying simulation cost by sentence length.
+            prefix_config = self.config if prefix_end == len(tokens) else SyntaxConfig(
+                **{**self.config.to_dict(), "simulate_biology": False}
             )
-        )
+            prefix_tokens = tuple(tokens[:prefix_end])
+            prefix_evidence = {
+                index: evidence for index, evidence in lexical_evidence.items()
+                if index < prefix_end
+            }
+            prefix_result = SyntaxProcessor(
+                lexicon=lexicon, config=prefix_config
+            ).process(SyntaxRequest(
+                sequence_id=f"{request.sequence_id}-prefix-{prefix_end}",
+                tokens=prefix_tokens,
+                language=request.language,
+                lexical_evidence=prefix_evidence,
+                source_reference=request.source_reference,
+            ))
+            current_pos = {
+                int(item["token_index"]): str(item["tag"])
+                for item in prefix_result.selected_pos
+            }
+            current_dependencies = {
+                int(item["dependent_index"]): (
+                    item.get("head_index"), item.get("head"), str(item.get("relation", ""))
+                )
+                for item in prefix_result.dependency_arcs
+            }
+            revisions = [
+                {
+                    "token_index": index,
+                    "old_category": previous_pos[index],
+                    "new_category": tag,
+                }
+                for index, tag in current_pos.items()
+                if index in previous_pos and previous_pos[index] != tag
+            ]
+            dependency_revisions = [
+                {
+                    "dependent_index": index,
+                    "previous": previous_dependencies[index],
+                    "revised": relation,
+                }
+                for index, relation in current_dependencies.items()
+                if index in previous_dependencies and previous_dependencies[index] != relation
+            ]
+            prefix_parses = self._rank_parses(prefix_result.constituency_parses)
+            incremental_updates.append({
+                "prefix_end_exclusive": prefix_end,
+                "new_token_index": prefix_end - 1,
+                "new_token": tokens[prefix_end - 1],
+                "selected_pos": [dict(item) for item in prefix_result.selected_pos],
+                "constituent_groups": [dict(item) for item in prefix_result.phrases],
+                "dependency_relations": [dict(item) for item in prefix_result.dependency_arcs],
+                "constituency_alternatives": [
+                    {
+                        "rank": int(item["rank"]),
+                        "label": item["label"],
+                        "log_score": float(item["log_score"]),
+                        "posterior": float(item["posterior"]),
+                    }
+                    for item in prefix_parses
+                ],
+                "active_expectation": self._expectations(prefix_result.selected_pos)[-1],
+                "unresolved_dependencies": self._unresolved_dependencies(
+                    prefix_result.long_distance_dependencies,
+                    prefix_result.phrases,
+                    prefix_tokens,
+                ),
+                "category_revision_events": revisions,
+                "dependency_revision_events": dependency_revisions,
+                "dependency_tree_valid": bool(prefix_result.diagnostics.get("dependency_tree_valid")),
+                "partial_parse_is_final_sentence_parse": prefix_end == len(tokens),
+            })
+            previous_pos = current_pos
+            previous_dependencies = current_dependencies
+            syntax_result = prefix_result
+        assert syntax_result is not None
         agreement_checks, dependency_relations = self._check_agreement(
             request, syntax_result.dependency_arcs
         )
@@ -750,6 +828,8 @@ class Point3SyntacticParser:
                 "token_indices": list(range(len(tokens))),
                 "lexical_uncertainty_preserved": True,
                 "inherited_confidence": [float(item["confidence"]) for item in request.lexical_items],
+                "prefix_parse_count": len(incremental_updates),
+                "incremental_updates": incremental_updates,
             },
             {
                 "pos_candidates": pos_candidates,
@@ -758,15 +838,27 @@ class Point3SyntacticParser:
             },
             {
                 "active_expectations": active_expectations,
+                "expectation_history": [item["active_expectation"] for item in incremental_updates],
                 "surprisal_by_token": surprisal_rows,
             },
             {
                 "constituent_groups": syntax_result.phrases,
                 "constituency_alternatives": constituency_alternatives,
+                "prefix_constituent_history": [
+                    {"prefix_end_exclusive": item["prefix_end_exclusive"],
+                     "constituent_count": len(item["constituent_groups"])}
+                    for item in incremental_updates
+                ],
                 "hierarchical_groups_created": bool(syntax_result.constituency_parses),
             },
             {
                 "dependency_relations": dependency_relations,
+                "dependency_revision_history": [
+                    {"prefix_end_exclusive": item["prefix_end_exclusive"],
+                     "revisions": item["dependency_revision_events"]}
+                    for item in incremental_updates
+                    if item["dependency_revision_events"]
+                ],
                 "single_head_dependency_tree_valid": syntax_result.diagnostics["dependency_tree_valid"],
             },
             {
@@ -778,6 +870,11 @@ class Point3SyntacticParser:
             },
             {
                 "unresolved_dependency_slots": unresolved,
+                "open_slot_history": [
+                    {"prefix_end_exclusive": item["prefix_end_exclusive"],
+                     "unresolved_dependencies": item["unresolved_dependencies"]}
+                    for item in incremental_updates
+                ],
                 "long_distance_dependencies": syntax_result.long_distance_dependencies,
             },
             {
@@ -792,6 +889,12 @@ class Point3SyntacticParser:
             },
             {
                 "revision_events": revision_events,
+                "incremental_category_revisions": [
+                    {"prefix_end_exclusive": item["prefix_end_exclusive"],
+                     "revisions": item["category_revision_events"]}
+                    for item in incremental_updates
+                    if item["category_revision_events"]
+                ],
                 "recurrent_ambiguity_resolution_executed": True,
                 "unresolved_alternatives_preserved": True,
             },
@@ -817,6 +920,8 @@ class Point3SyntacticParser:
         diagnostics = {
             "valid": len(functional_trace) == 12 and len(syntax_result.operation_trace) == 58,
             "source_step_count": len(functional_trace),
+            "incremental_prefix_parse_count": len(incremental_updates),
+            "incremental_prefix_count_matches_tokens": len(incremental_updates) == len(tokens),
             "underlying_syntax_operation_count": len(syntax_result.operation_trace),
             "underlying_operation_order_valid": bool(syntax_result.diagnostics.get("operation_order_valid")),
             "dependency_tree_valid": bool(syntax_result.diagnostics.get("dependency_tree_valid")),
@@ -841,6 +946,7 @@ class Point3SyntacticParser:
             sequence_id=request.sequence_id,
             tokens=tokens,
             lexical_item_records=request.lexical_items,
+            incremental_updates=incremental_updates,
             pos_candidates=pos_candidates,
             selected_pos=selected_pos,
             constituent_groups=syntax_result.phrases,

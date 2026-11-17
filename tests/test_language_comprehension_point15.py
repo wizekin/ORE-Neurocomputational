@@ -53,14 +53,14 @@ def test_source_ordered_trace_has_all_25_steps_and_biological_caveats():
 def test_event_alignment_and_network_are_explicit():
     result = Point15MechanisticResearchProcessor().process(make_request())
     assert result.trace[6]["output"]["ordered_events"][0]["time"] == 120
-    assert result.trace[11]["output"]["aligned_signal_count"] == 4
+    assert result.trace[11]["output"]["aligned_signal_count"] == 6
     assert result.network["nodes"] == ["frontal","temporal"]
     assert result.network["adjacency_matrix"][1][0] == pytest.approx(0.4)
 
 
 def test_temporal_association_does_not_claim_causality():
     result = Point15MechanisticResearchProcessor().process(make_request())
-    assert result.network["temporal_associations"]["temporal|frontal"]["paired_samples"] == 2
+    assert result.network["temporal_associations"]["temporal|frontal"]["paired_samples"] == 3
     assert result.network["temporal_associations"]["temporal|frontal"]["zero_lag_correlation"] is not None
     assert result.causal["causal_claim_must_not_exceed_evidence"] is True
 

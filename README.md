@@ -1228,3 +1228,33 @@ Run the focused Point 7 tests:
 ```bash
 python -m pytest tests/test_language_comprehension_point07.py -q
 ```
+
+
+## Language comprehension Point 8 — recurrent cross-stage integration (18 steps)
+
+Point 8 is a system-level coordination layer across Points 1–7, not a compulsory
+eighth stage that runs after memory and decision use. `Point8CrossStageIntegrator`
+maintains a recurrent state across incoming increments and coordinates supplied
+sensory, lexical, syntactic, semantic, discourse, working-memory, and memory outputs.
+
+Its 18 source-level operations include multi-level prediction, typed prediction
+errors, bounded attentional allocation, evidence-supported local reanalysis,
+conditional pragmatic inference, working-memory accessibility, interpretation
+adequacy checks, revisable proposition finalization, downstream routing, later
+discourse revision, memory handoff, and outcome-based strategy adjustment.
+It preserves literal and inferred content separately and does not inflate
+confidence merely because a candidate was activated repeatedly.
+
+The optional ten-population LIF reference is a functional analogy, not measured
+or anatomically fitted human data. Point 8 coordinates the earlier processors;
+it does not replace them or automatically write to durable memory. Episodic
+and semantic memory requests are packaged for Point 7.
+
+See [docs/LANGUAGE_COMPREHENSION_POINT_08.md](docs/LANGUAGE_COMPREHENSION_POINT_08.md)
+for all 18 steps, equations, feedback loops, biological qualifications, and API examples.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point08.py -q
+```

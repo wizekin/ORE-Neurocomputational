@@ -255,18 +255,49 @@ class Point6Request:
 
         supplied_alternatives = list(interpretations)
         if not supplied_alternatives:
+            propositions = literal.get("propositions", discourse.get("propositions", []))
+            if propositions:
+                literal_summary = json.dumps(
+                    to_jsonable(propositions), ensure_ascii=False, sort_keys=True
+                )
+                coherence_score = _score(
+                    enriched.get("coherence", {}).get("score", 0.5)
+                )
+                literal_confidence = _score(literal.get("confidence", 0.5))
+                supplied_alternatives.append({
+                    "hypothesis_id": "point5-literal-reading",
+                    "interpretation": literal_summary,
+                    "prior": literal_confidence,
+                    "lexical_score": 0.5,
+                    "semantic_score": literal_confidence,
+                    "syntactic_score": 0.5,
+                    "discourse_score": coherence_score,
+                    "world_score": 0.5,
+                    "pragmatic_score": 0.5,
+                    "evidence_source": "Point5 literal proposition; neutral channels remain unmeasured",
+                })
             alternatives = enriched.get("unresolved_alternatives", ())
             if isinstance(alternatives, Sequence) and not isinstance(alternatives, str):
                 for index, item in enumerate(alternatives[:7]):
                     if not isinstance(item, Mapping):
                         continue
-                    description = item.get("interpretation", item.get("label", item.get("reading", item)))
+                    description = item.get(
+                        "interpretation", item.get("label", item.get("reading", item))
+                    )
                     supplied_alternatives.append({
-                        "hypothesis_id": str(item.get("reading_id", item.get("hypothesis_id", f"point5-alt-{index + 1}"))),
-                        "interpretation": json.dumps(to_jsonable(description), ensure_ascii=False, sort_keys=True),
-                        "prior": _score(item.get("prior", item.get("confidence", item.get("score", 0.5)))),
+                        "hypothesis_id": str(item.get(
+                            "reading_id", item.get("hypothesis_id", f"point5-alt-{index + 1}")
+                        )),
+                        "interpretation": json.dumps(
+                            to_jsonable(description), ensure_ascii=False, sort_keys=True
+                        ),
+                        "prior": _score(item.get(
+                            "prior", item.get("confidence", item.get("score", 0.5))
+                        )),
                         "lexical_score": _score(item.get("lexical_score", 0.5)),
-                        "semantic_score": _score(item.get("semantic_score", item.get("confidence", 0.5))),
+                        "semantic_score": _score(
+                            item.get("semantic_score", item.get("confidence", 0.5))
+                        ),
                         "syntactic_score": _score(item.get("syntactic_score", 0.5)),
                         "discourse_score": _score(item.get("discourse_score", 0.5)),
                         "world_score": _score(item.get("world_score", 0.5)),
@@ -274,19 +305,17 @@ class Point6Request:
                         "evidence_source": "Point5 unresolved alternative; uncalibrated confidence retained",
                     })
         if not supplied_alternatives:
-            propositions = literal.get("propositions", discourse.get("propositions", []))
-            summary = json.dumps(to_jsonable(propositions), ensure_ascii=False, sort_keys=True)
             supplied_alternatives = [{
-                "hypothesis_id": "point5-literal-reading",
-                "interpretation": summary or str(text),
+                "hypothesis_id": "point5-surface-reading",
+                "interpretation": str(text),
                 "prior": 1.0,
                 "lexical_score": 0.5,
-                "semantic_score": _score(literal.get("confidence", 0.5)),
+                "semantic_score": 0.5,
                 "syntactic_score": 0.5,
-                "discourse_score": _score(enriched.get("coherence", {}).get("score", 0.5)),
+                "discourse_score": 0.5,
                 "world_score": 0.5,
                 "pragmatic_score": 0.5,
-                "evidence_source": "Point5 literal proposition; neutral channels remain unmeasured",
+                "evidence_source": "neutral surface fallback because no structured proposition was supplied",
             }]
 
         merged_context = {

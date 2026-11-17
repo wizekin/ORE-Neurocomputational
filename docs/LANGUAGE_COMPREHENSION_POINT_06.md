@@ -55,11 +55,13 @@ reports that no durable memory write occurred.
 | 18 | Hand off the coherent active state | Propositions, situation links, provenance, uncertainty and reactivation pointers |
 
 The 40 canonical working-memory operations are partitioned in order into 18 non-empty
-groups. The adapter also exposes the engine's two additive source-extension operations:
+groups. The adapter also exposes the engine's additive source-extension operations:
 `WMX-001` evaluates semantic prediction error only when prior predictions were supplied,
-and `WMX-002` records temporary interpretation consolidation only when a candidate was
-accepted. These extensions are attached to the later revision and handoff source steps,
-respectively. Their outputs are not counted as additional canonical WMCC operations.
+`WMX-002` records temporary interpretation consolidation only when a candidate was
+accepted, and `WMX-003` records the task-dependent working-memory update gate. Extensions
+are attached to the source steps that perform revision, executive control and handoff.
+Their outputs are not counted as additional canonical WMCC operations. The extension set
+is input-dependent and the result reports the actual extension IDs for each run.
 
 ## Mathematical operations and computational meaning
 

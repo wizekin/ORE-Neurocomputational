@@ -186,7 +186,7 @@ class Point7MemoryStore:
     def semantic_records(self) -> list[dict[str, Any]]:
         with self._lock:
             rows = self._db.execute("SELECT * FROM semantic_knowledge ORDER BY created_order").fetchall()
-        return [{"knowledge_id": row["knowledge_id"], "status": row["status"], **json.loads(row["payload"])} for row in rows]
+        return [{**json.loads(row["payload"]), "knowledge_id": row["knowledge_id"], "status": row["status"]} for row in rows]
 
     def close(self) -> None:
         with self._lock:

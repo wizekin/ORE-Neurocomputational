@@ -111,7 +111,7 @@ Candidate competition can be modelled with:
 P(m_j\mid q)=\frac{e^{a_j/\tau}}{\sum_k e^{a_k/\tau}}
 \]
 
-The implementation uses a transparent token-overlap score and a margin-based abstention rule. Pattern completion never fabricates missing trace fields: it returns only stored relations and marks reconstruction status.
+The implementation uses a transparent token-overlap score and a margin-based abstention rule. Episodic retrieval increments a reactivation counter and a bounded trace-strength estimate. Pattern completion never fabricates missing trace fields: it returns only stored relations and marks reconstruction status.
 
 ### Answer selection
 
@@ -147,7 +147,7 @@ A task-sensitive threshold theta can increase with the cost of error. These are 
 \delta_t=Outcome_t-PredictedOutcome_t
 \]
 
-When numeric feedback is supplied, the processor reports this difference. It does not silently rewrite previously accepted semantic knowledge.
+When numeric feedback is supplied, the processor reports this difference and stores the feedback in a separate outcome-feedback table. It does not silently rewrite previously accepted semantic knowledge.
 
 ## Biological-reference track
 

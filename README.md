@@ -1135,3 +1135,69 @@ python -m pytest tests/test_language_comprehension_point05.py -q
 
 See docs/LANGUAGE_COMPREHENSION_POINT_05.md for architecture, equations, biological mapping
 and limitations.
+
+
+## Language comprehension — Point 6: Propositional working-memory representation and maintenance (18 steps)
+
+Point 6 adds an 18-step source-level adapter over ORE's established
+ore_working_memory five-stage / 40-operation processor. Point6PropositionalWorkingMemory
+accepts the contextual interpretation from Point 5, preserves its literal and inferred
+content separately, and passes the available proposition, situation, task and uncertainty
+evidence into bounded working-memory buffers and cognitive-control operations.
+
+The 18-step trace maps the 40 canonical WMCC operations in order. It also exposes the
+working-memory engine's two additive source-extension records for semantic prediction error
+and temporary interpretation consolidation. The adapter reports proposition candidates,
+entity/event links, role and operator evidence, provenance, discourse/situation relations,
+buffer activation and rehearsal, interference estimates, unresolved structures, semantic
+competition, control demand and task state.
+
+The result is explicitly temporary: no durable episodic or semantic memory write is performed.
+The implementation is per-request rather than a persistent streaming state across separate
+calls. Its eight-population current-based LIF reference is a computational analogy, not a
+measured or anatomically fitted human neural model.
+
+Point 6 registers ore_language_comprehension and ore_working_memory definitions in the
+existing ore_logger.annotations SQLite table (ore_logs/ore_logger.sqlite3), not a new database.
+
+Quick start:
+
+```python
+from ore_working_memory import WorkingMemoryConfig
+from ore_language_comprehension import (
+    Point6Request, Point6PropositionalWorkingMemory,
+)
+
+request = Point6Request(
+    sequence_id="working-memory-001",
+    text="Maya said that Omar had left.",
+    partial_structures=[{
+        "structure_id": "embedded-clause",
+        "label": "embedded proposition",
+        "expected_slots": ["content"],
+        "filled_slots": ["content"],
+    }],
+)
+result = Point6PropositionalWorkingMemory(
+    WorkingMemoryConfig(simulate_biology=False)
+).process(request)
+
+print(len(result.functional_trace))  # 18
+print(result.working_memory_state["buffers"].keys())
+print(result.handoff["durable_storage_performed"])  # False
+```
+
+To consume Point 5 directly, use
+Point6Request.from_point5_result(sequence_id, point5_result). It reads the surface sentences
+from the Point 5 discourse result and carries forward the literal proposition, discourse
+links, coreference, situation model, common ground, unresolved alternatives and task context.
+An explicit surface text may be supplied when the Point 5 result has no sentence list.
+
+Run the focused acceptance suite:
+
+```bash
+python -m pytest tests/test_language_comprehension_point06.py -q
+```
+
+See docs/LANGUAGE_COMPREHENSION_POINT_06.md for the 18 steps, mathematical models,
+biological-reference mapping, API and limitations.

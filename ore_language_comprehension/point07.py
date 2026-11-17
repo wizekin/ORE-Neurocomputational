@@ -136,6 +136,7 @@ class Point7Request:
         proposition.update(overrides.pop("proposition", {}))
         context = dict(overrides.pop("context", {}))
         context.setdefault("point6_handoff", handoff)
+        context.setdefault("situation_model", handoff.get("situation_model", {}))
         context.setdefault("working_memory_state", handoff.get("working_memory_state", {}))
         components = list(overrides.pop("components", ()))
         if not components:

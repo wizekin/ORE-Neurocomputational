@@ -3,7 +3,13 @@
 Point 1 wraps ORE's established low-level sensory processing implementation in the 12-step
 perceptual-to-word-form algorithm from the Language Comprehension Brain Algorithms source.
 """
-from .annotations import register_point01_annotations
+from .annotations import register_point01_annotations, register_point02_annotations
+from .point02 import (
+    POINT2_STEP_SPECS,
+    Point2LexicalAccessProcessor,
+    Point2Request,
+    Point2Result,
+)
 from .point01 import (
     POINT1_STEP_SPECS,
     Point1PerceptualProcessor,
@@ -15,4 +21,9 @@ __all__ = [
     "Point1PerceptualProcessor",
     "Point1Result",
     "register_point01_annotations",
+    "POINT2_STEP_SPECS",
+    "Point2LexicalAccessProcessor",
+    "Point2Request",
+    "Point2Result",
+    "register_point02_annotations",
 ]

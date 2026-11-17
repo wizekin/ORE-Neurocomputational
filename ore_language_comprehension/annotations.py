@@ -40,3 +40,49 @@ def register_point01_annotations(
         "annotation_source": "python_docstring_and_ast_signature",
         "storage": "ore_logger.annotations SQLite table",
     }
+
+
+
+def register_point02_annotations(
+    repository_root: str | Path | None = None,
+    database_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Index Point 2, the lexical engine and lexical inventory contracts in the shared SQLite catalogue.
+
+    The repository logger stores class, function and method annotations in the existing annotations
+    table. Scoped synchronization refreshes only the language-comprehension, lexical-access and
+    lexical-context packages; it does not create a separate Point 2 database.
+    """
+    from ore_logger import LoggerDatabase, sync_repository
+
+    root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else Path(__file__).resolve().parents[1]
+    )
+    target = Path(
+        database_path
+        or os.environ.get("ORE_LOGGER_DB")
+        or root / "ore_logs" / "ore_logger.sqlite3"
+    ).expanduser().resolve()
+    database = LoggerDatabase(target)
+    report = sync_repository(
+        database,
+        root,
+        include_paths={
+            "ore_language_comprehension",
+            "ore_lexical_access",
+            "ore_lexical_context",
+        },
+    )
+    return {
+        **report,
+        "database_path": str(target),
+        "modules": [
+            "ore_language_comprehension",
+            "ore_lexical_access",
+            "ore_lexical_context",
+        ],
+        "annotation_source": "python_docstring_and_ast_signature",
+        "storage": "ore_logger.annotations SQLite table",
+    }

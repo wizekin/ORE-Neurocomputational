@@ -756,6 +756,7 @@ class HybridEmbodiedAmodalProcessor:
             "concept_candidates": concept_rows,
             "category_scores": category_scores,
             "category_posteriors": category_posteriors,
+            "category_evidence_available": category_evidence_available,
             "step_evidence": [
                 {"concept_prototype_count": len(concepts)},
                 {"category_count": len(category_groups)},

@@ -58,4 +58,12 @@ __all__ = [
     "Point6Result",
     "Point6PropositionalWorkingMemory",
     "register_point06_annotations",
+    "POINT7_STEP_SPECS",
+    "Point7Request",
+    "Point7Result",
+    "Point7MemoryStore",
+    "Point7LIFReference",
+    "Point7MemoryDecisionProcessor",
+    "Point7Processor",
+    "register_point07_annotations",
 ]

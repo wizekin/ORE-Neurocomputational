@@ -16,7 +16,6 @@ from ore_context_dependent_interpretation import (
     InputEvent,
     OPERATION_REGISTRY,
     bayesian_update,
-    estimate_context_priors,
     register_annotations,
     retrieve_context,
     softmax,

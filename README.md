@@ -1396,3 +1396,29 @@ Run the focused tests with:
 ```bash
 python -m pytest tests/test_reconstructive_memory_point20.py -q
 ```
+
+
+## Confirmation bias and belief-consistent memory — Point 21
+
+Point 21 adds a fourteen-operation model of how prior beliefs can influence information-source
+selection, attention, evidence encoding, ambiguous interpretation, evidence readout, confidence
+updating, and later memory retrieval. These stages are measured independently: a bias at one stage
+does not imply that every later stage is biased.
+
+The `ore_confirmation_bias` package provides typed competing-hypothesis, evidence-source, and
+observation contracts; a functional inference pipeline; a distributed recurrent biological-reference
+network; and an auditable operation registry. Source provenance and original observations remain
+separate from interpretations and updated beliefs. Accuracy-first mode disables the modeled
+belief-congruence preferences while retaining priors, source reliability, diagnosticity, and
+measurement quality.
+
+Every Point 21 class, function, and method is registered in the shared
+`ore_logger.annotations` SQLite catalogue. `record_result_to_sqlite()` records all fourteen
+operation outputs through the existing run/event tables.
+
+See [Point 21 architecture, equations, API, and limitations](docs/CONFIRMATION_BIAS_POINT21.md).
+Run the focused tests with:
+
+```bash
+python -m pytest tests/test_confirmation_bias_point21.py -q
+```

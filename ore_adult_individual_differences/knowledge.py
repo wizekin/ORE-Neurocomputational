@@ -133,6 +133,7 @@ def convert_familiar_details_to_chunks(
         "compressed_representation_cost": chunk_cost,
         "cost_reduction": max(0.0, separate_cost - chunk_cost),
         "effective_unit_count": len(chunks) + len(remaining),
+        "original_unit_count": len(unit_rows),
         "exceptions_and_novel_details_preserved": True,
         "chunking_is_conditional_not_automatic": True,
     }

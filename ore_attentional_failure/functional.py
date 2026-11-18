@@ -310,7 +310,7 @@ def detect_attention_lapse(
     consecutive = len(recent_scores) >= config.lapse_hysteresis_samples - 1 and all(
         value >= config.lapse_threshold for value in [*recent_scores, score]
     )
-    detected = score >= config.lapse_threshold and (consecutive or not state.lapse_history) or safety_trigger
+    detected = (score >= config.lapse_threshold and consecutive) or safety_trigger
     confidence = clip01(0.65 * score + 0.35 * state_estimate["lapse_probability"])
     return {
         "detected": detected,
@@ -355,6 +355,16 @@ def reconstruct_missing_information(
             }
             if confidence < config.requirement_threshold:
                 weak.append(record)
+                source = sources.get(key)
+                if source is not None:
+                    recovered_candidates.append({
+                        "key": key, "content": source.get("content"),
+                        "confidence": clip01(source.get("confidence", source.get("signal_quality", 0.8))),
+                        "source_id": source.get("source_id", "verified_source"),
+                        "provenance": "recoverable_source_record",
+                        "recovery_evidence": "source_record",
+                        "replaces_weak_encoding": True,
+                    })
             else:
                 recovered_candidates.append(record)
             continue
@@ -604,7 +614,9 @@ def preserve_uncertainty(
 ) -> dict[str, Any]:
     """Keep unrecovered content explicitly unknown and retain uncertainty over alternatives."""
     prior = dict(prior_uncertainty or {})
-    unresolved = set(missing["unrecoverable_keys"]) | set(verification["gaps"])
+    # The post-recovery verification is authoritative: recovered keys must no longer
+    # remain unresolved merely because they were missing before the recovery cycle.
+    unresolved = set(verification["gaps"])
     unresolved_map = {key: "unknown_or_insufficient_evidence" for key in sorted(unresolved)}
     unresolved_map.update(prior)
     return {

@@ -2,7 +2,7 @@
 from .annotations import register_annotations
 from .biology import AttentionPopulation, AttentionalBiologicalNetwork
 from .contracts import (
-    AttentionRequirement, AttentionalConfig, AttentionalExperience,
+    AttentionalConfig, AttentionalExperience,
     AttentionalResult, AttentionalState, InformationRequirement,
 )
 from .functional import (
@@ -17,7 +17,7 @@ from .pipeline import AttentionalFailureProcessor, record_result_to_sqlite
 from .registry import AttentionOperationSpec, OPERATION_REGISTRY, registry_as_dicts
 
 __all__ = [
-    "AttentionPopulation", "AttentionalBiologicalNetwork", "AttentionRequirement",
+    "AttentionPopulation", "AttentionalBiologicalNetwork",
     "AttentionalConfig", "AttentionalExperience", "AttentionalResult", "AttentionalState",
     "InformationRequirement", "AttentionalFailureProcessor", "AttentionOperationSpec",
     "OPERATION_REGISTRY", "registry_as_dicts", "register_annotations", "record_result_to_sqlite",

@@ -168,6 +168,36 @@ def test_candidate_ranking_selects_supported_specific_category():
     assert len(result.operation_trace) == 17
 
 
+def test_unknown_candidate_is_retained_when_schema_library_exceeds_top_k():
+    """Keep an open-set alternative even when known schemas fill the candidate limit."""
+    profiles = make_profiles()
+    ranked = rank_schema_profiles(
+        dog_case(), profiles, InferenceConfig(max_candidates=1)
+    )
+    assert len(ranked) == 1
+    assert ranked[0].schema_id == "unknown" or any(
+        item.schema_id == "unknown" for item in ranked
+    )
+
+
+def test_relation_prediction_outcome_is_scored_separately_from_feature_prediction():
+    """Evaluate a later observed relation and include its calibration score."""
+    model = processor()
+    result = model.infer(dog_case(relations=()))
+    assert result.inferred_relations
+    feedback = model.evaluate_outcome(
+        result,
+        observed_evidence=(),
+        observed_relations=(
+            RelationEvidence("animal", "approaches", "person", status="observed",
+                            source="later_observation"),
+        ),
+    )
+    assert any(item["kind"] == "relation" and item["correct"]
+               for item in feedback.tested_predictions)
+    assert feedback.mean_brier_score is not None
+
+
 def test_explicit_contradictory_cue_reduces_dog_evidence_score():
     """An explicit incompatible observation is negative evidence, unlike an unknown value."""
     profiles = make_profiles()

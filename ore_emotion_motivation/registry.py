@@ -55,7 +55,7 @@ _ROWS = (
      ("attention_weights", "arousal_state", "event_features"), ("gain_modulated_features", "normalized_activity")),
     ("P13-06", "Encode emotional and goal-relevant features more strongly",
      "Bind attended features and their relations into an episodic trace while preserving unequal encoding of central and peripheral details.",
-     "x'=m odot x; h_new=F(x',r,c); E_i=E_0+lambda_1*a_i+lambda_2*s_i+lambda_3*g_i",
+     "x'=m⊙x; h_new=F(x',r,c); E_i=E_0+lambda_1*a_i+lambda_2*s_i+lambda_3*g_i",
      "Hippocampus binds event elements; cortical systems encode modality/semantic information; BLA can modulate consolidation.",
      "episodic_binding_and_emotional_modulation_supported; feature-weight rule is computational",
      ("attended_features", "relations", "context", "attention"), ("episodic_memory_trace", "feature_strengths")),

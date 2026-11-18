@@ -1,13 +1,13 @@
 """Functional computations for Point 14 social interaction and conversational learning."""
 from __future__ import annotations
 
-from math import exp, log, sqrt
+from math import exp, log
 import re
 from typing import Any, Mapping, Sequence
 
 from .contracts import (
     LearnerSocialState, PartnerModel, ReferentCandidate, SocialEpisodeMemory,
-    SocialFeedback, SocialInteractionEvent, SocialLearningConfig, SocialSignal,
+    SocialInteractionEvent, SocialLearningConfig, SocialSignal,
 )
 
 
@@ -636,7 +636,7 @@ def select_scaffold(
     competence = state.skill_competence.get(skill, 0.35)
     if event.competence_observation is not None:
         competence = clamp(
-            competence + 0.25 * (event.competence_observation - competence)
+            competence + 0.75 * (event.competence_observation - competence)
         )
         state.skill_competence[skill] = competence
     elif event.learner_attempt:

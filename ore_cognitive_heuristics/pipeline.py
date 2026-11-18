@@ -171,6 +171,14 @@ class Point22CognitiveHeuristicsProcessor:
         intuitive = build_intuitive_judgment(
             problem, categories, availability, representativeness, bayes, fluency, current, config,
         )
+        if problem.target_type == "magnitude":
+            magnitude_estimate = (
+                anchor["estimate"] if anchor["applied"]
+                else problem.evidence.get("evidence_estimate")
+            )
+            if magnitude_estimate is not None:
+                intuitive["answer"] = float(magnitude_estimate)
+                intuitive["magnitude_anchor_applied"] = bool(anchor["applied"])
         _append_operation(trace, 11, intuitive, biological(11, salience=problem.fluency))
 
         # 13. Detect disagreement, overconfidence, uncertainty, and high-consequence conditions.
@@ -196,6 +204,25 @@ class Point22CognitiveHeuristicsProcessor:
 
         # 17. Store context, choose by posterior/expected loss, and expose whether to defer.
         decision = make_final_decision(problem, verified, ecological, conflict, feedback, config)
+        stored_rule = {
+            "problem_id": problem.problem_id,
+            "question": problem.question,
+            "target_type": problem.target_type,
+            "categories": list(categories),
+            "initial_answer": intuitive["answer"],
+            "initial_probabilities": dict(intuitive["probabilities"]),
+            "verified_answer": verified["answer"],
+            "verified_probabilities": dict(verified["probabilities"]),
+            "confidence": float(verified["confidence"]),
+            "heuristics_used": list(strategy["selected_heuristics"]),
+            "assumptions": list(verified["assumptions"]),
+            "warnings": list(conflict["warnings"]) + list(verified["warnings"]),
+            "ecological_fit": dict(ecological),
+            "decision": dict(decision),
+        }
+        current.judgment_history.append(stored_rule)
+        current.judgment_history = current.judgment_history[-500:]
+        decision["stored_judgment"] = stored_rule
         _append_operation(trace, 16, decision, biological(16, conflict=1.0 if decision["review_required"] else 0.0))
 
         validation = validate_point22(trace, verified["probabilities"], verified["confidence"], categories)

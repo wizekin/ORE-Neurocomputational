@@ -96,6 +96,7 @@ class Point22State:
         "availability": 1.0, "representativeness": 1.0, "base_rate": 1.0,
     })
     prediction_history: list[dict[str, Any]] = field(default_factory=list)
+    judgment_history: list[dict[str, Any]] = field(default_factory=list)
     run_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
@@ -103,6 +104,7 @@ class Point22State:
         return {
             "cue_weights": dict(self.cue_weights),
             "prediction_history": [dict(item) for item in self.prediction_history],
+            "judgment_history": [dict(item) for item in self.judgment_history],
             "run_count": self.run_count,
         }
 

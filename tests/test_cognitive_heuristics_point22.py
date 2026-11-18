@@ -228,6 +228,35 @@ def test_sqlite_registers_symbols_and_logs_all_seventeen_operations(tmp_path: Pa
     assert events == 17
     assert status == "completed"
 
+
+def test_step_seventeen_persists_context_and_both_judgment_tracks_without_feedback() -> None:
+    """The final operation stores context, assumptions, initial and verified outputs."""
+    state = Point22State()
+    result = Point22CognitiveHeuristicsProcessor(
+        Point22Config(simulate_biology=False), state=state
+    ).process(make_problem(evidence={"likelihoods": {"rare": 0.8, "common": 0.15}}))
+    stored = result.final_state["judgment_history"][-1]
+    assert stored["problem_id"] == "rare-pattern"
+    assert stored["question"] == "Which explanation best fits the observed case?"
+    assert stored["initial_answer"] == result.initial_answer
+    assert stored["verified_answer"] == result.verified_answer
+    assert stored["assumptions"]
+    assert result.operation_trace[-1]["functional_output"]["stored_judgment"] == stored
+
+
+def test_magnitude_judgment_uses_numeric_anchor_for_initial_answer_and_evidence_for_verified() -> None:
+    """Magnitude tasks expose the anchor-shifted intuition beside the evidence estimate."""
+    problem = make_problem(
+        target_type="magnitude",
+        candidate_anchors=(100.0,),
+        evidence={"evidence_estimate": 20.0},
+    )
+    result = Point22CognitiveHeuristicsProcessor(
+        Point22Config(simulate_biology=False, adjustment_fraction=0.25)
+    ).process(problem)
+    assert result.initial_answer == pytest.approx(80.0)
+    assert result.verified_answer == pytest.approx(20.0)
+
 def test_annotation_registration_is_scoped_to_point22_package(tmp_path: Path) -> None:
     """Manual annotation synchronization uses the shared repository catalogue."""
     root = Path(__file__).resolve().parents[1]

@@ -1445,3 +1445,25 @@ Run the focused tests with:
 ~~~bash
 python -m pytest tests/test_cognitive_heuristics_point22.py -q
 ~~~
+
+
+## Garden-path sentences and syntactic ambiguity — Point 23
+
+Point 23 implements a seventeen-operation incremental sentence-parsing and recovery model in
+the ore_garden_path package. It records lexical-category alternatives, grammar-supplied parse
+hypotheses, token surprisal, parse competition, working-memory dependencies, disambiguating
+conflict, revision choice points, thematic-role repair, partial/good-enough interpretations, and
+adaptation from explicit feedback.
+
+The processor accepts language- and modality-specific lexical candidates and parse hypotheses.
+It is a configurable parser/reanalysis research prototype, not a general-purpose grammar: when
+no grammar candidates are supplied, it emits a surface-only fallback and an unresolved result.
+Its optional distributed frontotemporal population-rate track is an engineering abstraction,
+not a validated neural simulation.
+
+See docs/GARDEN_PATH_POINT23.md for architecture, equations, API, tests, and limitations.
+Run the focused tests with:
+
+~~~bash
+python -m pytest tests/test_garden_path_point23.py -q
+~~~

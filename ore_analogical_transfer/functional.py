@@ -120,7 +120,7 @@ def _role_similarity(
     }
     relation_position = _jaccard(source_signature, target_signature)
     if source_roles or target_roles:
-        return 0.35 * hint_similarity + 0.65 * relation_position
+        return 0.80 * hint_similarity + 0.20 * relation_position
     return relation_position
 
 
@@ -771,6 +771,8 @@ def abstract_relation_templates(
     cfg = config or AnalogicalConfig()
     templates = []
     for relation in source.relations:
+        if relation.evidential_status == "contradicted":
+            continue
         if any(argument not in mapping.entity_map for argument in relation.arguments):
             continue
         templates.append({

@@ -1370,3 +1370,29 @@ Run the focused tests with:
 ```bash
 python -m pytest tests/test_working_memory_overload_point19.py -q
 ```
+
+## Schema-driven inference and reconstructive memory — Point 20
+
+Point 20 implements a sixteen-operation reconstruction workflow in
+`ore_reconstructive_memory`. It separates event-specific evidence from schema-generated
+inferences, source-uncertain details, later suggestions, contradictions, and unknowns. It includes
+cue-based episodic reactivation, multi-schema competition, Bayesian evidence/prior combination,
+temporal/spatial/causal constraints, source monitoring, familiarity-versus-recollection checks,
+competing-episode search, calibrated detail confidence, expected-loss reporting, provenance DAGs,
+independent feedback updates, and separately gated schema learning.
+
+The optional biological-reference network models recurrent interactions among hippocampal,
+medial/lateral prefrontal, parietal, sensory association, temporal semantic, amygdala/salience, and
+distributed event-integration populations. These are coarse functional reference signals rather
+than measured neural activity or literal neuronal computations.
+
+Every Point 20 class, function, and method is registered in the shared
+`ore_logger.annotations` SQLite catalogue. The result logger writes all 16 operation traces
+through the existing run/event tables.
+
+See [Point 20 architecture, equations, API, and limitations](docs/RECONSTRUCTIVE_MEMORY_POINT20.md).
+Run the focused tests with:
+
+```bash
+python -m pytest tests/test_reconstructive_memory_point20.py -q
+```

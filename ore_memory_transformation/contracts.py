@@ -283,7 +283,7 @@ class MemoryTransformationConfig:
     minimum_effective_support: float = 1.5
     semantic_learning_rate: float = 0.08
     context_default_importance: float = 0.50
-    context_logit_bias: float = -0.35
+    context_logit_bias: float = -1.80
     context_prevalence_gain: float = 1.0
     context_utility_gain: float = 1.2
     context_meaning_gain: float = 1.2

@@ -1,12 +1,12 @@
 """Persistent 16-stage processor for episodic-to-semantic transformation and gist extraction."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 import time
 import uuid
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 import numpy as np
 
@@ -23,10 +23,10 @@ from .functional import (
     brier_score,
     cue_similarity,
     episode_similarity,
+    entropy,
     estimate_feature_statistics,
     estimate_relation_statistics,
     leave_one_out_gist_similarity,
-    relation_signature,
     semantic_context_weight,
     softmax,
     source_provenance,
@@ -211,6 +211,9 @@ class EpisodicToSemanticTransformationProcessor:
         if request.target_episode_id is not None:
             if request.target_episode_id not in self.episodic_store:
                 raise KeyError(f"unknown target_episode_id: {request.target_episode_id}")
+            if (request.target_concept_id is not None
+                    and self.episode_concept_ids[request.target_episode_id] != request.target_concept_id):
+                raise ValueError("target_episode_id does not belong to target_concept_id")
             candidate_ids = [request.target_episode_id]
         elif request.candidate_episode_ids:
             missing = set(request.candidate_episode_ids) - set(self.episodic_store)
@@ -219,6 +222,19 @@ class EpisodicToSemanticTransformationProcessor:
             candidate_ids = list(request.candidate_episode_ids)
         else:
             candidate_ids = list(self.episodic_store)
+        if request.target_concept_id is not None:
+            if request.target_concept_id not in self.episode_concept_ids.values():
+                raise KeyError(f"unknown target_concept_id: {request.target_concept_id}")
+            if request.target_episode_id is None:
+                concept_members = [
+                    episode_id for episode_id, concept in self.episode_concept_ids.items()
+                    if concept == request.target_concept_id
+                ]
+                candidate_ids = ([item for item in candidate_ids if item in concept_members]
+                                 if request.candidate_episode_ids else concept_members)
+        unknown_rehearsal = set(request.rehearsal_episode_ids) - set(self.episodic_store)
+        if unknown_rehearsal:
+            raise KeyError(f"unknown rehearsal episode IDs: {sorted(unknown_rehearsal)}")
         cue_scores: dict[str, dict[str, float]] = {}
         for episode_id in candidate_ids:
             episode = self.episodic_store[episode_id].episode
@@ -308,7 +324,10 @@ class EpisodicToSemanticTransformationProcessor:
                   "binding_rule": "relations remain attached to original episode_id"})
 
         # ES04: collect all members of selected concepts and align their feature/relation patterns.
-        concept_ids = sorted({self.episode_concept_ids[item] for item in selected_ids})
+        concept_set = {self.episode_concept_ids[item] for item in selected_ids}
+        if request.target_concept_id is not None:
+            concept_set.add(request.target_concept_id)
+        concept_ids = sorted(concept_set)
         related_ids = sorted(
             episode_id for episode_id, record_state in self.episodic_store.items()
             if record_state.concept_id in concept_ids
@@ -433,7 +452,26 @@ class EpisodicToSemanticTransformationProcessor:
                 "cortical_pattern": pattern.tolist(),
             }
             gist["distributed_cortical_pattern"] = pattern.tolist()
-        record(9, {"distributed_semantic_integration": integration_reports},
+        schema_links: list[dict[str, Any]] = []
+        integrated_ids = list(self.cortex.concept_patterns)
+        for index, concept_id in enumerate(integrated_ids):
+            left = self.cortex.get_pattern(concept_id)
+            if left is None:
+                continue
+            for other_id in integrated_ids[index + 1:]:
+                right = self.cortex.get_pattern(other_id)
+                if right is None:
+                    continue
+                denominator = float(np.linalg.norm(left) * np.linalg.norm(right))
+                similarity = float(np.dot(left, right) / denominator) if denominator > 1e-12 else 0.0
+                if similarity >= self.config.related_similarity_threshold:
+                    self.cortex.link_concepts(concept_id, other_id, similarity)
+                    schema_links.append({
+                        "concept_id": concept_id, "related_concept_id": other_id,
+                        "similarity": similarity, "identities_merged": False,
+                    })
+        record(9, {"distributed_semantic_integration": integration_reports,
+                   "schema_links": schema_links},
                {"semantic_population": self.cortex.snapshot(),
                 "semantic_model_scope": "distributed_rate_population_surrogate"})
 
@@ -568,7 +606,7 @@ class EpisodicToSemanticTransformationProcessor:
             concept_ids=concept_ids,
             episodic_representation=episodic_representation,
             semantic_representations=[self.semantic_store[item] for item in concept_ids],
-            schema_links=refinement.get("schema_links", []),
+            schema_links=schema_links,
             retrieved_result=retrieved_result,
             uncertainty=uncertainty,
             accessibility=accessibility_report,

@@ -12,7 +12,7 @@ from typing import Mapping, Sequence
 import numpy as np
 
 from .contracts import EpisodeInput, FEATURE_GROUPS, MemoryTransformationConfig
-from .functional import flatten_feature_groups, normalize_nested_features
+from .functional import normalize_nested_features
 
 
 def _normalise(vector: np.ndarray) -> np.ndarray:

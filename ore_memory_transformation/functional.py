@@ -92,11 +92,13 @@ def weighted_feature_similarity(
     for group in FEATURE_GROUPS:
         a = left.get(group, {})
         b = right.get(group, {})
-        shared = sorted(set(a) | set(b))
+        # Only jointly observed features are compared. An omitted key remains unknown;
+        # an explicitly supplied zero is retained and can contribute negative evidence.
+        shared = sorted(set(a) & set(b))
         if not shared:
             continue
-        av = np.asarray([a.get(key, 0.0) for key in shared], dtype=np.float64)
-        bv = np.asarray([b.get(key, 0.0) for key in shared], dtype=np.float64)
+        av = np.asarray([a[key] for key in shared], dtype=np.float64)
+        bv = np.asarray([b[key] for key in shared], dtype=np.float64)
         denominator = float(np.linalg.norm(av) * np.linalg.norm(bv))
         if denominator <= 1e-12:
             score = 1.0 if np.allclose(av, bv) else 0.0

@@ -335,7 +335,11 @@ def interpret_ambiguous_evidence(
     rho = config.interpretation_prior_bias
     items = {item.evidence_id: item for item in request.evidence}
     rows: list[dict[str, Any]] = []
+    skipped_unattended: list[str] = []
     for trace in encoded.get("traces", []):
+        if trace.get("status") != "encoded":
+            skipped_unattended.append(trace["evidence_id"])
+            continue
         item = items[trace["evidence_id"]]
         likelihoods = _likelihood_vector(item, ids)
         scores = {
@@ -357,7 +361,10 @@ def interpret_ambiguous_evidence(
             "prior_influence_parameter": rho,
             "prior_and_observation_kept_separate": True,
         })
-    return {"interpretations": rows}
+    return {
+        "interpretations": rows,
+        "not_deeply_processed_evidence_ids": skipped_unattended,
+    }
 
 
 def assess_evidence_quality(

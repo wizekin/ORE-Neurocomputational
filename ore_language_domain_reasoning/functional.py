@@ -350,8 +350,15 @@ def retrieve_conceptual_knowledge(
         entry_words = _words(value) | _words(key)
         overlap = len(cues & entry_words) / max(1, len(entry_words))
         context_fit = len(context_words & entry_words) / max(1, len(entry_words))
+        # A small prefix/stem proxy lets inflected forms such as "expanded" cue "expand".
+        morphological_match = any(
+            len(left) >= 4 and len(right) >= 4
+            and (left.startswith(right) or right.startswith(left))
+            for left in cues for right in entry_words
+        )
         reliability = clamp(float(value.get("reliability", 0.7))) if isinstance(value, Mapping) else 0.7
-        relevance = clamp((0.75 * overlap + 0.25 * context_fit) * reliability)
+        relevance = clamp((0.60 * overlap + 0.20 * context_fit
+                           + 0.20 * float(morphological_match)) * reliability)
         if relevance >= config.concept_relevance_threshold:
             candidates.append({
                 "concept": str(key), "knowledge": value, "overlap": overlap,

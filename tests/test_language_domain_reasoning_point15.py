@@ -192,6 +192,39 @@ def test_sqlite_annotation_registration_and_operation_logging(tmp_path):
     assert count == 15
 
 
+def test_recurrent_language_activation_and_learned_constructions_are_reused():
+    """Carry prior language activity and learned construction strengths into the next event."""
+    state = LanguageLearnerState(
+        language_activation=0.8,
+        construction_strengths={"subject-verb-object": 0.95},
+    )
+    result = LanguageDomainReasoningProcessor(state=state).process(event(
+        construction_patterns=({
+            "name": "subject-verb-object",
+            "tokens": ("metal", "expanded", "heating"),
+            "prior": 0.2,
+            "relations": ("agent-action-object",),
+        },),
+    ))
+    assert result.linguistic_representation["language_state"]["recurrent_prior_activation"] == pytest.approx(0.8)
+    match = result.linguistic_representation["linguistic_structure"]["construction_matches"][0]
+    assert match["learned_strength"] == pytest.approx(0.95)
+    assert state.language_activation != pytest.approx(0.8)
+
+
+def test_predicted_next_token_mismatch_is_detected_and_traced():
+    """Compare expected with observed next-input tokens and classify the prediction error."""
+    result = LanguageDomainReasoningProcessor().process(event(
+        expected_next_tokens=("metal", "expanded"),
+        new_evidence={"observed_next_tokens": ("medal", "expanded")},
+    ))
+    assert result.mismatch_and_revision["mismatch_detected"] is True
+    assert "next_input_prediction" in result.mismatch_and_revision["mismatch_types"]
+    assert result.mismatch_and_revision["next_token_prediction_residual"] > 0.0
+    assert any(row["layer"] == "next_input_prediction"
+               for row in result.mismatch_and_revision["revisions"])
+
+
 def test_contract_rejects_unknown_modality_and_invalid_probabilities():
     """Reject unsupported modalities and learning-rate values outside the unit interval."""
     with pytest.raises(ValueError):

@@ -19,25 +19,36 @@ def map_word_forms_to_meanings(
         str(segmentation.get("candidate_word_forms", [""])[0])
         if segmentation.get("candidate_word_forms") else ""
     )
-    candidates: list[dict[str, Any]] = []
+    candidates_by_meaning: dict[str, dict[str, Any]] = {}
     for referent in multimodal.get("referent_posterior", ()):
-        candidates.append({
-            "meaning": referent["referent_id"], "semantic_type": "entity",
+        meaning_id = str(referent["referent_id"])
+        candidates_by_meaning[meaning_id] = {
+            "meaning": meaning_id, "semantic_type": "entity",
             "source": "scene_grounding", "score": float(referent["probability"]),
-        })
+        }
     known_entry = state.lexicon.get(word, {})
     known_meanings = list(known_entry.get("candidate_meanings", ()))
     syntactic_type = str(event.syntactic_hints.get("semantic_type", ""))
     for meaning in known_meanings:
-        concept = state.concept_store.get(str(meaning), {})
+        meaning_id = str(meaning)
+        concept = state.concept_store.get(meaning_id, {})
         type_fit = (
             1.0 if not syntactic_type or syntactic_type == concept.get("semantic_type", syntactic_type)
             else 0.25
         )
-        candidates.append({
-            "meaning": str(meaning), "semantic_type": concept.get("semantic_type", "concept"),
-            "source": "prior_lexical_concept_link", "score": 0.35 * type_fit + 0.65,
-        })
+        prior_score = 0.35 * type_fit + 0.65
+        if meaning_id in candidates_by_meaning:
+            row = candidates_by_meaning[meaning_id]
+            row["score"] = min(2.0, float(row["score"]) + 0.30 * prior_score)
+            row["source"] = "scene_grounding_plus_prior_lexicon"
+        else:
+            candidates_by_meaning[meaning_id] = {
+                "meaning": meaning_id,
+                "semantic_type": concept.get("semantic_type", "concept"),
+                "source": "prior_lexical_concept_link",
+                "score": prior_score,
+            }
+    candidates: list[dict[str, Any]] = list(candidates_by_meaning.values())
     if not candidates and word:
         candidates.append({
             "meaning": word, "semantic_type": syntactic_type or "unknown",

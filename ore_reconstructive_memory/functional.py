@@ -245,16 +245,40 @@ def build_feature_ledger(
     }
 
 
+def _schema_feature_distribution(
+    schema: SchemaProfile,
+    feature: str,
+    schema_beta_counts: Mapping[str, Mapping[str, float]],
+) -> dict[str, float]:
+    """Combine base schema feature frequencies with verified beta-count updates from prior runs."""
+    base = dict(schema.feature_probabilities.get(feature, {}))
+    if not base:
+        return {}
+    adjusted: dict[str, float] = {}
+    for value, probability in base.items():
+        key = "|".join((schema.schema_id, feature, value_key(value)))
+        counts = schema_beta_counts.get(key)
+        if counts:
+            alpha = max(1e-9, float(counts.get("alpha", 1.0)))
+            beta = max(1e-9, float(counts.get("beta", 1.0)))
+            adjusted[value] = alpha / (alpha + beta)
+        else:
+            adjusted[value] = probability
+    total = sum(adjusted.values())
+    return {value: score / total for value, score in adjusted.items()} if total > 0.0 else base
+
+
 def _schema_evidence_fit(
     schema: SchemaProfile,
     ledger: Mapping[str, Any],
+    schema_beta_counts: Mapping[str, Mapping[str, float]] | None = None,
 ) -> float:
     """Score how well a schema predicts available evidence without treating unknowns as mismatches."""
     scores: list[tuple[float, float]] = []
     for feature, row in ledger["features"].items():
         if row["status"] not in {"direct_evidence", "episodically_retrieved", "weakly_retrieved"}:
             continue
-        distribution = schema.feature_probabilities.get(feature, {})
+        distribution = _schema_feature_distribution(schema, feature, schema_beta_counts or {})
         if not distribution:
             continue
         for item in row["values"]:
@@ -275,6 +299,7 @@ def activate_candidate_schemas(
     request: Point20Request,
     ledger: Mapping[str, Any],
     config: Point20Config,
+    schema_beta_counts: Mapping[str, Mapping[str, float]] | None = None,
 ) -> dict[str, Any]:
     """Activate multiple candidate schemas from evidence fit, context fit, and goal relevance."""
     context = request.context
@@ -283,7 +308,7 @@ def activate_candidate_schemas(
         goal_values = {}
     ranked: list[dict[str, Any]] = []
     for schema in request.schemas:
-        evidence_fit = _schema_evidence_fit(schema, ledger)
+        evidence_fit = _schema_evidence_fit(schema, ledger, schema_beta_counts)
         context_fit = feature_similarity(schema.context_profile, {
             str(key): value for key, value in context.items()
             if isinstance(value, (int, float, bool))
@@ -318,6 +343,7 @@ def generate_inferred_completions(
     ledger: Mapping[str, Any],
     schema_activation: Mapping[str, Any],
     config: Point20Config,
+    schema_beta_counts: Mapping[str, Mapping[str, float]] | None = None,
 ) -> dict[str, Any]:
     """Generate ranked alternatives only for missing or weak features and mark each as inferred."""
     schema_by_id = {item.schema_id: item for item in request.schemas}
@@ -331,7 +357,7 @@ def generate_inferred_completions(
         proposals: list[tuple[float, SchemaProfile, str, float]] = []
         for schema_id in schema_activation["active_schema_ids"]:
             schema = schema_by_id[schema_id]
-            distribution = schema.feature_probabilities.get(feature, {})
+            distribution = _schema_feature_distribution(schema, feature, schema_beta_counts or {})
             for value, prior in distribution.items():
                 score = activation_by_id.get(schema_id, 0.0) * prior
                 proposals.append((score, schema, value, prior))
@@ -729,7 +755,7 @@ def choose_response_policy(
         importance = clamp(float(feature_importance.get(feature, feature_row["centrality"] or 0.5)))
         options: list[dict[str, Any]] = []
         for candidate in grouped.get(feature, []):
-            probability = clamp(candidate.confidence)
+            probability = clamp(max(candidate.confidence, candidate.feedback_probability))
             report_loss = (1.0 - probability) * false_claim_cost
             qualify_loss = 0.28 * (1.0 - probability) * false_claim_cost + 0.22
             clarify_loss = clarification_cost + 0.10 * (1.0 - probability)
@@ -1130,6 +1156,7 @@ def finalize_reconstruction(
 ) -> dict[str, Any]:
     """Assemble evidence classes, inferred alternatives, uncertainty, confidence, and source lineage."""
     supported: list[dict[str, Any]] = []
+    existing_supported_ids: set[str] = set()
     for fragment in request.episodic_fragments:
         if fragment.status in {"direct_evidence", "episodically_retrieved"}:
             supported.append({
@@ -1142,7 +1169,31 @@ def finalize_reconstruction(
                 "source_id": fragment.source_id,
                 "episode_id": fragment.episode_id,
             })
+            existing_supported_ids.add(fragment.detail_id)
+    promoted = [
+        item for item in candidates
+        if item.status == "episodically_retrieved"
+        and item.evidence_strength >= 0.75
+        and item.episodic_context >= 0.75
+        and item.contradiction < 0.25
+    ]
+    for item in promoted:
+        if item.candidate_id not in existing_supported_ids:
+            supported.append({
+                "detail_id": item.candidate_id,
+                "feature_type": item.feature_type,
+                "content": item.content,
+                "status": "episodically_retrieved",
+                "confidence": item.confidence,
+                "source_type": item.assigned_source,
+                "source_id": "source-monitoring-inference-promotion",
+                "episode_id": request.target_episode_id or request.event_id,
+                "supporting_evidence_ids": list(item.evidence_ids),
+            })
     inferred = [item.to_dict() for item in candidates if item.status == "inferred"]
+    post_event_suggested = [
+        item.to_dict() for item in candidates if item.status == "suggested_after_event"
+    ]
     source_uncertain = [item.to_dict() for item in candidates
                         if item.status == "source_uncertain" or item.assigned_source == "unknown"]
     contradicted = [
@@ -1175,6 +1226,7 @@ def finalize_reconstruction(
         "gist": gist,
         "supported_details": supported,
         "inferred_details": inferred,
+        "post_event_suggested_details": post_event_suggested,
         "source_uncertain_details": source_uncertain,
         "contradicted_details": contradicted,
         "unresolved_features": unresolved,

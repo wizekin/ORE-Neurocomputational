@@ -155,7 +155,7 @@ class ReconstructiveMemoryProcessor:
         _record_operation(trace, 2, ledger, biological(2))
 
         # 4. Activate several relevant schemas without treating them as episode records.
-        schema_activation = activate_candidate_schemas(request, ledger, config)
+        schema_activation = activate_candidate_schemas(request, ledger, config, current.schema_beta_counts)
         _record_operation(
             trace, 3, schema_activation,
             biological(3, max(
@@ -165,7 +165,7 @@ class ReconstructiveMemoryProcessor:
         )
 
         # 5. Generate top-K alternatives for missing/weak features; all start as inferred.
-        generation = generate_inferred_completions(request, ledger, schema_activation, config)
+        generation = generate_inferred_completions(request, ledger, schema_activation, config, current.schema_beta_counts)
         candidates = list(generation["candidates"])
         _record_operation(trace, 4, {
             **{key: value for key, value in generation.items() if key != "candidates"},
@@ -244,8 +244,11 @@ class ReconstructiveMemoryProcessor:
 
         # 16. Finalize the evidence-faithful report and refresh the provenance graph with feedback sources.
         provenance_graph = build_provenance_graph(request, candidates, prior_sources)
+        # Re-evaluate the final response after feedback has updated its separate probability.
+        # The Step 12 trace remains the pre-feedback decision, preserving the operation history.
+        final_policy = choose_response_policy(request, ledger, candidates, config)
         reconstruction = finalize_reconstruction(
-            request, ledger, candidates, policy, provenance_graph,
+            request, ledger, candidates, final_policy, provenance_graph,
         )
         if request.event_id not in current.episode_records:
             current.episode_records[request.event_id] = {"versions": []}
@@ -266,6 +269,7 @@ class ReconstructiveMemoryProcessor:
             "candidate_count": len(candidates),
             "supported_detail_count": len(reconstruction["supported_details"]),
             "inferred_detail_count": len(reconstruction["inferred_details"]),
+            "post_event_suggested_count": len(reconstruction["post_event_suggested_details"]),
             "unresolved_feature_count": len(reconstruction["unresolved_features"]),
             "provenance_node_count": len(provenance_graph["nodes"]),
             "provenance_edge_count": len(provenance_graph["edges"]),
@@ -296,7 +300,7 @@ class ReconstructiveMemoryProcessor:
                                "source_assignments": source_monitoring["source_assignments"]},
             confidence={**{k: v for k, v in confidence.items() if k != "candidates"},
                         "per_detail": confidence["per_detail"]},
-            response_policy=policy,
+            response_policy=final_policy,
             retelling_monitor=retelling,
             feedback_update=feedback_update,
             schema_update=schema_update,

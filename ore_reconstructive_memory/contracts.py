@@ -14,7 +14,7 @@ SOURCE_TYPES = {
 EVIDENCE_STATUSES = {
     "direct_evidence", "episodically_retrieved", "weakly_retrieved",
     "not_retrieved", "contradicted", "not_queried", "suggested_after_event",
-    "source_uncertain",
+    "source_uncertain", "unknown",
 }
 
 

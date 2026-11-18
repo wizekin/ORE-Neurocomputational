@@ -9,8 +9,10 @@ from ore_reconstructive_memory import (
     DetailCandidate, EpisodicFragment, FeedbackRecord, Point20Config,
     Point20Request, Point20State, ReconstructiveMemoryProcessor,
     SchemaProfile, SourceRecord, OPERATION_REGISTRY,
-    assess_familiarity_and_recollection, brier_score, build_feature_ledger,
+    activate_candidate_schemas, assess_familiarity_and_recollection, brier_score,
+    build_feature_ledger,
     build_provenance_graph, calibrate_detail_confidence, choose_response_policy,
+    generate_inferred_completions,
     generate_inferred_completions, reactivate_episodic_fragments,
     search_competing_episodes, update_general_schema_knowledge,
     update_reconstruction_from_feedback,
@@ -360,3 +362,74 @@ def test_repeated_schema_retellings_increase_familiarity_not_recollection() -> N
     assert second_canoe["familiarity"] > first_canoe["familiarity"]
     assert second_canoe["recollection"] == first_canoe["recollection"]
     assert second_canoe["status"] == "inferred"
+
+def test_verified_schema_learning_changes_later_feature_prior_not_event_record() -> None:
+    """A verified schema update changes later priors while remaining separate from episode memory."""
+    request = make_request()
+    config = Point20Config(simulate_biology=False)
+    retrieval = reactivate_episodic_fragments(
+        request, {"cue": request.cue, "cue_features": dict(request.cue)}, config,
+    )
+    ledger = build_feature_ledger(request, retrieval)
+    baseline_activation = activate_candidate_schemas(request, ledger, config, {})
+    baseline = generate_inferred_completions(request, ledger, baseline_activation, config, {})
+    learned_counts = {
+        "travel|object_type|canoe": {"alpha": 30.0, "beta": 1.0},
+        "travel|object_type|boat": {"alpha": 1.0, "beta": 30.0},
+    }
+    learned_activation = activate_candidate_schemas(request, ledger, config, learned_counts)
+    learned = generate_inferred_completions(
+        request, ledger, learned_activation, config, learned_counts,
+    )
+    baseline_canoe = next(item for item in baseline["candidates"] if item.content == "canoe")
+    learned_canoe = next(item for item in learned["candidates"] if item.content == "canoe")
+    assert learned_canoe.schema_prior > baseline_canoe.schema_prior
+    assert learned_canoe.status == "inferred"
+
+
+def test_feedback_adjusted_probability_can_change_final_reporting_policy() -> None:
+    """Reliable feedback affects response caution without rewriting the source/status label."""
+    from ore_reconstructive_memory import choose_response_policy
+
+    request = make_request(precision="exact")
+    candidate = DetailCandidate(
+        candidate_id="source-detail",
+        feature_type="object_type",
+        content="canoe",
+        status="episodically_retrieved",
+        confidence=0.20,
+        feedback_probability=0.95,
+        assigned_source="episodic_retrieval",
+    )
+    ledger = {
+        "features": {
+            "object_type": {
+                "centrality": 0.90,
+                "status": "not_retrieved",
+                "likely_encoded": 0.70,
+                "unavailable_not_absent": True,
+                "values": [],
+            }
+        }
+    }
+    policy = choose_response_policy(
+        request, ledger, [candidate], Point20Config(simulate_biology=False),
+    )
+    selected = policy["decisions"][0]["selected"]
+    assert selected["action"] == "report"
+    assert selected["confidence"] == pytest.approx(0.95)
+    assert candidate.status == "episodically_retrieved"
+
+
+def test_explicit_unknown_evidence_status_is_accepted() -> None:
+    """Unknown is a legal evidence label and must not be converted into contradiction."""
+    fragment = EpisodicFragment(
+        detail_id="unknown-detail",
+        feature_type="cause",
+        content=None,
+        status="unknown",
+        retrieval_strength=0.0,
+        episodic_context=0.0,
+        source_type="unknown",
+    )
+    assert fragment.status == "unknown"

@@ -12,7 +12,7 @@ from .functional import (
     choose_recovery_action, clip01, commit_interpretation, create_dependencies,
     detect_overload, diagnose_failures, encode_unit, estimate_interference,
     estimate_load, form_chunks, identify_at_risk, integrate_retrieval,
-    reconstruct_supported, retrieve_by_cue, segment_units, update_accessibility,
+    reconstruct_supported, retrieve_by_cue, segment_units, softmax, update_accessibility,
 )
 from .registry import OPERATION_REGISTRY
 
@@ -113,17 +113,38 @@ class Point19WorkingMemoryOverloadProcessor:
             )
 
         # 1. Establish the goal and normalized priority weights.
-        goal_values = {str(key): max(0.0, float(value)) for key, value in request.goals.items()}
-        goal_total = sum(goal_values.values())
-        current.goal_weights = {
-            key: value / goal_total if goal_total > 0.0 else 0.0
-            for key, value in goal_values.items()
+        goal_values = {str(key): clip01(max(0.0, float(value))) for key, value in request.goals.items()}
+        context_relevance = request.context.get("goal_context_relevance", {})
+        task_importance = request.context.get("goal_task_importance", {})
+        if not isinstance(context_relevance, Mapping) or not isinstance(task_importance, Mapping):
+            raise TypeError("goal_context_relevance and goal_task_importance must be mappings")
+        feature_keys = sorted(
+            set(goal_values) | {str(key) for key in context_relevance}
+            | {str(key) for key in task_importance}
+        )
+        goal_features = {
+            key: {
+                "goal_relevance": goal_values.get(key, 0.0),
+                "context_relevance": clip01(float(context_relevance.get(key, 0.0))),
+                "task_importance": clip01(float(task_importance.get(key, 0.0))),
+            }
+            for key in feature_keys
         }
+        goal_scores = [
+            0.50 * values["goal_relevance"]
+            + 0.25 * values["context_relevance"]
+            + 0.25 * values["task_importance"]
+            for values in goal_features.values()
+        ]
+        goal_probabilities = softmax(goal_scores, config.attention_temperature)
+        current.goal_weights = dict(zip(feature_keys, goal_probabilities))
         goal_output = {
             "sequence_id": request.sequence_id,
+            "goal_features": goal_features,
+            "goal_scores": dict(zip(feature_keys, goal_scores)),
             "goal_weights": dict(current.goal_weights),
-            "goal_is_explicit": bool(request.goals),
-            "task_priority_policy": "caller-supplied goals; no hidden intent inference",
+            "goal_is_explicit": bool(feature_keys),
+            "task_priority_policy": "weighted goal/context/task relevance followed by temperature-scaled softmax",
         }
         _record(trace, 0, goal_output, biological(0, max(current.goal_weights.values(), default=0.0)))
 

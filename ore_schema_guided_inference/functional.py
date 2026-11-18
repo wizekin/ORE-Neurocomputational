@@ -163,7 +163,8 @@ def context_compatibility(case: CaseEvidence, profile: SchemaProfile) -> float:
         return 0.0
     intersection = len(observed & schema_context)
     union = len(observed | schema_context)
-    return (2.0 * intersection - (len(observed - schema_context) * 0.5)) / max(1, union)
+    raw = (2.0 * intersection - (len(observed - schema_context) * 0.5)) / max(2, 2 * union)
+    return max(-1.0, min(1.0, raw))
 
 
 def goal_compatibility(case: CaseEvidence, profile: SchemaProfile) -> float:
@@ -172,8 +173,8 @@ def goal_compatibility(case: CaseEvidence, profile: SchemaProfile) -> float:
         return 0.0
     values = [float(profile.frame.goals.get(goal, 0.0)) for goal in case.goals]
     supported = sum(values) / len(values)
-    return 2.0 * supported - 0.5 * (sum(goal not in profile.frame.goals for goal in case.goals)
-                                    / max(1, len(case.goals)))
+    unmatched = sum(goal not in profile.frame.goals for goal in case.goals) / max(1, len(case.goals))
+    return max(-0.5, min(1.0, supported - 0.5 * unmatched))
 
 
 def event_transition_compatibility(

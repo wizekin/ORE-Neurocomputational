@@ -43,7 +43,8 @@ def make_request(
             {"wet_street": 0.7, "rain_gauge": 0.1, "hose_activity": 0.9},
         ),
     )
-    sources = sources or (
+    if sources is None:
+        sources = (
         EvidenceSource(
             "camera", "direct_record", reliability=0.95, diagnostic_value=0.8,
             accessibility=0.9, social_trust=0.8, independence_group="camera-system",
@@ -56,8 +57,9 @@ def make_request(
             "witness", "testimony", reliability=0.65, diagnostic_value=0.7,
             accessibility=0.8, social_trust=0.6, independence_group="witness-1",
         ),
-    )
-    evidence = evidence or (
+        )
+    if evidence is None:
+        evidence = (
         EvidenceItem(
             "wet-street", "camera", "The street surface appears wet.",
             feature="wet_street", likelihoods={"rain": 0.85, "cleaning": 0.65},
@@ -79,7 +81,7 @@ def make_request(
             uncertainty_reduction=0.8, measurement_quality=0.7,
             direct_observation=False,
         ),
-    )
+        )
     return Point21Request(
         claim_id="wet-street-event",
         claim="Why was the street wet?",

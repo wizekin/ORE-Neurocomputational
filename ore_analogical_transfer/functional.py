@@ -360,12 +360,14 @@ def score_mapping(
     source_relation_map = {item.relation_id: item for item in source.relations}
     mapping_by_source_relation: dict[str, str] = {}
     for relation in source.relations:
+        if relation.evidential_status == "contradicted":
+            continue
+        weighted_eligible += relation.importance * relation.confidence
         if any(argument not in entity_mapping for argument in relation.arguments):
             missing.append(relation.relation_id)
             continue
         mapped_args = tuple(entity_mapping[item] for item in relation.arguments)
         match, similarity, conflict = _target_relation_match(relation, mapped_args, target, cfg)
-        weighted_eligible += relation.importance * relation.confidence
         if conflict:
             contradicted.append(relation.relation_id)
         if match is not None and similarity >= 0.5 and not conflict:
@@ -681,9 +683,17 @@ def build_transfer_hypotheses(
         if any(argument not in entity_map for argument in relation.arguments):
             continue
         mapped_arguments = tuple(entity_map[item] for item in relation.arguments)
-        if any(edge.arguments == mapped_arguments and
-               canonical_relation_name(edge.name, cfg) == canonical_relation_name(relation.name, cfg)
-               for edge in target_edges):
+        exact_named_edges = [
+            edge for edge in target_edges
+            if edge.arguments == mapped_arguments
+            and canonical_relation_name(edge.name, cfg) == canonical_relation_name(relation.name, cfg)
+        ]
+        conflicting_named_edges = [
+            edge for edge in exact_named_edges
+            if relation_similarity(relation, edge, cfg) < 0.5
+            or edge.evidential_status == "contradicted"
+        ]
+        if exact_named_edges and not conflicting_named_edges:
             continue
         condition_fit, caveats = _conditions_fit(relation, target)
         confidence = clamp(
@@ -702,9 +712,21 @@ def build_transfer_hypotheses(
         disanalogies.extend(issues)
         status = "candidate"
         reason = ""
+        if conflicting_named_edges:
+            disanalogies = disanalogies + (Disanalogy(
+                "relation-conflict:" + relation.relation_id,
+                "relational_disanalogy",
+                "Target contains a relation with the same mapped endpoints but incompatible direction, causal status, or evidence",
+                (relation.relation_id,), "hard_stop", "observed_target_relation",
+            ),)
+            allowed = False
         if not allowed or confidence < cfg.transfer_confidence_threshold:
             status = "rejected"
-            reason = "hard_target_constraint" if not allowed else "low_transfer_confidence"
+            reason = (
+                "target_relation_conflict" if conflicting_named_edges
+                else "hard_target_constraint" if not allowed
+                else "low_transfer_confidence"
+            )
         elif caveats:
             status = "qualified"
         hypothesis = TransferHypothesis(

@@ -55,6 +55,8 @@ class SleepDependentSystemsConsolidationProcessor:
         self.replay_history: list[dict[str, Any]] = []
         self.coupling_history: list[float] = []
         self.performance_changes: list[float] = []
+        self.paired_coupling_history: list[float] = []
+        self.paired_performance_changes: list[float] = []
         self.opportunity_count = 0
         self.evaluation_count = 0
         self.database_path = Path(database_path).expanduser().resolve() if database_path else None
@@ -63,7 +65,13 @@ class SleepDependentSystemsConsolidationProcessor:
 
     def add_trace(self, trace: HippocampalTrace) -> dict[str, object]:
         """Register an episodic trace and construct its initial hippocampal-cortical codes."""
-        if trace.trace_id not in self.traces and len(self.traces) >= self.config.max_trace_count:
+        if trace.trace_id in self.traces:
+            if self.traces[trace.trace_id] != trace:
+                raise ValueError("trace_id is already registered with different episode content")
+            return {"trace_id": trace.trace_id, "status": "already_registered",
+                    "hippocampal_population_size": self.config.hippocampal_units,
+                    "sequence_element_count": len(self.network.trace_sequences[trace.trace_id])}
+        if len(self.traces) >= self.config.max_trace_count:
             raise ValueError("configured trace capacity has been reached")
         self.traces[trace.trace_id] = trace
         self.replay_counts.setdefault(trace.trace_id, 0)
@@ -187,7 +195,7 @@ class SleepDependentSystemsConsolidationProcessor:
             record(5, completion_report,
                    {"completed_hippocampal_population_norm": float(np.linalg.norm(completed_pattern))})
             replay_states, sequence_report = self.network.replay_sequence(
-                selected.trace_id, opportunity.replay_direction)
+                selected.trace_id, opportunity.replay_direction, completed_pattern)
             replay_times = compressed_replay_times(len(replay_states), cfg.replay_compression)
             sequence_output = {"direction": opportunity.replay_direction,
                                "element_count": len(replay_states),
@@ -204,6 +212,8 @@ class SleepDependentSystemsConsolidationProcessor:
             alignment["phase_source"] = phase_report.get("source")
             record(7, alignment, {"timing_gate": float(alignment["score"])})
             prior_cortical = self.network.cortical_activity.copy()
+            if float(np.linalg.norm(prior_cortical)) <= 1e-12:
+                prior_cortical = self.network.cortical_memories[selected.trace_id].copy()
             cortical_activity, propagation = self.network.propagate_to_cortex(
                 replay_states, float(alignment["score"]))
             record(8, propagation, {"cortical_population_size": int(cortical_activity.size)})
@@ -260,12 +270,15 @@ class SleepDependentSystemsConsolidationProcessor:
             change = None if pre is None or post is None else float(post - pre)
             if change is not None:
                 self.performance_changes.append(change)
+                self.paired_coupling_history.append(float(alignment["score"]))
+                self.paired_performance_changes.append(change)
             validation = {"status": "external_pre_post_comparison" if change is not None
                           else "performance_not_fully_observed",
                           "observed_pre_performance": pre, "observed_post_performance": post,
                           "retention_change": change,
                           "coupling_performance_correlation": pearson_correlation(
-                              self.coupling_history, self.performance_changes),
+                              self.paired_coupling_history, self.paired_performance_changes),
+                          "paired_performance_sample_count": len(self.paired_performance_changes),
                           "causal_improvement_claimed": False}
             record(17, validation)
         else:
@@ -319,4 +332,5 @@ class SleepDependentSystemsConsolidationProcessor:
                                    if self.coupling_history else None),
                 "mean_observed_performance_change": (
                     float(np.mean(self.performance_changes)) if self.performance_changes else None),
+                "paired_performance_sample_count": len(self.paired_performance_changes),
                 "biological": self.network.snapshot()}

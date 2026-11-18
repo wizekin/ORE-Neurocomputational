@@ -166,6 +166,36 @@ def test_reverse_replay_changes_order_and_low_phase_alignment_reduces_plasticity
     assert result.plasticity["status"] == "no_update_weak_rhythm_coupling"
 
 
+def test_duplicate_trace_registration_does_not_reset_learned_cortical_state() -> None:
+    """Avoid reinitializing an existing episodic trace when callers resubmit the same ID/content."""
+    processor = SleepDependentSystemsConsolidationProcessor()
+    processor.add_trace(_trace())
+    processor.process(_opportunity("learn-before-resubmit"))
+    learned_code = processor.network.cortical_memories["episode-a"].copy()
+    result = processor.add_trace(_trace())
+    assert result["status"] == "already_registered"
+    assert np.allclose(processor.network.cortical_memories["episode-a"], learned_code)
+
+
+def test_replay_sequence_is_seeded_by_the_completed_pattern() -> None:
+    """Ensure a partial cue's completed hippocampal state participates in sequence replay."""
+    processor = SleepDependentSystemsConsolidationProcessor()
+    processor.add_trace(_trace())
+    result = processor.process(_opportunity("cue-seeded"))
+    assert result.operation_trace[6]["biological_output"]["seeded_by_pattern_completion"] is True
+
+
+def test_coupling_performance_correlation_uses_only_paired_observations() -> None:
+    """Calculate coupling-performance association only from opportunities with both observed scores."""
+    processor = SleepDependentSystemsConsolidationProcessor()
+    processor.add_trace(_trace())
+    first = processor.process(_opportunity("pair-1", phase=0.0, pre=0.4, post=0.5))
+    second = processor.process(_opportunity("pair-2", phase=0.6, pre=0.4, post=0.7))
+    assert first.validation["paired_performance_sample_count"] == 1
+    assert second.validation["paired_performance_sample_count"] == 2
+    assert second.validation["coupling_performance_correlation"] is not None
+
+
 def test_replay_across_opportunities_accumulates_weights_and_homeostasis() -> None:
     """Ensure repeated replay modifies connections gradually and keeps neural surrogates bounded."""
     processor = SleepDependentSystemsConsolidationProcessor()

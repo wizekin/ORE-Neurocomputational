@@ -92,16 +92,22 @@ class HippocampalCorticalNetwork:
                           "population_sparsity": float(np.mean(activity < 0.25))}
 
     def replay_sequence(
-        self, trace_id: str, direction: str = "forward"
+        self, trace_id: str, direction: str = "forward",
+        completed_pattern: Sequence[float] | None = None,
     ) -> tuple[list[np.ndarray], dict[str, object]]:
-        """Return the stored ordered neural sequence in forward or reverse replay order."""
+        """Return an ordered sequence seeded by the selected trace's completed population pattern."""
         if trace_id not in self.trace_sequences:
             raise KeyError(f"unknown trace_id: {trace_id}")
         sequence = [item.copy() for item in self.trace_sequences[trace_id]]
         if direction == "reverse":
             sequence.reverse()
+        seeded = completed_pattern is not None
+        if completed_pattern is not None:
+            completed = fit_vector(completed_pattern, sequence[0].size)
+            sequence[0] = 0.65 * completed + 0.35 * sequence[0]
         return sequence, {"direction": direction, "element_count": len(sequence),
-                          "sequence_order_preserved": True}
+                          "sequence_order_preserved": True,
+                          "seeded_by_pattern_completion": seeded}
 
     def propagate_to_cortex(
         self, hippocampal_sequence: Sequence[np.ndarray], alignment_gain: float

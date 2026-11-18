@@ -149,16 +149,27 @@ def reactivate_episodic_fragments(
             or fragment.episode_id == request.target_episode_id
         )
         episode_unidentified = bool(request.target_episode_id) and not fragment.episode_id
-        activation = (
+        base_activation = (
             0.55 * fragment.retrieval_strength
             + 0.30 * fragment.episodic_context
             + 0.10 * cue_fit
             + 0.05 * context_fit
         )
+        activation = base_activation
         if cue_features or (isinstance(cue, str) and cue.strip()):
             activation *= 0.35 + 0.65 * max(cue_fit, context_fit)
         if not episode_match:
             activation *= 0.70
+        # An explicit uncertainty label is itself meaningful retrieval metadata.
+        # Preserve a weakly reactivated trace when its episodic/context signal is
+        # sufficient, even if the current cue does not lexically match its detail.
+        uncertainty_labeled = fragment.status in {
+            "unknown", "source_uncertain", "weakly_retrieved"
+        }
+        reactivated = (
+            activation >= 0.18
+            or (uncertainty_labeled and base_activation >= 0.18)
+        )
         ranked.append({
             "detail_id": fragment.detail_id,
             "feature_type": fragment.feature_type,
@@ -171,6 +182,7 @@ def reactivate_episodic_fragments(
             "cue_fit": cue_fit,
             "context_fit": context_fit,
             "activation": clamp(activation),
+            "base_activation": clamp(base_activation),
             "status": fragment.status,
             "retrieval_strength": fragment.retrieval_strength,
             "episodic_context": fragment.episodic_context,
@@ -181,7 +193,13 @@ def reactivate_episodic_fragments(
     probabilities = softmax([row["activation"] for row in ranked], config.retrieval_temperature)
     for row, probability in zip(ranked, probabilities):
         row["normalized_activation"] = probability
-        row["reactivated"] = row["activation"] >= 0.18
+        row["reactivated"] = (
+            row["activation"] >= 0.18
+            or (
+                row["status"] in {"unknown", "source_uncertain", "weakly_retrieved"}
+                and row["base_activation"] >= 0.18
+            )
+        )
     ranked.sort(key=lambda item: (-item["activation"], item["detail_id"]))
     relation_rows: list[dict[str, Any]] = []
     for relation in request.episodic_relations:

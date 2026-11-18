@@ -1349,3 +1349,24 @@ The research processor does not diagnose, infer unmeasured neural states, treat
 connectivity as causality, or claim that statistical abstractions are literal
 neuronal computations. Annotation registration reuses the shared
 `ore_logger.annotations` SQLite table.
+
+## Working-memory overload and information loss — Point 19
+
+Point 19 adds a nineteen-operation, evidence-aware working-memory model in
+`ore_working_memory_overload`. It maintains unresolved dependencies, estimates relative task
+load and similarity-based interference, retrieves earlier representations by cue, distinguishes
+encoding/maintenance/retrieval/binding/integration failures, and retains unresolved information
+instead of silently filling gaps. The implementation combines a functional track with an
+optional distributed rate-coded biological-reference network. The latter is a computational
+analogy, not measured or anatomically fitted neural activity.
+
+The package registers every class, function, and method in the shared
+`ore_logger.annotations` SQLite catalogue and can log the full nineteen-operation trace through
+the existing run/event tables. It reuses `ore_logs/ore_logger.sqlite3`.
+
+See [Point 19 architecture, equations, biology, and API](docs/WORKING_MEMORY_OVERLOAD_POINT19.md).
+Run the focused tests with:
+
+```bash
+python -m pytest tests/test_working_memory_overload_point19.py -q
+```

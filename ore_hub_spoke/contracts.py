@@ -111,17 +111,28 @@ class LearningExperience:
     verified_by: str = "unspecified"
     source_reference: str = "unspecified"
     episode_id: str = ""
+    modality_timestamps_ms: Mapping[str, float] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        """Reject ungrounded identifiers, invalid feature values, and invalid confidence."""
+        """Reject invalid episode evidence and validate optional modality-specific event times."""
         if not self.concept_id.strip():
             raise ValueError("concept_id must be non-empty")
         if not self.modality_features and not self.semantic_features:
             raise ValueError("an experience must contain semantic or modality feature evidence")
         if not math.isfinite(float(self.confidence)) or not 0.0 <= self.confidence <= 1.0:
             raise ValueError("confidence must be finite and lie in [0, 1]")
-        _normalize_modalities(self.modality_features)
+        normalized_modalities = _normalize_modalities(self.modality_features)
         validate_feature_map("experience semantic", self.semantic_features)
+        timestamps: dict[str, float] = {}
+        for raw_modality, raw_timestamp in self.modality_timestamps_ms.items():
+            modality = canonical_modality(raw_modality)
+            timestamp = float(raw_timestamp)
+            if not math.isfinite(timestamp) or timestamp < 0.0:
+                raise ValueError("modality timestamps must be finite, non-negative milliseconds")
+            if modality not in normalized_modalities:
+                raise ValueError("a modality timestamp must refer to a modality with observed features")
+            timestamps[modality] = timestamp
+        object.__setattr__(self, "modality_timestamps_ms", timestamps)
         if not self.source_reference.strip():
             raise ValueError("source_reference must be non-empty")
 
@@ -134,6 +145,7 @@ class HubAndSpokeRequest:
     text: str | None = None
     tokens: Sequence[str] | None = None
     modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
+    recalled_modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
     context_features: Mapping[str, float] = field(default_factory=dict)
     task: str = "recognize"
     task_relevance: Mapping[str, float] = field(default_factory=dict)
@@ -156,9 +168,11 @@ class HubAndSpokeRequest:
             raise ValueError("tokens must be a non-empty sequence of non-empty strings")
         if self.task.strip() == "":
             raise ValueError("task must be non-empty")
-        if self.text is None and self.tokens is None and not self.modality_inputs:
-            raise ValueError("provide at least one word-form or modality input")
+        if (self.text is None and self.tokens is None and not self.modality_inputs
+                and not self.recalled_modality_inputs):
+            raise ValueError("provide at least one word-form or direct/recalled modality input")
         _normalize_modalities(self.modality_inputs)
+        _normalize_modalities(self.recalled_modality_inputs)
         validate_feature_map("context", self.context_features)
         validate_feature_map("task relevance", self.task_relevance)
         validate_feature_map("irrelevance", self.irrelevant_features)

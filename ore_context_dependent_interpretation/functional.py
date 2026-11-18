@@ -130,7 +130,7 @@ def generate_candidates(
             single = item.facts.get("candidate_meaning")
             if single:
                 proposed = tuple(proposed) + (str(single),)
-            for index, meaning in enumerate(proposed or ()):
+            for meaning in (proposed or ()):
                 text = str(meaning).strip()
                 candidate_id = "context:" + re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
                 if text and candidate_id not in seen:

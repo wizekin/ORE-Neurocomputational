@@ -6,8 +6,8 @@ import re
 from typing import Any, Mapping, Sequence
 
 from .contracts import (
-    LearnerSocialState, PartnerModel, ReferentCandidate, SocialFeedback,
-    SocialInteractionEvent, SocialLearningConfig, SocialSignal,
+    LearnerSocialState, PartnerModel, ReferentCandidate, SocialEpisodeMemory,
+    SocialFeedback, SocialInteractionEvent, SocialLearningConfig, SocialSignal,
 )
 
 
@@ -583,6 +583,7 @@ def learn_from_social_feedback(
                 strength = config.knowledge_update_rate * feedback.reliability * partner.reliability
                 after = clamp(before + strength * (target_confidence - before))
                 state.semantic_knowledge[key] = after
+                state.knowledge_claims[key] = feedback.factual_value
                 state.source_ledger.append({
                     "key": key, "value": feedback.factual_value,
                     "source_id": feedback.source_id or partner.partner_id,
@@ -817,7 +818,7 @@ def build_narrative_model(
 
 def retrieve_social_memories(
     cues: Sequence[str],
-    memories: Sequence[SocialEpisodeMemoryLike],
+    memories: Sequence[SocialEpisodeMemory],
     partner_id: str | None = None,
     limit: int = 5,
 ) -> list[dict[str, Any]]:
@@ -841,9 +842,6 @@ def retrieve_social_memories(
         "confidence": memory.confidence,
     } for score, memory in scored[:max(0, limit)]]
 
-
-# A structural type alias kept local to avoid a circular runtime contract import.
-from .contracts import SocialEpisodeMemory as SocialEpisodeMemoryLike
 
 
 def create_social_memory(

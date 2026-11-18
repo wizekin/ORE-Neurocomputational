@@ -340,12 +340,17 @@ class LearnerSocialState:
 
     learner_id: str
     semantic_knowledge: dict[str, float] = field(default_factory=dict)
+    knowledge_claims: dict[str, Any] = field(default_factory=dict)
+    source_ledger: list[dict[str, Any]] = field(default_factory=list)
     word_referent_associations: dict[str, float] = field(default_factory=dict)
     action_values: dict[str, float] = field(default_factory=dict)
+    retrieval_strengths: dict[str, float] = field(default_factory=dict)
+    explanation_strength: dict[str, float] = field(default_factory=dict)
     skill_competence: dict[str, float] = field(default_factory=dict)
     partner_models: dict[str, PartnerModel] = field(default_factory=dict)
     episodic_memories: list[SocialEpisodeMemory] = field(default_factory=list)
     narrative_graph: dict[str, dict[str, Any]] = field(default_factory=dict)
+    narrative_agent_states: dict[str, dict[str, Any]] = field(default_factory=dict)
     event_history: list[dict[str, Any]] = field(default_factory=list)
     cross_partner_patterns: dict[str, dict[str, Any]] = field(default_factory=dict)
     current_goal: str = ""
@@ -358,11 +363,14 @@ class LearnerSocialState:
         """Validate learner identity and normalize all persistent probability maps."""
         _text("learner_id", self.learner_id)
         for name in (
-            "semantic_knowledge", "word_referent_associations",
-            "action_values", "skill_competence",
+            "semantic_knowledge", "word_referent_associations", "action_values",
+            "retrieval_strengths", "explanation_strength", "skill_competence",
         ):
             values = {str(k): _unit(name, v) for k, v in getattr(self, name).items()}
             setattr(self, name, values)
+        self.knowledge_claims = dict(self.knowledge_claims)
+        self.source_ledger = list(self.source_ledger)
+        self.narrative_agent_states = {str(k): dict(v) for k, v in self.narrative_agent_states.items()}
         self.partner_models = {
             str(key): value if isinstance(value, PartnerModel) else PartnerModel(**value)
             for key, value in self.partner_models.items()

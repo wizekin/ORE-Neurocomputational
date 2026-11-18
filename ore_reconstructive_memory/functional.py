@@ -531,7 +531,14 @@ def monitor_candidate_sources(
             )
             if fragment.detail_id in evidence_ids:
                 scores[source_type] += 0.25
+        independent_sources: dict[tuple[str, str, str], SourceRecord] = {}
         for source in sources:
+            group = source.independence_group or source.source_id
+            key = (group, source.source_type, value_key(source.content))
+            previous = independent_sources.get(key)
+            if previous is None or source.reliability > previous.reliability:
+                independent_sources[key] = source
+        for source in independent_sources.values():
             detail_match = source.detail_id in {candidate.candidate_id, candidate.feature_type, ""}
             content_match = value_key(source.content) == value_key(candidate.content) if source.content is not None else False
             if detail_match and content_match:
@@ -576,6 +583,7 @@ def assess_familiarity_and_recollection(
     fragments: Sequence[EpisodicFragment],
     sources: Sequence[SourceRecord],
     precision: str,
+    config: Point20Config,
 ) -> dict[str, Any]:
     """Separate repetition-based familiarity from event-specific contextual recollection."""
     output: list[dict[str, Any]] = []
@@ -589,7 +597,7 @@ def assess_familiarity_and_recollection(
             item for item in sources
             if item.content is not None and value_key(item.content) == value_key(candidate.content)
         ]
-        repetition = min(1.0, max(0, len(familiar_sources) - 1) / 4.0)
+        repetition = min(1.0, len(familiar_sources) / 4.0)
         fragment_familiarity = max((item.familiarity for item in matches), default=0.0)
         familiarity = clamp(0.55 * fragment_familiarity + 0.45 * repetition)
         recollection = clamp(
@@ -597,8 +605,8 @@ def assess_familiarity_and_recollection(
             / max(1, len(matches))
         )
         uncertainty = candidate.source_uncertainty
-        familiarity_weight = 0.20 if precision == "exact" else 0.35
-        recollection_weight = 0.65 if precision == "exact" else 0.50
+        familiarity_weight = config.familiarity_weight * (0.70 if precision == "exact" else 1.0)
+        recollection_weight = config.recollection_decision_weight * (1.15 if precision == "exact" else 0.85)
         decision_signal = (
             familiarity_weight * familiarity
             + recollection_weight * recollection
@@ -706,6 +714,8 @@ def choose_response_policy(
     high_stakes = str(request.context.get("stakes", "normal")).casefold() in {"high", "critical"}
     precision = request.precision
     false_claim_cost = 5.0 if high_stakes or precision == "exact" else 2.0
+    if precision == "gist":
+        false_claim_cost *= 1.0 - 0.5 * config.gist_detail_prior_weight
     omission_cost = 0.8 if precision == "gist" else 1.4
     clarification_cost = 0.25 if high_stakes or precision == "exact" else 0.45
     grouped: dict[str, list[DetailCandidate]] = {}
@@ -731,7 +741,11 @@ def choose_response_policy(
                 "omit": omit_loss,
             }
             action = min(losses, key=losses.get)
-            if candidate.status in {"inferred", "source_uncertain"} and action == "report":
+            if action == "report" and probability < config.report_confidence_threshold:
+                action = "qualify" if probability >= config.clarify_confidence_threshold else (
+                    "clarify" if high_stakes or precision == "exact" or importance >= 0.7 else "omit"
+                )
+            if candidate.status in {"inferred", "source_uncertain", "suggested_after_event"} and action == "report":
                 action = "qualify"
             options.append({
                 "candidate_id": candidate.candidate_id,
@@ -810,13 +824,14 @@ def _has_cycle(nodes: Mapping[str, Any], edges: Sequence[tuple[str, str]]) -> bo
 def build_provenance_graph(
     request: Point20Request,
     candidates: Sequence[DetailCandidate],
+    prior_sources: Sequence[SourceRecord] = (),
 ) -> dict[str, Any]:
     """Build a source/detail/schema provenance graph and preserve the timeline of later information."""
     nodes: dict[str, dict[str, Any]] = {
         f"event:{request.event_id}": {"node_type": "original_event", "event_id": request.event_id}
     }
     edges: list[tuple[str, str]] = []
-    source_records = list(request.source_history)
+    source_records = [*request.source_history, *prior_sources]
     source_by_id = {item.source_id: item for item in source_records}
     for fragment in request.episodic_fragments:
         source_id = fragment.source_id or f"fragment-source:{fragment.detail_id}"
@@ -838,11 +853,21 @@ def build_provenance_graph(
             "node_type": "source",
             **source.to_dict(),
         }
-        parents = source.parent_source_ids or (f"event:{request.event_id}",)
+        if source.parent_source_ids:
+            parents = source.parent_source_ids
+        elif source.source_type in {"original_perception", "episodic_retrieval"}:
+            parents = (f"event:{request.event_id}",)
+        else:
+            parents = (f"external:{source.source_id}",)
         for parent in parents:
-            parent_key = parent if parent.startswith(("source:", "event:", "detail:")) else f"source:{parent}"
+            parent_key = parent if parent.startswith(("source:", "event:", "detail:", "schema:", "external:")) else f"source:{parent}"
             if parent_key not in nodes:
-                nodes[parent_key] = {"node_type": "unresolved_parent_reference", "source_id": parent}
+                if parent_key.startswith("schema:"):
+                    nodes[parent_key] = {"node_type": "schema", "schema_id": parent_key.split(":", 1)[1]}
+                elif parent_key.startswith("external:"):
+                    nodes[parent_key] = {"node_type": "external_source_origin", "source_id": parent_key.split(":", 1)[1]}
+                else:
+                    nodes[parent_key] = {"node_type": "unresolved_parent_reference", "source_id": parent}
             edges.append((parent_key, f"source:{source.source_id}"))
         if source.detail_id:
             detail_key = f"detail:{source.detail_id}"
@@ -899,8 +924,9 @@ def build_provenance_graph(
         "edges": [{"from": left, "to": right} for left, right in edges],
         "source_timeline": [
             {"source_id": item.source_id, "source_type": item.source_type,
-             "detail_id": item.detail_id, "timestamp": item.timestamp,
-             "independence_group": item.independence_group, "operation": item.operation}
+             "detail_id": item.detail_id, "content": item.content, "reliability": item.reliability,
+             "timestamp": item.timestamp, "independence_group": item.independence_group,
+             "parent_source_ids": list(item.parent_source_ids), "operation": item.operation}
             for item in sorted(source_records, key=lambda row: (row.timestamp, row.source_id))
         ],
         "feedback_timeline": sorted(feedback_timeline, key=lambda row: (row["timestamp"], row["feedback_id"])),
@@ -914,9 +940,10 @@ def monitor_retelling_and_post_event_information(
     request: Point20Request,
     state: Point20State,
     candidates: Sequence[DetailCandidate],
+    prior_sources: Sequence[SourceRecord] = (),
 ) -> dict[str, Any]:
     """Track repeated reports and later suggestions without overwriting the earliest source labels."""
-    graph = build_provenance_graph(request, candidates)
+    graph = build_provenance_graph(request, candidates, prior_sources)
     sources = graph["source_timeline"]
     after_event = [
         item for item in sources
@@ -932,9 +959,27 @@ def monitor_retelling_and_post_event_information(
         for detail_id, count in repeated.items()
     ]
     state.source_versions.extend(
-        {"source_id": item["source_id"], "source_type": item["source_type"],
-         "detail_id": item["detail_id"], "timestamp": item["timestamp"]}
-        for item in sources
+        {
+            "source_id": item["source_id"], "source_type": item["source_type"],
+            "detail_id": item["detail_id"], "content": item.get("content"),
+            "reliability": item.get("reliability", 0.5), "timestamp": item["timestamp"],
+            "independence_group": item.get("independence_group", ""),
+            "operation": item.get("operation", "reported"),
+        }
+        for item in sources if item.get("operation") != "prior_reconstruction"
+    )
+    state.source_versions.extend(
+        {
+            "source_id": f"reconstruction:{request.event_id}:{state.run_count}:{candidate.candidate_id}",
+            "source_type": "schema_inference",
+            "detail_id": candidate.candidate_id,
+            "content": candidate.content,
+            "reliability": candidate.confidence,
+            "timestamp": float(state.run_count),
+            "independence_group": candidate.candidate_id,
+            "operation": "reconstructive_candidate",
+        }
+        for candidate in candidates
     )
     state.source_versions = state.source_versions[-500:]
     return {
@@ -951,6 +996,7 @@ def update_reconstruction_from_feedback(
     feedback: Sequence[FeedbackRecord],
     state: Point20State,
     config: Point20Config,
+    event_id: str = "unspecified",
 ) -> dict[str, Any]:
     """Update candidate odds with reliable independent feedback while preserving prior versions."""
     updates: list[dict[str, Any]] = []
@@ -978,15 +1024,18 @@ def update_reconstruction_from_feedback(
             continue
         state.feedback_groups_seen.append(group)
         for candidate in matches:
-            prior = clamp(candidate.posterior if candidate.posterior > 0.0 else candidate.confidence)
+            prior = clamp(candidate.feedback_probability if candidate.feedback_probability > 0.0 else (
+                candidate.schema_prior * candidate.evidence_likelihood
+                if candidate.schema_prior > 0.0 else candidate.confidence
+            ))
             prior_odds = prior / max(config.epsilon, 1.0 - prior)
             likelihood_if_true = record.reliability if record.supports else 1.0 - record.reliability
             likelihood_if_false = 1.0 - record.reliability if record.supports else record.reliability
             likelihood_ratio = likelihood_if_true / max(config.epsilon, likelihood_if_false)
             posterior_odds = prior_odds * likelihood_ratio
             updated = clamp(posterior_odds / (1.0 + posterior_odds))
-            before = candidate.posterior
-            candidate.posterior = updated
+            before = candidate.feedback_probability
+            candidate.feedback_probability = updated
             candidate.feedback_history.append({
                 "feedback_id": record.feedback_id,
                 "source_id": record.source_id,
@@ -994,14 +1043,14 @@ def update_reconstruction_from_feedback(
                 "supports": record.supports,
                 "prior_probability": prior,
                 "likelihood_ratio": likelihood_ratio,
-                "posterior_probability": updated,
+                "feedback_probability": updated,
             })
             state.reconstruction_versions.append({
-                "event_id": "current",
+                "event_id": event_id,
                 "candidate_id": candidate.candidate_id,
                 "feedback_id": record.feedback_id,
-                "posterior_before": before,
-                "posterior_after": updated,
+                "feedback_probability_before": before,
+                "feedback_probability_after": updated,
                 "source_id": record.source_id,
             })
             updates.append({
@@ -1010,16 +1059,8 @@ def update_reconstruction_from_feedback(
                 "prior_odds": prior_odds,
                 "likelihood_ratio": likelihood_ratio,
                 "posterior_odds": posterior_odds,
-                "posterior_probability": updated,
+                "feedback_probability": updated,
             })
-    grouped: dict[str, list[DetailCandidate]] = {}
-    for candidate in candidates:
-        grouped.setdefault(candidate.feature_type, []).append(candidate)
-    for group in grouped.values():
-        total = sum(item.posterior for item in group)
-        if total > 0.0:
-            for item in group:
-                item.posterior /= total
     return {
         "updates": updates,
         "ignored_feedback": ignored,
@@ -1141,6 +1182,7 @@ def finalize_reconstruction(
         "response_decisions": selected_decisions,
         "confidence_by_detail": {
             item.candidate_id: {"confidence": item.confidence, "posterior": item.posterior,
+                                "feedback_probability": item.feedback_probability,
                                 "status": item.status, "source": item.assigned_source}
             for item in candidates
         },

@@ -414,6 +414,7 @@ class DetailCandidate:
     recollection: float = 0.0
     inference_proportion: float = 1.0
     confidence: float = 0.0
+    feedback_probability: float = 0.0
     source_probabilities: dict[str, float] = field(default_factory=dict)
     assigned_source: str = "unknown"
     evidence_ids: list[str] = field(default_factory=list)

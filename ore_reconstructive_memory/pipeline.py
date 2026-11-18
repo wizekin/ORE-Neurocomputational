@@ -7,7 +7,7 @@ from typing import Any, Mapping
 
 from .biology import ReconstructiveMemoryNetwork
 from .contracts import (
-    Point20Config, Point20Request, Point20Result, Point20State,
+    Point20Config, Point20Request, Point20Result, Point20State, SourceRecord,
 )
 from .functional import (
     activate_candidate_schemas, assess_familiarity_and_recollection,
@@ -114,6 +114,28 @@ class ReconstructiveMemoryProcessor:
                 salience=salience,
             )
 
+        # Rehydrate earlier reports as dependent source records. They contribute to familiarity
+        # and provenance, but source-monitoring likelihoods group them by independence.
+        prior_sources = [
+            SourceRecord(
+                source_id=f"prior:{request.event_id}:{index}:{item['source_id']}",
+                source_type=str(item["source_type"]),
+                detail_id=str(item.get("detail_id", "")),
+                content=item.get("content"),
+                reliability=clamp(float(item.get("reliability", 0.5))),
+                timestamp=float(item.get("timestamp", 0.0)),
+                independence_group=str(item.get("independence_group") or item["source_id"]),
+                parent_source_ids=tuple(item.get("parent_source_ids", ())),
+                operation="prior_reconstruction",
+            )
+            for index, item in enumerate(current.source_versions)
+            if item.get("content") is not None and item.get("source_type") in {
+                "original_perception", "episodic_retrieval", "schema_inference",
+                "imagination", "post_event_information", "later_testimony", "unknown",
+            }
+        ]
+        combined_sources = [*request.source_history, *prior_sources]
+
         # 1. Define the retrieval target and the precision required by the question.
         target = define_retrieval_target(request)
         _record_operation(
@@ -168,7 +190,7 @@ class ReconstructiveMemoryProcessor:
 
         # 8. Estimate whether details derive from perception, recollection, schema, imagination, or later sources.
         source_monitoring = monitor_candidate_sources(
-            candidates, request.episodic_fragments, request.source_history, config,
+            candidates, request.episodic_fragments, combined_sources, config,
         )
         candidates = list(source_monitoring["candidates"])
         _record_operation(trace, 7, {
@@ -178,7 +200,7 @@ class ReconstructiveMemoryProcessor:
 
         # 9. Keep familiarity separate from source-specific episodic recollection.
         familiarity = assess_familiarity_and_recollection(
-            candidates, request.episodic_fragments, request.source_history, request.precision,
+            candidates, request.episodic_fragments, combined_sources, request.precision, config,
         )
         candidates = list(familiarity["candidates"])
         _record_operation(trace, 8, {
@@ -207,12 +229,12 @@ class ReconstructiveMemoryProcessor:
         _record_operation(trace, 11, policy, biological(11))
 
         # 13. Build an immutable-source timeline and provenance DAG before applying new corrections.
-        retelling = monitor_retelling_and_post_event_information(request, current, candidates)
+        retelling = monitor_retelling_and_post_event_information(request, current, candidates, prior_sources)
         _record_operation(trace, 12, retelling, biological(12))
 
         # 14. Apply reliable, independent feedback to candidate odds; keep version history.
         feedback_update = update_reconstruction_from_feedback(
-            candidates, request.feedback, current, config,
+            candidates, request.feedback, current, config, event_id=request.event_id,
         )
         _record_operation(trace, 13, feedback_update, biological(13))
 
@@ -221,7 +243,7 @@ class ReconstructiveMemoryProcessor:
         _record_operation(trace, 14, schema_update, biological(14))
 
         # 16. Finalize the evidence-faithful report and refresh the provenance graph with feedback sources.
-        provenance_graph = build_provenance_graph(request, candidates)
+        provenance_graph = build_provenance_graph(request, candidates, prior_sources)
         reconstruction = finalize_reconstruction(
             request, ledger, candidates, policy, provenance_graph,
         )

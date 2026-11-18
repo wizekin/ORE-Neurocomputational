@@ -159,7 +159,7 @@ def test_familiarity_and_recollection_are_separate_dimensions() -> None:
         )
         for index in range(5)
     ]
-    result = assess_familiarity_and_recollection([candidate], [], sources, "exact")
+    result = assess_familiarity_and_recollection([candidate], [], sources, "exact", Point20Config(simulate_biology=False))
     row = result["dimensions"][0]
     assert row["familiarity"] > 0.0
     assert row["source_specific_recollection"] == 0.0
@@ -248,7 +248,8 @@ def test_likelihood_ratio_feedback_updates_posterior_and_deduplicates_sources() 
     )
     assert len(result["updates"]) == 1
     assert result["ignored_feedback"][0]["reason"] == "duplicate_independence_group"
-    assert candidates[0].posterior > 0.30
+    assert candidates[0].feedback_probability > 0.30
+    assert candidates[0].posterior == pytest.approx(0.30)
 
 
 def test_schema_learning_requires_verified_independent_feedback() -> None:
@@ -341,3 +342,21 @@ def test_sqlite_annotation_and_sixteen_event_logging_when_logger_is_available(tm
     assert rows >= 30
     assert events == 16
     assert status == "completed"
+
+def test_repeated_schema_retellings_increase_familiarity_not_recollection() -> None:
+    """A prior inference can feel more familiar after retelling without gaining episodic context."""
+    processor = ReconstructiveMemoryProcessor(Point20Config(simulate_biology=False))
+    request = make_request()
+    first = processor.process(request)
+    second = processor.process(request)
+    first_canoe = next(
+        item for item in first.candidate_evaluation["generation"]["candidates"]
+        if item["content"] == "canoe"
+    )
+    second_canoe = next(
+        item for item in second.candidate_evaluation["generation"]["candidates"]
+        if item["content"] == "canoe"
+    )
+    assert second_canoe["familiarity"] > first_canoe["familiarity"]
+    assert second_canoe["recollection"] == first_canoe["recollection"]
+    assert second_canoe["status"] == "inferred"

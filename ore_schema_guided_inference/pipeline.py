@@ -16,7 +16,7 @@ from typing import Any, Mapping, Sequence
 from .biology import BiologicalSchemaInferenceNetwork
 from .contracts import (
     ActionDecision, CaseEvidence, EvidenceItem, FeedbackResult, InferenceConfig,
-    InferenceResult, InferredProperty, SchemaProfile,
+    InferenceResult, InferredProperty, RelationEvidence, SchemaProfile,
 )
 from .functional import (
     merge_case_evidence, predict_missing_properties, predict_missing_relations,
@@ -435,6 +435,7 @@ class SchemaGuidedInferenceProcessor:
         result: InferenceResult,
         observed_evidence: Sequence[EvidenceItem],
         observed_next_events: Sequence[str] = (),
+        observed_relations: Sequence[RelationEvidence] = (),
         *,
         learning_authorized: bool = False,
         validated_case_ids: Sequence[str] = (),
@@ -460,6 +461,35 @@ class SchemaGuidedInferenceProcessor:
             tested.append({
                 "kind": prediction.kind, "name": prediction.name, "predicted_value": prediction.value,
                 "observed_value": observation.value, "correct": bool(actual),
+                "brier_score": brier, "surprise": surprise,
+                "prediction_source": prediction.source_schema_id,
+                "observation_source": observation.source,
+            })
+            brier_values.append(brier)
+            surprise_values.append(surprise)
+        relation_feedback = {
+            (item.subject, item.predicate, item.object): item
+            for item in observed_relations
+        }
+        for prediction in result.inferred_relations:
+            predicted = prediction.value
+            key = (
+                str(predicted.get("subject", "")).casefold(),
+                str(predicted.get("predicate", "")).casefold(),
+                str(predicted.get("object", "")).casefold(),
+            )
+            observation = relation_feedback.get(key)
+            if observation is None or observation.status not in {"observed", "contradicted"}:
+                continue
+            actual = float(observation.status == "observed")
+            probability = clamp(prediction.confidence)
+            brier = (probability - actual) ** 2
+            surprise = -math.log(max(
+                self.config.probability_floor, probability if actual else 1.0 - probability
+            ))
+            tested.append({
+                "kind": "relation", "name": prediction.name, "predicted_value": predicted,
+                "observed_status": observation.status, "correct": bool(actual),
                 "brier_score": brier, "surprise": surprise,
                 "prediction_source": prediction.source_schema_id,
                 "observation_source": observation.source,

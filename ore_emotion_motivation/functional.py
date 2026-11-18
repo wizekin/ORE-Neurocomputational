@@ -173,7 +173,7 @@ def estimate_neuromodulatory_gain(
 ) -> float:
     """Compute an illustrative inverted-U gain proxy with a separate LC-NE factor."""
     arousal = clamp(float(arousal_state.get("fast_arousal", 0.0)))
-    ne = clamp(float(arousal_state.get("norepinephrine_gain_proxy", 0.5)))
+    ne = clamp(float(arousal_state.get("norepinephrine_gain_proxy", arousal_state.get("norepinephrine_gain", 0.5))))
     distance = arousal - config.arousal_optimum
     task_gain = exp(-(distance * distance) / (2.0 * config.arousal_sigma ** 2))
     # The floor prevents a single arousal estimate from shutting off all feature processing.
@@ -504,7 +504,7 @@ def measure_attention_memory_tradeoffs(
         "peripheral_mean_strength": clamp(peripheral_mean),
         "central_peripheral_ratio": clamp(
             central_mean / (peripheral_mean + 1e-8), 0.0, 10.0
-        ) / 10.0,
+        ),
         "context_completeness": clamp(completeness),
         "vividness_accuracy_distinction": 1.0,
     }

@@ -176,23 +176,24 @@ def infer_role_assignments(
 ) -> list[RoleAssignment]:
     """Score candidate functional roles while preserving entities with genuinely ambiguous roles."""
     occurrences = _raw_role_occurrences(episodes, config.role_aliases)
-    entity_role_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    entity_role_counts: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
     role_type_counts: dict[str, Counter[str]] = defaultdict(Counter)
     for episode in episodes:
         for event in episode.events:
             for role, entity_id in event.participants.items():
                 canonical = canonical_role(role, config.role_aliases)
-                entity_role_counts[entity_id][canonical] += 1
+                entity_role_counts[(episode.episode_id, entity_id)][canonical] += 1
                 role_type_counts[canonical][episode.entities[entity_id].entity_type] += 1
     output: list[RoleAssignment] = []
     for (episode_id, entity_id), roles in sorted(occurrences.items()):
-        total = max(1, sum(entity_role_counts[entity_id].values()))
+        episode_roles = entity_role_counts[(episode_id, entity_id)]
+        total = max(1, sum(episode_roles.values()))
         entity = next(ep.entities[entity_id] for ep in episodes if ep.episode_id == episode_id)
         scores: dict[str, float] = {}
         for role in sorted(roles):
             role_total = sum(role_type_counts[role].values()) or 1
             type_match = role_type_counts[role][entity.entity_type] / role_total
-            role_frequency = entity_role_counts[entity_id][role] / total
+            role_frequency = episode_roles[role] / total
             scores[role] = clamp(0.75 * role_frequency + 0.25 * type_match)
         ordered = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
         selected = ordered[0][0] if ordered else None

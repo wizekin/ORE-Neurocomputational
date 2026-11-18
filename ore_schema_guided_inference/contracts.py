@@ -182,6 +182,7 @@ class CaseEvidence:
     query_options: Sequence[QueryOption] = ()
     action_options: Sequence[ActionOption] = ()
     source_reference: str = "unspecified"
+    evidence_history: Sequence[EvidenceItem] = ()
 
     def __post_init__(self) -> None:
         """Validate evidence references and preserve unknowns instead of treating them as absent."""
@@ -210,6 +211,10 @@ class CaseEvidence:
         object.__setattr__(self, "goals", tuple(_text("goal", x).casefold() for x in self.goals))
         object.__setattr__(self, "query_options", queries)
         object.__setattr__(self, "action_options", actions)
+        history = tuple(self.evidence_history)
+        if any(not isinstance(item, EvidenceItem) for item in history):
+            raise TypeError("evidence_history must contain EvidenceItem records")
+        object.__setattr__(self, "evidence_history", history)
         object.__setattr__(self, "source_reference", str(self.source_reference or "unspecified"))
 
     @property
@@ -228,6 +233,7 @@ class CaseEvidence:
             "query_options": [asdict(item) for item in self.query_options],
             "action_options": [asdict(item) for item in self.action_options],
             "source_reference": self.source_reference,
+            "evidence_history": [item.to_dict() for item in self.evidence_history],
         })
 
 

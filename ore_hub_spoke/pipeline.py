@@ -262,6 +262,8 @@ class HubAndSpokeProcessor:
         normalized_inputs = self._normalized_inputs(request)
         for modality, features in normalized_inputs.items():
             additional[modality].update(features)
+        for modality, features in self._normalized_recalled_inputs(request).items():
+            additional[modality].update(features)
         for modality, features in _normalize_episode_features(request.episodes).items():
             additional[modality].update(features)
         for experience in experiences:
@@ -315,7 +317,7 @@ class HubAndSpokeProcessor:
         self._rebuild_feature_associations()
 
     def _normalized_inputs(self, request: HubAndSpokeRequest) -> dict[str, dict[str, float]]:
-        """Canonicalize caller modality evidence and add the preserved lexical cue as a language feature."""
+        """Canonicalize direct modality evidence and the preserved lexical cue only."""
         result: dict[str, dict[str, float]] = {}
         for raw_modality, features in request.modality_inputs.items():
             modality = canonical_modality(raw_modality)
@@ -325,6 +327,18 @@ class HubAndSpokeProcessor:
         cue = _normalize_text(request.concept_cue)
         if cue:
             result.setdefault("linguistic", {})[f"WORD:{cue}"] = 1.0
+        return result
+
+    def _normalized_recalled_inputs(
+        self, request: HubAndSpokeRequest
+    ) -> dict[str, dict[str, float]]:
+        """Canonicalize internally reactivated features without relabelling them as direct observations."""
+        result: dict[str, dict[str, float]] = {}
+        for raw_modality, features in request.recalled_modality_inputs.items():
+            modality = canonical_modality(raw_modality)
+            target = result.setdefault(modality, {})
+            for feature, value in features.items():
+                target[str(feature)] = max(target.get(str(feature), 0.0), float(value))
         return result
 
     def _concept_candidates(self, cue: str, episodes: Sequence[WordFormEpisode]) -> list[dict[str, Any]]:
@@ -453,9 +467,12 @@ class HubAndSpokeProcessor:
         return scores
 
     def _stage_01_receive(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Encode each current input, mark available modalities, and preserve simultaneous evidence."""
+        """Encode direct inputs separately from recalled cues and preserve both provenance streams."""
         raw = self._normalized_inputs(state["request"])
+        recalled = self._normalized_recalled_inputs(state["request"])
         state["raw_inputs"] = raw
+        state["direct_inputs"] = raw
+        state["recalled_inputs"] = recalled
         state["available_modalities"] = sorted(raw)
         state["input_vectors"] = {
             modality: _safe_vector(raw.get(modality, {}), self._vocabulary[modality])
@@ -463,8 +480,13 @@ class HubAndSpokeProcessor:
         }
         return {
             "available_modalities": list(state["available_modalities"]),
+            "direct_modalities": list(state["available_modalities"]),
+            "recalled_modalities": sorted(recalled),
+            "all_available_modalities": sorted(set(raw) | set(recalled)),
             "input_channel_count": len(raw),
-            "preserved_modalities": list(raw),
+            "recalled_channel_count": len(recalled),
+            "direct_evidence_preserved": True,
+            "recalled_features_not_treated_as_direct_observations": True,
             "parallel_inputs_retained": True,
             "source_reference": state["request"].source_reference,
         }
@@ -575,6 +597,11 @@ class HubAndSpokeProcessor:
             if modality == "linguistic":
                 for feature, value in episode_memory.items():
                     memory_map[feature] += float(value) * 0.25
+            recalled_features = state.get("recalled_inputs", {}).get(modality, {})
+            if recalled_features:
+                for feature, value in recalled_features.items():
+                    memory_map[feature] += float(value) * 0.65
+                total_weight += 0.65
             if total_weight > _EPS:
                 memory_map = {
                     key: float(np.clip(value / total_weight, 0.0, 1.0))

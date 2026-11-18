@@ -10,7 +10,7 @@ from .contracts import (
     Point20Config, Point20Request, Point20Result, Point20State, SourceRecord,
 )
 from .functional import (
-    activate_candidate_schemas, assess_familiarity_and_recollection,
+    activate_candidate_schemas, assess_familiarity_and_recollection, clamp,
     build_feature_ledger, build_provenance_graph, calibrate_detail_confidence,
     check_spatiotemporal_causal_constraints, choose_response_policy,
     define_retrieval_target, evaluate_candidates_bayesian,

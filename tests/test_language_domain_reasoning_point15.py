@@ -5,7 +5,8 @@ import sqlite3
 import pytest
 
 from ore_language_domain_reasoning import (
-    LanguageDomainReasoningProcessor, LanguageEvent, LanguageLearnerState,
+    BiologicalLanguageReasoningNetwork, LanguageDomainReasoningProcessor,
+    LanguageEvent, LanguageLearnerState,
     LanguageProcessingConfig, OPERATION_REGISTRY, encode_sensory_signal,
     infer_social_pragmatics, update_learned_representations,
 )
@@ -154,6 +155,17 @@ def test_repeated_reliable_feedback_updates_lexical_and_construction_strengths()
     assert updated["eligible"] is True
     assert state.lexical_strengths["metal"] > 0.5
     assert state.construction_strengths["noun verb"] > 0.5
+
+
+def test_rate_coded_network_activity_uses_recurrence_decay_and_inhibition():
+    """Use bounded population activity rather than only incrementing network counters."""
+    network = BiologicalLanguageReasoningNetwork()
+    first = network.engage("frontotemporal_language_selective", "language_input", {"drive": 0.6})
+    second = network.engage("frontotemporal_language_selective", "recurrent_update", {"drive": 0.0})
+    assert 0.0 <= first["activation_after"] <= 1.0
+    assert second["activation_before"] == pytest.approx(first["activation_after"])
+    assert second["activation_after"] != pytest.approx(first["activation_after"])
+    assert "recurrent_gain" in network.snapshot()["frontotemporal_language_selective"]["parameters"]
 
 
 def test_full_pipeline_runs_fifteen_stages_and_keeps_networks_distinct():

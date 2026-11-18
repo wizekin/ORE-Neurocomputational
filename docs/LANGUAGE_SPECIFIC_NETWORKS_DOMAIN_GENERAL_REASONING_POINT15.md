@@ -57,7 +57,7 @@ These formulas are candidate computational descriptions. They are not direct mea
 
 ## Biological functional surrogates
 
-The biology module contains nine named network-level activity records:
+The biology module contains nine named network-level activity models. Each updates a bounded rate-coded activation using a logistic input response, recurrent excitation, activity-dependent inhibition, and decay of prior activation:
 - Auditory/visual perceptual pathways.
 - Distributed frontotemporal language-selective network.
 - Distributed conceptual-semantic systems.
@@ -68,7 +68,7 @@ The biology module contains nine named network-level activity records:
 - Language production and task output.
 - Hippocampal/medial-temporal and cortical learning.
 
-The core language system remains responsible for linguistic representation and composition. Conceptual retrieval supplies world knowledge. Multiple-demand circuitry contributes control support when needed, and social-cognition systems contribute speaker-perspective inference when the task warrants it. The precise anatomy and interactions are distributed and task-dependent; these software objects are functional surrogates rather than an anatomical connectome.
+The core language system remains responsible for linguistic representation and composition. Conceptual retrieval supplies world knowledge. Multiple-demand circuitry contributes control support when needed, and social-cognition systems contribute speaker-perspective inference when the task warrants it. Each subsystem has its own gain, recurrent, inhibition, and decay parameters. The rate-coded state is a simplified mathematical surrogate, not a neuronal recording, fitted connectome, or claim that the exact parameters describe a human brain.
 
 ## Scientific and data-provenance safeguards
 
@@ -81,7 +81,7 @@ The core language system remains responsible for linguistic representation and c
 - Speaker beliefs and intentions are uncertain hypotheses, not facts.
 - Mismatch revisions reopen affected layers while preserving the original input record.
 - Long-term lexical/constructional updates require reliable repeated evidence.
-- Biological engagement counters are model diagnostics, not neural recordings.
+- Biological rate-coded activation states and engagement counters are model diagnostics, not neural recordings.
 - A difficult language task can recruit both language and domain-general control systems without making them one undifferentiated system.
 
 ## SQLite annotations and operation logging
@@ -92,7 +92,7 @@ The record_result_to_sqlite function synchronizes the package annotation catalog
 
 ## Quick start
 
-\`\`\`python
+```python
 from ore_language_domain_reasoning import LanguageDomainReasoningProcessor, LanguageEvent
 
 processor = LanguageDomainReasoningProcessor()
@@ -110,8 +110,17 @@ event = LanguageEvent(
 result = processor.process(event)
 print(result.task_result)
 print(len(result.operation_trace))  # 15
-\`\`\`
+```
 
 ## Validation coverage
 
 Tests cover source order, modality-specific signal handling, lexical ambiguity, separation of explicit language from conceptual knowledge, demand-sensitive control, inference provenance, conditional pragmatics, mismatch classification, learning thresholds, full biological/functional pipeline execution, and SQLite annotation/operation logging.
+
+
+For each subsystem, the simplified state update is:
+
+\[
+a_t=(1-\lambda)\,\sigma(g_x x_t+g_r a_{t-1}-g_i a_{t-1}^{2})+\lambda a_{t-1}
+\]
+
+where \(x_t\) is the normalized input-drive proxy, \(a_{t-1}\) is prior network activity, \(g_x\) is input gain, \(g_r\) is recurrent gain, \(g_i\) is inhibition gain, and \(\lambda\) is the retained-activity/decay parameter. This deliberately compact population-rate equation makes recurrence and bounded activation explicit without pretending to reproduce a full neural circuit.

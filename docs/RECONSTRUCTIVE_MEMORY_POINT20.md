@@ -3,7 +3,7 @@
 ## Purpose and relationship to Point 10
 
 Point 20 implements the sequence in
-\`Point_20_Schema_Driven_Inference_and_Reconstructive_Memory.md\`. It addresses a different
+`Point_20_Schema_Driven_Inference_and_Reconstructive_Memory.md`. It addresses a different
 problem from Point 10's general schema-guided classification and prediction:
 
 - Point 10 asks which reusable schema best explains a current case and predicts likely missing
@@ -13,7 +13,7 @@ problem from Point 10's general schema-guided classification and prediction:
   generic schemas may bias recollection.
 
 The two packages remain separate. Point 20 can consume schema descriptions in its own
-\`SchemaProfile\` contract and does not make schema predictions equivalent to episode-specific
+`SchemaProfile` contract and does not make schema predictions equivalent to episode-specific
 facts.
 
 The central invariant is that a plausible or coherent completion is not an observation. The
@@ -48,7 +48,7 @@ reconsolidation.
 | 2 | Reactivate episodic fragments | Weighted cue summation and temperature-scaled competition; preserve each episode and relation |
 | 3 | Separate retrieved from missing | Feature ledger distinguishes direct, retrieved, weak, not-retrieved, contradicted, and unqueried |
 | 4 | Activate candidate schemas | Evidence fit, contextual fit, and goal relevance combined into a normalized schema distribution |
-| 5 | Generate inferred completions | Generate multiple schema-conditioned candidates for missing features; label them \`inferred\` immediately |
+| 5 | Generate inferred completions | Generate multiple schema-conditioned candidates for missing features; label them `inferred` immediately |
 | 6 | Combine evidence and priors | Bayesian/log-likelihood combination; preserve the prior and evidence contributions separately |
 | 7 | Check event constraints | Evaluate supplied spatial, temporal, participant, and causal constraints without smoothing conflicts away |
 | 8 | Monitor candidate sources | Estimate original perception, episodic retrieval, schema inference, imagination, and post-event sources |
@@ -60,6 +60,22 @@ reconsolidation.
 | 14 | Update from reliable feedback | Bayesian likelihood-ratio update using reliability and independent-source groups |
 | 15 | Update general schema separately | Update beta counts only from verified, independent feedback explicitly authorized for schema learning |
 | 16 | Finalize the report | Separate supported, inferred, source-uncertain, contradicted, and unresolved information |
+
+
+### Event-specific relations
+
+Event relations are stored separately as `EpisodicRelation` records with a directed
+`subject → predicate → object` triple, episode identity, retrieval strength, contextual
+recollection, and source provenance. The event graph built from them is separate from the
+provenance DAG: the former describes what entities and events were related; the latter records
+where each detail or report came from.
+
+Schemas can supply `relation_templates` (subject, predicate, object, and prior probability).
+Missing relations proposed from these templates are emitted as `inferred_relations`, never as
+observed edges. Explicit relation constraints can be supplied through `context.constraints` with
+an `expected_relation` triple. Contradicted or competing relations remain visible, and the
+processor reports supported, inferred, post-event-suggested, source-uncertain, contradicted, and
+unresolved relations separately.
 
 ## Mathematical implementation
 
@@ -94,7 +110,7 @@ Z_k = \alpha\,\operatorname{sim}(S_k,E)
 
 The activation distribution is normalized with a temperature-scaled softmax. Missing feature
 values are proposed from the candidate schema distributions. Each proposal records its schema
-source, prior, and initial \`inferred\` status.
+source, prior, and initial `inferred` status.
 
 ### Evidence-prior combination
 
@@ -168,7 +184,7 @@ schema-generated inferences.
 
 ## Quick start
 
-\`\`\`python
+```python
 from ore_reconstructive_memory import (
     EpisodicFragment,
     Point20Config,
@@ -219,29 +235,29 @@ print(result.reconstruction["supported_details"])
 print(result.reconstruction["inferred_details"])
 print(result.reconstruction["unresolved_features"])
 print(result.biological["operation_count"])  # 16
-\`\`\`
+```
 
-To represent later testimony or a correction, add a \`SourceRecord\` or \`FeedbackRecord\`.
-Schema learning requires verified feedback with \`use_for_schema_update=True\`. Reuse the same
+To represent later testimony or a correction, add a `SourceRecord` or `FeedbackRecord`.
+Schema learning requires verified feedback with `use_for_schema_update=True`. Reuse the same
 processor instance to retain versioned event records and general schema-count updates across
 successive reconstruction rounds.
 
 ## SQLite annotations and operation logging
 
-The package reuses the repository's existing \`ore_logger\` SQLite database. The AST-backed
-catalogue indexes every module, class, function, and method in \`ore_reconstructive_memory\`
-into the shared \`annotations\` table. By default the database is
-\`ore_logs/ore_logger.sqlite3\`.
+The package reuses the repository's existing `ore_logger` SQLite database. The AST-backed
+catalogue indexes every module, class, function, and method in `ore_reconstructive_memory`
+into the shared `annotations` table. By default the database is
+`ore_logs/ore_logger.sqlite3`.
 
-\`record_result_to_sqlite(result)\` registers annotations and persists the complete sixteen-step
-execution trace in the logger's \`runs\` and \`events\` tables. The operation metadata records the
+`record_result_to_sqlite(result)` registers annotations and persists the complete sixteen-step
+execution trace in the logger's `runs` and `events` tables. The operation metadata records the
 mathematical description and separate functional and biological outputs.
 
 Run the focused suite:
 
-\`\`\`bash
+```bash
 python -m pytest tests/test_reconstructive_memory_point20.py -q
-\`\`\`
+```
 
 ## Bartlett's "The War of the Ghosts" as a conceptual validation case
 

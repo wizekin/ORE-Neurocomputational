@@ -129,7 +129,8 @@ class ReconstructiveMemoryProcessor:
                 operation="prior_reconstruction",
             )
             for index, item in enumerate(current.source_versions)
-            if item.get("content") is not None and item.get("source_type") in {
+            if item.get("event_id", request.event_id) == request.event_id
+            and item.get("content") is not None and item.get("source_type") in {
                 "original_perception", "episodic_retrieval", "schema_inference",
                 "imagination", "post_event_information", "later_testimony", "unknown",
             }
@@ -173,7 +174,10 @@ class ReconstructiveMemoryProcessor:
         }, biological(4))
 
         # 6. Combine event-specific likelihoods and schema priors without allowing priors to erase evidence.
-        evaluation = evaluate_candidates_bayesian(candidates, request.episodic_fragments, config)
+        evaluation = evaluate_candidates_bayesian(
+            candidates, request.episodic_fragments, config, request.episodic_relations,
+            request.target_episode_id,
+        )
         candidates = list(evaluation["candidates"])
         _record_operation(trace, 5, {
             **{key: value for key, value in evaluation.items() if key != "candidates"},
@@ -191,6 +195,7 @@ class ReconstructiveMemoryProcessor:
         # 8. Estimate whether details derive from perception, recollection, schema, imagination, or later sources.
         source_monitoring = monitor_candidate_sources(
             candidates, request.episodic_fragments, combined_sources, config,
+            request.episodic_relations, request.target_episode_id,
         )
         candidates = list(source_monitoring["candidates"])
         _record_operation(trace, 7, {
@@ -201,6 +206,7 @@ class ReconstructiveMemoryProcessor:
         # 9. Keep familiarity separate from source-specific episodic recollection.
         familiarity = assess_familiarity_and_recollection(
             candidates, request.episodic_fragments, combined_sources, request.precision, config,
+            request.episodic_relations, request.target_episode_id,
         )
         candidates = list(familiarity["candidates"])
         _record_operation(trace, 8, {
@@ -209,7 +215,9 @@ class ReconstructiveMemoryProcessor:
         }, biological(8, float(request.context.get("emotional_salience", 0.0))))
 
         # 10. Search similar episodes for overlapping material and possible source blending.
-        competition = search_competing_episodes(candidates, request, request.episodic_fragments)
+        competition = search_competing_episodes(
+            candidates, request, request.episodic_fragments, request.episodic_relations,
+        )
         candidates = list(competition["candidates"])
         _record_operation(trace, 9, {
             **{key: value for key, value in competition.items() if key != "candidates"},
@@ -268,7 +276,9 @@ class ReconstructiveMemoryProcessor:
             "reconstruction": reconstruction,
             "candidate_count": len(candidates),
             "supported_detail_count": len(reconstruction["supported_details"]),
+            "supported_relation_count": len(reconstruction["supported_relations"]),
             "inferred_detail_count": len(reconstruction["inferred_details"]),
+            "inferred_relation_count": len(reconstruction["inferred_relations"]),
             "post_event_suggested_count": len(reconstruction["post_event_suggested_details"]),
             "unresolved_feature_count": len(reconstruction["unresolved_features"]),
             "provenance_node_count": len(provenance_graph["nodes"]),

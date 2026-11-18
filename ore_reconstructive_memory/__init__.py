@@ -1,7 +1,7 @@
 """ORE Point 20: schema-driven inference and reconstructive memory."""
 from .biology import FunctionalPopulation, ReconstructiveMemoryNetwork
 from .contracts import (
-    DetailCandidate, DetailStatus, EpisodicFragment, FeedbackRecord,
+    DetailCandidate, DetailStatus, EpisodicFragment, EpisodicRelation, FeedbackRecord,
     Point20Config, Point20Request, Point20Result, Point20State, SchemaProfile,
     SourceRecord,
 )
@@ -19,7 +19,7 @@ from .pipeline import ReconstructiveMemoryProcessor, record_result_to_sqlite, re
 from .registry import OPERATION_REGISTRY, ReconstructionOperationSpec, registry_as_dicts
 
 __all__ = [
-    "DetailCandidate", "DetailStatus", "EpisodicFragment", "FeedbackRecord",
+    "DetailCandidate", "DetailStatus", "EpisodicFragment", "EpisodicRelation", "FeedbackRecord",
     "Point20Config", "Point20Request", "Point20Result", "Point20State",
     "SchemaProfile", "SourceRecord", "FunctionalPopulation", "ReconstructiveMemoryNetwork",
     "ReconstructionOperationSpec", "OPERATION_REGISTRY", "registry_as_dicts",

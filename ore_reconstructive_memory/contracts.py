@@ -133,6 +133,7 @@ class SchemaProfile:
     goal_relevance: float = 0.50
     cultural_scope: str = "general"
     description: str = ""
+    relation_templates: Sequence[Mapping[str, Any]] = ()
 
     def __post_init__(self) -> None:
         """Validate schema identity, prior, context, and categorical feature distributions."""
@@ -157,9 +158,67 @@ class SchemaProfile:
                 for value, probability in values.items()
             }
         object.__setattr__(self, "feature_probabilities", distributions)
+        templates: list[dict[str, Any]] = []
+        for index, raw in enumerate(self.relation_templates):
+            if not isinstance(raw, Mapping):
+                raise TypeError("relation_templates must contain mappings")
+            templates.append({
+                "subject": _text(f"relation_templates[{index}].subject", str(raw.get("subject", ""))),
+                "predicate": _text(f"relation_templates[{index}].predicate", str(raw.get("predicate", ""))).casefold(),
+                "object": _text(f"relation_templates[{index}].object", str(raw.get("object", ""))),
+                "probability": _unit(
+                    f"relation_templates[{index}].probability", raw.get("probability", 0.5)
+                ),
+                "context": str(raw.get("context", "")),
+            })
+        object.__setattr__(self, "relation_templates", tuple(templates))
 
     def to_dict(self) -> dict[str, Any]:
         """Return a detached schema description for logs and transparent inspection."""
+        return _jsonable(asdict(self))
+
+
+@dataclass(frozen=True, slots=True)
+class EpisodicRelation:
+    """One event-specific directed relation with separate evidence, source, and episode identity."""
+
+    relation_id: str
+    subject: str
+    predicate: str
+    object: str
+    status: str = "episodically_retrieved"
+    retrieval_strength: float = 0.70
+    episodic_context: float = 0.70
+    source_type: str = "episodic_retrieval"
+    source_id: str = ""
+    episode_id: str = ""
+    timestamp: float = 0.0
+
+    def __post_init__(self) -> None:
+        """Validate the relation triple, evidential state, source, and retrieval strengths."""
+        for name in ("relation_id", "subject", "predicate", "object"):
+            object.__setattr__(self, name, _text(name, getattr(self, name)))
+        status = _text("status", self.status).casefold()
+        if status not in {
+            "direct_evidence", "episodically_retrieved", "weakly_retrieved",
+            "not_retrieved", "contradicted", "source_uncertain", "suggested_after_event", "unknown",
+        }:
+            raise ValueError("unsupported episodic relation status")
+        object.__setattr__(self, "status", status)
+        for name in ("retrieval_strength", "episodic_context"):
+            object.__setattr__(self, name, _unit(name, getattr(self, name)))
+        source = _text("source_type", self.source_type).casefold()
+        if source not in SOURCE_TYPES:
+            raise ValueError(f"source_type must be one of {sorted(SOURCE_TYPES)}")
+        object.__setattr__(self, "source_type", source)
+        object.__setattr__(self, "timestamp", _finite("timestamp", self.timestamp))
+
+    def triple(self) -> dict[str, str]:
+        """Return the directed relation with stable subject-predicate-object field order."""
+        return {"subject": self.subject, "predicate": self.predicate, "object": self.object}
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return the relation and its episode-specific source evidence."""
         return _jsonable(asdict(self))
 
 
@@ -259,6 +318,7 @@ class Point20Config:
     clarify_confidence_threshold: float = 0.48
     min_feedback_reliability: float = 0.70
     schema_learning_rate: float = 0.08
+    schema_prior_strength: float = 4.0
     calibration_bias: float = -0.80
     evidence_weight: float = 2.0
     recollection_weight: float = 1.7
@@ -283,7 +343,7 @@ class Point20Config:
             _unit(name, getattr(self, name))
         for name in (
             "retrieval_temperature", "schema_temperature",
-            "posterior_temperature", "source_temperature", "epsilon",
+            "posterior_temperature", "source_temperature", "schema_prior_strength", "epsilon",
         ):
             value = _finite(name, getattr(self, name))
             if value <= 0.0:
@@ -306,6 +366,7 @@ class Point20Request:
     target_features: Sequence[str]
     episodic_fragments: Sequence[EpisodicFragment | Mapping[str, Any]]
     schemas: Sequence[SchemaProfile | Mapping[str, Any]]
+    episodic_relations: Sequence[EpisodicRelation | Mapping[str, Any]] = ()
     context: Mapping[str, Any] = field(default_factory=dict)
     source_history: Sequence[SourceRecord | Mapping[str, Any]] = ()
     competing_episodes: Sequence[Mapping[str, Any]] = ()
@@ -332,6 +393,10 @@ class Point20Request:
             item if isinstance(item, EpisodicFragment) else EpisodicFragment(**dict(item))
             for item in self.episodic_fragments
         )
+        relations = tuple(
+            item if isinstance(item, EpisodicRelation) else EpisodicRelation(**dict(item))
+            for item in self.episodic_relations
+        )
         schemas = tuple(
             item if isinstance(item, SchemaProfile) else SchemaProfile(**dict(item))
             for item in self.schemas
@@ -346,6 +411,8 @@ class Point20Request:
         )
         if len({item.detail_id for item in fragments}) != len(fragments):
             raise ValueError("episodic fragment detail_id values must be unique")
+        if len({item.relation_id for item in relations}) != len(relations):
+            raise ValueError("episodic relation relation_id values must be unique")
         if len({item.schema_id for item in schemas}) != len(schemas):
             raise ValueError("schema_id values must be unique")
         if len({item.source_id for item in sources}) != len(sources):
@@ -353,6 +420,7 @@ class Point20Request:
         if len({item.feedback_id for item in feedback}) != len(feedback):
             raise ValueError("feedback_id values must be unique")
         object.__setattr__(self, "episodic_fragments", fragments)
+        object.__setattr__(self, "episodic_relations", relations)
         object.__setattr__(self, "schemas", schemas)
         object.__setattr__(self, "source_history", sources)
         object.__setattr__(self, "feedback", feedback)
@@ -379,6 +447,7 @@ class Point20Request:
             "cue": _jsonable(self.cue),
             "target_features": list(self.target_features),
             "episodic_fragments": [item.to_dict() for item in self.episodic_fragments],
+            "episodic_relations": [item.to_dict() for item in self.episodic_relations],
             "schemas": [item.to_dict() for item in self.schemas],
             "context": _jsonable(self.context),
             "source_history": [item.to_dict() for item in self.source_history],

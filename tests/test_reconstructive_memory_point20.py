@@ -6,7 +6,7 @@ import sqlite3
 import pytest
 
 from ore_reconstructive_memory import (
-    DetailCandidate, EpisodicFragment, FeedbackRecord, Point20Config,
+    DetailCandidate, EpisodicFragment, EpisodicRelation, FeedbackRecord, Point20Config,
     Point20Request, Point20State, ReconstructiveMemoryProcessor,
     SchemaProfile, SourceRecord, OPERATION_REGISTRY,
     activate_candidate_schemas, assess_familiarity_and_recollection, brier_score,
@@ -433,3 +433,332 @@ def test_explicit_unknown_evidence_status_is_accepted() -> None:
         source_type="unknown",
     )
     assert fragment.status == "unknown"
+
+def test_schema_relation_templates_generate_explicit_inferred_relation_edges() -> None:
+    """Schema scripts can propose missing participant/action/object relations without asserting them."""
+    base = make_request()
+    schema = SchemaProfile(
+        schema_id="journey-relations",
+        name="water journey relations",
+        prior_probability=0.8,
+        feature_probabilities={"object_type": {"canoe": 0.7, "boat": 0.3}},
+        relation_templates=[{
+            "subject": "traveler",
+            "predicate": "uses",
+            "object": "canoe",
+            "probability": 0.85,
+        }],
+    )
+    request = make_request(schemas=[schema])
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(request)
+    relations = result.reconstruction["inferred_relations"]
+    assert len(relations) == 1
+    assert relations[0]["feature_type"] == "relation"
+    assert relations[0]["content"] == {
+        "subject": "traveler", "predicate": "uses", "object": "canoe"
+    }
+    assert relations[0]["status"] == "inferred"
+    assert result.reconstruction["supported_relations"] == []
+
+
+def test_observed_event_relations_are_preserved_in_event_graph() -> None:
+    """A supported relation remains attached to its event and is not regenerated as a schema fact."""
+    relation = EpisodicRelation(
+        relation_id="rel-traveler-uses-vessel",
+        subject="traveler",
+        predicate="uses",
+        object="vessel",
+        status="episodically_retrieved",
+        retrieval_strength=0.95,
+        episodic_context=0.90,
+        source_type="episodic_retrieval",
+        source_id="source-rel-001",
+        episode_id="story-001",
+        timestamp=2.0,
+    )
+    schema = SchemaProfile(
+        schema_id="travel-relations",
+        name="travel relations",
+        prior_probability=0.8,
+        feature_probabilities={"object_type": {"canoe": 0.7, "boat": 0.3}},
+        relation_templates=[{
+            "subject": "traveler", "predicate": "uses", "object": "canoe",
+            "probability": 0.8,
+        }],
+    )
+    request = make_request(schemas=[schema], episodic_relations=[relation])
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(request)
+    assert result.reconstruction["supported_relations"][0]["relation_id"] == relation.relation_id
+    assert result.candidate_evaluation["generation"]["candidates"]
+    assert result.reconstruction["inferred_relations"]
+    assert result.reconstruction["provenance_graph"]["nodes"]
+
+
+def test_relation_constraints_reject_an_incompatible_inferred_edge() -> None:
+    """Temporal/spatial/causal relation constraints penalize inconsistent proposed triples."""
+    request = make_request(
+        context={
+            **make_request().context,
+            "constraints": [{
+                "constraint_id": "agent-role",
+                "constraint_type": "relation",
+                "feature_type": "relation",
+                "expected_relation": {
+                    "subject": "traveler", "predicate": "uses", "object": "boat"
+                },
+                "hard": True,
+                "weight": 1.0,
+            }],
+        }
+    )
+    candidate = DetailCandidate(
+        candidate_id="schema-relation-1",
+        feature_type="relation",
+        content={"subject": "traveler", "predicate": "uses", "object": "canoe"},
+        status="inferred",
+        schema_prior=0.8,
+    )
+    from ore_reconstructive_memory import check_spatiotemporal_causal_constraints
+    result = check_spatiotemporal_causal_constraints([candidate], request)
+    assert result["violations"]
+    assert result["inferred_relation_candidates"][0]["object"] == "canoe"
+
+def test_contradicted_detail_does_not_validate_every_alternative() -> None:
+    """A contradicted value is penalized without turning all other values into positive evidence."""
+    from ore_reconstructive_memory import evaluate_candidates_bayesian
+
+    fragment = EpisodicFragment(
+        detail_id="rejected-red",
+        feature_type="color",
+        content="red",
+        status="contradicted",
+        retrieval_strength=0.95,
+        episodic_context=0.90,
+    )
+    red = DetailCandidate(
+        candidate_id="red", feature_type="color", content="red",
+        status="inferred", schema_prior=0.5,
+    )
+    blue = DetailCandidate(
+        candidate_id="blue", feature_type="color", content="blue",
+        status="inferred", schema_prior=0.5,
+    )
+    result = evaluate_candidates_bayesian(
+        [red, blue], [fragment], Point20Config(simulate_biology=False),
+    )
+    assert red.contradiction > 0.0
+    assert blue.evidence_strength == 0.0
+    assert blue.contradiction == 0.0
+
+
+def test_schema_learning_uses_existing_schema_distribution_as_prior() -> None:
+    """A positive verified observation refines rather than resets the schema's base prior."""
+    request = make_request(feedback=[
+        FeedbackRecord(
+            "verified-canoe", "object_type", "canoe", True, "verified-source",
+            reliability=0.99, independence_group="schema-source",
+            schema_id="travel", verified=True, use_for_schema_update=True,
+        )
+    ])
+    state = Point20State()
+    result = update_general_schema_knowledge(
+        request, state, Point20Config(simulate_biology=False),
+    )
+    row = result["updates"][0]
+    base_prior = 0.70
+    updated_mean = row["posterior_mean"]
+    assert row["counts_before"]["alpha"] == pytest.approx(base_prior * 4.0)
+    assert updated_mean > base_prior
+
+
+def test_schema_updates_are_scoped_to_schema_feature_and_value() -> None:
+    """One witness can contribute distinct verified observations to separate schema dimensions."""
+    request = make_request(feedback=[
+        FeedbackRecord(
+            "f-canoe", "object_type", "canoe", True, "archive",
+            reliability=0.95, independence_group="same-document",
+            schema_id="travel", verified=True, use_for_schema_update=True,
+        ),
+        FeedbackRecord(
+            "f-storm", "cause", "storm", True, "archive",
+            reliability=0.95, independence_group="same-document",
+            schema_id="travel", verified=True, use_for_schema_update=True,
+        ),
+    ])
+    state = Point20State()
+    output = update_general_schema_knowledge(
+        request, state, Point20Config(simulate_biology=False),
+    )
+    assert len(output["updates"]) == 2
+
+def test_verified_relation_feedback_refines_later_schema_relation_prior() -> None:
+    """Verified relation feedback updates a general script prior for a later event reconstruction."""
+    schema = SchemaProfile(
+        schema_id="travel-relations",
+        name="travel relation schema",
+        prior_probability=0.8,
+        feature_probabilities={"object_type": {"canoe": 0.7, "boat": 0.3}},
+        relation_templates=[{
+            "subject": "traveler", "predicate": "uses", "object": "canoe",
+            "probability": 0.75,
+        }],
+    )
+    feedback = FeedbackRecord(
+        "verified-relation",
+        "relation",
+        {"subject": "traveler", "predicate": "uses", "object": "canoe"},
+        True,
+        "archival-source",
+        reliability=0.99,
+        independence_group="archive-relation-group",
+        schema_id="travel-relations",
+        verified=True,
+        use_for_schema_update=True,
+    )
+    request = make_request(schemas=[schema], feedback=[feedback])
+    processor = ReconstructiveMemoryProcessor(Point20Config(simulate_biology=False))
+    first = processor.process(request)
+    second = processor.process(request)
+    first_relation = next(
+        item for item in first.candidate_evaluation["generation"]["candidates"]
+        if item["feature_type"] == "relation"
+    )
+    second_relation = next(
+        item for item in second.candidate_evaluation["generation"]["candidates"]
+        if item["feature_type"] == "relation"
+    )
+    first_prior = first_relation["schema_prior"] / first_relation["schema_support"]
+    second_prior = second_relation["schema_prior"] / second_relation["schema_support"]
+    assert second_prior > first_prior
+
+def test_similar_episode_fragment_is_competitor_not_target_event_evidence() -> None:
+    """A fragment from another episode cannot substantiate the target story's missing detail."""
+    other_episode = EpisodicFragment(
+        detail_id="older-story-canoe",
+        feature_type="object_type",
+        content="canoe",
+        status="episodically_retrieved",
+        retrieval_strength=0.98,
+        episodic_context=0.95,
+        attention_encoding=0.95,
+        centrality=0.8,
+        familiarity=0.8,
+        recollection=0.95,
+        source_type="episodic_retrieval",
+        source_id="older-story-source",
+        episode_id="story-older",
+        timestamp=0.5,
+    )
+    base = make_request()
+    request = make_request(
+        episodic_fragments=[*base.episodic_fragments, other_episode],
+    )
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(request)
+    object_ledger = result.feature_ledger["features"]["object_type"]
+    assert object_ledger["status"] == "not_retrieved"
+    assert object_ledger["competing_episode_values"][0]["episode_id"] == "story-older"
+    assert all(item.get("content") != "canoe" for item in result.reconstruction["supported_details"])
+    assert result.reconstruction["competing_episode_details"]
+    canoe_comparison = next(
+        item for item in result.candidate_evaluation["competing_episodes"]["comparisons"]
+        if isinstance(item, dict) and item.get("candidate_id", "").endswith(":object_type:canoe")
+    )
+    assert canoe_comparison["possible_episode_blend"] is True
+    assert result.reconstruction["not_retrieved_does_not_mean_absent"] is True
+
+def test_similar_episode_relation_is_competitor_not_target_event_support() -> None:
+    """An event relation retrieved from a different episode remains a competing relation."""
+    other_relation = EpisodicRelation(
+        relation_id="older-uses-canoe",
+        subject="traveler",
+        predicate="uses",
+        object="canoe",
+        status="episodically_retrieved",
+        retrieval_strength=0.99,
+        episodic_context=0.99,
+        source_type="episodic_retrieval",
+        source_id="older-relation-source",
+        episode_id="story-older",
+        timestamp=0.5,
+    )
+    request = make_request(episodic_relations=[other_relation])
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(request)
+    assert result.reconstruction["supported_relations"] == []
+    assert result.reconstruction["competing_relations"]
+    assert result.reconstruction["competing_relations"][0]["relation_id"] == other_relation.relation_id
+    assert result.feature_ledger["event_graph"]["edges"] == []
+
+
+def test_post_event_relation_suggestion_keeps_a_distinct_output_label() -> None:
+    """A relation introduced after the event is shown as suggestion, never episodic support."""
+    suggestion = EpisodicRelation(
+        relation_id="suggested-cause",
+        subject="traveler",
+        predicate="caused_by",
+        object="storm",
+        status="suggested_after_event",
+        retrieval_strength=0.7,
+        episodic_context=0.7,
+        source_type="later_testimony",
+        source_id="later-witness",
+        episode_id="story-001",
+    )
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(make_request(episodic_relations=[suggestion]))
+    assert result.reconstruction["supported_relations"] == []
+    assert any(
+        item["relation_id"] == suggestion.relation_id
+        for item in result.reconstruction["post_event_suggested_relations"]
+    )
+
+def test_unknown_source_fragment_is_reported_as_source_uncertain() -> None:
+    """A fragment explicitly marked unknown keeps that label instead of becoming direct evidence."""
+    fragment = EpisodicFragment(
+        detail_id="unattributed-object",
+        feature_type="object_type",
+        content="vessel",
+        status="unknown",
+        retrieval_strength=0.30,
+        episodic_context=0.20,
+        attention_encoding=0.60,
+        source_type="unknown",
+        source_id="unattributed-source",
+        episode_id="story-001",
+    )
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(make_request(episodic_fragments=[fragment]))
+    assert result.feature_ledger["features"]["object_type"]["status"] == "weakly_retrieved"
+    assert result.reconstruction["episode_uncertain_details"]
+    assert result.reconstruction["supported_details"] == []
+
+
+def test_unknown_source_relation_is_not_added_to_observed_event_graph() -> None:
+    """A relation with unknown source remains uncertain and does not become an observed edge."""
+    relation = EpisodicRelation(
+        relation_id="unattributed-edge",
+        subject="traveler",
+        predicate="uses",
+        object="canoe",
+        status="unknown",
+        retrieval_strength=0.7,
+        episodic_context=0.6,
+        source_type="unknown",
+        source_id="unattributed-relation-source",
+        episode_id="story-001",
+    )
+    result = ReconstructiveMemoryProcessor(
+        Point20Config(simulate_biology=False)
+    ).process(make_request(episodic_relations=[relation]))
+    assert result.reconstruction["supported_relations"] == []
+    assert result.reconstruction["episode_uncertain_relations"]
+    assert result.feature_ledger["event_graph"]["edges"] == []

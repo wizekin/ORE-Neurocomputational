@@ -6,7 +6,7 @@ import re
 from typing import Any, Mapping, Sequence
 
 from .contracts import (
-    DetailCandidate, EpisodicFragment, FeedbackRecord, Point20Config, Point20Request,
+    DetailCandidate, EpisodicFragment, EpisodicRelation, FeedbackRecord, Point20Config, Point20Request,
     Point20State, SchemaProfile, SourceRecord,
 )
 
@@ -58,6 +58,12 @@ def value_key(value: Any) -> str:
         if not math.isfinite(value):
             raise ValueError("feature values must be finite")
         return format(value, ".12g")
+    if isinstance(value, Mapping):
+        return "{" + ",".join(
+            f"{str(key).casefold()}:{value_key(value[key])}" for key in sorted(value, key=str)
+        ) + "}"
+    if isinstance(value, (tuple, list)):
+        return "[" + ",".join(value_key(item) for item in value) + "]"
     return str(value).strip().casefold()
 
 
@@ -138,6 +144,11 @@ def reactivate_episodic_fragments(
         else:
             cue_fit = 0.0
         context_fit = feature_similarity(context_cues, fragment.source_features) if context_cues else 0.0
+        episode_match = (
+            not request.target_episode_id
+            or fragment.episode_id == request.target_episode_id
+        )
+        episode_unidentified = bool(request.target_episode_id) and not fragment.episode_id
         activation = (
             0.55 * fragment.retrieval_strength
             + 0.30 * fragment.episodic_context
@@ -146,11 +157,15 @@ def reactivate_episodic_fragments(
         )
         if cue_features or (isinstance(cue, str) and cue.strip()):
             activation *= 0.35 + 0.65 * max(cue_fit, context_fit)
+        if not episode_match:
+            activation *= 0.70
         ranked.append({
             "detail_id": fragment.detail_id,
             "feature_type": fragment.feature_type,
             "content": fragment.content,
             "episode_id": fragment.episode_id,
+            "episode_match": episode_match,
+            "episode_unidentified": episode_unidentified,
             "source_type": fragment.source_type,
             "source_id": fragment.source_id,
             "cue_fit": cue_fit,
@@ -168,11 +183,57 @@ def reactivate_episodic_fragments(
         row["normalized_activation"] = probability
         row["reactivated"] = row["activation"] >= 0.18
     ranked.sort(key=lambda item: (-item["activation"], item["detail_id"]))
+    relation_rows: list[dict[str, Any]] = []
+    for relation in request.episodic_relations:
+        triple = relation.triple()
+        if cue_features:
+            cue_fit = feature_similarity(cue_features, triple)
+        elif isinstance(cue, str):
+            cue_fit = _token_overlap(cue, " ".join(triple.values()))
+        else:
+            cue_fit = 0.0
+        activation = (
+            0.52 * relation.retrieval_strength
+            + 0.38 * relation.episodic_context
+            + 0.10 * cue_fit
+        )
+        episode_match = (
+            not request.target_episode_id
+            or relation.episode_id == request.target_episode_id
+        )
+        episode_unidentified = bool(request.target_episode_id) and not relation.episode_id
+        activation = activation * (1.0 if episode_match else 0.70)
+        relation_rows.append({
+            "relation_id": relation.relation_id,
+            **triple,
+            "episode_id": relation.episode_id,
+            "episode_match": episode_match,
+            "episode_unidentified": episode_unidentified,
+            "source_type": relation.source_type,
+            "source_id": relation.source_id,
+            "status": relation.status,
+            "cue_fit": cue_fit,
+            "activation": clamp(activation),
+            "reactivated": activation >= 0.18,
+            "retrieval_strength": relation.retrieval_strength,
+            "episodic_context": relation.episodic_context,
+        })
+    relation_probabilities = softmax(
+        [item["activation"] for item in relation_rows], config.retrieval_temperature,
+    )
+    for row, probability in zip(relation_rows, relation_probabilities):
+        row["normalized_activation"] = probability
+    relation_rows.sort(key=lambda item: (-item["activation"], item["relation_id"]))
     return {
         "fragments": ranked,
+        "relations": relation_rows,
+        "reactivated_relation_ids": [
+            item["relation_id"] for item in relation_rows if item["reactivated"]
+        ],
         "reactivated_ids": [row["detail_id"] for row in ranked if row["reactivated"]],
         "episode_ids": sorted({row["episode_id"] for row in ranked if row["reactivated"] and row["episode_id"]}),
         "normalization_sum": sum(probabilities),
+        "relation_normalization_sum": sum(relation_probabilities),
         "not_retrieved_is_not_absent": True,
     }
 
@@ -190,11 +251,27 @@ def build_feature_ledger(
     for feature in target_features:
         fragments = [item for item in request.episodic_fragments if item.feature_type == feature]
         active = [item for item in fragments if item.detail_id in reactivated_ids]
-        direct = [item for item in active if item.status == "direct_evidence"]
-        retrieved = [item for item in active if item.status == "episodically_retrieved"]
-        weak = [item for item in active if item.status in {"weakly_retrieved", "source_uncertain"}]
-        contradicted = [item for item in active if item.status == "contradicted"]
-        not_retrieved = [item for item in active if item.status == "not_retrieved"]
+        target_active = [
+            item for item in active
+            if not request.target_episode_id or item.episode_id == request.target_episode_id
+        ]
+        unidentified_active = [
+            item for item in active
+            if request.target_episode_id and not item.episode_id
+        ]
+        competing = [
+            item for item in active
+            if request.target_episode_id and item.episode_id
+            and item.episode_id != request.target_episode_id
+        ]
+        direct = [item for item in target_active if item.status == "direct_evidence"]
+        retrieved = [item for item in target_active if item.status == "episodically_retrieved"]
+        weak = [
+            item for item in target_active
+            if item.status in {"weakly_retrieved", "source_uncertain", "unknown"}
+        ] + unidentified_active
+        contradicted = [item for item in target_active if item.status == "contradicted"]
+        not_retrieved = [item for item in target_active if item.status == "not_retrieved"]
         supporting = direct + retrieved + weak
         if contradicted and not supporting:
             status = "contradicted"
@@ -215,25 +292,106 @@ def build_feature_ledger(
                 {
                     "detail_id": item.detail_id,
                     "content": item.content,
-                    "status": item.status,
+                    "status": "source_uncertain" if item in unidentified_active or item.status == "unknown" else item.status,
                     "retrieval_strength": item.retrieval_strength,
                     "episodic_context": item.episodic_context,
                     "source_type": item.source_type,
                     "source_id": item.source_id,
                     "episode_id": item.episode_id,
                 }
-                for item in active
+                for item in (*target_active, *unidentified_active)
             ],
             "evidence_strength": max(
                 (item.retrieval_strength * item.attention_encoding for item in supporting),
                 default=0.0,
             ),
-            "likely_encoded": max((item.attention_encoding for item in fragments), default=0.0),
-            "centrality": max((item.centrality for item in fragments), default=0.0),
+            "likely_encoded": max((item.attention_encoding for item in target_active), default=0.0),
+            "centrality": max((item.centrality for item in target_active), default=0.0),
+            "competing_episode_values": [
+                {"content": item.content, "episode_id": item.episode_id,
+                 "detail_id": item.detail_id, "source_type": item.source_type}
+                for item in competing
+            ],
             "unavailable_not_absent": status in {"not_retrieved", "weakly_retrieved"},
+        }
+    active_relation_ids = set(retrieval.get("reactivated_relation_ids", ()))
+    relation_rows = [
+        {
+            **item.triple(),
+            "relation_id": item.relation_id,
+            "status": item.status,
+            "source_type": item.source_type,
+            "source_id": item.source_id,
+            "episode_id": item.episode_id,
+            "retrieval_strength": item.retrieval_strength,
+            "episodic_context": item.episodic_context,
+            "reactivated": item.relation_id in active_relation_ids,
+            "episode_match": (
+                not request.target_episode_id or item.episode_id == request.target_episode_id
+            ),
+            "episode_unidentified": bool(request.target_episode_id) and not item.episode_id,
+        }
+        for item in request.episodic_relations
+    ]
+    retrieved_relations = [
+        item for item in relation_rows
+        if item["reactivated"] and item["episode_match"]
+        and item["status"] in {"direct_evidence", "episodically_retrieved"}
+    ]
+    relation_event_nodes = sorted({
+        value for relation in retrieved_relations
+        for value in (relation["subject"], relation["object"])
+    })
+    event_graph = {
+        "nodes": relation_event_nodes,
+        "edges": [
+            {"relation_id": item["relation_id"], "subject": item["subject"],
+             "predicate": item["predicate"], "object": item["object"],
+             "source_id": item["source_id"], "episode_id": item["episode_id"]}
+            for item in retrieved_relations
+        ],
+        "graph_is_episode_scoped": True,
+    }
+    if request.episodic_relations or any(schema.relation_templates for schema in request.schemas):
+        weak_relations = [
+            item for item in relation_rows
+            if item["status"] in {"weakly_retrieved", "source_uncertain", "suggested_after_event"}
+            or (item["reactivated"] and item["episode_unidentified"])
+        ]
+        contradicted_relations = [
+            item for item in relation_rows
+            if item["status"] == "contradicted" and item["episode_match"]
+        ]
+        relation_status = (
+            "episodically_retrieved" if retrieved_relations else
+            "contradicted" if contradicted_relations and not weak_relations else
+            "weakly_retrieved" if weak_relations else
+            "not_retrieved"
+        )
+        rows["relation"] = {
+            "feature_type": "relation",
+            "status": relation_status,
+            "values": [
+                {**dict(item), "status": "source_uncertain" if item["episode_unidentified"] or item["status"] == "unknown" else item["status"]}
+                for item in relation_rows if item["reactivated"] and (item["episode_match"] or item["episode_unidentified"])
+            ],
+            "competing_episode_relations": [
+                dict(item) for item in relation_rows if item["reactivated"] and not item["episode_match"]
+            ],
+            "evidence_strength": max(
+                (item["retrieval_strength"] * item["episodic_context"] for item in relation_rows
+                 if item["reactivated"] and item["episode_match"] and item["status"] in {"direct_evidence", "episodically_retrieved"}),
+                default=0.0,
+            ),
+            "likely_encoded": max((item["retrieval_strength"] for item in relation_rows), default=0.0),
+            "centrality": 0.8,
+            "unavailable_not_absent": not bool(retrieved_relations),
         }
     return {
         "features": rows,
+        "relations": relation_rows,
+        "competing_relations": [item for item in relation_rows if item["reactivated"] and not item["episode_match"]],
+        "event_graph": event_graph,
         "retrieved_feature_count": sum(row["status"] in {"direct_evidence", "episodically_retrieved"} for row in rows.values()),
         "missing_feature_count": sum(row["status"] in {"not_retrieved", "weakly_retrieved"} for row in rows.values()),
         "contradicted_feature_count": sum(row["status"] == "contradicted" for row in rows.values()),
@@ -288,6 +446,30 @@ def _schema_evidence_fit(
             reliability = clamp(item["retrieval_strength"])
             score = value_probability if value_probability > 0.0 else 0.01
             scores.append((score, reliability))
+    for relation in ledger.get("relations", ()):
+        if not relation.get("reactivated") or not relation.get("episode_match") or relation.get("status") not in {
+            "direct_evidence", "episodically_retrieved", "weakly_retrieved", "contradicted"
+        }:
+            continue
+        triple = {key: relation[key] for key in ("subject", "predicate", "object")}
+        relation_templates = [
+            item for item in schema.relation_templates
+            if all(item[key] == triple[key] for key in ("subject", "predicate", "object"))
+        ]
+        if relation.get("status") == "contradicted":
+            if not relation_templates:
+                continue
+            relation_probability = max(
+                0.01, 1.0 - max(float(item["probability"]) for item in relation_templates)
+            )
+        else:
+            if not relation_templates:
+                continue
+            relation_probability = max(float(item["probability"]) for item in relation_templates)
+        scores.append((
+            relation_probability,
+            clamp(float(relation.get("retrieval_strength", 0.0))),
+        ))
     if not scores:
         return 0.5
     log_fit = sum(weight * math.log(max(1e-9, score)) for score, weight in scores)
@@ -338,6 +520,23 @@ def activate_candidate_schemas(
     }
 
 
+
+def _schema_relation_probability(
+    schema: SchemaProfile,
+    template: Mapping[str, Any],
+    schema_beta_counts: Mapping[str, Mapping[str, float]] | None = None,
+) -> float:
+    """Resolve a relation-template probability with verified beta-count learning applied."""
+    triple = {key: template[key] for key in ("subject", "predicate", "object")}
+    key = "|".join((schema.schema_id, "relation", value_key(triple)))
+    counts = (schema_beta_counts or {}).get(key)
+    if counts:
+        alpha = max(1e-9, float(counts.get("alpha", 1.0)))
+        beta = max(1e-9, float(counts.get("beta", 1.0)))
+        return alpha / (alpha + beta)
+    return clamp(float(template["probability"]))
+
+
 def generate_inferred_completions(
     request: Point20Request,
     ledger: Mapping[str, Any],
@@ -377,6 +576,55 @@ def generate_inferred_completions(
             ))
         if not proposals:
             omitted.append({"feature_type": feature, "reason": "no compatible schema proposal"})
+    # Preserve participant/action/temporal/causal bindings as directed relation triples.
+    existing_relations = [
+        item for item in request.episodic_relations
+        if item.status in {"direct_evidence", "episodically_retrieved"}
+        and (not request.target_episode_id or item.episode_id == request.target_episode_id)
+    ]
+    relation_proposals: list[tuple[float, SchemaProfile, Mapping[str, Any]]] = []
+    for schema_id in schema_activation["active_schema_ids"]:
+        schema = schema_by_id[schema_id]
+        for template in schema.relation_templates:
+            triple = {
+                "subject": template["subject"],
+                "predicate": template["predicate"],
+                "object": template["object"],
+            }
+            already_supported = any(
+                item.triple() == triple
+                and (not request.target_episode_id or item.episode_id == request.target_episode_id)
+                for item in existing_relations
+            )
+            if already_supported:
+                continue
+            template_probability = _schema_relation_probability(schema, template, schema_beta_counts)
+            relation_proposals.append((activation_by_id.get(schema_id, 0.0) * template_probability,
+                                       schema, {**template, "effective_probability": template_probability}))
+    relation_proposals.sort(key=lambda row: (-row[0], row[1].schema_id, str(row[2])))
+    for score, schema, template in relation_proposals[:config.max_completions_per_feature * config.max_active_schemas]:
+        triple = {
+            "subject": template["subject"],
+            "predicate": template["predicate"],
+            "object": template["object"],
+        }
+        candidates.append(DetailCandidate(
+            candidate_id=(
+                f"{schema.schema_id}:relation:{triple['subject']}:"
+                f"{triple['predicate']}:{triple['object']}"
+            ),
+            feature_type="relation",
+            content=triple,
+            status="inferred",
+            schema_id=schema.schema_id,
+            schema_support=activation_by_id.get(schema.schema_id, 0.0),
+            schema_prior=clamp(
+                float(template.get("effective_probability", template["probability"]))
+                * max(activation_by_id.get(schema.schema_id, 0.0), config.epsilon)
+            ),
+            inference_proportion=1.0,
+            provenance=[f"schema:{schema.schema_id}", "generated_relation_as_inference"],
+        ))
     return {
         "candidates": candidates,
         "candidate_count": len(candidates),
@@ -389,35 +637,66 @@ def evaluate_candidates_bayesian(
     candidates: Sequence[DetailCandidate],
     fragments: Sequence[EpisodicFragment],
     config: Point20Config,
+    relations: Sequence[EpisodicRelation] = (),
+    target_episode_id: str = "",
 ) -> dict[str, Any]:
-    """Combine schema priors with fragment likelihoods while retaining each evidence contribution."""
+    """Combine target-episode likelihoods with schema priors without borrowing similar-episode evidence."""
     evaluated: list[DetailCandidate] = []
     raw_scores: dict[str, float] = {}
     for candidate in candidates:
-        related = [item for item in fragments if item.feature_type == candidate.feature_type
-                   and item.status in {"direct_evidence", "episodically_retrieved", "weakly_retrieved", "contradicted"}]
+        evidence_rows: list[dict[str, Any]] = [
+            {
+                "evidence_id": item.detail_id,
+                "content": item.content,
+                "status": item.status,
+                "reliability": clamp(item.retrieval_strength * item.attention_encoding),
+                "episodic_context": item.episodic_context,
+            }
+            for item in fragments
+            if item.feature_type == candidate.feature_type
+            and (not target_episode_id or item.episode_id == target_episode_id)
+            and item.status in {"direct_evidence", "episodically_retrieved", "weakly_retrieved", "contradicted"}
+        ]
+        if candidate.feature_type == "relation":
+            evidence_rows.extend(
+                {
+                    "evidence_id": item.relation_id,
+                    "content": item.triple(),
+                    "status": item.status,
+                    "reliability": clamp(item.retrieval_strength),
+                    "episodic_context": item.episodic_context,
+                }
+                for item in relations
+                if (not target_episode_id or item.episode_id == target_episode_id)
+                and item.status in {"direct_evidence", "episodically_retrieved", "weakly_retrieved", "contradicted"}
+            )
         log_likelihood = 0.0
         support_total = 0.0
         support_weight = 0.0
         contradiction_total = 0.0
         contradiction_weight = 0.0
         context_total = 0.0
-        for fragment in related:
-            reliability = clamp(fragment.retrieval_strength * fragment.attention_encoding)
-            match = value_key(fragment.content) == value_key(candidate.content)
-            if fragment.status == "contradicted":
-                match = not match
-            if match:
-                support_total += reliability * fragment.episodic_context
-                support_weight += reliability
-                log_likelihood += math.log(max(config.epsilon, reliability))
-                context_total += fragment.episodic_context * reliability
-                candidate.evidence_ids.append(fragment.detail_id)
-            else:
-                if fragment.status != "weakly_retrieved":
+        for evidence in evidence_rows:
+            reliability = evidence["reliability"]
+            match = value_key(evidence["content"]) == value_key(candidate.content)
+            if evidence["status"] == "contradicted":
+                # A contradicted observation penalizes that exact value. It does not prove
+                # that every alternative value is true unless exclusivity is separately known.
+                if match:
                     contradiction_total += reliability
                     contradiction_weight += reliability
                     log_likelihood += math.log(max(config.epsilon, 1.0 - reliability))
+                continue
+            if match:
+                support_total += reliability * evidence["episodic_context"]
+                support_weight += reliability
+                log_likelihood += math.log(max(config.epsilon, reliability))
+                context_total += evidence["episodic_context"] * reliability
+                candidate.evidence_ids.append(evidence["evidence_id"])
+            elif evidence["status"] != "weakly_retrieved" and candidate.feature_type != "relation":
+                contradiction_total += reliability
+                contradiction_weight += reliability
+                log_likelihood += math.log(max(config.epsilon, 1.0 - reliability))
         candidate.evidence_strength = clamp(support_total / max(config.epsilon, support_weight))
         candidate.episodic_context = clamp(context_total / max(config.epsilon, support_weight))
         candidate.contradiction = clamp(contradiction_total / max(config.epsilon, contradiction_weight))
@@ -472,6 +751,9 @@ def check_spatiotemporal_causal_constraints(
             weight = clamp(float(raw.get("weight", 1.0)))
             allowed = raw.get("allowed_values")
             forbidden = raw.get("forbidden_values", ())
+            expected_relation = raw.get("expected_relation")
+            if expected_relation is None and all(key in raw for key in ("subject", "predicate", "object")):
+                expected_relation = {key: raw[key] for key in ("subject", "predicate", "object")}
             minimum = raw.get("minimum")
             maximum = raw.get("maximum")
             satisfied = True
@@ -492,7 +774,19 @@ def check_spatiotemporal_causal_constraints(
                 except (TypeError, ValueError):
                     satisfied = False
                     reason = "non_numeric_value_for_numeric_constraint"
-            if allowed is None and not forbidden and minimum is None and maximum is None:
+            if expected_relation is not None:
+                expected = dict(expected_relation) if isinstance(expected_relation, Mapping) else None
+                if not isinstance(candidate.content, Mapping) or expected is None:
+                    satisfied = False
+                    reason = "relation_candidate_or_constraint_not_structured"
+                else:
+                    relation_match = all(
+                        value_key(candidate.content.get(key)) == value_key(expected.get(key))
+                        for key in ("subject", "predicate", "object")
+                    )
+                    satisfied = satisfied and relation_match
+                    reason = "event_relation_match" if satisfied else "event_relation_mismatch"
+            if allowed is None and not forbidden and minimum is None and maximum is None and expected_relation is None:
                 continue
             total_weight += weight
             if not satisfied:
@@ -513,8 +807,36 @@ def check_spatiotemporal_causal_constraints(
             )
         )
         updated.append(candidate)
+    observed_event_graph = {
+        "nodes": sorted({
+            value for relation in request.episodic_relations
+            if relation.status in {"direct_evidence", "episodically_retrieved"}
+            and (not request.target_episode_id or relation.episode_id == request.target_episode_id)
+            for value in (relation.subject, relation.object)
+        }),
+        "edges": [
+            {
+                "relation_id": relation.relation_id,
+                **relation.triple(),
+                "source_id": relation.source_id,
+                "status": relation.status,
+                "episode_id": relation.episode_id,
+            }
+            for relation in request.episodic_relations
+            if relation.status in {"direct_evidence", "episodically_retrieved"}
+            and (not request.target_episode_id or relation.episode_id == request.target_episode_id)
+        ],
+        "source_relations_only": True,
+    }
+    proposed_event_graph = [
+        {"candidate_id": candidate.candidate_id, **dict(candidate.content)}
+        for candidate in updated
+        if candidate.feature_type == "relation" and isinstance(candidate.content, Mapping)
+    ]
     return {
         "candidates": updated,
+        "observed_event_graph": observed_event_graph,
+        "inferred_relation_candidates": proposed_event_graph,
         "constraint_count": len(constraints),
         "violations": [
             {"candidate_id": candidate.candidate_id, **item}
@@ -534,8 +856,10 @@ def monitor_candidate_sources(
     fragments: Sequence[EpisodicFragment],
     sources: Sequence[SourceRecord],
     config: Point20Config,
+    relations: Sequence[EpisodicRelation] = (),
+    target_episode_id: str = "",
 ) -> dict[str, Any]:
-    """Estimate source probabilities from source cues and explicit lineage rather than familiarity alone."""
+    """Estimate source probabilities while keeping competing-episode details from supporting this event."""
     results: list[dict[str, Any]] = []
     for candidate in candidates:
         scores = {name: 0.01 for name in (
@@ -548,6 +872,7 @@ def monitor_candidate_sources(
             item for item in fragments
             if item.feature_type == candidate.feature_type
             and value_key(item.content) == value_key(candidate.content)
+            and (not target_episode_id or item.episode_id == target_episode_id)
         ]
         for fragment in matching_fragments:
             source_type = fragment.source_type
@@ -557,6 +882,17 @@ def monitor_candidate_sources(
             )
             if fragment.detail_id in evidence_ids:
                 scores[source_type] += 0.25
+        if candidate.feature_type == "relation" and isinstance(candidate.content, Mapping):
+            for relation in relations:
+                if (
+                    relation.triple() == dict(candidate.content)
+                    and (not target_episode_id or relation.episode_id == target_episode_id)
+                ):
+                    scores[relation.source_type] = scores.get(relation.source_type, 0.0) + (
+                        relation.retrieval_strength * relation.episodic_context
+                    )
+                    if relation.relation_id in evidence_ids:
+                        scores[relation.source_type] += 0.25
         independent_sources: dict[tuple[str, str, str], SourceRecord] = {}
         for source in sources:
             group = source.independence_group or source.source_id
@@ -610,8 +946,10 @@ def assess_familiarity_and_recollection(
     sources: Sequence[SourceRecord],
     precision: str,
     config: Point20Config,
+    relations: Sequence[EpisodicRelation] = (),
+    target_episode_id: str = "",
 ) -> dict[str, Any]:
-    """Separate repetition-based familiarity from event-specific contextual recollection."""
+    """Separate general familiarity from source-specific recollection of the requested episode."""
     output: list[dict[str, Any]] = []
     for candidate in candidates:
         matches = [
@@ -624,11 +962,27 @@ def assess_familiarity_and_recollection(
             if item.content is not None and value_key(item.content) == value_key(candidate.content)
         ]
         repetition = min(1.0, len(familiar_sources) / 4.0)
+        relation_matches = [
+            item for item in relations
+            if candidate.feature_type == "relation" and isinstance(candidate.content, Mapping)
+            and item.triple() == dict(candidate.content)
+        ]
         fragment_familiarity = max((item.familiarity for item in matches), default=0.0)
-        familiarity = clamp(0.55 * fragment_familiarity + 0.45 * repetition)
+        relation_familiarity = min(1.0, len(relation_matches) / 3.0)
+        familiarity = clamp(0.50 * fragment_familiarity + 0.20 * relation_familiarity + 0.30 * repetition)
+        target_matches = [
+            item for item in matches
+            if not target_episode_id or item.episode_id == target_episode_id
+        ]
+        target_relation_matches = [
+            item for item in relation_matches
+            if not target_episode_id or item.episode_id == target_episode_id
+        ]
         recollection = clamp(
-            sum(item.recollection * item.episodic_context * item.retrieval_strength for item in matches)
-            / max(1, len(matches))
+            (
+                sum(item.recollection * item.episodic_context * item.retrieval_strength for item in target_matches)
+                + sum(item.episodic_context * item.retrieval_strength for item in target_relation_matches)
+            ) / max(1, len(target_matches) + len(target_relation_matches))
         )
         uncertainty = candidate.source_uncertainty
         familiarity_weight = config.familiarity_weight * (0.70 if precision == "exact" else 1.0)
@@ -655,6 +1009,7 @@ def search_competing_episodes(
     candidates: Sequence[DetailCandidate],
     request: Point20Request,
     fragments: Sequence[EpisodicFragment],
+    relations: Sequence[EpisodicRelation] = (),
 ) -> dict[str, Any]:
     """Compare candidate details with similar episodes to identify source blending and overlap."""
     comparisons: list[dict[str, Any]] = []
@@ -666,6 +1021,30 @@ def search_competing_episodes(
             and (not request.target_episode_id or item.episode_id == request.target_episode_id)
             for item in fragments
         )
+        if candidate.feature_type == "relation" and isinstance(candidate.content, Mapping):
+            target_support = target_support or any(
+                item.triple() == dict(candidate.content)
+                and (not request.target_episode_id or item.episode_id == request.target_episode_id)
+                for item in relations
+            )
+        for fragment in fragments:
+            if (
+                request.target_episode_id
+                and fragment.episode_id
+                and fragment.episode_id != request.target_episode_id
+                and fragment.feature_type == candidate.feature_type
+                and value_key(fragment.content) == value_key(candidate.content)
+            ):
+                matches.append(fragment.episode_id)
+        if candidate.feature_type == "relation" and isinstance(candidate.content, Mapping):
+            for relation in relations:
+                if (
+                    request.target_episode_id
+                    and relation.episode_id
+                    and relation.episode_id != request.target_episode_id
+                    and relation.triple() == dict(candidate.content)
+                ):
+                    matches.append(relation.episode_id)
         for episode in request.competing_episodes:
             episode_id = str(episode.get("episode_id", ""))
             raw_fragments = episode.get("fragments", ())
@@ -679,6 +1058,14 @@ def search_competing_episodes(
                 if feature == candidate.feature_type and value_key(value) == value_key(candidate.content):
                     matches.append(episode_id or "unspecified_competing_episode")
                     break
+            if candidate.feature_type == "relation":
+                for raw in episode.get("relations", ()):
+                    if not isinstance(raw, Mapping):
+                        continue
+                    triple = {key: raw.get(key) for key in ("subject", "predicate", "object")}
+                    if triple == dict(candidate.content):
+                        matches.append(episode_id or "unspecified_competing_episode")
+                        break
         candidate.competing_episode_ids = sorted(set(matches))
         only_competing_source = bool(matches) and not target_support
         if only_competing_source:
@@ -856,9 +1243,30 @@ def build_provenance_graph(
     nodes: dict[str, dict[str, Any]] = {
         f"event:{request.event_id}": {"node_type": "original_event", "event_id": request.event_id}
     }
+    for episode_id in {
+        item.episode_id for item in (*request.episodic_fragments, *request.episodic_relations)
+        if item.episode_id
+    }:
+        nodes.setdefault(
+            f"event:{episode_id}",
+            {"node_type": "episodic_event", "event_id": episode_id},
+        )
     edges: list[tuple[str, str]] = []
     source_records = [*request.source_history, *prior_sources]
     source_by_id = {item.source_id: item for item in source_records}
+    for relation in request.episodic_relations:
+        source_id = relation.source_id or f"relation-source:{relation.relation_id}"
+        if source_id not in source_by_id:
+            source_by_id[source_id] = SourceRecord(
+                source_id=source_id,
+                source_type=relation.source_type,
+                detail_id=relation.relation_id,
+                content=relation.triple(),
+                reliability=relation.retrieval_strength,
+                timestamp=relation.timestamp,
+                parent_source_ids=(f"event:{relation.episode_id}",) if relation.episode_id else (),
+                operation="episodic_relation",
+            )
     for fragment in request.episodic_fragments:
         source_id = fragment.source_id or f"fragment-source:{fragment.detail_id}"
         if source_id not in source_by_id:
@@ -869,7 +1277,7 @@ def build_provenance_graph(
                 content=fragment.content,
                 reliability=fragment.retrieval_strength,
                 timestamp=fragment.timestamp,
-                parent_source_ids=fragment.provenance_ids,
+                parent_source_ids=(fragment.provenance_ids or ((f"event:{fragment.episode_id}",) if fragment.episode_id else ())),
                 source_features=fragment.source_features,
                 operation="episodic_fragment",
             )
@@ -984,12 +1392,21 @@ def monitor_retelling_and_post_event_information(
          "retelling_or_post_event_exposure": count > 1}
         for detail_id, count in repeated.items()
     ]
+    relation_drift: dict[str, int] = {}
+    for source in sources:
+        if isinstance(source.get("content"), Mapping) and all(
+            key in source["content"] for key in ("subject", "predicate", "object")
+        ):
+            relation_key = "|".join(str(source["content"][key]) for key in ("subject", "predicate", "object"))
+            relation_drift[relation_key] = relation_drift.get(relation_key, 0) + 1
     state.source_versions.extend(
         {
             "source_id": item["source_id"], "source_type": item["source_type"],
             "detail_id": item["detail_id"], "content": item.get("content"),
             "reliability": item.get("reliability", 0.5), "timestamp": item["timestamp"],
             "independence_group": item.get("independence_group", ""),
+            "event_id": request.event_id,
+            "parent_source_ids": list(item.get("parent_source_ids", ())),
             "operation": item.get("operation", "reported"),
         }
         for item in sources if item.get("operation") != "prior_reconstruction"
@@ -1003,6 +1420,7 @@ def monitor_retelling_and_post_event_information(
             "reliability": candidate.confidence,
             "timestamp": float(state.run_count),
             "independence_group": candidate.candidate_id,
+            "parent_source_ids": [f"schema:{candidate.schema_id}"] if candidate.schema_id else [],
             "operation": "reconstructive_candidate",
         }
         for candidate in candidates
@@ -1012,6 +1430,10 @@ def monitor_retelling_and_post_event_information(
         "provenance_graph": graph,
         "post_event_or_reconstruction_sources": after_event,
         "repeated_detail_exposure": drift,
+        "repeated_relation_exposure": [
+            {"triple": key, "source_count": count, "retelling_or_post_event_exposure": count > 1}
+            for key, count in relation_drift.items()
+        ],
         "source_relabeling_performed": False,
         "reconsolidation_assumption": "No claim that every retrieval triggers reconsolidation.",
     }
@@ -1029,7 +1451,7 @@ def update_reconstruction_from_feedback(
     ignored: list[dict[str, Any]] = []
     by_id = {item.candidate_id: item for item in candidates}
     for record in sorted(feedback, key=lambda item: (item.timestamp, item.feedback_id)):
-        group = record.independence_group or record.source_id
+        group = f"{event_id}|{record.independence_group or record.source_id}"
         if group in state.feedback_groups_seen:
             ignored.append({"feedback_id": record.feedback_id, "reason": "duplicate_independence_group"})
             continue
@@ -1105,8 +1527,9 @@ def update_general_schema_knowledge(
     updates: list[dict[str, Any]] = []
     ignored: list[dict[str, Any]] = []
     used_groups: set[str] = set()
+    schema_by_id = {schema.schema_id: schema for schema in request.schemas}
     for record in sorted(request.feedback, key=lambda item: (item.timestamp, item.feedback_id)):
-        group = record.independence_group or record.source_id
+        group = "|".join((record.schema_id, record.feature_type, value_key(record.value), record.independence_group or record.source_id))
         if not record.use_for_schema_update:
             continue
         if group in state.schema_feedback_groups_seen or group in used_groups:
@@ -1119,7 +1542,30 @@ def update_general_schema_knowledge(
             ignored.append({"feedback_id": record.feedback_id, "reason": "schema_id_missing"})
             continue
         key = "|".join((record.schema_id, record.feature_type, value_key(record.value)))
-        counts = state.schema_beta_counts.setdefault(key, {"alpha": 1.0, "beta": 1.0})
+        schema = schema_by_id.get(record.schema_id)
+        if schema is not None and record.feature_type == "relation" and isinstance(record.value, Mapping):
+            triple_key = value_key(record.value)
+            base_probability = max(
+                (
+                    float(template["probability"])
+                    for template in schema.relation_templates
+                    if value_key({key: template[key] for key in ("subject", "predicate", "object")}) == triple_key
+                ),
+                default=0.5,
+            )
+        else:
+            base_probability = (
+                schema.feature_probabilities.get(record.feature_type, {}).get(value_key(record.value), 0.5)
+                if schema is not None else 0.5
+            )
+        prior_strength = config.schema_prior_strength
+        counts = state.schema_beta_counts.setdefault(
+            key,
+            {
+                "alpha": max(config.epsilon, base_probability * prior_strength),
+                "beta": max(config.epsilon, (1.0 - base_probability) * prior_strength),
+            },
+        )
         before = dict(counts)
         increment = config.schema_learning_rate * record.reliability
         if record.supports:
@@ -1158,7 +1604,10 @@ def finalize_reconstruction(
     supported: list[dict[str, Any]] = []
     existing_supported_ids: set[str] = set()
     for fragment in request.episodic_fragments:
-        if fragment.status in {"direct_evidence", "episodically_retrieved"}:
+        if (
+            fragment.status in {"direct_evidence", "episodically_retrieved"}
+            and (not request.target_episode_id or fragment.episode_id == request.target_episode_id)
+        ):
             supported.append({
                 "detail_id": fragment.detail_id,
                 "feature_type": fragment.feature_type,
@@ -1170,9 +1619,30 @@ def finalize_reconstruction(
                 "episode_id": fragment.episode_id,
             })
             existing_supported_ids.add(fragment.detail_id)
+    episode_uncertain_details = [
+        dict(value)
+        for row in ledger["features"].values()
+        for value in row.get("values", ())
+        if value.get("status") == "source_uncertain"
+    ]
+    competing_episode_details = [
+        {"feature_type": feature, **dict(value)}
+        for feature, row in ledger["features"].items()
+        for value in row.get("competing_episode_values", ())
+    ]
     promoted = [
         item for item in candidates
         if item.status == "episodically_retrieved"
+        and item.feature_type != "relation"
+        and item.evidence_strength >= 0.75
+        and item.episodic_context >= 0.75
+        and item.contradiction < 0.25
+    ]
+    promoted_relations = [
+        item for item in candidates
+        if item.status == "episodically_retrieved"
+        and item.feature_type == "relation"
+        and isinstance(item.content, Mapping)
         and item.evidence_strength >= 0.75
         and item.episodic_context >= 0.75
         and item.contradiction < 0.25
@@ -1190,15 +1660,102 @@ def finalize_reconstruction(
                 "episode_id": request.target_episode_id or request.event_id,
                 "supporting_evidence_ids": list(item.evidence_ids),
             })
-    inferred = [item.to_dict() for item in candidates if item.status == "inferred"]
-    post_event_suggested = [
-        item.to_dict() for item in candidates if item.status == "suggested_after_event"
+    supported_relations = [
+        {
+            "relation_id": item.relation_id,
+            **item.triple(),
+            "status": item.status,
+            "confidence": clamp(item.retrieval_strength * item.episodic_context),
+            "source_type": item.source_type,
+            "source_id": item.source_id,
+            "episode_id": item.episode_id,
+        }
+        for item in request.episodic_relations
+        if any(
+            row["relation_id"] == item.relation_id and row["reactivated"] and row["episode_match"]
+            for row in ledger.get("relations", ())
+        )
+        and (not request.target_episode_id or item.episode_id == request.target_episode_id)
+        and item.status in {"direct_evidence", "episodically_retrieved"}
     ]
-    source_uncertain = [item.to_dict() for item in candidates
-                        if item.status == "source_uncertain" or item.assigned_source == "unknown"]
+
+    for item in promoted_relations:
+        triple = dict(item.content)
+        if not any(all(existing.get(key) == triple[key] for key in ("subject", "predicate", "object"))
+                   for existing in supported_relations):
+            supported_relations.append({
+                "relation_id": item.candidate_id,
+                **triple,
+                "status": "episodically_retrieved",
+                "confidence": item.confidence,
+                "source_type": item.assigned_source,
+                "source_id": "source-monitoring-inference-promotion",
+                "episode_id": request.target_episode_id or request.event_id,
+                "supporting_evidence_ids": list(item.evidence_ids),
+            })
+    inferred = [item.to_dict() for item in candidates
+                if item.status == "inferred" and item.feature_type != "relation"
+                and item.contradiction < 0.75]
+    post_event_suggested = [
+        item.to_dict() for item in candidates
+        if item.status == "suggested_after_event" and item.feature_type != "relation"
+    ]
+    source_uncertain = [
+        item.to_dict() for item in candidates
+        if (item.status == "source_uncertain" or item.assigned_source == "unknown")
+        and item.feature_type != "relation"
+    ]
     contradicted = [
         item.to_dict() for item in candidates
-        if item.status == "contradicted" or item.contradiction >= 0.75
+        if (item.status == "contradicted" or item.contradiction >= 0.75)
+        and item.feature_type != "relation"
+    ]
+    inferred_relations = [
+        item.to_dict() for item in candidates
+        if item.feature_type == "relation" and item.status == "inferred"
+        and item.contradiction < 0.75
+    ]
+    post_event_suggested_relations = [
+        item.to_dict() for item in candidates
+        if item.feature_type == "relation" and item.status == "suggested_after_event"
+    ] + [
+        dict(item) for item in ledger.get("relations", ())
+        if item.get("reactivated") and item.get("episode_match")
+        and item.get("status") == "suggested_after_event"
+    ] + [
+        dict(item) for item in ledger.get("relations", ())
+        if item.get("reactivated") and item.get("episode_match")
+        and item.get("status") == "suggested_after_event"
+    ]
+    source_uncertain_relations = [
+        item.to_dict() for item in candidates
+        if item.feature_type == "relation" and (
+            item.status == "source_uncertain" or item.assigned_source == "unknown"
+        )
+    ]
+    contradicted_relations = [
+        item.to_dict() for item in candidates
+        if item.feature_type == "relation" and (
+            item.status == "contradicted" or item.contradiction >= 0.75
+        )
+    ] + [
+        dict(item) for item in ledger.get("relations", ())
+        if item.get("reactivated") and item.get("episode_match")
+        and item.get("status") == "contradicted"
+    ]
+    episode_uncertain_relations = [
+        dict(item) for item in ledger.get("relations", ())
+        if item.get("reactivated") and (item.get("episode_unidentified") or item.get("status") in {"source_uncertain", "unknown"})
+    ]
+    competing_relations = [
+        dict(item) for item in ledger.get("relations", ())
+        if item.get("reactivated") and not item.get("episode_match")
+        and not item.get("episode_unidentified")
+    ]
+    unresolved_relations = [
+        dict(item) for item in ledger.get("relations", ())
+        if (item.get("episode_match") or item.get("episode_unidentified"))
+        and item.get("status") in {"not_retrieved", "weakly_retrieved", "contradicted", "unknown"}
     ]
     grouped: dict[str, list[dict[str, Any]]] = {}
     for item in candidates:
@@ -1225,9 +1782,20 @@ def finalize_reconstruction(
         "event_id": request.event_id,
         "gist": gist,
         "supported_details": supported,
+        "supported_relations": supported_relations,
+        "event_graph": dict(ledger.get("event_graph", {})),
         "inferred_details": inferred,
+        "inferred_relations": inferred_relations,
+        "post_event_suggested_relations": post_event_suggested_relations,
+        "source_uncertain_relations": source_uncertain_relations,
+        "contradicted_relations": contradicted_relations,
+        "unresolved_relations": unresolved_relations,
+        "episode_uncertain_relations": episode_uncertain_relations,
+        "competing_relations": competing_relations,
         "post_event_suggested_details": post_event_suggested,
         "source_uncertain_details": source_uncertain,
+        "episode_uncertain_details": episode_uncertain_details,
+        "competing_episode_details": competing_episode_details,
         "contradicted_details": contradicted,
         "unresolved_features": unresolved,
         "unresolved_alternatives": grouped,

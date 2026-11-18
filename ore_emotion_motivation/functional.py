@@ -177,7 +177,7 @@ def estimate_neuromodulatory_gain(
     distance = arousal - config.arousal_optimum
     task_gain = exp(-(distance * distance) / (2.0 * config.arousal_sigma ** 2))
     # The floor prevents a single arousal estimate from shutting off all feature processing.
-    return clamp((0.45 + 0.75 * task_gain) * (0.70 + 0.60 * ne), 0.25, 1.5) / 1.5
+    return clamp((0.45 + 0.75 * task_gain) * (0.70 + 0.60 * ne), 0.25, 1.5)
 
 
 def divisive_normalization(
@@ -205,7 +205,7 @@ def modulate_feature_activity(
     """Apply attention and state-dependent gain to positive feature activity."""
     return {
         feature.feature_id: max(0.0, feature.value) * attention.weights.get(feature.feature_id, 0.0)
-        * clamp(gain, 0.0, 1.5) / 1.5
+        * clamp(gain, 0.0, 1.5)
         for feature in experience.features
     }
 

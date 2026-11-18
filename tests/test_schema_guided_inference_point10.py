@@ -308,7 +308,7 @@ def test_expected_information_gain_rewards_features_that_separate_schemas():
 def test_action_selection_subtracts_cost_and_risk_from_expected_utility():
     """Prefer a low-risk action when the higher nominal reward carries a larger risk penalty."""
     case = dog_case(action_options=(
-        ActionOption("approach_animal", {"dog": 4.0, "cat": 3.0}, risk=0.95),
+        ActionOption("approach_animal", {"dog": 4.0, "cat": 3.0}, cost=0.5, risk=0.95),
         ActionOption("observe_from_distance", {"dog": 2.0, "cat": 2.0}, risk=0.05),
     ))
     result = processor().infer(case)

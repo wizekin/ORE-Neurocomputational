@@ -134,6 +134,7 @@ class AnalogicalTransferProcessor:
         """Initialize source memory, analogy schemas, biological surrogates, and logger settings."""
         self.config = config or AnalogicalConfig()
         self.source_memory: dict[str, SituationGraph] = {}
+        self.target_domains: dict[str, str] = {}
         self.schemas: dict[str, AnalogySchema] = {}
         self.pending_results: dict[str, AnalogicalTransferResult] = {}
         self.pending_schema_candidates: dict[str, AnalogySchema] = {}
@@ -470,6 +471,8 @@ class AnalogicalTransferProcessor:
                 status = "mapping_only"
         ledger = _build_evidence_ledger(selected_source, target, hypotheses, retrieved)
         self.biological_network.observe_graph(target, self.config)
+        self.source_memory.setdefault(target.case_id, target)
+        self.target_domains[target.case_id] = target.domain
         duration_ms = round((time.perf_counter() - started) * 1000.0, 3)
         diagnostics = {
             "source_memory_size": len(self.source_memory),
@@ -558,10 +561,9 @@ class AnalogicalTransferProcessor:
                         item.domain for item in self.source_memory.values()
                         if item.case_id == result.selected_source_case_id
                     })),
-                    target_domains=tuple(sorted(set(existing.target_domains) | {
-                        self.source_memory.get(target_case_id, SituationGraph.__new__(SituationGraph)).domain
-                        if target_case_id in self.source_memory else ""
-                    } - {""})),
+                    target_domains=tuple(sorted(
+                        (set(existing.target_domains) | {self.target_domains.get(target_case_id, "")}) - {""}
+                    )),
                     successful_transfers=existing.successful_transfers + int(round(success_delta)),
                     failed_transfers=existing.failed_transfers + int(round(failure_delta)),
                     alpha=existing.alpha, beta=existing.beta, version=existing.version + 1,

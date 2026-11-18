@@ -713,12 +713,12 @@ def build_transfer_hypotheses(
         status = "candidate"
         reason = ""
         if conflicting_named_edges:
-            disanalogies = disanalogies + (Disanalogy(
+            disanalogies.append(Disanalogy(
                 "relation-conflict:" + relation.relation_id,
                 "relational_disanalogy",
                 "Target contains a relation with the same mapped endpoints but incompatible direction, causal status, or evidence",
                 (relation.relation_id,), "hard_stop", "observed_target_relation",
-            ),)
+            ))
             allowed = False
         if not allowed or confidence < cfg.transfer_confidence_threshold:
             status = "rejected"

@@ -120,7 +120,8 @@ def _role_similarity(
     }
     relation_position = _jaccard(source_signature, target_signature)
     if source_roles or target_roles:
-        return 0.80 * hint_similarity + 0.20 * relation_position
+        # Explicit functional roles are stronger than an incomplete incident-edge signature.
+        return 0.95 * hint_similarity + 0.05 * relation_position
     return relation_position
 
 
@@ -167,7 +168,7 @@ def candidate_entity_correspondences(
             role = _role_similarity(source_entity, source, target_entity, target, cfg)
             surface = _surface_similarity(source_entity, target_entity)
             goal = _goal_similarity(source_entity, target_entity, source, target)
-            relational = clamp(0.75 * role + 0.25 * goal)
+            relational = clamp(0.85 * role + 0.15 * goal)
             score = (
                 role_weight * role + surface_weight * surface
                 + relation_weight * relational
@@ -219,7 +220,9 @@ def generate_partial_mappings(
         next_beam.sort(key=lambda item: (
             -item[0], tuple(sorted(item[1].items()))
         ))
-        beam = next_beam[:max(cfg.mapping_limit * 8, 32)]
+        # Preserve alternative assignments until relation structure can rank them.
+        # Node-only top-K pruning here can discard the only relation-consistent mapping.
+        beam = next_beam[:max(cfg.mapping_limit * 64, 512)]
     unique: dict[tuple[tuple[str, str], ...], dict[str, str]] = {}
     for _, mapping, _ in beam:
         if mapping:
@@ -230,7 +233,9 @@ def generate_partial_mappings(
              for s, t in mapping.items()),
         tuple(sorted(mapping.items())),
     ))
-    return tuple(ranked[:cfg.mapping_limit])
+    # Leave a broad candidate pool for rank_mappings(), which evaluates edges and
+    # higher-order relations. Returning only node-score top-K here biases against structure.
+    return tuple(ranked[:max(cfg.mapping_limit * 16, 128)])
 
 
 def _target_relation_match(

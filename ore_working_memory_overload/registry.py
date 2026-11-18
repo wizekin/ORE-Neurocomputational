@@ -22,7 +22,7 @@ class Point19OperationSpec:
 
 
 _ROWS = (
-    ("establish_goal", "Establish the current comprehension goal", "w_f = softmax(alpha_g*G_f + alpha_c*C_f + alpha_r*R_f)", "Distributed prefrontal and parietal goal maintenance and attentional selection."),
+    ("establish_goal", "Establish the current comprehension goal", "w_f = softmax(0.50*G_f + 0.25*C_f + 0.25*R_f)", "Distributed prefrontal and parietal goal maintenance and attentional selection."),
     ("segment_stream", "Segment incoming language into candidate units", "P(z|x,C) proportional to P(x|z)P(z|C)", "Auditory or visual language systems with lexical and prosodic boundary sensitivity."),
     ("encode_features", "Encode lexical, grammatical, semantic, and source features", "x_i = f_lex(u_i,C,G)", "Distributed temporal lexical-semantic and phonological representations."),
     ("build_partial_structure", "Build an incremental structure and open dependencies", "G_(t+1) = G_t union {v_i,e_i,*}", "Frontotemporal language interactions maintaining incomplete constituents and relations."),

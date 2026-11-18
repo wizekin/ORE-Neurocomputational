@@ -1467,3 +1467,16 @@ Run the focused tests with:
 ~~~bash
 python -m pytest tests/test_garden_path_point23.py -q
 ~~~
+
+
+## Point 24 — Feedback, clarification, and misconception correction
+
+The ore_corrective_learning package implements a twenty-operation feedback and correction loop. It compares predictions with observations, classifies possible error sources, chooses clarification or verification actions using expected information gain, evaluates evidence provenance and independence, updates supplied hypotheses with Bayesian evidence weighting, and tests the revised representation through retrieval and transfer. It also tracks confidence calibration, consolidation strength, and possible belief regression.
+
+The implementation does not fetch evidence or invent candidate explanations. Evidence likelihoods, source reliability, independence groups, and any ground-truth labels must be supplied by the caller. Its optional distributed population-rate biological reference is an illustrative systems-level abstraction, not a validated neural simulation.
+
+See docs/CORRECTIVE_LEARNING_POINT24.md for the full algorithm, equations, API, scientific limits, and source references. Run the focused tests with:
+
+~~~bash
+python -m pytest tests/test_corrective_learning_point24.py -q
+~~~

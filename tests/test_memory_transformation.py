@@ -324,14 +324,19 @@ def test_reactivation_boosts_accessibility_without_mutating_event_content() -> N
     """A retrieval opportunity improves modeled access but keeps stored episode details unchanged."""
     processor = EpisodicToSemanticTransformationProcessor()
     _transform(processor, "add", episodes=(_bird("bird-a", "park", "morning"),),
-               target_episode_id="bird-a", now_ms=10_000.0, reactivation_gain=0.0)
+               target_episode_id="bird-a", now_ms=0.0, reactivation_gain=0.0)
     before_episode = processor.episodic_store["bird-a"].episode.to_dict()
+    aged = _transform(processor, "age", target_episode_id="bird-a",
+                      now_ms=3_600_000.0, reactivation_gain=0.0)
     before_access = processor.episodic_store["bird-a"].feature_accessibility["content:feathers"]
+    after_age_episode = processor.episodic_store["bird-a"].episode.to_dict()
     result = _transform(processor, "reactivate", target_episode_id="bird-a",
-                        now_ms=10_000.0, reactivation_gain=1.0)
+                        now_ms=3_600_000.0, reactivation_gain=1.0)
     after_access = processor.episodic_store["bird-a"].feature_accessibility["content:feathers"]
+    assert aged.accessibility["trace_content_deleted"] is False
+    assert before_access < 1.0
     assert after_access > before_access
-    assert processor.episodic_store["bird-a"].episode.to_dict() == before_episode
+    assert processor.episodic_store["bird-a"].episode.to_dict() == before_episode == after_age_episode
     assert result.retrieved_result["episodic_detail"]["episode_id"] == "bird-a"
 
 

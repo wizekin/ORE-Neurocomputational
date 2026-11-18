@@ -239,6 +239,7 @@ def infer_communicative_intention(
     event: SocialInteractionEvent,
     partner: PartnerModel,
     config: SocialLearningConfig,
+    learner_knowledge: Mapping[str, float] | None = None,
 ) -> dict[str, Any]:
     """Infer partner communicative goals from utterance, social signals, and conversational context."""
     scores = _intention_cue_scores(event.utterance, event.signals)
@@ -257,9 +258,8 @@ def infer_communicative_intention(
         key: 1.0 - value for key, value in partner.knowledge_state.items()
     }
     belief_distance = kl_divergence(
-        {key: value for key, value in partner.knowledge_state.items()},
-        {key: 1.0 - value for key, value in partner.knowledge_state.items()},
-    ) if partner.knowledge_state else 0.0
+        learner_knowledge or {}, partner.knowledge_state
+    )
     return {
         "candidate_intentions": posterior,
         "most_likely_intention": top,
@@ -779,8 +779,13 @@ def build_narrative_model(
             if story_event.action:
                 agent["actions"].append(story_event.action)
             for fact_key in story_event.facts:
-                if not story_event.reveals_to or story_event.agent_id in story_event.reveals_to:
-                    agent["known_facts"].append(fact_key)
+                recipients = story_event.reveals_to or (story_event.agent_id,)
+                for recipient_id in recipients:
+                    recipient = state.narrative_agent_states.setdefault(
+                        recipient_id, {"goals": [], "known_facts": [], "actions": []}
+                    )
+                    if fact_key not in recipient["known_facts"]:
+                        recipient["known_facts"].append(fact_key)
         if story_event.causal_parents:
             missing_parents = [
                 parent for parent in story_event.causal_parents
@@ -941,10 +946,19 @@ def update_partner_and_cross_partner_models(
 ) -> dict[str, Any]:
     """Update one partner cautiously and generalize only patterns observed across multiple partners."""
     prior_reliability = partner.reliability
+    source_evidence = [
+        item.reliability for item in event.feedback
+        if item.kind in {
+            "informational_correction", "recast", "confirmation",
+            "clarification", "outcome",
+        }
+    ]
+    observed_source_reliability = (
+        max(source_evidence) if source_evidence
+        else float(attention.get("quality", 0.5))
+    )
     observed_reliability = clamp(
-        0.55 * partner.reliability
-        + 0.25 * max((item.reliability for item in event.feedback), default=0.5)
-        + 0.20 * float(attention.get("quality", 0.5))
+        0.70 * partner.reliability + 0.30 * observed_source_reliability
     )
     partner.reliability = clamp(
         prior_reliability + config.partner_model_learning_rate

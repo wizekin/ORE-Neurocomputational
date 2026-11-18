@@ -486,14 +486,16 @@ def merge_case_evidence(
     previous: CaseEvidence, additional: Sequence[EvidenceItem],
     relations: Sequence[RelationEvidence] = (), event_history: Sequence[str] = (),
 ) -> CaseEvidence:
-    """Create a new evidence snapshot while preserving original sources and event ordering."""
+    """Create a revised case snapshot and preserve superseded observations in evidence history."""
     features = dict(previous.features)
+    history = list(previous.evidence_history)
     for item in additional:
         if item.feature in features:
             existing = features[item.feature]
-            if existing.status in {"observed", "contradicted"} and item.status in {"observed", "contradicted"}:
-                if value_key(existing.value) != value_key(item.value):
-                    raise ValueError("conflicting observations require separate evidence resolution")
+            if (existing.status in {"observed", "contradicted"}
+                    and item.status in {"observed", "contradicted"}
+                    and value_key(existing.value) != value_key(item.value)):
+                history.append(existing)
             if item.status in {"observed", "contradicted"} or existing.status in {"unknown", "not_observed"}:
                 features[item.feature] = item
         else:
@@ -504,4 +506,5 @@ def merge_case_evidence(
         event_history=tuple(previous.event_history) + tuple(event_history),
         context=previous.context, goals=previous.goals, query_options=previous.query_options,
         action_options=previous.action_options, source_reference=previous.source_reference,
+        evidence_history=tuple(history),
     )

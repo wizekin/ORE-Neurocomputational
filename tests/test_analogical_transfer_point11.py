@@ -265,7 +265,9 @@ def test_partial_mapping_keeps_unmapped_source_roles_and_reduces_coverage():
     best = mappings[0]
     assert "resistance" not in best.entity_map
     assert "hyd-limit" in best.missing_relation_ids
-    assert best.confidence < rank_mappings(source, make_electrical_target(), make_config())[0].confidence
+    full_best = rank_mappings(source, make_electrical_target(), make_config())[0]
+    assert full_best.entity_map["resistance"] == "resistor"
+    assert best.confidence < full_best.confidence
 
 
 def test_target_condition_mismatch_qualifies_transfer_instead_of_asserting_it():

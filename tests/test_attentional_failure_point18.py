@@ -247,7 +247,7 @@ def test_completeness_audit_uses_dependency_aware_coverage_and_geometric_confide
         InformationRequirement("action", importance=1.0, confidence=0.95),
     )
     audit = audit_completeness(requirements, {"items": {
-        "action": {"confidence": 0.95},
+        "action": {"confidence": 0.40},
     }}, AttentionalConfig())
     cause = next(x for x in audit["requirements"] if x["key"] == "cause")
     assert cause["missing_dependencies"] == ["action"]

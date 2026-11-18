@@ -146,6 +146,30 @@ def test_episode_grouping_abstracts_common_structure_not_specific_entity_ids():
     assert groups[0][0].entities != groups[0][1].entities
 
 
+def test_role_assignment_does_not_merge_reused_entity_ids_across_episodes():
+    """Treat entity IDs as episode-local so a reused label cannot blend different roles."""
+    episodes = [
+        EpisodeInput(
+            "local-a",
+            {"shared": EntityInput("shared", "customer", "person"),
+             "meal-a": EntityInput("meal-a", "meal A", "food")},
+            [EventInput("order", {"customer": "shared", "meal": "meal-a"})],
+        ),
+        EpisodeInput(
+            "local-b",
+            {"shared": EntityInput("shared", "service provider", "person"),
+             "meal-b": EntityInput("meal-b", "meal B", "food")},
+            [EventInput("serve", {"service_provider": "shared", "meal": "meal-b"})],
+        ),
+    ]
+    assignments = infer_role_assignments(episodes, SchemaConfig())
+    shared = {(item.episode_id, item.entity_id): item for item in assignments if item.entity_id == "shared"}
+    assert shared[("local-a", "shared")].selected_role == "customer"
+    assert shared[("local-b", "shared")].selected_role == "service_provider"
+    assert not shared[("local-a", "shared")].ambiguous
+    assert not shared[("local-b", "shared")].ambiguous
+
+
 def test_role_induction_maps_surface_synonym_to_reusable_schema_slot():
     """Map waiter and service-provider mentions to one role while retaining different fillers."""
     episodes = [restaurant_episode("s1"), restaurant_episode("s2")]

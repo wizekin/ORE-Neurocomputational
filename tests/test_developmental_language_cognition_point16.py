@@ -170,6 +170,9 @@ def test_repeated_exposure_establishes_a_vocabulary_entry():
     processor.process(experience(experience_id="p16-word-2"))
     result = processor.process(experience(experience_id="p16-word-3"))
     assert state.lexicon["banana"]["exposures"] == 3
+    meanings = [row["meaning"] for row in result.word_meaning_mapping["candidate_meanings"]]
+    assert len(meanings) == len(set(meanings))
+    assert result.word_meaning_mapping["meaning_confidence"] >= 0.55
     assert result.vocabulary_growth["status"] == "established"
     assert result.vocabulary_growth["learning_efficiency"] >= 0.35
 

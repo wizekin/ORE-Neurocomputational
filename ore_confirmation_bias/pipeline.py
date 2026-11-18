@@ -227,9 +227,15 @@ class Point21ConfirmationBiasProcessor:
             request, selection, attention, quality, comparison, readout,
         )
         validation["evidence_audit_count"] = len(audit)
-        validation["operation_order_verified"] = [
+        # The validation record describes operation 14 itself, which is appended
+        # immediately below. Include that pending final record in the order check.
+        completed_and_pending_ids = [
             row["operation_id"] for row in trace
-        ] == [spec.operation_id for spec in OPERATION_REGISTRY]
+        ] + [OPERATION_REGISTRY[13].operation_id]
+        expected_ids = [spec.operation_id for spec in OPERATION_REGISTRY]
+        validation["operation_order_verified"] = (
+            completed_and_pending_ids == expected_ids
+        )
         _append_operation(
             trace, 13, validation,
             biological(13, conflict=min(1.0, len(validation["failure_signatures"]) / 4.0)),

@@ -227,6 +227,29 @@ def generate_partial_mappings(
     for _, mapping, _ in beam:
         if mapping:
             unique[tuple(sorted(mapping.items()))] = mapping
+
+    # Seed an unambiguous full/partial alignment from exact declared role labels.
+    # These labels are functional correspondence hints, not surface-name matches;
+    # downstream relation preservation still decides whether the analogy is valid.
+    source_role_groups: dict[tuple[str, ...], list[str]] = defaultdict(list)
+    target_role_groups: dict[tuple[str, ...], list[str]] = defaultdict(list)
+    for entity_id in source_ids:
+        roles = tuple(sorted(set(source.entities[entity_id].role_hints)))
+        if roles:
+            source_role_groups[roles].append(entity_id)
+    for entity_id, entity in target.entities.items():
+        roles = tuple(sorted(set(entity.role_hints)))
+        if roles:
+            target_role_groups[roles].append(entity_id)
+    role_anchors: dict[str, str] = {}
+    for roles, source_group in source_role_groups.items():
+        target_group = target_role_groups.get(roles, [])
+        if len(source_group) == len(target_group):
+            for source_id, target_id in zip(sorted(source_group), sorted(target_group)):
+                role_anchors[source_id] = target_id
+    if role_anchors:
+        unique[tuple(sorted(role_anchors.items()))] = role_anchors
+
     ranked = sorted(unique.values(), key=lambda mapping: (
         -sum(next((pair.score for pair in correspondences
                    if pair.source_entity_id == s and pair.target_entity_id == t), 0.0)

@@ -95,6 +95,8 @@ def test_processor_emits_all_operations_and_separates_biological_proxy() -> None
     assert [row["operation_id"] for row in result.operation_trace] == [
         f"P19-{index:02d}" for index in range(1, 20)
     ]
+    assert result.operation_trace[0]["functional_output"]["goal_weights"]
+    assert sum(result.operation_trace[0]["functional_output"]["goal_weights"].values()) == pytest.approx(1.0)
     assert result.operation_trace[9]["functional_output"]["retrieval_count"] == 1
     assert result.operation_trace[10]["functional_output"]["integrated_count"] == 1
     assert result.biological["operation_count"] == 19

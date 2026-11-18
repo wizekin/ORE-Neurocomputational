@@ -65,7 +65,9 @@ class LanguageDomainReasoningProcessor:
         _trace(trace, 1, units, bio.perceptual.snapshot())
 
         # 3. Activate the distributed language-selective representation.
-        active_language = activate_language_representations(features, units)
+        active_language = activate_language_representations(
+            features, units, {"activation": active_state.language_activation}
+        )
         bio.engage("frontotemporal_language_selective", "activate_recurrent_language_state",
                    {"load": 1.0 - active_language["linguistic_form_confidence"]})
         _trace(trace, 2, active_language, bio.language_selective.snapshot())
@@ -77,7 +79,7 @@ class LanguageDomainReasoningProcessor:
         _trace(trace, 3, lexical, bio.language_selective.snapshot())
 
         # 5. Build an incremental structural hypothesis and keep unresolved dependencies.
-        structure = build_incremental_structure(event, lexical, cfg)
+        structure = build_incremental_structure(event, lexical, cfg, active_state)
         bio.engage("frontotemporal_language_selective", "construct_incremental_structure",
                    {"load": len(structure["unresolved_dependencies"]) / 5.0})
         _trace(trace, 4, structure, bio.language_selective.snapshot())

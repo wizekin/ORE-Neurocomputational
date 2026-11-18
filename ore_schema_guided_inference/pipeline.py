@@ -19,7 +19,7 @@ from .contracts import (
     InferenceResult, InferredProperty, RelationEvidence, SchemaProfile,
 )
 from .functional import (
-    merge_case_evidence, predict_missing_properties, predict_missing_relations,
+    clamp, merge_case_evidence, predict_missing_properties, predict_missing_relations,
     predict_next_events, rank_schema_profiles, select_action,
     select_hierarchical_category, select_information_query,
 )

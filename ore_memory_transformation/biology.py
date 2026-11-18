@@ -164,7 +164,7 @@ class DistributedSemanticNetwork:
         context_weights: Mapping[str, float],
     ) -> tuple[np.ndarray, dict[str, object]]:
         """Transform weighted gist features and recurring relations into sparse cortical activity."""
-        groups = normalize_nested_features(features)
+        groups = normalise_nested_features(features)
         drive = np.zeros(self.config.semantic_units, dtype=np.float64)
         contribution_count = 0
         for group in FEATURE_GROUPS:

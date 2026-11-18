@@ -258,7 +258,12 @@ def rank_schema_profiles(
         goal_score=0.0, event_score=0.0,
     ))
     output.sort(key=lambda item: (-item.posterior, item.schema_id))
-    return tuple(output[:config.max_candidates])
+    selected = output[:config.max_candidates]
+    unknown = next((item for item in output if item.schema_id == "unknown"), None)
+    if unknown is not None and all(item.schema_id != "unknown" for item in selected):
+        selected = selected[:-1] + [unknown]
+        selected.sort(key=lambda item: (-item.posterior, item.schema_id))
+    return tuple(selected)
 
 
 def select_hierarchical_category(

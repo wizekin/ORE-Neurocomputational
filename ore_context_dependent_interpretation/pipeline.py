@@ -227,6 +227,41 @@ class ContextDependentInterpretationProcessor:
             normalized_entropy = revised_entropy
             margin = revised_margin
             state.situation.revision_count += 1
+            # Remove only inferred facts introduced by this event, never explicit evidence.
+            for fact_key in list(state.situation.fact_provenance):
+                provenance = state.situation.fact_provenance.get(fact_key, {})
+                if (provenance.get("event_id") == event.event_id
+                        and provenance.get("status") == "inferred"):
+                    state.situation.fact_provenance.pop(fact_key, None)
+                    state.situation.facts.pop(fact_key, None)
+            if selected is not None:
+                for fact_key, fact_value in selected.candidate.facts.items():
+                    if fact_key not in state.situation.facts:
+                        state.situation.facts[str(fact_key)] = fact_value
+                        state.situation.fact_provenance[str(fact_key)] = {
+                            "status": "inferred", "provenance": "candidate_hypothesis",
+                            "event_id": event.event_id,
+                            "candidate_id": selected.candidate.candidate_id,
+                            "confidence": selected.posterior,
+                        }
+                state.situation.confidence = selected.posterior
+                state.situation.unresolved_items = [
+                    item for item in state.situation.unresolved_items
+                    if item.get("event_id") != event.event_id
+                ]
+            elif not any(
+                item.get("event_id") == event.event_id
+                for item in state.situation.unresolved_items
+            ):
+                state.situation.unresolved_items.append({
+                    "event_id": event.event_id,
+                    "candidate_ids": [item.candidate.candidate_id for item in scored],
+                    "candidate_posteriors": {
+                        item.candidate.candidate_id: item.posterior for item in scored
+                    },
+                    "reason": "new evidence left the interpretation unresolved",
+                })
+            bio.prefrontal_control.select(status, len(scored))
             if state.situation.events and state.situation.events[-1]["event_id"] == event.event_id:
                 state.situation.events[-1].update({
                     "status": status,

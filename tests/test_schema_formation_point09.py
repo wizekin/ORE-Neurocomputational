@@ -300,8 +300,12 @@ def test_biological_networks_keep_episodic_binding_separate_from_cortical_learni
     network = BiologicalSchemaNetwork(SchemaConfig(role_aliases={"waiter": "service_provider"}))
     result = network.observe(episodes)
     before = network.hippocampus.snapshot()["binding_count"]
+    cortical_updates = network.cortex.update_count
+    goal_observations = network.orbitofrontal.observation_count
     network.observe([episodes[0]])
     assert network.hippocampus.snapshot()["binding_count"] == before
+    assert network.cortex.update_count == cortical_updates
+    assert network.orbitofrontal.observation_count == goal_observations
     assert result["network_state"]["distributed_cortex"]["association_count"] > 0
     assert all(0.0 <= value <= 1.0 for value in network.cortex.associations.values())
 

@@ -523,8 +523,12 @@ def reencode_recovered_information(
         confidence = clip01(candidate["confidence"])
         old = items.get(key)
         if old and old.get("content") != candidate.get("content"):
-            updated_confidence = max(float(old.get("confidence", 0.0)), confidence) * 0.5
             conflict = True
+            if candidate.get("provenance") == "recoverable_source_record":
+                # A verified source is stronger than a weak first-pass encoding.
+                updated_confidence = max(float(old.get("confidence", 0.0)), confidence)
+            else:
+                updated_confidence = max(float(old.get("confidence", 0.0)), confidence) * 0.5
         elif old:
             updated_confidence = 1.0 - (1.0 - float(old.get("confidence", 0.0))) * (1.0 - confidence)
             conflict = False
@@ -588,14 +592,12 @@ def adapt_future_attention(
         + (float(feedback_success) - float(policy.get("recovery_success_rate", 0.0))) / observations
     )
     state.context_policy[key] = policy
+    selected_keys = set(str(x) for x in event.feedback.get("selected_keys", ()))
     for item in event.incoming_items:
         item_key = str(item.get("key", ""))
         if item_key:
             prior = state.selection_history.get(item_key, 0.0)
-            selected = 1.0 if item_key in {
-                row["key"] for row in event.incoming_items
-                if row.get("selected", False)
-            } else 0.0
+            selected = 1.0 if item_key in selected_keys or item.get("selected", False) else 0.0
             state.selection_history[item_key] = clip01(0.9 * prior + 0.1 * selected)
     return {
         "context_key": key,

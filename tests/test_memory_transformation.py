@@ -266,11 +266,12 @@ def test_contrastive_concepts_are_not_automatically_merged() -> None:
         ),
         target_episode_id="bird-a",
     )
-    assert processor.episode_concept_ids["bird-a"] != processor.episode_concept_ids["fish-a"]
-    assert set(result.concept_ids) == {
-        processor.episode_concept_ids["bird-a"],
-        processor.episode_concept_ids["fish-a"],
-    }
+    bird_concept = processor.episode_concept_ids["bird-a"]
+    fish_concept = processor.episode_concept_ids["fish-a"]
+    assert bird_concept != fish_concept
+    assert result.concept_ids == [bird_concept]
+    assert fish_concept not in result.concept_ids
+    assert processor.episodic_store["fish-a"].episode.episode_id == "fish-a"
     assert all(link["identities_merged"] is False for link in result.schema_links)
 
 

@@ -15,7 +15,7 @@ from .contracts import (
     SituationGraph, TransferHypothesis, TransferValidation,
 )
 from .functional import (
-    abstract_relation_templates, build_transfer_hypotheses, candidate_entity_correspondences,
+    abstract_relation_templates, build_transfer_hypotheses, candidate_entity_correspondences, clamp,
     generate_partial_mappings, prioritize_working_memory, rank_mappings,
     recurrent_relation_activation, retrieve_sources, score_mapping,
     translate_parameters, validate_transfer,

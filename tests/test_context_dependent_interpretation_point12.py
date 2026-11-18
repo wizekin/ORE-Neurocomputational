@@ -253,10 +253,10 @@ def test_sqlite_annotation_registration_and_operation_logging(tmp_path):
         ambiguous_event(event_id="sqlite-event"), context=finance_state()
     )
     catalogue = register_annotations(database_path)
-    assert catalogue["files_scanned"] >= 5
+    assert catalogue["files_seen"] >= 5
     database = LoggerDatabase(database_path)
     summary = database.summary()
-    assert summary["annotation_count"] > 0
+    assert summary["symbols"] > 0
 
     # Import here to exercise the public package export as a caller would use it.
     from ore_context_dependent_interpretation import record_result_to_sqlite

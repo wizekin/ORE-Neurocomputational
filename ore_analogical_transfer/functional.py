@@ -452,9 +452,14 @@ def rank_mappings(
         score_mapping(source, target, mapping, pairs, cfg)
         for mapping in mappings
     ]
+    # Select the best-supported entity-role alignment before applying relation-level
+    # contradiction penalties. Otherwise an incomplete mapping can win by hiding a
+    # genuine disanalogy (for example, a mapped target edge with reversed direction).
+    # The selected transfer stage still receives contradicted_relation_ids and rejects
+    # those individual inferences; total_score retains its contradiction penalty.
     results.sort(key=lambda item: (
-        -item.total_score, -item.structural_consistency,
-        tuple(sorted(item.entity_map.items()))
+        -item.confidence, -item.total_score, -item.structural_consistency,
+        -len(item.entity_map), tuple(sorted(item.entity_map.items()))
     ))
     return tuple(results[:cfg.mapping_limit])
 

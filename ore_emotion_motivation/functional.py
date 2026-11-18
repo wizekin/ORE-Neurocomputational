@@ -338,7 +338,8 @@ def allocate_effort(
             effort * control_capacity * (0.45 + 0.55 * state.motivation.goal_strength)
             * (1.0 - 0.35 * experience.task_demands)
         )
-        cost = clamp(effort * effort * cost_weight + effort * 0.15 * experience.task_demands)
+        cost = clamp(0.25 * effort * effort * cost_weight
+                      + effort * 0.05 * experience.task_demands)
         net = expected_value * progress - cost
         if best is None or net > best[0]:
             best = (net, effort, progress, cost)

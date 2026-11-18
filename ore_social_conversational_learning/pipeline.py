@@ -7,7 +7,7 @@ from typing import Any, Mapping
 
 from .biology import BiologicalSocialLearningNetwork
 from .contracts import (
-    LearnerSocialState, PartnerModel, SocialInteractionEvent,
+    LearnerSocialState, SocialInteractionEvent,
     SocialLearningConfig, SocialLearningResult,
 )
 from .functional import (
@@ -124,7 +124,9 @@ class SocialInteractionLearningProcessor:
         _trace_operation(trace, 2, joint_attention, bio.temporoparietal_joint_attention.snapshot())
 
         # 4. Infer communicative intention and the partner's likely knowledge state.
-        intention = bio.medial_prefrontal_mentalizing.infer(event, partner, config)
+        intention = bio.medial_prefrontal_mentalizing.infer(
+            event, partner, config, active_state.semantic_knowledge
+        )
         _trace_operation(trace, 3, intention, bio.medial_prefrontal_mentalizing.snapshot())
 
         # 5. Integrate speech, gesture, gaze, prosody, face, and action with source tags retained.

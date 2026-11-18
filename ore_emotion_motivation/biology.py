@@ -6,7 +6,7 @@ concentrations or claims of literal neuronal arithmetic.
 """
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any
 
 from .contracts import (
     AffectiveAppraisal, EmotionLearningConfig, LearningExperience,

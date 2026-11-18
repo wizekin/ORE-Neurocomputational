@@ -221,8 +221,12 @@ class BiologicalSchemaNetwork:
         trace: list[dict[str, Any]] = []
         for episode in episodes:
             hippocampal = self.hippocampus.bind(episode)
-            cortical_updates = self.cortex.learn_episode(episode)
-            goal_updates = self.orbitofrontal.learn_episode(episode)
+            if hippocampal["new_trace"]:
+                cortical_updates = self.cortex.learn_episode(episode)
+                goal_updates = self.orbitofrontal.learn_episode(episode)
+            else:
+                cortical_updates = 0
+                goal_updates = 0
             trace.append({
                 "episode_id": episode.episode_id, "hippocampal": hippocampal,
                 "cortical_association_updates": cortical_updates,

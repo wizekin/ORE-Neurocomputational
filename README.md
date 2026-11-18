@@ -1422,3 +1422,26 @@ Run the focused tests with:
 ```bash
 python -m pytest tests/test_confirmation_bias_point21.py -q
 ```
+
+
+## Cognitive heuristics and systematic reasoning errors — Point 22
+
+Point 22 implements a seventeen-operation model of fast judgment shortcuts and their
+failure conditions. It separates availability from real-world frequency, prototype similarity
+from probability, fluency from independent evidence, numeric anchors from evidence-based
+estimates, and correlation from causal identification. The algorithm produces an initial
+intuitive judgment and a distinct verification result, quantifies sampling uncertainty, evaluates
+whether a heuristic fits the environment, and records feedback without attributing an error to
+a cue unless cue-level feedback is supplied.
+
+The ore_cognitive_heuristics package includes a functional algorithm, an optional distributed
+population-rate biological-reference track, typed contracts, an auditable operation registry, and
+SQLite annotation/operation logging through the shared ore_logger tables. The biological track
+is an engineering analogy rather than a validated neural simulation.
+
+See docs/COGNITIVE_HEURISTICS_POINT22.md for architecture, equations, API, and limitations.
+Run the focused tests with:
+
+~~~bash
+python -m pytest tests/test_cognitive_heuristics_point22.py -q
+~~~

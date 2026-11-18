@@ -41,8 +41,8 @@ def context_signature(context: Mapping[str, Any]) -> str:
 def _set_similarity(left: Iterable[str], right: Iterable[str]) -> float:
     """Return Jaccard similarity with a neutral empty-empty convention."""
     a, b = set(left), set(right)
-    if not a and not b:
-        return 1.0
+    if not a or not b:
+        return 0.0
     union = a | b
     return len(a & b) / len(union) if union else 0.0
 
@@ -89,8 +89,24 @@ def episode_similarity(left: EpisodeInput, right: EpisodeInput,
         canonical_role(role, aliases)
         for event in right.events for role in event.participants
     }
-    relation_left = {item.predicate.casefold() for item in left.relations}
-    relation_right = {item.predicate.casefold() for item in right.relations}
+    def relation_patterns(episode: EpisodeInput) -> set[str]:
+        """Represent observed relation direction using the participant roles of its endpoints."""
+        entity_roles: dict[str, set[str]] = defaultdict(set)
+        for event in episode.events:
+            for role, entity_id in event.participants.items():
+                entity_roles[entity_id].add(canonical_role(role, aliases))
+        patterns: set[str] = set()
+        for relation in episode.relations:
+            subject = sorted(entity_roles.get(relation.subject_id, set()))
+            object_roles = sorted(entity_roles.get(relation.object_id, set()))
+            if subject and object_roles:
+                for subject_role in subject:
+                    for object_role in object_roles:
+                        patterns.add(subject_role + ">" + relation.predicate.casefold() + ">" + object_role)
+        return patterns
+
+    relation_left = relation_patterns(left)
+    relation_right = relation_patterns(right)
     event_left = {item.event_type for item in left.events}
     event_right = {item.event_type for item in right.events}
     context_left = {str(k) + "=" + str(v) for k, v in left.context.items()}
@@ -264,12 +280,14 @@ def induce_relations(
     assignments: Sequence[RoleAssignment],
     config: SchemaConfig,
 ) -> tuple[SchemaRelation, ...]:
-    """Align directed episode relations to schema slots and estimate smoothed support by eligibility."""
+    """Align directed episode relations to slots and estimate support over all eligible episodes."""
     support_by_key: dict[tuple[str, str, str, str], set[str]] = defaultdict(set)
-    eligible_by_key: dict[tuple[str, str, str, str], set[str]] = defaultdict(set)
+    role_maps: dict[str, dict[str, str]] = {}
+    present_roles_by_episode: dict[str, set[str]] = {}
     for episode in episodes:
         role_map = _episode_role_maps(episode, config, assignments)
-        present_roles = set(role_map.values())
+        role_maps[episode.episode_id] = role_map
+        present_roles_by_episode[episode.episode_id] = set(role_map.values())
         for relation in episode.relations:
             subject_role = role_map.get(relation.subject_id)
             object_role = role_map.get(relation.object_id)
@@ -278,21 +296,21 @@ def induce_relations(
             key = (subject_role, relation.predicate.casefold(), object_role,
                    relation.evidential_status)
             support_by_key[key].add(episode.episode_id)
-        for subject in present_roles:
-            for object_role in present_roles:
-                if subject == object_role:
-                    continue
-                for predicate_status in (
-                    key for key in support_by_key if key[0] == subject and key[2] == object_role
-                ):
-                    eligible_by_key[predicate_status].add(episode.episode_id)
+
+    eligible_by_key: dict[tuple[str, str, str, str], set[str]] = defaultdict(set)
+    for key in support_by_key:
+        subject, _, object_role, _ = key
+        for episode in episodes:
+            present = present_roles_by_episode[episode.episode_id]
+            if subject in present and object_role in present:
+                eligible_by_key[key].add(episode.episode_id)
+
     relations: list[SchemaRelation] = []
-    relation_keys = sorted(set(support_by_key) | set(eligible_by_key))
-    for key in relation_keys:
+    for key in sorted(support_by_key):
         subject, predicate, object_role, evidence_status = key
-        eligible_ids = eligible_by_key.get(key, set())
-        support_ids = support_by_key.get(key, set())
-        eligible_count = max(len(eligible_ids), len(support_ids))
+        eligible_ids = eligible_by_key[key]
+        support_ids = support_by_key[key]
+        eligible_count = len(eligible_ids)
         support_count = len(support_ids)
         alpha, beta = config.relation_alpha, config.relation_beta
         confidence = (support_count + alpha) / (eligible_count + alpha + beta)
@@ -311,7 +329,6 @@ def induce_relations(
             supporting_episode_ids=tuple(sorted(support_ids)),
         ))
     return tuple(relations)
-
 
 def estimate_transitions(
     episodes: Sequence[EpisodeInput], config: SchemaConfig

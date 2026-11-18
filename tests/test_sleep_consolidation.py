@@ -209,18 +209,45 @@ def test_all_package_classes_and_functions_have_docstrings() -> None:
 
 
 def test_package_annotations_are_indexed_in_logger_sqlite(tmp_path: Path) -> None:
-    """Verify Point 03 symbols are discoverable through the repository's SQLite annotation catalog."""
+    """Index package classes, methods, nested helpers, and contracts in the SQLite catalog."""
     from ore_logger.database import LoggerDatabase
 
-    repository_root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[1]
     database_path = tmp_path / "ore_point03_annotations.sqlite"
-    report = register_annotations(database_path, repository_root)
-    assert isinstance(report, dict)
+    report = register_annotations(database_path, root)
+    assert report["parse_errors"] == 0
     database = LoggerDatabase(database_path)
-    entry = database.get_annotation(
-        "ore_sleep_consolidation.pipeline",
-        "SleepDependentSystemsConsolidationProcessor.process",
-        "function",
+    expected = (
+        ("ore_sleep_consolidation.pipeline", "SleepDependentSystemsConsolidationProcessor", "class"),
+        ("ore_sleep_consolidation.pipeline", "SleepDependentSystemsConsolidationProcessor.process", "function"),
+        ("ore_sleep_consolidation.pipeline", "SleepDependentSystemsConsolidationProcessor.process.<locals>.record", "function"),
+        ("ore_sleep_consolidation.pipeline", "SleepDependentSystemsConsolidationProcessor.process.<locals>.skipped", "function"),
+        ("ore_sleep_consolidation.biology", "HippocampalCorticalNetwork.apply_plasticity", "function"),
+        ("ore_sleep_consolidation.contracts", "HippocampalTrace", "class"),
+        ("ore_sleep_consolidation.registry", "OperationSpec", "class"),
     )
-    assert entry is not None
-    assert "18" in entry["annotation"] or "offline" in entry["annotation"].lower()
+    for module, qualname, kind in expected:
+        row = database.get_annotation(module, qualname, kind)
+        assert row is not None and row["annotation"].strip()
+        assert row["annotation_source"] == "docstring"
+    assert database.summary()["symbols"] >= 30
+
+
+def test_processor_records_eighteen_operation_events_in_sqlite(tmp_path: Path) -> None:
+    """Verify a replay run stores all 18 source annotations and completed run records."""
+    from ore_logger.database import LoggerDatabase
+
+    root = Path(__file__).resolve().parents[1]
+    database_path = tmp_path / "ore_point03_run.sqlite"
+    processor = SleepDependentSystemsConsolidationProcessor(
+        database_path=database_path, repository_root=root
+    )
+    result = processor.process(_opportunity("sqlite-replay"), traces=(_trace(),))
+    assert result.logger["enabled"] is True
+    database = LoggerDatabase(database_path)
+    runs = database.list_runs()
+    assert len(runs) == 1 and runs[0]["status"] == "completed"
+    events = database.list_events(runs[0]["run_id"])
+    operations = [event for event in events if event["event_kind"] == "operation"]
+    assert len(operations) == 18
+    assert all(event.get("annotation") for event in operations)

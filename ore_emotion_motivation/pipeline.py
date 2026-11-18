@@ -11,7 +11,7 @@ from .contracts import (
     LearningState, RewardFeedback,
 )
 from .functional import (
-    allocate_attention, compute_attentional_priorities, divisive_normalization,
+    allocate_attention, clamp, compute_attentional_priorities, divisive_normalization,
     estimate_control_capacity, estimate_motivational_value,
     measure_attention_memory_tradeoffs, modulate_feature_activity,
     reappraise_and_update_associations, retrieve_memories,

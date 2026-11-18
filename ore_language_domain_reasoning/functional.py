@@ -232,6 +232,7 @@ def build_incremental_structure(
     event: LanguageEvent,
     lexical: Mapping[str, Any],
     config: LanguageProcessingConfig,
+    state: LanguageLearnerState | None = None,
 ) -> dict[str, Any]:
     """Build a lightweight incremental structural hypothesis and construction matches.
 
@@ -263,15 +264,28 @@ def build_incremental_structure(
     for pattern in event.construction_patterns:
         expected = [str(x).lower() for x in pattern.get("tokens", ())]
         overlap = len(set(expected) & set(tokens)) / max(1, len(set(expected)))
-        score = clamp(float(pattern.get("prior", 0.5)) * 0.5 + overlap * 0.5)
+        name = str(pattern.get("name", "unnamed"))
+        learned_strength = (
+            state.construction_strengths.get(name.lower(), 0.5) if state is not None else 0.5
+        )
+        score = clamp(
+            0.35 * float(pattern.get("prior", 0.5))
+            + 0.40 * overlap
+            + 0.25 * learned_strength
+        )
         if score > 0:
-            matched.append({"name": str(pattern.get("name", "unnamed")),
-                            "score": score, "relations": list(pattern.get("relations", ()))})
+            matched.append({"name": name, "score": score, "learned_strength": learned_strength,
+                            "relations": list(pattern.get("relations", ()))})
     matched.sort(key=lambda item: item["score"], reverse=True)
+    pattern_probabilities = softmax(
+        [item["score"] for item in matched], config.construction_temperature
+    )
+    for item, probability in zip(matched, pattern_probabilities):
+        item["probability"] = probability
     structural_alternatives = [
-        {"pattern": item["name"], "probability": item["score"]} for item in matched
+        {"pattern": item["name"], "probability": item["probability"]} for item in matched
     ]
-    best_probability = matched[0]["score"] if matched else 0.5
+    best_probability = matched[0]["probability"] if matched else 0.5
     return {
         "tokens": tokens,
         "roles": roles,
@@ -573,9 +587,17 @@ def detect_mismatch_and_revise(
     observed = set(_words(event.observed_response))
     mismatch_types: list[str] = []
     residual = 0.0
+    next_token_residual = 0.0
     if predicted and observed and predicted != observed:
         residual = 1.0 - len(predicted & observed) / max(1, len(predicted | observed))
         mismatch_types.append("response_or_pragmatic")
+    predicted_next = set(_words(event.expected_next_tokens))
+    observed_next = set(_words(event.new_evidence.get("observed_next_tokens", ())))
+    if predicted_next and observed_next and predicted_next != observed_next:
+        next_token_residual = 1.0 - (
+            len(predicted_next & observed_next) / max(1, len(predicted_next | observed_next))
+        )
+        mismatch_types.append("next_input_prediction")
     if event.new_evidence.get("perceptual_conflict"):
         mismatch_types.append("perceptual")
     if event.new_evidence.get("lexical_correction"):
@@ -590,7 +612,12 @@ def detect_mismatch_and_revise(
     revisions: list[dict[str, Any]] = []
     if detected:
         for kind in dict.fromkeys(mismatch_types):
-            correction = event.new_evidence.get(f"{kind.split('_')[0]}_correction")
+            if kind == "response_or_pragmatic":
+                correction = event.new_evidence.get("response_correction")
+            elif kind == "next_input_prediction":
+                correction = list(event.new_evidence.get("observed_next_tokens", ()))
+            else:
+                correction = event.new_evidence.get(f"{kind}_correction")
             revisions.append({
                 "layer": kind,
                 "correction": correction,
@@ -600,12 +627,13 @@ def detect_mismatch_and_revise(
         "mismatch_detected": detected,
         "mismatch_types": list(dict.fromkeys(mismatch_types)),
         "response_residual": residual,
+        "next_token_prediction_residual": next_token_residual,
         "prediction_error_is_layer_specific": True,
         "revisions": revisions[:config.max_revisions],
         "original_explicit_content_preserved": True,
         "updated_uncertainty": clamp(
             float(integrated.get("control_demand_score", 0.0)) * 0.25
-            + residual * 0.5 + (0.2 if detected else 0.0)
+            + max(residual, next_token_residual) * 0.5 + (0.2 if detected else 0.0)
         ),
     }
 
@@ -685,6 +713,11 @@ def update_learned_representations(
         state.evidence_counts[key] = state.evidence_counts.get(key, 0) + repetitions
         updates.append({"kind": "construction", "key": construction,
                         "before": current, "after": updated, "repetitions": repetitions})
+    previous_activation = state.language_activation
+    observed_activation = clamp(float(
+        linguistic.get("language_state", {}).get("activation", previous_activation)
+    ))
+    state.language_activation = clamp(0.70 * previous_activation + 0.30 * observed_activation)
     state.process_count += 1
     state.episode_history.append({
         "event_id": event.event_id, "task_goal": event.task_goal,
@@ -697,5 +730,7 @@ def update_learned_representations(
         "updates": updates,
         "updated_lexicon": dict(state.lexical_strengths),
         "construction_strengths": dict(state.construction_strengths),
+        "language_activation_before": previous_activation,
+        "language_activation_after": state.language_activation,
         "one_anomalous_event_does_not_rewrite_a_general_rule": True,
     }

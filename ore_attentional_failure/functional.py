@@ -5,7 +5,7 @@ import math
 from typing import Any, Mapping, Sequence
 
 from .contracts import (
-    AttentionRequirement, AttentionalConfig, AttentionalExperience, AttentionalState,
+    InformationRequirement, AttentionalConfig, AttentionalExperience, AttentionalState,
 )
 
 

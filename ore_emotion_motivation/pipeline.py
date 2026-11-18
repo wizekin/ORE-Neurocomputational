@@ -297,11 +297,6 @@ class EmotionMotivationMemoryProcessor:
             "confidence_is_not_accuracy": True,
             "biological_model_is_a_functional_surrogate": True,
         }
-        active_state.appraisal_history.append({
-            "event_id": experience.event_id,
-            "appraisal": appraisal.to_dict(),
-            "prediction_error": prediction_error,
-        })
         return EmotionLearningResult(
             event_id=experience.event_id,
             appraisal=appraisal,

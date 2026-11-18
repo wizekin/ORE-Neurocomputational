@@ -6,7 +6,6 @@ import sqlite3
 import pytest
 
 from ore_attentional_failure import (
-    AttentionRequirement,
     AttentionalBiologicalNetwork,
     AttentionalConfig,
     AttentionalExperience,

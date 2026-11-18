@@ -198,18 +198,19 @@ def _predict_missing_structure(
                 "likely_entity_type": entity_type, "confidence": confidence,
                 "provenance": "inferred", "observed": False,
             })
+    observed_relations = _observed_relation_keys(observed, config)
     for relation in schema.relations:
         if relation.confidence < config.prediction_confidence_threshold:
             continue
-        subject_present = relation.subject_slot in observed_roles
-        object_present = relation.object_slot in observed_roles
-        if subject_present != object_present:
+        relation_key = (relation.subject_slot, relation.predicate, relation.object_slot)
+        if relation_key not in observed_relations:
             inferred.append({
                 "kind": "slot_relation", "subject_slot": relation.subject_slot,
                 "predicate": relation.predicate, "object_slot": relation.object_slot,
                 "evidential_status": relation.evidential_status,
                 "confidence": relation.confidence, "provenance": "inferred",
                 "observed": False,
+                "endpoints_observed": relation.subject_slot in observed_roles and relation.object_slot in observed_roles,
             })
     next_events: list[dict[str, Any]] = []
     last_event = observed.events[-1].event_type
@@ -606,6 +607,7 @@ class SchemaFormationProcessor:
             self.schemas[new_frame.schema_id] = new_frame
             updated = new_frame
         self.episodes[episode.episode_id] = episode
+        self.biological_network.observe([episode])
         trace = self._update_trace(action, updated, mismatch)
         return SchemaUpdateResult(action, updated.schema_id, mismatch, updated, tuple(trace))
 

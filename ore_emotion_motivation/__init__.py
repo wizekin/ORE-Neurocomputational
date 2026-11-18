@@ -1,0 +1,77 @@
+"""ORE Point 13 emotion, motivation, attention, and memory-encoding package."""
+
+from .annotations import register_annotations
+from .biology import (
+    AmygdalaAppraisalMemoryNetwork,
+    BiologicalEmotionNetwork,
+    CinguloOpercularEffortMonitoringNetwork,
+    DistributedCorticalElaborationNetwork,
+    DopamineStriatalRewardNetwork,
+    HippocampalEpisodicEncodingNetwork,
+    HypothalamicPituitaryAdrenalNetwork,
+    LocusCoeruleusNorepinephrineNetwork,
+    PrefrontalGoalControlNetwork,
+)
+from .contracts import (
+    AffectiveAppraisal,
+    ArousalState,
+    AttentionAllocation,
+    EffortDecision,
+    EmotionLearningConfig,
+    EmotionLearningResult,
+    EventFeature,
+    LearningExperience,
+    LearningState,
+    MemoryTrace,
+    MotivationState,
+    RetrievedMemory,
+    RewardFeedback,
+)
+from .functional import (
+    allocate_attention,
+    allocate_effort,
+    clamp,
+    compute_attentional_priorities,
+    consolidate_memory_trace,
+    cosine_similarity,
+    divisive_normalization,
+    elaborate_processing,
+    encode_memory_trace,
+    estimate_affective_appraisal,
+    estimate_control_capacity,
+    estimate_motivational_value,
+    estimate_neuromodulatory_gain,
+    extract_event_vector,
+    measure_attention_memory_tradeoffs,
+    modulate_feature_activity,
+    reappraise_and_update_associations,
+    retrieve_memories,
+    softmax,
+    update_arousal_state,
+    update_generalized_knowledge,
+    update_reward_values,
+)
+from .pipeline import EmotionMotivationMemoryProcessor, record_result_to_sqlite
+from .registry import OPERATION_REGISTRY, OperationSpec, registry_as_dicts
+
+__all__ = [
+    "EventFeature", "LearningExperience", "AffectiveAppraisal", "ArousalState",
+    "MotivationState", "LearningState", "AttentionAllocation", "RewardFeedback",
+    "EffortDecision", "MemoryTrace", "RetrievedMemory", "EmotionLearningConfig",
+    "EmotionLearningResult", "AmygdalaAppraisalMemoryNetwork",
+    "LocusCoeruleusNorepinephrineNetwork", "HypothalamicPituitaryAdrenalNetwork",
+    "DopamineStriatalRewardNetwork", "HippocampalEpisodicEncodingNetwork",
+    "PrefrontalGoalControlNetwork", "CinguloOpercularEffortMonitoringNetwork",
+    "DistributedCorticalElaborationNetwork", "BiologicalEmotionNetwork",
+    "EmotionMotivationMemoryProcessor", "OPERATION_REGISTRY", "OperationSpec",
+    "registry_as_dicts", "register_annotations", "record_result_to_sqlite",
+    "clamp", "softmax", "cosine_similarity", "extract_event_vector",
+    "estimate_affective_appraisal", "update_arousal_state",
+    "compute_attentional_priorities", "allocate_attention",
+    "estimate_neuromodulatory_gain", "divisive_normalization",
+    "modulate_feature_activity", "estimate_control_capacity",
+    "encode_memory_trace", "estimate_motivational_value", "update_reward_values",
+    "allocate_effort", "elaborate_processing", "consolidate_memory_trace",
+    "retrieve_memories", "measure_attention_memory_tradeoffs",
+    "reappraise_and_update_associations", "update_generalized_knowledge",
+]

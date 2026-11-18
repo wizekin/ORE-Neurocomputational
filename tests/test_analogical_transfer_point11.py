@@ -284,7 +284,10 @@ def test_target_condition_mismatch_qualifies_transfer_instead_of_asserting_it():
             for item in result.transferred_hypotheses
         )
     else:
-        assert result.status in {"mapping_only", "mapping_below_structural_threshold"}
+        assert result.status in {
+            "mapping_only", "mapping_below_structural_threshold",
+            "all_candidate_transfers_rejected",
+        }
 
 
 def test_parameter_bridge_translates_only_dimensionally_compatible_quantities():

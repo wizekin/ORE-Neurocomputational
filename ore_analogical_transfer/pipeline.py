@@ -181,6 +181,7 @@ class AnalogicalTransferProcessor:
         candidates, retrieved_graphs = retrieve_sources(
             target, tuple(self.source_memory.values()), self.config
         )
+        retrieval_by_case = {item.case_id: item.retrieval_score for item in candidates}
         all_candidates: list[tuple[float, SituationGraph, MappingCandidate,
                                    tuple[MappingCandidate, ...], tuple[Any, ...]]] = []
         for source in retrieved_graphs:
@@ -188,13 +189,23 @@ class AnalogicalTransferProcessor:
             mappings = rank_mappings(source, target, self.config)
             if mappings:
                 for mapping in mappings:
+                    # Keep processor-level source selection consistent with rank_mappings:
+                    # do not let a high total score reward an incomplete map for hiding
+                    # a target contradiction. Relation-level contradictions remain in the
+                    # candidate diagnostics and block the affected transfer hypothesis.
+                    retrieval_score = retrieval_by_case.get(source.case_id, 0.0)
+                    selection_score = (
+                        0.60 * mapping.confidence
+                        + 0.25 * mapping.structural_consistency
+                        + 0.10 * retrieval_score
+                        + 0.05 * clamp(0.5 + 0.5 * mapping.total_score)
+                    )
                     all_candidates.append((
-                        mapping.total_score + 0.20 * mapping.structural_consistency,
-                        source, mapping, mappings, pairs,
+                        selection_score, source, mapping, mappings, pairs,
                     ))
         all_candidates.sort(key=lambda item: (
-            -item[0], -item[2].structural_consistency,
-            item[1].case_id, item[2].mapping_id,
+            -item[0], -item[2].confidence, -item[2].structural_consistency,
+            -len(item[2].entity_map), item[1].case_id, item[2].mapping_id,
         ))
         if not all_candidates:
             return candidates, None, None, (), (), retrieved_graphs

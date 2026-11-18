@@ -12,7 +12,7 @@ from typing import Mapping, Sequence
 import numpy as np
 
 from .contracts import EpisodeInput, FEATURE_GROUPS, MemoryTransformationConfig
-from .functional import normalize_nested_features
+from .functional import normalise_nested_features
 
 
 def _normalise(vector: np.ndarray) -> np.ndarray:
@@ -61,7 +61,7 @@ class HippocampalIndexNetwork:
         self, feature_groups: Mapping[str, Mapping[str, float]], relations: Sequence[object]
     ) -> np.ndarray:
         """Converge feature and typed-relation inputs into one event-specific hippocampal index."""
-        groups = normalize_nested_features(feature_groups)
+        groups = normalise_nested_features(feature_groups)
         drive = np.zeros(self.config.hippocampal_units, dtype=np.float64)
         for group in FEATURE_GROUPS:
             for feature, value in groups[group].items():

@@ -15,7 +15,7 @@ from .contracts import (
 from .functional import (
     category_posterior, canonical_features, canonical_relations, clamp,
     estimate_feature_diagnosticity, exemplar_similarity, mahalanobis_outlier_score,
-    model_validation_metrics, prototype_features, prototype_similarity,
+    model_validation_metrics, prototype_similarity,
     update_feature_attention,
 )
 from .registry import OPERATION_REGISTRY

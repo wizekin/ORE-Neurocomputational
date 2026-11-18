@@ -179,7 +179,7 @@ class EmotionMotivationMemoryProcessor:
             reward_feedback, active_state, config
         )
         effective_value = (
-            active_state.motivation.expected_reward
+            0.40 * expected_reward + 0.60 * active_state.motivation.expected_reward
             if reward_feedback is not None else expected_reward
         )
         _trace_operation(trace, 8, {

@@ -8,7 +8,7 @@ from typing import Any, Mapping
 from .biology import BiologicalEmotionNetwork
 from .contracts import (
     EmotionLearningConfig, EmotionLearningResult, LearningExperience,
-    LearningState, MemoryTrace, RewardFeedback,
+    LearningState, RewardFeedback,
 )
 from .functional import (
     allocate_attention, compute_attentional_priorities, divisive_normalization,

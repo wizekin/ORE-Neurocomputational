@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import hashlib
 import math
 from typing import Any, Mapping, Sequence
 
@@ -417,7 +418,9 @@ def score_mapping(
         0.55 * structural_consistency + 0.25 * node_score + 0.20 * coherence
     ) * clamp(coverage)
     return MappingCandidate(
-        mapping_id="map:" + str(abs(hash(tuple(sorted(entity_mapping.items()))))),
+        mapping_id="map:" + hashlib.sha256(
+            repr(tuple(sorted(entity_mapping.items()))).encode("utf-8")
+        ).hexdigest()[:12],
         correspondences=tuple(selected_pairs),
         relation_pairs=tuple(relation_pairs),
         preserved_relation_ids=tuple(sorted(preserved)),

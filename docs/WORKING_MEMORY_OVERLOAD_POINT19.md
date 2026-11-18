@@ -2,8 +2,8 @@
 
 ## Scope
 
-\`ore_working_memory_overload\` implements the 19 source operations in
-\`Point_19_Working_Memory_Overload_and_Information_Loss_During_Complex_Interpretation.md\`.
+`ore_working_memory_overload` implements the 19 source operations in
+`Point_19_Working_Memory_Overload_and_Information_Loss_During_Complex_Interpretation.md`.
 It models the temporary maintenance and retrieval of information while a complex message is
 being interpreted. It deliberately does not impose a universal word-count or item-count
 capacity: estimated demand depends on unresolved dependencies, structural complexity, retrieval
@@ -44,12 +44,12 @@ claims that neurons literally calculate those expressions.
 
 ## Functional and biological tracks
 
-The functional state is held in \`Point19State\`. \`Representation\` records include features,
+The functional state is held in `Point19State`. `Representation` records include features,
 accessibility, confidence, source, task relevance, position, chunk membership, and estimated
-interference. \`Dependency\` records retain required features, retrieval cues, candidates, open/closed
+interference. `Dependency` records retain required features, retrieval cues, candidates, open/closed
 state, confidence, and a failure label.
 
-The optional \`DistributedWorkingMemoryNetwork\` contains coarse populations for:
+The optional `DistributedWorkingMemoryNetwork` contains coarse populations for:
 
 - phonological and lexical maintenance;
 - syntactic dependency workspace;
@@ -66,7 +66,7 @@ anatomical modules.
 
 ## Quick start
 
-\`\`\`python
+```python
 from ore_working_memory_overload import (
     Point19Config,
     Point19Request,
@@ -98,20 +98,20 @@ print(len(result.operation_trace))            # 19
 print(result.interpretation["supported"])
 print(result.interpretation["unresolved"])
 print(result.biological["operation_count"])   # 19
-\`\`\`
+```
 
-For a text-only starting point, supply \`Point19Request(sequence_id="x", text="...")\`.
+For a text-only starting point, supply `Point19Request(sequence_id="x", text="...")`.
 For successive increments that share a working context, reuse the same processor instance.
-Set \`simulate_biology=False\` to run only the functional track.
+Set `simulate_biology=False` to run only the functional track.
 
 ## SQLite annotations and run logging
 
-The package uses the repository's existing \`ore_logger\` implementation. Calling
-\`register_annotations()\` scans the Point 19 package with its AST catalogue and stores module,
-class, function, and method explanations in the shared \`annotations\` table. By default the
-path is \`ore_logs/ore_logger.sqlite3\`; no separate annotation database is created.
+The package uses the repository's existing `ore_logger` implementation. Calling
+`register_annotations()` scans the Point 19 package with its AST catalogue and stores module,
+class, function, and method explanations in the shared `annotations` table. By default the
+path is `ore_logs/ore_logger.sqlite3`; no separate annotation database is created.
 
-\`record_result_to_sqlite(result)\` additionally writes all 19 operation outputs into the logger's
+`record_result_to_sqlite(result)` additionally writes all 19 operation outputs into the logger's
 run/event tables. It registers annotations before writing the run. A custom database path can be
 passed for tests or isolated experiments.
 
@@ -119,9 +119,9 @@ passed for tests or isolated experiments.
 
 Run the focused suite:
 
-\`\`\`bash
+```bash
 python -m pytest tests/test_working_memory_overload_point19.py -q
-\`\`\`
+```
 
 Scientific and implementation constraints:
 

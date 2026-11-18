@@ -1,0 +1,76 @@
+"""ORE Point 14 social interaction and conversational learning package."""
+
+from .annotations import register_annotations
+from .biology import (
+    BiologicalSocialLearningNetwork,
+    FrontotemporalLanguageInteractionNetwork,
+    HippocampalSocialEpisodicNetwork,
+    InferiorFrontalTurnCoordinationNetwork,
+    MedialPrefrontalMentalizingNetwork,
+    PosteriorMedialNarrativeNetwork,
+    PrefrontalScaffoldingControlNetwork,
+    SuperiorTemporalSocialPerceptionNetwork,
+    TemporoparietalJointAttentionNetwork,
+    VentralStriatalSocialRewardNetwork,
+)
+from .contracts import (
+    LearnerSocialState,
+    NarrativeEvent,
+    PartnerModel,
+    ReferentCandidate,
+    SocialEpisodeMemory,
+    SocialFeedback,
+    SocialInteractionEvent,
+    SocialLearningConfig,
+    SocialLearningResult,
+    SocialSignal,
+)
+from .functional import (
+    build_narrative_model,
+    clamp,
+    compare_perspectives,
+    create_social_memory,
+    design_audience_response,
+    detect_conversational_mismatch,
+    estimate_social_attention,
+    evaluate_explanation,
+    get_or_create_partner,
+    infer_communicative_intention,
+    infer_joint_attention,
+    infer_partner_focus,
+    integrate_multimodal_signals,
+    kl_divergence,
+    learn_from_social_feedback,
+    predict_turn_state,
+    retrieve_social_memories,
+    select_scaffold,
+    shannon_entropy,
+    sigmoid,
+    softmax,
+    tokenize,
+    update_partner_and_cross_partner_models,
+    ground_word_to_shared_referent,
+)
+from .pipeline import SocialInteractionLearningProcessor, record_result_to_sqlite
+from .registry import OPERATION_REGISTRY, OperationSpec, registry_as_dicts
+
+__all__ = [
+    "SocialSignal", "ReferentCandidate", "SocialFeedback", "NarrativeEvent",
+    "SocialInteractionEvent", "PartnerModel", "SocialEpisodeMemory",
+    "LearnerSocialState", "SocialLearningConfig", "SocialLearningResult",
+    "SuperiorTemporalSocialPerceptionNetwork", "TemporoparietalJointAttentionNetwork",
+    "MedialPrefrontalMentalizingNetwork", "FrontotemporalLanguageInteractionNetwork",
+    "InferiorFrontalTurnCoordinationNetwork", "PrefrontalScaffoldingControlNetwork",
+    "VentralStriatalSocialRewardNetwork", "HippocampalSocialEpisodicNetwork",
+    "PosteriorMedialNarrativeNetwork", "BiologicalSocialLearningNetwork",
+    "SocialInteractionLearningProcessor", "OPERATION_REGISTRY", "OperationSpec",
+    "registry_as_dicts", "register_annotations", "record_result_to_sqlite",
+    "tokenize", "clamp", "sigmoid", "softmax", "shannon_entropy", "kl_divergence",
+    "get_or_create_partner", "estimate_social_attention", "infer_partner_focus",
+    "infer_joint_attention", "infer_communicative_intention", "integrate_multimodal_signals",
+    "ground_word_to_shared_referent", "predict_turn_state", "design_audience_response",
+    "detect_conversational_mismatch", "learn_from_social_feedback", "select_scaffold",
+    "evaluate_explanation", "compare_perspectives", "build_narrative_model",
+    "retrieve_social_memories", "create_social_memory",
+    "update_partner_and_cross_partner_models",
+]

@@ -328,7 +328,8 @@ def test_case_refinement_preserves_superseded_observations():
     )
     assert revised.features["sound"].value == "meow"
     assert revised.evidence_history[0].value == "bark"
-    assert revised.evidence_history[0].status == "superseded_observation" if hasattr(revised.evidence_history[0], "status") else revised.evidence_history[0].value == "bark"
+    assert revised.evidence_history[0].status == "observed"
+    assert revised.evidence_history[0].evidence_id == "old-sound"
 
 
 def test_feedback_scores_only_tested_predictions_and_does_not_learn_without_permission():
@@ -380,8 +381,7 @@ def test_episodic_memory_duplicate_guard_and_retrieval_identity():
     assert model.biological_network.observe_case(prior)
     assert not model.biological_network.observe_case(prior)
     result = model.infer(dog_case())
-    assert any(item.get("case_id") == "old-case"
-               for item in result.diagnostics.get("retrieved_cases", [])) is False
+    assert "old-case" in result.diagnostics["retrieved_case_ids"]
     assert result.biological["hippocampus"]["case_count"] == 2
 
 

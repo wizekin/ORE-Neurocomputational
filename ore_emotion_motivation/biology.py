@@ -15,7 +15,7 @@ from .contracts import (
 from .functional import (
     allocate_effort, consolidate_memory_trace, encode_memory_trace,
     estimate_affective_appraisal, estimate_control_capacity,
-    estimate_motivational_value, estimate_neuromodulatory_gain,
+    estimate_neuromodulatory_gain,
     update_reward_values,
 )
 

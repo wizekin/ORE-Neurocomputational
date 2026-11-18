@@ -655,11 +655,12 @@ def update_expectations_from_experience(
 ) -> dict[str, Any]:
     """Update construction exposure and only treat an explicit feedback parse as outcome evidence."""
     construction = request.construction_id
-    counts = state.construction_counts.setdefault(construction, {})
+    counts = state.construction_counts.get(construction, {})
     state.construction_exposures[construction] = state.construction_exposures.get(construction, 0) + 1
     feedback = request.feedback_parse_id
     updated = False
     if feedback is not None:
+        counts = state.construction_counts.setdefault(construction, {})
         old = float(counts.get(feedback, 0.0))
         counts[feedback] = old + config.learning_rate
         updated = True

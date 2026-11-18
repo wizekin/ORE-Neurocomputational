@@ -145,13 +145,13 @@ class HubAndSpokeRequest:
     text: str | None = None
     tokens: Sequence[str] | None = None
     modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
-    recalled_modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
     context_features: Mapping[str, float] = field(default_factory=dict)
     task: str = "recognize"
     task_relevance: Mapping[str, float] = field(default_factory=dict)
     irrelevant_features: Mapping[str, float] = field(default_factory=dict)
     episodes: Sequence[WordFormEpisode] = ()
     source_reference: str = "unspecified"
+    recalled_modality_inputs: Mapping[str, Mapping[str, float]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         """Validate the request while preserving original text and caller token boundaries."""

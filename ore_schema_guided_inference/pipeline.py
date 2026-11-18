@@ -392,6 +392,7 @@ class SchemaGuidedInferenceProcessor:
             "inferred_relation_count": len(inferred_relation_rows),
             "next_event_prediction_count": len(next_event_rows),
             "episodic_recall_count": len(retrieved),
+            "retrieved_case_ids": [item["case_id"] for item in retrieved],
             "selected_schema_id": selected_id, "selection_reason": selection_reason,
             "duration_ms": round((time.perf_counter() - started) * 1000.0, 3),
             "scientific_scope": (

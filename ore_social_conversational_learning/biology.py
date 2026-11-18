@@ -96,10 +96,11 @@ class MedialPrefrontalMentalizingNetwork:
         event: SocialInteractionEvent,
         partner: PartnerModel,
         config: SocialLearningConfig,
+        learner_knowledge: Mapping[str, float] | None = None,
     ) -> dict[str, Any]:
         """Infer communicative intention and partner-knowledge gaps without asserting certainty."""
         self.inference_count += 1
-        result = infer_communicative_intention(event, partner, config)
+        result = infer_communicative_intention(event, partner, config, learner_knowledge)
         self.last_intention = str(result["most_likely_intention"])
         self.last_uncertainty = float(result["uncertainty_nats"])
         return result

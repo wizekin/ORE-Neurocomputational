@@ -13,7 +13,6 @@ from ore_confirmation_bias import (
     Point21Config,
     Point21ConfirmationBiasProcessor,
     Point21Request,
-    Point21State,
     compare_evidence_symmetrically,
     assess_evidence_quality,
     allocate_attention,
@@ -89,7 +88,9 @@ def make_request(
         sources=sources,
         evidence=evidence,
         focus_hypothesis_id="rain",
-        context={"memory_cues": ["wet_street", "rain_gauge"], "emotional_salience": 0.2},
+        context=context if context is not None else {
+            "memory_cues": ["wet_street", "rain_gauge"], "emotional_salience": 0.2
+        },
     )
 
 

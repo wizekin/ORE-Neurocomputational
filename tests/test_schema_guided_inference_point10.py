@@ -146,6 +146,7 @@ def test_unknown_and_not_observed_features_are_neutral_not_absent():
         case_id="same-case", features={
             "fur": case.features["fur"], "legs": case.features["legs"],
             "sound": case.features["sound"],
+            "role:animal": case.features["role:animal"],
             "unused_color": EvidenceItem("unused_color", False, status="unknown"),
         },
         relations=case.relations, event_history=case.event_history,

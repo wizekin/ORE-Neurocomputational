@@ -143,6 +143,7 @@ class LanguageLearnerState:
     construction_strengths: dict[str, float] = field(default_factory=dict)
     evidence_counts: dict[str, int] = field(default_factory=dict)
     conceptual_strengths: dict[str, float] = field(default_factory=dict)
+    language_activation: float = 0.0
     episode_history: list[dict[str, Any]] = field(default_factory=list)
     process_count: int = 0
 
@@ -154,6 +155,7 @@ class LanguageLearnerState:
             values = {str(k): _unit(name, v) for k, v in getattr(self, name).items()}
             setattr(self, name, values)
         self.evidence_counts = {str(k): max(0, int(v)) for k, v in self.evidence_counts.items()}
+        self.language_activation = _unit("language_activation", self.language_activation)
         self.episode_history = list(self.episode_history)
         if self.process_count < 0:
             raise ValueError("process_count must be non-negative")

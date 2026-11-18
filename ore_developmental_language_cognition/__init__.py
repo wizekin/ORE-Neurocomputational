@@ -13,7 +13,8 @@ from .contracts import (
 from .functional import (
     accumulate_statistical_regularities, build_provisional_phonetic_categories,
     clamp, cosine_similarity, entropy, establish_broad_sensitivity, euclidean,
-    extract_acoustic_features, feature_overlap, infer_word_boundaries, sigmoid, softmax, vectorize,
+    extract_acoustic_features, feature_overlap, infer_word_boundaries,
+    integrate_multimodal_referents, sigmoid, softmax, vectorize,
 )
 from .grounded_learning import (
     accelerate_vocabulary_learning, build_grounded_concepts, map_word_forms_to_meanings,
@@ -31,7 +32,7 @@ __all__ = [
     "clamp", "sigmoid", "softmax", "entropy", "vectorize", "euclidean",
     "cosine_similarity", "feature_overlap", "extract_acoustic_features",
     "establish_broad_sensitivity", "build_provisional_phonetic_categories",
-    "accumulate_statistical_regularities", "infer_word_boundaries",
+    "accumulate_statistical_regularities", "infer_word_boundaries", "integrate_multimodal_referents",
     "map_word_forms_to_meanings", "accelerate_vocabulary_learning",
     "build_grounded_concepts", "stabilize_developmental_memory",
     "maintain_working_memory", "update_executive_control",

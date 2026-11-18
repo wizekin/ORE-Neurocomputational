@@ -5,7 +5,6 @@ brain region explicitly computes vector means, exponentials, covariance matrices
 """
 from __future__ import annotations
 
-from collections import Counter
 import math
 from typing import Any, Mapping, Sequence
 
@@ -199,7 +198,7 @@ def retrieve_exemplars(
     config: PrototypeExemplarConfig,
     now: float,
 ) -> list[dict[str, Any]]:
-    """Rank a category's distinct exemplar traces by cue similarity and memory accessibility."""
+    """Rank distinct exemplars by feature/relation cues, context match, accessibility, and diagnosticity."""
     features = canonical_features(episode, config.feature_aliases)
     relations = canonical_relations(episode, config.feature_aliases)
     ranked: list[dict[str, Any]] = []
@@ -210,9 +209,19 @@ def retrieve_exemplars(
         )
         similarity = math.exp(-config.similarity_sensitivity * similarity_distance)
         accessibility = memory_accessibility(trace, now, config.memory_decay_rate)
-        relevance = similarity * accessibility * max(0.05, trace.reliability)
+        context_keys = set(episode.context) | set(trace.context)
+        context_similarity = (
+            sum(episode.context.get(key) == trace.context.get(key) for key in context_keys)
+            / len(context_keys) if context_keys else 1.0
+        )
+        context_gain = 0.85 + 0.15 * context_similarity
+        diagnosticity_gain = 1.0 + 0.10 * clamp(trace.diagnosticity)
+        relevance = (similarity * accessibility * max(0.05, trace.reliability)
+                     * context_gain * diagnosticity_gain)
         ranked.append({"episode_id": trace.episode_id, "distance": similarity_distance,
                        "similarity": similarity, "accessibility": accessibility,
+                       "context_similarity": context_similarity,
+                       "diagnosticity": trace.diagnosticity,
                        "relevance": relevance, "is_exception": trace.is_exception})
     ranked.sort(key=lambda row: (-row["relevance"], row["episode_id"]))
     return ranked[:config.retrieval_limit]

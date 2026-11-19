@@ -1480,3 +1480,8 @@ See docs/CORRECTIVE_LEARNING_POINT24.md for the full algorithm, equations, API, 
 ~~~bash
 python -m pytest tests/test_corrective_learning_point24.py -q
 ~~~
+
+
+## Point 07 — Feedback Seeking
+
+The `ore_feedback_seeking` package implements the 18-step Point 07 feedback-correction algorithm in separate functional and distributed biological-reference traces. It includes Bayesian feedback-source evaluation, confidence calibration, targeted correction, retrieval and transfer tests, delayed-retention scheduling, and shared SQLite annotation/event logging. See [`docs/FEEDBACK_SEEKING_POINT07.md`](docs/FEEDBACK_SEEKING_POINT07.md) for the mathematics, API, safeguards, and biological-model limitations.

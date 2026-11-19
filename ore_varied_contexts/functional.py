@@ -189,12 +189,25 @@ def context_coverage(examples: Sequence[LearningExample]) -> dict[str, Any]:
             dimension_values[key].add(value)
         context_counts[context_id(item.context_features)] += 1
         modality_counts[item.modality] += 1
+    elapsed = [
+        float(item.elapsed_since_previous_hours)
+        for item in examples if item.elapsed_since_previous_hours is not None
+    ]
+    temporal_separation = {
+        "observed_interval_count": len(elapsed),
+        "mean_hours": float(np.mean(elapsed)) if elapsed else None,
+        "minimum_hours": min(elapsed) if elapsed else None,
+        "maximum_hours": max(elapsed) if elapsed else None,
+        "intervals_supplied_by_caller": bool(elapsed),
+        "calendar_scheduler_owned_by_point03": True,
+    }
     return {
         "dimension_values": {key: sorted(values) for key, values in dimension_values.items()},
         "dimension_count": len(dimension_values),
         "context_count": len(context_counts),
         "context_episode_counts": dict(context_counts),
         "modality_counts": dict(modality_counts),
+        "temporal_separation": temporal_separation,
         "context_variation_is_separate_from_topic_interleaving": True,
         "spacing_is_not_inferred_from_interleaving_order": True,
     }

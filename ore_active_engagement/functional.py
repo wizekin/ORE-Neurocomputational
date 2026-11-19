@@ -257,7 +257,7 @@ def generate_questions(
     questions: list[dict[str, Any]] = []
     for kind, text in templates:
         q_tokens = tokenize(text)
-        lexical_fit = _overlap(q_tokens, terms + tokenize(goal))
+        lexical_fit = _overlap(q_tokens, terms + list(tokenize(goal)))
         relation_bonus = 0.15 if (
             (kind == "why" and "cause" in relation_types)
             or (kind == "condition" and "condition" in relation_types)
@@ -722,8 +722,8 @@ def bind_episode(
     }
     vector = vectorize_texts(list(fields.values()), dimensions)
     retrieval_cues = list(dict.fromkeys(
-        tokenize(request.goal)[:3]
-        + tokenize(question_text)[:5]
+        list(tokenize(request.goal)[:3])
+        + list(tokenize(question_text)[:5])
         + [
             str(item.get("key_terms", [""])[0])
             for item in propositions if item.get("key_terms")

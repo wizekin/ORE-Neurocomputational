@@ -527,3 +527,35 @@ __all__ += [
     "FrozenFusionPolicy", "CanonicalBackendRegistry", "CanonicalRunResult",
     "CanonicalOREController", "LegacyN9FunctionalBackend",
 ]
+
+# Universal module communication and capability registry (Task 01).
+from .module_manifest import (
+    InputPort, ModuleDependency, ModuleIdentity, ModuleManifest, OutputPort,
+)
+from .module_protocol import ModuleResult, ModuleStatus, OREModuleProtocol
+from .module_artifacts import ContractArtifact, content_hash
+from .contracts_registry import (
+    ContractCatalog, ContractDefinition, ContractValidationResult, register_existing_contracts,
+)
+from .module_registry import BackendBinding, CapabilityRecord, ModuleRegistry
+from .module_compatibility import (
+    CompatibilityReport, CompatibilityStatus, CompatibilityValidator,
+)
+from .module_adapters import (
+    CallableModuleAdapter, CanonicalControllerAdapter,
+    LegacyProcessorAdapter, adapt_legacy_processor,
+)
+from .module_logging import (
+    SQLiteModuleEventLogger, record_registry_event, register_module_annotations,
+)
+
+__all__ += [
+    "InputPort", "OutputPort", "ModuleIdentity", "ModuleDependency", "ModuleManifest",
+    "ModuleResult", "ModuleStatus", "OREModuleProtocol", "ContractArtifact", "content_hash",
+    "ContractCatalog", "ContractDefinition", "ContractValidationResult",
+    "register_existing_contracts", "BackendBinding", "CapabilityRecord", "ModuleRegistry",
+    "CompatibilityReport", "CompatibilityStatus", "CompatibilityValidator",
+    "CallableModuleAdapter", "CanonicalControllerAdapter",
+    "LegacyProcessorAdapter", "adapt_legacy_processor",
+    "SQLiteModuleEventLogger", "record_registry_event", "register_module_annotations",
+]

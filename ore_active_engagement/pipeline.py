@@ -15,6 +15,7 @@ from .contracts import (
     ActiveEngagementState,
 )
 from .functional import (
+    clamp,
     allocate_attention,
     bind_episode,
     construct_imagery,

@@ -87,11 +87,20 @@ def choose_initial_interval(
     difficulty_factor = 1.25 - 0.50 * item.difficulty
     proposed = item.target_retention_hours * config.initial_interval_fraction
     proposed *= quality_factor * difficulty_factor
-    upper = min(config.maximum_interval_hours, item.target_retention_hours * 0.5)
+    estimated_stability = (
+        config.base_stability_hours
+        * (0.50 + 1.50 * clamp(encoding_quality))
+        * (1.0 - 0.55 * item.difficulty)
+    )
+    accessibility_cap = -estimated_stability * math.log(config.target_recall_probability)
+    upper = min(config.maximum_interval_hours, item.target_retention_hours * 0.5,
+                max(config.minimum_interval_hours, accessibility_cap))
     interval = min(upper, max(config.minimum_interval_hours, proposed))
     return {
         "interval_hours": interval,
-        "formula": "clip(horizon*fraction*(0.70+0.60*encoding_quality)*(1.25-0.50*difficulty))",
+        "estimated_stability_hours": estimated_stability,
+        "accessibility_based_cap_hours": accessibility_cap,
+        "formula": "min(horizon_fraction_interval, -estimated_stability*ln(target_recall_probability))",
         "nonzero_delay": True,
         "parameters_are_calibratable": True,
     }

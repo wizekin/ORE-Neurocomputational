@@ -109,13 +109,7 @@ class SpacedRepetitionProcessor:
         # 2. Estimate the quality of initial encoding and initialize durability only once.
         if is_new:
             encoding = estimate_encoding_quality(item.encoding_measurements)
-            stability = bio.initial_stability_hours if hasattr(bio, "initial_stability_hours") else (
-                config.base_stability_hours
-                * (0.50 + 1.50 * encoding["encoding_quality"])
-                * (1.0 - 0.55 * item.difficulty)
-            )
-            stability = min(config.maximum_stability_hours,
-                            max(config.minimum_stability_hours, stability))
+            stability = initialize_stability(item, encoding["encoding_quality"], config)
             record = MemoryRecord(
                 item=item, created_at_utc=str(item.created_at_utc),
                 last_learning_at_utc=str(item.created_at_utc),

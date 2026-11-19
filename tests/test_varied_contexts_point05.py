@@ -213,6 +213,10 @@ def test_pipeline_builds_meaningful_interleaving_and_separates_transfer_levels()
     assert result.flexibility_report["context_flexibility_mean"] == pytest.approx(1.0)
     assert result.output["context_count"] > 1
     assert result.output["modality_count"] > 1
+    # Held-out transfer items must not enter the learned prototype.
+    assert result.concept_profiles["direct"]["example_count"] == 2
+    assert result.operation_trace[2]["functional_output"]["concept_profiles_built_from_training_only"] is True
+    assert result.operation_trace[7]["functional_output"]["held_out_evaluation_examples_not_encoded"] == 9
     assert result.biological["literal_neuron_simulation"] is False
 
 
@@ -282,7 +286,14 @@ def test_state_reuse_keeps_concept_and_episode_memories():
     first = processor.process(build_request())
     second = processor.process(build_request())
     assert second.final_state["process_count"] == 2
-    assert len(second.final_state["episode_records"]) == len(build_examples())
+    training_example_count = sum(
+        item.transfer_level == "training" for item in build_examples()
+    )
+    assert len(second.final_state["episode_records"]) == training_example_count
+    assert second.concept_profiles["direct"]["example_count"] == sum(
+        item.concept_id == "direct" and item.transfer_level == "training"
+        for item in build_examples()
+    )
     assert set(second.final_state["concepts"]) == {"direct", "inverse", "additive"}
     assert first.output["interleaving_used"] is True
 

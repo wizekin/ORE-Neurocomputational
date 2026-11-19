@@ -111,8 +111,47 @@ class CanonicalOREController:
     validator and is run only in VALIDATE mode. B-N9 itself is this controller.
     """
 
-    def __init__(self, registry: CanonicalBackendRegistry | None = None) -> None:
+    def __init__(
+        self,
+        registry: CanonicalBackendRegistry | None = None,
+        *,
+        module_registry: Any | None = None,
+        contract_catalog: Any | None = None,
+        task_coordinator: Any | None = None,
+    ) -> None:
+        """Initialize canonical phase routing and optionally attach task-level module coordination."""
         self.registry = registry or CanonicalBackendRegistry()
+        if module_registry is not None and contract_catalog is not None:
+            if getattr(module_registry, "contract_catalog", None) is not contract_catalog:
+                raise ValueError("module_registry and contract_catalog must use the same catalog")
+        self.module_registry = module_registry
+        self.contract_catalog = contract_catalog or getattr(module_registry, "contract_catalog", None)
+        self._task_coordinator = task_coordinator
+
+    def run_cognitive_task(
+        self,
+        task: Any,
+        context: RunContext | None = None,
+        *,
+        coordinator: Any | None = None,
+    ) -> Any:
+        """Delegate cognitive task planning and execution without changing the existing run() path."""
+        selected = coordinator or self._task_coordinator
+        if selected is None:
+            from .contracts_registry import ContractCatalog, register_existing_contracts
+            from .module_registry import ModuleRegistry
+            from .coordinator import CognitiveTaskCoordinator
+
+            catalog = self.contract_catalog
+            if catalog is None:
+                catalog = ContractCatalog()
+                register_existing_contracts(catalog)
+            registry = self.module_registry or ModuleRegistry(catalog)
+            selected = CognitiveTaskCoordinator(registry, catalog)
+            self.contract_catalog = catalog
+            self.module_registry = registry
+            self._task_coordinator = selected
+        return selected.coordinate(task, context)
 
     @staticmethod
     def _learning_authorized(payload: Any) -> bool:

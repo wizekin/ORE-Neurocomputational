@@ -12,7 +12,7 @@ DEFAULT_WRITE_PERMISSIONS: dict[str, frozenset[str]] = {
     "semantic_processor": frozenset({"semantic_hypotheses"}),
     "working_memory": frozenset({"working_memory"}),
     "memory_retrieval": frozenset({"retrieved_memories"}),
-    "cognitive_control": frozenset({"unresolved_questions", "module_status"}),
+    "cognitive_control": frozenset({"unresolved_questions", "module_status", "artifact_references"}),
     "discourse_processor": frozenset({"discourse_context"}),
     "goal_control": frozenset({"current_goal", "module_status"}),
 }

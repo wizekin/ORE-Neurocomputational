@@ -205,7 +205,7 @@ def assess_attempt(target: LearningTarget, attempt: RetrievalAttempt) -> dict[st
     condition_score = float(np.mean(list(condition_values.values()))) if condition_values else 1.0
     cue = assess_cue_quality(target, attempt)
     test_quality = assess_test_quality(target, attempt, cue)
-    coverage_mix = 0.62 * component_coverage + 0.28 * relation_score + 0.10 * condition_score
+    coverage_mix = 0.57 * component_coverage + 0.24 * relation_score + 0.09 * condition_score + 0.10 * order_score
     if not target.expected_order:
         coverage_mix = 0.69 * component_coverage + 0.31 * relation_score
     raw_quality = clamp(0.72 * coverage_mix + 0.18 * attempt.confidence
@@ -347,8 +347,8 @@ def update_accessibility(
     alpha, beta = 1.0 + state.successes, 1.0 + state.failures
     posterior_mean = alpha / (alpha + beta)
     posterior_variance = (alpha * beta) / (((alpha + beta) ** 2) * (alpha + beta + 1.0))
-    state.confidence_pairs.append({"confidence": float(attempt.confidence),
-                                   "outcome": outcome if independent else 0.0})
+    if independent:
+        state.confidence_pairs.append({"confidence": float(attempt.confidence), "outcome": outcome})
     state.confidence_pairs[:] = state.confidence_pairs[-200:]
     brier = (sum((row["confidence"] - row["outcome"]) ** 2
                  for row in state.confidence_pairs) / len(state.confidence_pairs)

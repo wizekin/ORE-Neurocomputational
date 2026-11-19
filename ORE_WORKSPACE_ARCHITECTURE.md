@@ -16,9 +16,9 @@ The `ore_workspace` package provides an independent, versioned communication lay
 ## Mathematical operations
 
 - **Subscription matrix:** \(A_{ij}=1\) when module \(i\) subscribes to field \(j\), otherwise zero.
-- **Activation relevance:** \(R_m=\sum_j a_{mj}\Delta_j\); activation occurs when \(R_m\geq	heta_m\). Field sensitivity weights multiply change magnitudes.
+- **Activation relevance:** \(R_m=\sum_j a_{mj}\Delta_j\); activation occurs when \(R_m\geq\theta_m\). Field sensitivity weights multiply change magnitudes.
 - **Hypothesis evidence:** \(S(h)=\sum_i w_i e_i(h)\) combines source-weighted support. Contributions and provenance remain inspectable; correlated source groups are conservatively prevented from being double-counted. The result is an evidence score, not a calibrated probability.
-- **Working-memory retention:** \(P_i=(lpha G_i+eta R_i+\gamma C_i+\delta U_i)/(lpha+eta+\gamma+\delta)\), with configurable non-negative weights and normalized factors. This is a selectable priority heuristic, not a claim about a literal neural equation.
+- **Working-memory retention:** \(P_i=(\alpha G_i+\beta R_i+\gamma C_i+\delta U_i)/(\alpha+\beta+\gamma+\delta)\), with configurable non-negative weights and normalized factors. This is a selectable priority heuristic, not a claim about a literal neural equation.
 - **Goal coverage:** \(C_{goal}=\sum_k w_k C_k/\sum_k w_k\). Explicit requirements are checked separately from the score.
 - **Provenance and dependencies:** findings form a directed dependency graph; a finding with missing prerequisites waits rather than silently entering accepted state.
 - **Idempotence:** content fingerprints prevent repeat submissions; per-field identity policies deduplicate memories and preserve hypothesis evidence.

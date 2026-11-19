@@ -133,7 +133,9 @@ def test_attempt_scoring_separates_components_relations_order_and_confidence():
     result = assess_attempt(target, attempt)
     assert result["component_coverage"] == pytest.approx(0.5)
     assert result["relation_coverage"] == pytest.approx(0.5)
-    assert result["order_accuracy"] < 1.0
+    # The recalled items are in the correct relative order.
+    # Missing items are penalized separately by component coverage.
+    assert result["order_accuracy"] == pytest.approx(1.0)
     assert result["confidence"] == 0.95
     assert result["evidenced_accuracy"] < result["confidence"]
     diagnosis = classify_errors(target, attempt, result)

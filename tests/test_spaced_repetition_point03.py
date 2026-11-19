@@ -98,6 +98,23 @@ def test_accessibility_decreases_monotonically_with_elapsed_time_for_both_models
         assert 0.0 <= late["memory_uncertainty"] <= 1.0
 
 
+def test_accessibility_is_separate_from_recall_probability_and_interval_hits_target():
+    """Invert the logistic retrieval mapping rather than equating availability with recall."""
+    from ore_spaced_repetition import choose_next_interval
+
+    config = SpacedRepetitionConfig()
+    immediate = estimate_accessibility(24.0, 0.0, 0, 0.2, [], config)
+    assert immediate["memory_accessibility"] == pytest.approx(1.0)
+    assert immediate["predicted_recall_probability"] < immediate["memory_accessibility"]
+    item = build_item()
+    review = build_review(START)
+    schedule = choose_next_interval(24.0, item, review, START, config)
+    at_target = estimate_accessibility(24.0, schedule["interval_hours"], 0, 0.2, [], config)
+    assert at_target["predicted_recall_probability"] == pytest.approx(
+        config.target_recall_probability, abs=1e-6
+    )
+
+
 def test_first_registration_creates_nonzero_review_delay_and_twelve_events():
     """Register an item once and create a future due timestamp without a fake review."""
     item = build_item()

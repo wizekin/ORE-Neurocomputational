@@ -258,7 +258,12 @@ def classify_errors(
                           for value in relation_status.values())
     sequence_error = (1.0 - float(assessment["order_accuracy"])) if target.expected_order else 0.0
     condition_error = (1.0 - float(assessment["condition_accuracy"])) if target.conditions else 0.0
-    cue_failure = 1.0 - float(assessment["cue_quality"]["relevance"])
+    # A weak lexical cue is only a plausible failure when retrieval also failed.
+    # Discount lexical mismatch when the learner successfully retrieved the target content;
+    # this avoids mistaking paraphrase/synonym differences for the cause of an omission.
+    cue_mismatch = 1.0 - float(assessment["cue_quality"]["relevance"])
+    component_coverage = float(assessment["component_coverage"])
+    cue_failure = clamp(cue_mismatch * (1.0 - component_coverage))
     insufficient = 0.0
     if target.initial_encoding_quality is not None:
         insufficient = clamp((0.45 - target.initial_encoding_quality) / 0.45)

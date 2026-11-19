@@ -94,8 +94,18 @@ class SpacedRepetitionProcessor:
             assert record is not None
             _validate_repeated_item(record.item, item_input)
             item = record.item
-            bio_encoding = {"item_already_bound": True,
-                            "hippocampal_state": bio.hippocampus.snapshot()}
+            if item.item_id not in bio.hippocampus.patterns:
+                # Rebind the pattern when a serialized learner state is resumed
+                # with a fresh in-memory biological surrogate.
+                bio_encoding = bio.encode(
+                    [item.content, *item.components, *item.relations],
+                    {"item_id": item.item_id, "source": item.source,
+                     "context": dict(item.context), "restored_state": True},
+                )
+                bio_encoding["restored_existing_memory_item"] = True
+            else:
+                bio_encoding = {"item_already_bound": True,
+                                "hippocampal_state": bio.hippocampus.snapshot()}
 
         # 1. Register a learning episode and retain a stable memory-item identity.
         _append_operation(trace, 0, {
@@ -227,7 +237,7 @@ class SpacedRepetitionProcessor:
             correction = {"correction_required": False, "status": "awaiting_review_observation"}
         elif review_event["outcome"] in {"partial", "failure", "corrected_relearning"}:
             correction = {
-                "correction_required": review_event["outcome"] != "corrected_relearning",
+                "correction_required": not bool(review_event["feedback_provided"]),
                 "feedback_provided": review_event["feedback_provided"],
                 "correction_status": (
                     "corrected_relearning_recorded" if review_event["feedback_provided"]

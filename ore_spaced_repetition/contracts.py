@@ -159,6 +159,8 @@ class SpacedRepetitionConfig:
     target_recall_low: float = 0.55
     target_recall_high: float = 0.85
     target_recall_probability: float = 0.70
+    retrieval_threshold: float = 0.50
+    retrieval_noise: float = 0.15
     learning_rate: float = 0.12
     base_stability_hours: float = 24.0
     minimum_stability_hours: float = 0.5
@@ -187,10 +189,11 @@ class SpacedRepetitionConfig:
         if not 0 < self.initial_interval_fraction <= 1:
             raise ValueError("initial_interval_fraction must be in (0, 1]")
         for name in ("target_recall_low", "target_recall_high",
-                     "target_recall_probability", "learning_rate",
+                     "target_recall_probability", "retrieval_threshold", "learning_rate",
                      "stability_uncertainty_initial", "uncertainty_floor",
                      "maintenance_accuracy_threshold", "consolidation_learning_rate"):
             _unit(name, getattr(self, name))
+        _positive("retrieval_noise", self.retrieval_noise)
         if self.target_recall_low >= self.target_recall_high:
             raise ValueError("target_recall_low must be less than target_recall_high")
         if not self.target_recall_low < self.target_recall_probability < self.target_recall_high:

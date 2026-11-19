@@ -1,0 +1,65 @@
+"""Source-ordered operation registry for all twenty-four Point 08 steps."""
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class OperationSpec:
+    """Document one Point 08 operation, its mathematical abstraction, and biological interpretation."""
+
+    operation_id: str
+    source_step: int
+    name: str
+    purpose: str
+    mathematical_form: str
+    biological_reference: str
+    evidence_level: str
+    inputs: tuple[str, ...]
+    outputs: tuple[str, ...]
+
+    def to_dict(self) -> dict[str, object]:
+        """Return this operation as a plain dictionary."""
+        return asdict(self)
+
+
+_ROWS = (
+    ("Parse material into learning units", "Segment the supplied content into goal-linked concepts, claims, examples, and questions while preserving uncertainty.", "X={x_i}; relevance_i=w_g G_i+w_k K_i+w_p P_i+w_n N_i", "Perceptual, language, temporal-association, attentional, and prefrontal networks contribute to parsing and goal linkage.", "distributed_parsing_supported; segmentation objective is computational", ("units", "goal", "knowledge"), ("candidate_units", "initial_relevance")),
+    ("Detect novelty and information gaps", "Compare supplied expectations and prior knowledge with observed features; distinguish useful uncertainty from noise.", "delta=x-xhat; E=sqrt(delta^T Sigma^-1 delta); H=-sum p log p; Q_gap=H*relevance*learnability", "Hippocampal and cortical mismatch processes interact with medial-frontal monitoring and prefrontal control; no universal curiosity meter exists.", "novelty_and_mismatch_supported; scalar gap is computational", ("candidate_units", "knowledge", "hypothesis_priors"), ("novelty_scores", "information_gaps")),
+    ("Estimate the value of resolving each gap", "Combine practical utility, intrinsic interest, transfer value, and personal meaning while retaining uncertainty.", "V_i=alpha U_i+beta I_i+gamma T_i+eta S_i; EV=sum P(o|a)U(o)", "Prefrontal/orbitofrontal valuation and striatal/midbrain systems interact with memory and attention.", "subjective_value_and_motivation_supported; weighted value is computational", ("information_gaps", "units"), ("expected_values", "value_uncertainty")),
+    ("Appraise learnability, effort, and safety", "Estimate conceptual distance, prerequisites, support, fatigue, cost, and threat; make the gap smaller when infeasible.", "L=sigma(b0-b1D-b2M-b3F+b4S); A=V*L-rho*C-kappa*T", "Prefrontal demand appraisal interacts with amygdala, autonomic, and stress-response systems.", "state_dependent_feasibility_supported; learnability score is computational", ("units", "value", "learner_state"), ("learnability", "exploration_feasibility")),
+    ("Estimate state curiosity", "Combine information gap, value, learnability, threat, and fatigue into a bounded state estimate.", "C=sigma(theta0+theta1*IG+theta2*V+theta3*L-theta4*T)", "PACE proposes prediction-appraisal-curiosity-exploration interactions; it is a theory, not a complete settled circuit map.", "curiosity_state_supported; sigmoid model is computational", ("gap", "value", "learnability", "stress"), ("curiosity",)),
+    ("Separate intrinsic and extrinsic motivation", "Maintain interest in understanding separately from external outcomes, mastery goals, personal value, and avoidance.", "V_total=w_intr*V_intr+w_extr*V_extr+w_pers*V_pers; M=[curiosity,utility,mastery,social,avoidance]", "Partly overlapping but distinguishable reward, striatal, midbrain, attention, and control systems contribute.", "motivation_sources_supported; vector policy is computational", ("intrinsic_motivation", "extrinsic_motivation", "personal_value"), ("motivation_profile",)),
+    ("Estimate effort and opportunity cost", "Compare expected gain with effort, time, stress, attention, and competing-goal costs.", "Q(a)=P(success|a)*Benefit-C_effort-C_time-C_switch", "Effort allocation involves distributed prefrontal, cingulate, striatal, and neuromodulatory systems.", "effort_tradeoffs_supported; utility comparison is computational", ("actions", "resources", "motivation"), ("action_utilities", "effort_budget")),
+    ("Set meaningful goals and progress signals", "Translate a broad goal into observable milestones and calibrate challenge to the learner's starting level.", "Progress=observed/(planned+eps); Fit=1-|D_task-D_learner|; D'=D+eta*(target-accuracy)", "Frontoparietal goal maintenance interacts with valuation and action selection.", "goal_monitoring_supported; progress metrics are computational", ("goal", "milestones", "learner_level"), ("subgoals", "progress", "challenge_level")),
+    ("Convert curiosity into questions and actions", "Generate focused questions and prefer actions with high discriminative information gain relative to cost.", "U(a)=EIG(a)*relevance-cost; QScore=w_s*S+w_d*D+w_r*R-w_a*A", "Prefrontal goal maintenance and hippocampal relational retrieval support information-seeking behavior.", "directed_exploration_supported; EIG policy is computational", ("gaps", "candidate_actions"), ("questions", "action_plan")),
+    ("Allocate limited attention", "Prioritize goal-relevant, informative, reliable signals and suppress irrelevant novelty.", "alpha_i=exp(s_i/tau)/sum_j exp(s_j/tau); budget=sum alpha_i*A", "Frontoparietal attention interacts with salience and neuromodulatory gain systems.", "competitive_attention_supported; softmax is computational", ("scores", "attention_available"), ("attention_weights",)),
+    ("Explore actively and sample evidence", "Execute caller-supplied reading, dialogue, experiment, observation, or practice actions and record their evidence lineage.", "a*=argmax_a E[IG|a]-lambda*Cost(a); EvidenceWeight=Reliability*Relevance*Independence", "Curiosity-linked exploration involves interacting hippocampal, cortical, and dopaminergic systems.", "information_seeking_supported; action simulation is computational", ("actions", "attention", "evidence"), ("sampled_evidence", "unresolved_gaps")),
+    ("Update expectations from outcomes", "Compute observed-minus-expected learning error, update action values conservatively, and retain alternatives when evidence is absent.", "delta=Observed-Expected; V'=V+alpha*delta; P(H|E) proportional to P(E|H)P(H)", "Some dopamine activity follows reward-prediction-error accounts; semantic mismatch and dopamine signals must not be equated.", "outcome_learning_supported; value update is computational", ("expected_outcomes", "observed_outcomes", "hypotheses"), ("prediction_errors", "updated_values")),
+    ("Encode target information", "Strengthen target memory candidates in proportion to attention, elaboration, relevance, evidence quality, and engagement.", "P_encode=w1*A+w2*R+w3*Elab+w4*N+w5*Emotion; M'=M+eta*A*E*R*(1-M)", "Hippocampal relational/episodic and distributed cortical encoding interact with neuromodulatory systems.", "encoding_and_curiosity_memory_supported; trace strength is computational", ("target_units", "attention", "elaboration"), ("target_memory_candidates",)),
+    ("Encode useful incidental information", "Preserve distinguishable context-linked incidental material without allowing unrelated novelty to dominate.", "P_inc=C_temporal*C_context*Arousal_moderate*Attention; M_inc'=M_inc+eta*P_inc-lambda*interference", "Curiosity-related memory studies report incidental-memory effects involving midbrain, ventral striatum, and hippocampus; mechanisms remain under study.", "incidental_memory_effect_reported; encoding rule is computational", ("incidental_units", "context", "curiosity"), ("incidental_memory_candidates",)),
+    ("Appraise emotional significance", "Represent valence, arousal, perceived control, and relevance separately; use a task-specific inverted-U arousal proxy.", "E=[Valence,Arousal,Control,Relevance]; f(A)=exp(-(A-mu)^2/(2*sigma^2))", "Amygdala-hippocampal-cortical interactions and stress systems modulate emotional memory in context-dependent ways.", "emotional_memory_modulation_supported; inverted-U is schematic", ("affect", "memory_features"), ("emotional_salience", "arousal_regulation")),
+    ("Integrate curiosity, emotion, and engagement", "Keep curiosity, reward value, affect, attention, and threat as separate signals while calculating an explore gate.", "Eng=sigma(w_c*C+w_i*I+w_v*V+w_g*GoalFit-w_t*T-w_f*F); Explore=Eng*(1-threat_gate)", "PACE and emotional-memory accounts propose interacting but distinguishable hippocampal, prefrontal, amygdalar, and dopaminergic systems.", "multisignal_interaction_supported; engagement gate is computational", ("curiosity", "motivation", "affect", "attention"), ("engagement", "exploration_gate")),
+    ("Detect boredom, overload, frustration, and fatigue", "Use subjective and behavioral signals to separate low value, insufficient clarity, excessive difficulty, and depleted resources.", "D=sigma(b0+b1*Boredom+b2*Fatigue+b3*Error+b4*Switch-b5*Progress)", "Frontal, parietal, cingulate, insular, and neuromodulatory systems contribute; no single boredom meter exists.", "disengagement_signals_supported; classifier is computational", ("boredom", "fatigue", "error_rate", "task_switching"), ("disengagement", "probable_cause")),
+    ("Adapt challenge and explanation", "Increase depth when too easy, supply prerequisites when too difficult, connect to relevance, or pause when depleted.", "D'=D+eta1*(target_accuracy-accuracy)-eta2*overload; R'=R+eta_r*(usefulness-R)", "Distributed executive and valuation systems support control and task adaptation.", "adaptive_instruction_is_design_proposal; controller is computational", ("challenge", "comprehension", "fatigue", "support"), ("adaptation", "next_task")),
+    ("Reinforce progress and competence", "Provide specific evidence-based progress feedback and update competence only from observed performance.", "Competence'=Competence+eta*(Performance-Expected); Calibration=|Confidence-Accuracy|", "Feedback-related learning and control networks interact; reward prediction error is only one possible signal.", "progress_feedback_supported; competence update is computational", ("outcomes", "milestones", "confidence"), ("competence", "progress_feedback")),
+    ("Preserve autonomy and agency", "Offer meaningful learning-path choices without abandoning the core goal; track whether choice works.", "Agency=sum_a P(a)*Control(a)*GoalFit(a); J(pi)=Learning+lambda*Agency-rho*Cost", "Agency and goal-directed behavior involve distributed prefrontal and striatal systems.", "autonomy_design_principle; agency score is computational", ("available_actions", "learner_choice", "goal"), ("agency_value", "selected_path")),
+    ("Prioritize memory for retention", "Rank target and incidental candidates by relevance, elaboration, emotional significance, novelty, and future utility.", "P_retain=w_r*R+w_e*E+w_c*C+w_n*N+w_u*U", "Hippocampal and distributed cortical memory systems interact with neuromodulatory and emotional systems.", "memory_priority_factors_supported; ranking heuristic is computational", ("memory_candidates", "future_goals"), ("retention_priorities",)),
+    ("Support consolidation over time and sleep", "Model gradual consolidation potential and sleep-context support without treating software scheduling as a neural process.", "M(t)=M0+(Mpotential-M0)*(1-exp(-k*t)); Retention=correct/target", "Sleep-related hippocampal-cortical reactivation and amygdala-linked emotional modulation contribute to consolidation.", "systems_consolidation_supported; time curve is approximation", ("memory_traces", "sleep_quality", "elapsed_time"), ("consolidation_state",)),
+    ("Test durable understanding", "Assess delayed factual recall, relational understanding, transfer, and calibration separately.", "L=w_f*F+w_r*R+w_t*T+w_c*Calibration; DeltaL=L_curiosity-L_baseline", "Hippocampal/cortical retrieval interacts with metacognitive and performance-monitoring systems.", "delayed_retrieval_and_transfer_supported; composite score is computational", ("retrieval_checks", "baseline"), ("durable_learning", "retention_gaps")),
+    ("Update future curiosity and motivation", "Learn action values from observed outcomes, preserve unresolved questions, and adapt future policy to actual benefit and cost.", "Q'=Q+alpha*(Outcome-Q); P(a|s)=softmax((ExpectedValue-Cost)/tau)", "Distributed reinforcement, memory, valuation, and executive-control systems shape later choices.", "outcome_guided_policy_learning_supported; action-value rule is computational", ("history", "prediction_errors", "unresolved_questions"), ("future_policy", "updated_motivation")),
+)
+
+OPERATION_REGISTRY = tuple(
+    OperationSpec(
+        operation_id=f"P08-{index:02d}", source_step=index, name=row[0], purpose=row[1],
+        mathematical_form=row[2], biological_reference=row[3], evidence_level=row[4],
+        inputs=row[5], outputs=row[6],
+    )
+    for index, row in enumerate(_ROWS, start=1)
+)
+
+
+def registry_as_dicts() -> list[dict[str, object]]:
+    """Return all twenty-four source-ordered Point 08 operation specifications."""
+    return [item.to_dict() for item in OPERATION_REGISTRY]

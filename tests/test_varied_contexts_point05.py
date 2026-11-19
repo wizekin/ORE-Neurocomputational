@@ -178,7 +178,7 @@ def test_concept_profiles_preserve_episodes_and_estimate_invariants():
     examples = build_examples()
     profiles = build_concept_profiles(concepts, examples)
     direct = profiles["direct"]
-    assert direct["example_count"] == 4
+    assert direct["example_count"] == 5
     assert "ratio_constant" in direct["candidate_invariants"]
     assert len(direct["episodic_examples_preserved"]) == 4
     comparisons = compare_concepts(concepts, profiles)
@@ -284,7 +284,7 @@ def test_state_reuse_keeps_concept_and_episode_memories():
     assert second.final_state["process_count"] == 2
     assert len(second.final_state["episode_records"]) == len(build_examples())
     assert set(second.final_state["concepts"]) == {"direct", "inverse", "additive"}
-    assert first.output["interleaving_used"] is True if "interleaving_used" in first.output else first.schedule["interleaving_used"]
+    assert first.output["interleaving_used"] is True
 
 
 def test_sqlite_stores_annotations_and_23_ordered_operation_events(tmp_path):

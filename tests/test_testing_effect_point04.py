@@ -140,7 +140,21 @@ def test_attempt_scoring_separates_components_relations_order_and_confidence():
     assert result["evidenced_accuracy"] < result["confidence"]
     diagnosis = classify_errors(target, attempt, result)
     assert diagnosis["primary_error"] == "omission"
+    assert diagnosis["features"]["cue_failure"] < diagnosis["features"]["omission"]
     assert diagnosis["diagnosis_allowed"] is True
+
+
+def test_irrelevant_cue_remains_diagnostic_when_retrieval_fails():
+    """Retain cue-failure evidence when an irrelevant cue coincides with failed retrieval."""
+    target = build_target()
+    attempt = RetrievalAttempt(
+        cue="weather forecast", response="I cannot recall the answer.",
+        confidence=0.2, cue_type="causal",
+    )
+    assessment = assess_attempt(target, attempt)
+    diagnosis = classify_errors(target, attempt, assessment)
+    assert assessment["component_coverage"] == 0.0
+    assert diagnosis["features"]["cue_failure"] == pytest.approx(1.0)
 
 
 def test_unreliable_criterion_blocks_definitive_error_diagnosis():

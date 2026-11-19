@@ -1,8 +1,14 @@
 name: tests
+
+# Kept available for intentional manual runs. The full test suite is run by
+# python-tests.yml, so this workflow must not duplicate every push and PR.
 on:
-  push:
-  pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: manual-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,4 +19,4 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest
+      - run: python -m pytest -q

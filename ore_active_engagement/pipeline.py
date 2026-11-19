@@ -186,19 +186,13 @@ class ActiveEngagementProcessor:
 
         # 6. Allocate attention to relevant source evidence under graded competition.
         attention = allocate_attention(questions[0], source_units, config)
-        evidence_vectors = [
-            item["embedding"] for item in encoded_segments
+        selected_vectors = [
+            vectorize_texts([str(item["text"])], config.embedding_dimensions).tolist()
+            for item in attention["selected_evidence"]
         ]
         source_scores = [
             float(item["relevance_score"])
             for item in attention["selected_evidence"]
-        ]
-        selected_ids = {
-            str(item["segment_id"]) for item in attention["selected_evidence"]
-        }
-        selected_vectors = [
-            vector for segment, vector in zip(segments, evidence_vectors)
-            if segment.segment_id in selected_ids
         ]
         attention_bio = bio.frontoparietal_attention.allocate(
             selected_vectors, source_scores

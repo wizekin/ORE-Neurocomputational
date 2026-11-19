@@ -152,13 +152,14 @@ def score_order(expected: Sequence[str], observed: Sequence[str]) -> float:
         return 1.0
     positions = {item: index for index, item in enumerate(observed)}
     required = [item for item in expected if item in positions]
+    # Missing units are scored by coverage; order is evaluated only among retrieved units.
     if len(required) < 2:
-        return len(required) / len(expected)
-    total_pairs = len(expected) * (len(expected) - 1) / 2
+        return 1.0
+    total_pairs = len(required) * (len(required) - 1) / 2
     correct_pairs = 0
-    for i, left in enumerate(expected):
-        for right in expected[i + 1:]:
-            if left in positions and right in positions and positions[left] < positions[right]:
+    for i, left in enumerate(required):
+        for right in required[i + 1:]:
+            if positions[left] < positions[right]:
                 correct_pairs += 1
     return clamp(correct_pairs / total_pairs)
 

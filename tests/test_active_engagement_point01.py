@@ -18,7 +18,6 @@ from ore_active_engagement import (
     OPERATION_REGISTRY,
     SynapticPlasticityNetwork,
     allocate_attention,
-    evaluate_explanation,
     generate_questions,
     segment_material,
 )

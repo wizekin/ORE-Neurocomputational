@@ -24,7 +24,6 @@ from ore_active_engagement import (
 from ore_active_engagement.contracts import ActiveEngagementResult
 from ore_active_engagement.functional import (
     extract_propositions,
-    reconstruct_explanation,
     shannon_entropy,
     softmax,
 )

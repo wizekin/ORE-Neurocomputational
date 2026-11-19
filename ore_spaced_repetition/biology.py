@@ -209,6 +209,13 @@ class OfflineConsolidationNetwork:
                 "automatic_memory_boost_applied": False,
                 "model": "offline_consolidation_context_monitor"}
 
+    def snapshot(self) -> dict[str, Any]:
+        """Return offline-context diagnostics without mutating the observation history."""
+        return {"observed_event_count": self.observed_event_count,
+                "last_context_observed": bool(self.last_context.get("observed", False)),
+                "automatic_memory_boost_applied": False,
+                "model": "offline_consolidation_context_monitor"}
+
 
 class NeuromodulatoryLearningGate:
     """Represent a bounded task-state gate based on effort, outcome quality, and novelty."""
@@ -274,7 +281,7 @@ class BiologicalSpacedRepetitionNetwork:
                 "hippocampus": self.hippocampus.snapshot(),
                 "cortex": self.cortex.snapshot(),
                 "prefrontal": self.prefrontal.snapshot(),
-                "offline_consolidation": self.offline.observe({"observed": False}),
+                "offline_consolidation": self.offline.snapshot(),
                 "learning_gate": self.learning_gate.snapshot(),
                 "literal_neuron_simulation": False,
                 "biological_fidelity": "functional computational surrogate"}

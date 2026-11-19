@@ -254,7 +254,6 @@ def generate_questions(
         ("evidence", f"What evidence in the material supports the claim about {anchor}?"),
         ("prediction", f"What would be expected to happen next given {anchor}?"),
     ]
-    source_tokens = [token for item in propositions for token in item.get("tokens", [])]
     questions: list[dict[str, Any]] = []
     for kind, text in templates:
         q_tokens = tokenize(text)

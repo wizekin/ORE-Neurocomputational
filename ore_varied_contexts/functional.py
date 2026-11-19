@@ -704,7 +704,7 @@ def transfer_assessment(
             "mean_relation_mapping_score": float(np.mean([
                 row["mapping_score"] for row in relation_reports
             ])) if relation_reports else None,
-            "unseen_examples_only": all(item.is_novel for item in selected),
+            "unseen_examples_only": bool(selected) and all(item.is_novel for item in selected),
         }
     training = [item for item in examples if item.transfer_level == "training"]
     training_observed = [

@@ -11,7 +11,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from .contracts import ActiveEngagementConfig, ActiveEngagementState
+from .contracts import ActiveEngagementState
 from .functional import clamp, softmax, vectorize_texts
 
 

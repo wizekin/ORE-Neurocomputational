@@ -23,7 +23,13 @@ def clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
 
 def sigmoid(value: float) -> float:
     """Map an unbounded activation or logit to a numerically stable probability."""
-    x = clamp(float(value), -60.0, 60.0)
+    x = float(value)
+    if not math.isfinite(x):
+        raise ValueError("value must be finite")
+    if x >= 60.0:
+        return 1.0
+    if x <= -60.0:
+        return 0.0
     return 1.0 / (1.0 + math.exp(-x))
 
 
@@ -516,6 +522,7 @@ def update_cue_diversity(
 def schedule_handoff(
     target: LearningTarget, priority: Mapping[str, Any],
     assessment: Mapping[str, Any], delayed: Mapping[str, Any],
+    preferred_delay_hours: float | None = None,
 ) -> dict[str, Any]:
     """Prepare a Point 03-compatible review handoff without duplicating its scheduler."""
     score = float(priority["priority_score"])
@@ -527,8 +534,15 @@ def schedule_handoff(
         delay_hours = 72.0
     if assessment["evidenced_accuracy"] < 0.35:
         delay_hours = min(delay_hours, 2.0)
+    policy_delay_hours = delay_hours
+    if preferred_delay_hours is not None:
+        requested = float(preferred_delay_hours)
+        if not math.isfinite(requested) or requested < 0:
+            raise ValueError("preferred_delay_hours must be finite and non-negative")
+        delay_hours = requested
     return {"target_id": target.target_id, "operation": "schedule_delayed_retrieval",
-            "suggested_delay_hours": delay_hours, "priority_score": score,
+            "suggested_delay_hours": delay_hours, "policy_delay_hours": policy_delay_hours,
+            "priority_score": score,
             "last_evidenced_accuracy": assessment["evidenced_accuracy"],
             "delayed_evidence_available": delayed["durable_learning_evidence_available"],
             "scheduler_owner": "Point 03 Spaced Repetition",

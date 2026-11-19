@@ -129,13 +129,16 @@ class HippocampalContextMemory:
             return {"retrieved": False, "best_episode_id": None,
                     "similarity": 0.0, "candidate_scores": {}}
         cue_vector = _hash_vector(cue, self.dimensions, 205)
-        scores = {
-            key: cosine_similarity(
-                {str(i): float(value) for i, value in enumerate(cue_vector)},
-                {str(i): float(value) for i, value in enumerate(value["context_vector"])},
-            )
-            for key, value in self.episodes.items()
+        cue_features = {
+            str(index): float(value) for index, value in enumerate(cue_vector)
         }
+        scores: dict[str, float] = {}
+        for episode_id, episode in self.episodes.items():
+            episode_features = {
+                str(index): float(value)
+                for index, value in enumerate(episode["context_vector"])
+            }
+            scores[episode_id] = cosine_similarity(cue_features, episode_features)
         best = max(scores, key=scores.get)
         self.reactivation_counts[best] = self.reactivation_counts.get(best, 0) + 1
         record = self.episodes[best]

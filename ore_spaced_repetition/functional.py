@@ -92,7 +92,9 @@ def choose_initial_interval(
         * (0.50 + 1.50 * clamp(encoding_quality))
         * (1.0 - 0.55 * item.difficulty)
     )
-    accessibility_cap = -estimated_stability * math.log(config.target_recall_probability)
+    accessibility_cap = _interval_for_target_recall(
+        estimated_stability, config.target_recall_probability, config
+    )
     upper = min(config.maximum_interval_hours, item.target_retention_hours * 0.5,
                 max(config.minimum_interval_hours, accessibility_cap))
     interval = min(upper, max(config.minimum_interval_hours, proposed))
@@ -100,10 +102,30 @@ def choose_initial_interval(
         "interval_hours": interval,
         "estimated_stability_hours": estimated_stability,
         "accessibility_based_cap_hours": accessibility_cap,
-        "formula": "min(horizon_fraction_interval, -estimated_stability*ln(target_recall_probability))",
+        "formula": "min(horizon_fraction_interval, inverse_forgetting_curve(target_recall_probability))",
         "nonzero_delay": True,
         "parameters_are_calibratable": True,
     }
+
+
+def _accessibility_for_target_recall(
+    target_probability: float, config: SpacedRepetitionConfig
+) -> float:
+    """Invert the logistic accessibility-to-recall mapping for a target recall probability."""
+    probability = clamp(target_probability, 1e-6, 1.0 - 1e-6)
+    logit = math.log(probability / (1.0 - probability))
+    return clamp(config.retrieval_threshold + config.retrieval_noise * logit, 1e-4, 0.9999)
+
+
+def _interval_for_target_recall(
+    stability_hours: float, target_probability: float,
+    config: SpacedRepetitionConfig,
+) -> float:
+    """Invert the selected forgetting curve after mapping target recall to accessibility."""
+    target_accessibility = _accessibility_for_target_recall(target_probability, config)
+    if config.forgetting_model == "exponential":
+        return -stability_hours * math.log(target_accessibility)
+    return stability_hours * (target_accessibility ** (-1.0 / 0.85) - 1.0)
 
 
 def estimate_accessibility(
@@ -111,7 +133,7 @@ def estimate_accessibility(
     prior_uncertainty: float, outcomes: Sequence[float],
     config: SpacedRepetitionConfig,
 ) -> dict[str, float | str]:
-    """Estimate time-dependent accessibility with an explicit uncertainty diagnostic."""
+    """Estimate memory accessibility separately from the probability of successful retrieval."""
     if not math.isfinite(stability_hours) or stability_hours <= 0:
         raise ValueError("stability_hours must be finite and positive")
     if not math.isfinite(elapsed) or elapsed < 0:
@@ -125,6 +147,10 @@ def estimate_accessibility(
     else:
         accessibility = (1.0 + ratio) ** -0.85
         formula = "(1+elapsed_hours/stability_hours)^(-0.85)"
+    predicted_recall = 1.0 / (
+        1.0 + math.exp(-max(-60.0, min(60.0,
+            (accessibility - config.retrieval_threshold) / config.retrieval_noise)))
+    )
     variability = 0.0
     if len(outcomes) > 1:
         mean = sum(outcomes) / len(outcomes)
@@ -135,12 +161,15 @@ def estimate_accessibility(
     )
     return {
         "memory_accessibility": clamp(accessibility),
-        "predicted_recall_probability": clamp(accessibility),
+        "predicted_recall_probability": clamp(predicted_recall),
         "memory_uncertainty": uncertainty,
+        "retrieval_threshold": config.retrieval_threshold,
+        "retrieval_noise": config.retrieval_noise,
         "elapsed_hours": elapsed,
         "stability_hours": stability_hours,
         "forgetting_model": config.forgetting_model,
         "formula": formula,
+        "accessibility_to_recall_mapping": "sigmoid((accessibility-threshold)/retrieval_noise)",
     }
 
 
@@ -250,7 +279,8 @@ def choose_next_interval(
     now_utc: str, config: SpacedRepetitionConfig,
 ) -> dict[str, Any]:
     """Calculate a stability-based interval and adapt it to outcome and remaining horizon."""
-    base = -float(stability_hours) * math.log(config.target_recall_probability)
+    base = _interval_for_target_recall(float(stability_hours),
+                                       config.target_recall_probability, config)
     outcome_factor = {
         "success": 1.0,
         "partial": 0.78,

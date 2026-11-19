@@ -24,6 +24,8 @@ The package keeps these concepts distinct:
 2. **Stability:** a coarse, item-specific timescale updated from the review history.
 3. **Scheduling:** an external decision that calculates a future due timestamp.
 
+Memory accessibility and predicted recall probability are distinct outputs. Recall probability is modeled as `P_recall=σ((A−θ)/σ_r)`. The scheduler inverts that mapping to find the accessibility target before selecting the time interval. These are configurable model assumptions, not measurements of neural state.
+
 None of these variables is a direct measurement of a single neural property. The calendar and due time are software state, not a claim that the brain maintains a review calendar.
 
 ## Mathematical operations represented

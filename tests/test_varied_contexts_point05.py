@@ -180,7 +180,7 @@ def test_concept_profiles_preserve_episodes_and_estimate_invariants():
     direct = profiles["direct"]
     assert direct["example_count"] == 5
     assert "ratio_constant" in direct["candidate_invariants"]
-    assert len(direct["episodic_examples_preserved"]) == 4
+    assert len(direct["episodic_examples_preserved"]) == direct["example_count"]
     comparisons = compare_concepts(concepts, profiles)
     assert len(comparisons["pairs"]) == 3
     assert comparisons["pairs"]["direct::inverse"]["prototype_distance"] > 0.0

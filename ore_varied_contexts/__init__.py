@@ -1,0 +1,72 @@
+"""ORE Point 05: context variation, interleaving, discrimination, and transfer."""
+from .annotations import register_annotations
+from .biology import (
+    BiologicalVariedContextsNetwork,
+    CorticalConceptRepresentation,
+    HippocampalContextMemory,
+    MedialFrontalErrorMonitor,
+    NeuromodulatoryPlasticityGate,
+    PrefrontalTaskController,
+    RecurrentPopulation,
+    SensoryAssociationPathway,
+)
+from .contracts import (
+    ConceptDefinition,
+    ConceptMemoryState,
+    LearningExample,
+    TrialObservation,
+    VariedContextsConfig,
+    VariedContextsRequest,
+    VariedContextsResult,
+    VariedContextsState,
+    normalize_utc,
+)
+from .functional import (
+    adapt_variation_level,
+    adaptive_practice_plan,
+    apply_context_boundaries,
+    build_concept_profiles,
+    build_interleaving_schedule,
+    classify_example,
+    clamp,
+    compare_concepts,
+    context_coverage,
+    context_id,
+    cosine_similarity,
+    cross_modality_consistency,
+    determine_interleaving,
+    diagnose_errors,
+    entropy,
+    evaluate_context_flexibility,
+    feature_distance,
+    infer_context,
+    readiness_report,
+    retrieve_by_cues,
+    score_example_against_concept,
+    score_practice_trial,
+    stable_softmax,
+    transfer_assessment,
+    weighted_feature_score,
+    consolidate_concept_memory,
+)
+from .pipeline import VariedContextsProcessor, record_result_to_sqlite
+from .registry import OPERATION_REGISTRY, OperationSpec, registry_as_dicts
+
+__all__ = [
+    "ConceptDefinition", "LearningExample", "TrialObservation", "VariedContextsConfig",
+    "VariedContextsRequest", "VariedContextsState", "ConceptMemoryState",
+    "VariedContextsResult", "normalize_utc",
+    "RecurrentPopulation", "HippocampalContextMemory", "CorticalConceptRepresentation",
+    "SensoryAssociationPathway", "PrefrontalTaskController", "MedialFrontalErrorMonitor",
+    "NeuromodulatoryPlasticityGate", "BiologicalVariedContextsNetwork",
+    "OperationSpec", "OPERATION_REGISTRY", "registry_as_dicts",
+    "VariedContextsProcessor", "register_annotations", "record_result_to_sqlite",
+    "clamp", "stable_softmax", "entropy", "context_id", "feature_distance",
+    "cosine_similarity", "weighted_feature_score", "readiness_report",
+    "build_concept_profiles", "context_coverage", "infer_context",
+    "score_example_against_concept", "classify_example", "compare_concepts",
+    "cross_modality_consistency", "determine_interleaving", "build_interleaving_schedule",
+    "score_practice_trial", "retrieve_by_cues", "transfer_assessment",
+    "apply_context_boundaries", "consolidate_concept_memory", "diagnose_errors",
+    "adaptive_practice_plan", "evaluate_context_flexibility", "adapt_variation_level",
+]

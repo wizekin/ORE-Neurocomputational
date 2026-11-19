@@ -91,6 +91,11 @@ class VariedContextsProcessor:
         observations = request.observations
         observation_map = {item.example_id: item for item in observations}
         example_map = {item.example_id: item for item in examples}
+        training_examples = [item for item in examples if item.transfer_level == "training"]
+        training_ids = {item.example_id for item in training_examples}
+        training_observations = [
+            item for item in observations if item.example_id in training_ids
+        ]
         trace: list[dict[str, Any]] = []
         biological = self.biological
 
@@ -111,7 +116,7 @@ class VariedContextsProcessor:
 
         # 2. Retrieve prerequisites and estimate readiness before introducing complex variation.
         readiness = readiness_report(concepts, request.prerequisite_readiness)
-        anchor_concepts = {item.concept_id for item in examples if item.is_anchor}
+        anchor_concepts = {item.concept_id for item in training_examples if item.is_anchor}
         for concept_id in anchor_concepts:
             if concept_id in readiness["concept_readiness"]:
                 readiness["concept_readiness"][concept_id]["basic_anchor_ready"] = True
@@ -127,7 +132,8 @@ class VariedContextsProcessor:
         })
 
         # 3. Build example profiles and estimate within/between category structure.
-        profiles = build_concept_profiles(concepts, examples)
+        # Held-out near/far/delayed examples must not shape the representation being evaluated.
+        profiles = build_concept_profiles(concepts, training_examples)
         profile_summary = {
             key: {
                 "example_count": value["example_count"],
@@ -139,7 +145,9 @@ class VariedContextsProcessor:
             for key, value in profiles.items()
         }
         _append_operation(trace, 2, {
-            "example_count": len(examples),
+            "training_example_count": len(training_examples),
+            "held_out_example_count": len(examples) - len(training_examples),
+            "concept_profiles_built_from_training_only": True,
             "concept_profiles": profile_summary,
             "novel_example_count": sum(item.is_novel for item in examples),
             "verified_example_count": sum(item.verified for item in examples),
@@ -181,7 +189,7 @@ class VariedContextsProcessor:
         # 6. Vary selected context dimensions while holding concept identity explicit.
         context_variation_by_concept: dict[str, Any] = {}
         for concept in concepts:
-            selected = [item for item in examples if item.concept_id == concept.concept_id]
+            selected = [item for item in training_examples if item.concept_id == concept.concept_id]
             context_ids = {item.context_features and str(sorted(item.context_features.items()))
                            for item in selected}
             dimensions = {key for item in selected for key in item.context_features}
@@ -202,12 +210,12 @@ class VariedContextsProcessor:
         context_inferences: dict[str, Any] = {}
         for example in examples:
             context_inferences[example.example_id] = infer_context(
-                example.context_features, examples, active,
+                example.context_features, training_examples, active,
                 configuration.context_smoothing,
             )
         if request.current_context:
             current_context_inference = infer_context(
-                request.current_context, examples, active,
+                request.current_context, training_examples, active,
                 configuration.context_smoothing,
             )
         else:
@@ -231,9 +239,9 @@ class VariedContextsProcessor:
 
         # 8. Encode episode detail, context links, and concept representation separately.
         biological_encodings = {
-            item.example_id: biological.encode_example(item) for item in examples
+            item.example_id: biological.encode_example(item) for item in training_examples
         }
-        for item in examples:
+        for item in training_examples:
             active.episode_records[item.example_id] = {
                 "concept_id": item.concept_id,
                 "context_features": dict(item.context_features),
@@ -245,9 +253,11 @@ class VariedContextsProcessor:
             }
         _append_operation(trace, 7, {
             "episode_records": len(active.episode_records),
+            "new_training_episodes_encoded": len(training_examples),
+            "held_out_evaluation_examples_not_encoded": len(examples) - len(training_examples),
             "episodic_context_links": {
                 item.example_id: biological_encodings[item.example_id]["episode_binding"]
-                for item in examples
+                for item in training_examples
             },
             "individual_episode_details_preserved": True,
         }, {"encoding": biological_encodings})
@@ -263,7 +273,7 @@ class VariedContextsProcessor:
         }, {"pattern_separation_and_completion": "functional analogy, not a single-region mapping"})
 
         # 10. Test concept consistency across modalities and formats.
-        modality_reports = cross_modality_consistency(examples, profiles)
+        modality_reports = cross_modality_consistency(training_examples, profiles)
         _append_operation(trace, 9, {
             "cross_modality_reports": modality_reports,
             "available_modality_count": len(contexts["modality_counts"]),
@@ -275,7 +285,8 @@ class VariedContextsProcessor:
 
         # 11. Decide which pairs are suitable for meaningful interleaving.
         interleaving = determine_interleaving(
-            concepts, examples, comparisons, observations, readiness, configuration
+            concepts, training_examples, comparisons, training_observations,
+            readiness, configuration
         )
         _append_operation(trace, 10, {
             "interleaving_decision": interleaving,
@@ -286,7 +297,7 @@ class VariedContextsProcessor:
 
         # 12. Create a balanced schedule that encourages choice among related concepts.
         schedule = build_interleaving_schedule(
-            examples, interleaving, request.available_time_minutes, configuration
+            training_examples, interleaving, request.available_time_minutes, configuration
         )
         _append_operation(trace, 11, {
             "schedule": schedule,
@@ -379,20 +390,27 @@ class VariedContextsProcessor:
         # 16. Build retrieval routes across contexts, modalities, and representations.
         retrieval_routes: dict[str, Any] = {}
         for concept in concepts:
-            selected = [item for item in examples if item.concept_id == concept.concept_id]
+            selected = [item for item in training_examples if item.concept_id == concept.concept_id]
+            selected_ids = {item.example_id for item in selected}
             cue_types = sorted({item.modality for item in selected}
                                | {item.representation for item in selected}
-                               | {observation.cue_type for observation in observations
-                                  if observation.example_id in {item.example_id for item in selected}})
+                               | {observation.cue_type for observation in training_observations
+                                  if observation.example_id in selected_ids})
             retrieval_routes[concept.concept_id] = {
                 cue: retrieve_by_cues(concept, selected, cue)
                 for cue in cue_types
             }
+        hippocampal_route_reactivation = {
+            item.example_id: biological.infer_context(item.context_features, item.concept_id)
+            for item in training_examples
+        }
         _append_operation(trace, 15, {
             "retrieval_routes": retrieval_routes,
             "original_context_dependence_tested": True,
             "partial_cues_preferred_before_full_answer": True,
-        }, {"hippocampal_context_memory": biological.hippocampus.snapshot()})
+            "held_out_examples_excluded_from_route_learning": True,
+        }, {"hippocampal_context_memory": biological.hippocampus.snapshot(),
+            "route_reactivation": hippocampal_route_reactivation})
 
         # 17–18. Measure novel near and far transfer independently.
         transfer = transfer_assessment(concepts, examples, observations)
@@ -421,7 +439,7 @@ class VariedContextsProcessor:
 
         # 20. Consolidate common relations while preserving each episode and context.
         consolidation = consolidate_concept_memory(
-            active, concepts, examples, configuration
+            active, concepts, training_examples, configuration
         )
         _append_operation(trace, 19, {
             "consolidation": consolidation,

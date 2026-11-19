@@ -380,7 +380,8 @@ class TestingEffectProcessor:
         }, {"adaptive_control_state": "model-level future-practice priority estimate"})
 
         # 22. Prepare the delayed-practice handoff and return an auditable state.
-        handoff = schedule_handoff(target, priority, initial_assessment, delayed)
+        handoff = schedule_handoff(target, priority, initial_assessment, delayed,
+                                   request.delay_after_hours)
         output = {
             "target_id": target.target_id,
             "initial_accuracy": initial_assessment["evidenced_accuracy"],

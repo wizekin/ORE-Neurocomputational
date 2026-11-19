@@ -111,6 +111,16 @@ class VariedContextsProcessor:
 
         # 2. Retrieve prerequisites and estimate readiness before introducing complex variation.
         readiness = readiness_report(concepts, request.prerequisite_readiness)
+        anchor_concepts = {item.concept_id for item in examples if item.is_anchor}
+        for concept_id in anchor_concepts:
+            if concept_id in readiness["concept_readiness"]:
+                readiness["concept_readiness"][concept_id]["basic_anchor_ready"] = True
+                readiness["concept_readiness"][concept_id]["anchor_example_available"] = True
+        readiness["blocked_interleaving_concepts"] = [
+            key for key, value in readiness["concept_readiness"].items()
+            if not value["basic_anchor_ready"]
+        ]
+        readiness["anchor_supported_concepts"] = sorted(anchor_concepts)
         _append_operation(trace, 1, readiness, {
             "hippocampal_cortical_retrieval": "prerequisite reactivation surrogate",
             "prefrontal_monitoring": "readiness and scaffold selection surrogate",

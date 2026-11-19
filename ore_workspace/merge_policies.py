@@ -44,6 +44,7 @@ class MergePolicyRegistry:
             "working_memory": self._merge_working_memory,
             "retrieved_memories": self._merge_memories,
             "unresolved_questions": self._merge_questions,
+            "artifact_references": self._merge_list,
             "current_goal": self._merge_goal,
             "current_input": self._merge_input,
             "module_status": self._merge_module_status,

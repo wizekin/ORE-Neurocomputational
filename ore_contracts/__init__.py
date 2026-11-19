@@ -559,3 +559,19 @@ __all__ += [
     "LegacyProcessorAdapter", "adapt_legacy_processor",
     "SQLiteModuleEventLogger", "record_registry_event", "register_module_annotations",
 ]
+
+
+# Dependency-aware cognitive task coordination (Task 03).
+from .coordinator import (
+    ArtifactLedger, ArtifactRecord, CognitiveTask, CognitiveTaskCoordinator,
+    CognitiveTaskPlan, CognitiveTaskResult, DependencyGraphPlanner,
+    ModuleAvailability, ModuleAvailabilityMonitor, ModuleInputPlan,
+    calculate_module_priority, normalized_entropy, weighted_disagreement,
+)
+
+__all__ += [
+    "ArtifactLedger", "ArtifactRecord", "CognitiveTask", "CognitiveTaskCoordinator",
+    "CognitiveTaskPlan", "CognitiveTaskResult", "DependencyGraphPlanner",
+    "ModuleAvailability", "ModuleAvailabilityMonitor", "ModuleInputPlan",
+    "calculate_module_priority", "normalized_entropy", "weighted_disagreement",
+]

@@ -179,6 +179,7 @@ class WorkspaceState:
     retrieved_memories: list[dict[str, Any]] = field(default_factory=list)
     unresolved_questions: list[dict[str, Any]] = field(default_factory=list)
     module_status: dict[str, str] = field(default_factory=dict)
+    artifact_references: list[dict[str, Any]] = field(default_factory=list)
     pending_updates: list[str] = field(default_factory=list)
     accepted_updates: list[str] = field(default_factory=list)
     rejected_updates: list[str] = field(default_factory=list)
@@ -325,9 +326,10 @@ WORKSPACE_FIELDS = (
     "retrieved_memories",
     "unresolved_questions",
     "module_status",
+    "artifact_references",
 )
 
 APPEND_ONLY_FIELDS = frozenset({
     "lexical_hypotheses", "syntactic_hypotheses", "semantic_hypotheses",
-    "discourse_context", "retrieved_memories", "unresolved_questions",
+    "discourse_context", "retrieved_memories", "unresolved_questions", "artifact_references",
 })

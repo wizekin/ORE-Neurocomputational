@@ -132,9 +132,9 @@ def test_normalization_accepts_rgb_and_bounds_luminance() -> None:
 
 def test_rtl_reading_order_is_not_replaced_by_left_to_right_order() -> None:
     """Sort distinct glyph observations in the caller-declared right-to-left direction."""
-    image = np.ones((32, 58), dtype=np.float32)
+    image = np.ones((32, 38), dtype=np.float32)
     image[8:23, 8:16] = 0.0
-    image[8:23, 34:42] = 0.0
+    image[8:23, 19:27] = 0.0
     result = TextLocalizer().process(TextImageRequest(
         sequence_id="rtl",
         image=image,

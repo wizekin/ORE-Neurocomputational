@@ -105,3 +105,52 @@ def test_compatibility_graph_exports_only_validated_edges_and_coverage():
     assert len(graph["edges"]) == 1
     assert graph["interface_validation_coverage"] == 1.0
     assert '"DIRECTLY_COMPATIBLE"' in validator.export_json()
+
+
+def test_artifact_must_match_the_selected_producer_port_and_adapter_target():
+    """Do not accept a same-typed artifact from a different contract as this port's output."""
+    from dataclasses import replace
+
+    catalog = ContractCatalog()
+    catalog.register_model("ORE.STRING", "1.0.0", str)
+    catalog.register_model("ORE.OTHER", "1.0.0", str)
+    catalog.register_model("ORE.OTHER", "2.0.0", str)
+    catalog.register_model("ORE.STRING", "2.0.0", str)
+    registry = ModuleRegistry(catalog)
+    producer = _manifest("ore.source", "1.0.0", output=True)
+    consumer = _manifest("ore.target", "1.0.0", input_versions=("1.0.0",))
+    registry.register(producer)
+    registry.register(consumer)
+    registry.bind_backend("ore.source", _backend(producer))
+    registry.bind_backend("ore.target", _backend(consumer))
+    validator = CompatibilityValidator(registry)
+
+    wrong_source = ContractArtifact(
+        make_envelope("ORE.OTHER", "run-1", "ore.source"), "same Python type"
+    )
+    report = validator.validate_connection(
+        "ore.source", "ore.target", "out", "in", artifact=wrong_source
+    )
+    assert report.status is CompatibilityStatus.INCOMPATIBLE_CONTRACT
+    assert "output port" in report.reason
+
+    target_v2 = _manifest("ore.target.v2", "2.0.0", input_versions=("2.0.0",))
+    registry.register(target_v2)
+    registry.bind_backend("ore.target.v2", _backend(target_v2))
+    validator.register_converter(
+        "ORE.STRING", "1.0.0", "2.0.0",
+        lambda source: ContractArtifact(
+            replace(
+                make_envelope("ORE.OTHER", "converted", "ore.converter"),
+                schema_version="2.0.0",
+            ),
+            source.payload,
+        ),
+    )
+    source = ContractArtifact(
+        make_envelope("ORE.STRING", "run-2", "ore.source"), "hello"
+    )
+    converted_wrong_contract = validator.validate_connection(
+        "ore.source", "ore.target.v2", "out", "in", artifact=source
+    )
+    assert converted_wrong_contract.status is CompatibilityStatus.INCOMPATIBLE_CONTRACT

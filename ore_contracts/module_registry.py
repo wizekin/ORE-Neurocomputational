@@ -193,10 +193,18 @@ class ModuleRegistry:
                     continue
                 binding = self._bindings.get(module_id)
                 disabled = module_id in self._disabled
+                dependencies_ready = all(
+                    dependency.module_id in self._manifests
+                    and dependency.module_id in self._bindings
+                    and dependency.module_id not in self._disabled
+                    and self._bindings[dependency.module_id].validated
+                    for dependency in manifest.dependencies if dependency.required
+                )
                 records.append(CapabilityRecord(
                     capability=capability, module_id=module_id, declared=True, registered=True,
                     backend_bound=binding is not None, validated=bool(binding and binding.validated),
-                    disabled=disabled, runnable=bool(binding and binding.validated and not disabled),
+                    disabled=disabled,
+                    runnable=bool(binding and binding.validated and not disabled and dependencies_ready),
                 ))
         return tuple(sorted(records, key=lambda item: item.module_id))
 
@@ -221,13 +229,14 @@ class ModuleRegistry:
             and item.module_id not in self._disabled and self._bindings[item.module_id].validated
         ]
         completeness = len(available) / len(required) if required else 1.0
+        dependencies_ready = len(available) == len(required)
         return {
             "module_id": module_id,
             "module_version": manifest.identity.module_version,
             "manifest_status": "REGISTERED",
             "backend_status": "NOT_BOUND" if binding is None else "BOUND",
             "backend_validated": bool(binding and binding.validated),
-            "runnable": bool(binding and binding.validated and not disabled),
+            "runnable": bool(binding and binding.validated and not disabled and dependencies_ready),
             "disabled": disabled,
             "capabilities": list(manifest.capabilities),
             "input_ports": [item.port_id for item in manifest.input_ports],
@@ -254,7 +263,10 @@ class ModuleRegistry:
         if not root.is_dir():
             raise NotADirectoryError(str(root))
         inventory: list[dict[str, Any]] = []
-        for package_dir in sorted(path for path in root.glob("ore_*") if path.is_dir()):
+        for package_dir in sorted(
+            path for path in root.glob("ore_*")
+            if path.is_dir() and (path / "__init__.py").is_file()
+        ):
             source_files = sorted(package_dir.rglob("*.py"))
             classes: set[str] = set()
             processors: set[str] = set()
@@ -310,7 +322,7 @@ class ModuleRegistry:
                 else tuple(sorted(mode_evidence & {"BIOLOGICAL", "FUNCTIONAL"}))
             )
             inventory.append({
-                "module_id": package_dir.name.replace("_", "."),
+                "module_id": package_dir.name.replace("_", ".", 1),
                 "package_path": package_dir.name,
                 "python_files": len(source_files),
                 "public_entry_points": sorted(entry_points),

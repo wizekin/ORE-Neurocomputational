@@ -58,7 +58,7 @@ registry = ModuleRegistry(catalog)
 registry.register(manifest)  # Registered does not mean runnable.
 ```
 
-A backend must expose `describe()` and `execute(inputs, context)`. `LegacyProcessorAdapter` wraps an existing `process(request)` processor with explicit request/artifact factories. `ModuleRegistry.bind_backend` checks the backend's manifest against the registered ports and capabilities before marking it runnable.
+A backend must expose `describe()` and `execute(inputs, context)`. `LegacyProcessorAdapter` wraps an existing `process(request)` processor with explicit request/artifact factories. `CanonicalControllerAdapter` wraps the existing `CanonicalOREController.run(context, payload, validation_spec=...)` contract without replacing its canonical B-N backend registry. `ModuleRegistry.bind_backend` checks the backend's manifest against the registered ports and capabilities before marking it runnable. A module with unavailable required dependencies is not reported as runnable even when its local backend is bound.
 
 `ModuleStatus` keeps SUCCESS, PARTIAL, ABSTAINED, UNAVAILABLE, and FAILED distinct. In particular, abstention is not a processing error.
 

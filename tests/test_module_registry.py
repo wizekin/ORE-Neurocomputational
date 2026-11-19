@@ -135,3 +135,27 @@ def test_real_repository_inventory_finds_existing_ore_packages():
     assert len(inventory) >= 50
     assert {"ore_contracts", "ore_lexical_access", "ore_syntax", "ore_semantic_composition"}.issubset(package_names)
     assert all(item["capability_status"] == "NOT_DECLARED" for item in inventory)
+
+
+def test_required_dependencies_gate_runnable_capabilities_and_inventory_identity(tmp_path):
+    """A bound backend is not runnable with a missing required dependency; preserve package IDs."""
+    catalog = _catalog()
+    registry = ModuleRegistry(catalog)
+    dependent = _manifest(
+        "ore.dependent",
+        dependencies=(ModuleDependency("ore.missing_dependency", required=True),),
+    )
+    registry.register(dependent)
+    registry.bind_backend("ore.dependent", _Backend(dependent))
+    diagnostics = registry.diagnostics("ore.dependent")
+    assert diagnostics["dependency_completeness"] == 0.0
+    assert diagnostics["runnable"] is False
+    assert registry.find_by_capability("language.text_input")[0].runnable is False
+
+    package = tmp_path / "ore_semantic_composition"
+    package.mkdir()
+    (package / "__init__.py").write_text("class Example: pass\n", encoding="utf-8")
+    (tmp_path / "ore_logs").mkdir()
+    inventory = registry.inventory_repository(tmp_path)
+    assert len(inventory) == 1
+    assert inventory[0]["module_id"] == "ore.semantic_composition"

@@ -196,6 +196,16 @@ class CompatibilityValidator:
                 reason="both contract versions must declare Python model types for structural verification",
             )
         if artifact is not None:
+            if (
+                artifact.envelope.contract_id != output.contract_id
+                or artifact.envelope.schema_version != output.contract_version
+            ):
+                return CompatibilityReport(
+                    CompatibilityStatus.INCOMPATIBLE_CONTRACT, producer_module_id, consumer_module_id,
+                    output.port_id, input_port.port_id, output.contract_id, output.contract_version,
+                    input_port.accepted_versions,
+                    reason="producer artifact does not match the selected output port contract ID/version",
+                )
             source_validation = self.registry.contract_catalog.validate_artifact(artifact)
             if not source_validation.valid:
                 return CompatibilityReport(
@@ -209,7 +219,11 @@ class CompatibilityValidator:
                 if not isinstance(converted, ContractArtifact):
                     raise TypeError("registered converter must return ContractArtifact")
                 converted_validation = self.registry.contract_catalog.validate_artifact(converted)
-                if not converted_validation.valid or converted.envelope.schema_version != target_version:
+                if (
+                    not converted_validation.valid
+                    or converted.envelope.contract_id != input_port.contract_id
+                    or converted.envelope.schema_version != target_version
+                ):
                     return CompatibilityReport(
                         CompatibilityStatus.INCOMPATIBLE_CONTRACT, producer_module_id, consumer_module_id,
                         output.port_id, input_port.port_id, output.contract_id, output.contract_version,

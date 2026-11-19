@@ -14,8 +14,8 @@ from .contracts import (
 from .functional import (
     add_hours, apply_offline_consolidation, assess_calibration, assess_maintenance,
     choose_initial_interval, choose_next_interval, decide_review_action,
-    elapsed_hours, estimate_accessibility, estimate_encoding_quality, parse_utc,
-    score_review, update_memory_state,
+    elapsed_hours, estimate_accessibility, estimate_encoding_quality,
+    initialize_stability, parse_utc, score_review, update_memory_state,
 )
 from .registry import OPERATION_REGISTRY
 

@@ -172,19 +172,13 @@ _ROWS = (
      ("accuracy", "uncertainty", "error_frequency", "transfer"),
      ("priority_score", "recommended_focus", "priority_components")),
     (21, "Plan delayed retrieval and hand off to spaced practice",
-     "Generate a future-practice recommendation and provide evidence to the external spaced-repetition scheduler without duplicating its interval algorithm.",
+     "Generate a future-practice recommendation, hand off evidence to the external spaced-repetition scheduler, and return the complete auditable result without duplicating its interval algorithm.",
      "delay=policy(priority,accuracy); scheduler_input=(target_id,delay,priority,observed_outcome)",
      "Temporal separation can improve later learning; calendar scheduling is an external software operation.",
      "spacing and delayed retrieval supported; handoff timing is an engineering policy",
      ("future_priority", "delayed_retention", "Point03_scheduler"),
-     ("review_handoff", "suggested_delay", "future_retrieval_plan")),
-    (22, "Return an auditable testing-effect state",
-     "Return the original response, comparison, error map, corrections, cue routes, confidence, delayed outcomes, biological diagnostics, and provenance.",
-     "Result={response,diagnosis,feedback,cue_routes,calibration,retention,priority,provenance}",
-     "No single neural signal establishes learning; biological outputs remain model diagnostics and behavioral evidence remains primary.",
-     "auditability requirement; result schema is software architecture",
-     ("all_stage_outputs", "state_history", "biological_diagnostics"),
-     ("operation_trace", "updated_memory_state", "model_caveats")),
+     ("review_handoff", "suggested_delay", "future_retrieval_plan", "auditable_result")),
+
 )
 
 OPERATION_REGISTRY = tuple(

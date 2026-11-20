@@ -309,19 +309,26 @@ def test_every_usg_package_class_and_callable_is_indexed_in_ore_sqlite_annotatio
     python_files = sorted(package_root.rglob("*.py"))
     assert python_files
 
-    expected: list[tuple[str, str, str]] = []
+    expected: list[tuple[str, str, str, str]] = []
 
-    def collect_symbols(body, module_name: str, parent: str = "") -> None:
-        """Collect AST class and callable symbols using the logger's qualified-name convention."""
-        for node in body:
-            if isinstance(node, ast.ClassDef):
-                qualified_name = f"{parent}.{node.name}" if parent else node.name
-                expected.append((module_name, qualified_name, "class"))
-                collect_symbols(node.body, module_name, qualified_name)
-            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                qualified_name = f"{parent}.{node.name}" if parent else node.name
-                expected.append((module_name, qualified_name, "function"))
-                collect_symbols(node.body, module_name, qualified_name)
+    def collect_nested(node: ast.AST, module_name: str, relative: str, parent: str = "") -> None:
+        """Mirror the logger's traversal through control-flow and local definition scopes."""
+        if isinstance(node, ast.ClassDef):
+            qualified_name = f"{parent}.{node.name}" if parent else node.name
+            expected.append((module_name, qualified_name, "class", relative))
+            for child in node.body:
+                collect_nested(child, module_name, relative, qualified_name)
+            return
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            qualified_name = f"{parent}.{node.name}" if parent else node.name
+            symbol_kind = "async_function" if isinstance(node, ast.AsyncFunctionDef) else "function"
+            expected.append((module_name, qualified_name, symbol_kind, relative))
+            local_parent = qualified_name + ".<locals>"
+            for child in node.body:
+                collect_nested(child, module_name, relative, local_parent)
+            return
+        for child in ast.iter_child_nodes(node):
+            collect_nested(child, module_name, relative, parent)
 
     for source_path in python_files:
         relative = source_path.relative_to(root).as_posix()
@@ -330,22 +337,16 @@ def test_every_usg_package_class_and_callable_is_indexed_in_ore_sqlite_annotatio
             module_parts.pop()
         module_name = ".".join(module_parts) or "__root__"
         tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=relative)
-        collect_symbols(tree.body, module_name)
+        for node in tree.body:
+            collect_nested(node, module_name, relative)
+
 
     assert expected, "the adapter package should declare classes and callables"
     missing = [
-        (module_name, qualified_name, kind)
-        for module_name, qualified_name, kind in expected
+        (module_name, qualified_name, kind, relative)
+        for module_name, qualified_name, kind, relative in expected
         if database.get_annotation(
-            module_name, qualified_name, kind,
-            next(
-                source_path.relative_to(root).as_posix()
-                for source_path in python_files
-                if ".".join(
-                    part for part in Path(source_path.relative_to(root).with_suffix("")).parts
-                    if part != "__init__"
-                ) == module_name
-            ),
+            module_name, qualified_name, kind, relative,
         ) is None
     ]
     assert not missing, f"unindexed ORE USG symbols: {missing}"

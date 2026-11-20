@@ -14,7 +14,7 @@ ORE_USG_KNOWLEDGE_CONTRACT = "ORE.USG.KNOWLEDGE"
 
 @dataclass(frozen=True, slots=True)
 class USGImportExclusion:
-    """Explain why one lexical record was not exposed to ORE."""
+    """Explain why one USG record or relation was not exposed to ORE."""
 
     record_id: str
     record_kind: str

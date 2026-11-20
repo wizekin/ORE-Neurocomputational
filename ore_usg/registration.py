@@ -18,15 +18,27 @@ from ore_contracts.module_registry import ModuleRegistry
 from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
+    ORE_USG_KNOWLEDGE_CONTRACT,
     USG_KNOWLEDGE_SCHEMA_VERSION,
     USGLexiconResource,
 )
 from .lexical import USGKnowledgeLexicalAdapter
+from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
 from .validation import validate_knowledge_bundle
 
 
 USG_LEXICAL_MODULE_ID = "ore.usg_lexical_import"
 USG_LEXICAL_MODULE_VERSION = "0.1.0"
+USG_KNOWLEDGE_MODULE_ID = "ore.usg_knowledge_import"
+USG_KNOWLEDGE_MODULE_VERSION = "0.1.0"
+USG_KNOWLEDGE_CAPABILITIES = (
+    "language.lexical_resource.import",
+    "language.semantic_resource.import",
+    "language.semantic_structure.import",
+    "language.knowledge.provenance",
+)
+
+
 USG_LEXICAL_CAPABILITIES = (
     "language.lexical_resource.import",
     "language.lexical_resource.provenance",
@@ -118,9 +130,18 @@ def register_usg_contracts(catalog: ContractCatalog) -> tuple[Any, ...]:
         required_fields=("entries", "bundle_id", "bundle_digest"),
         description="ORE lexical entries imported from one immutable USG knowledge bundle, with provenance report.",
     )
+    _ensure_model_contract(
+        catalog,
+        ORE_USG_KNOWLEDGE_CONTRACT,
+        "1.0.0",
+        USGKnowledgeResource,
+        required_fields=("lexical", "semantic", "structures", "namespace", "bundle_id", "bundle_digest"),
+        description="Unified read-only ORE lexical, semantic, structure, evidence, context, and provenance resource.",
+    )
     return tuple(item for item in (
         catalog.get_contract(ORE_USG_BUNDLE_CONTRACT, USG_KNOWLEDGE_SCHEMA_VERSION),
         catalog.get_contract(ORE_USG_LEXICON_CONTRACT, "1.0.0"),
+        catalog.get_contract(ORE_USG_KNOWLEDGE_CONTRACT, "1.0.0"),
     ) if item is not None)
 
 
@@ -237,7 +258,121 @@ def register_usg_lexical_module(
     return backend
 
 
+def build_usg_knowledge_manifest() -> ModuleManifest:
+    """Describe the unified USG knowledge importer as one typed ORE module."""
+    return ModuleManifest(
+        identity=ModuleIdentity(
+            USG_KNOWLEDGE_MODULE_ID,
+            USG_KNOWLEDGE_MODULE_VERSION,
+            "USG Unified Knowledge Import",
+            package_path="ore_usg",
+        ),
+        responsibilities=(
+            "validate one supplied USG-KNOWLEDGE/0.1.0 bundle",
+            "import lexical forms, lemmas, and senses",
+            "import concepts, semantic classes, predicate frames, and explicit relations",
+            "preserve source rights, evidence, contexts, lifecycle decisions, and bundle identity",
+        ),
+        input_ports=(
+            InputPort(
+                "knowledge_bundle",
+                ORE_USG_BUNDLE_CONTRACT,
+                (USG_KNOWLEDGE_SCHEMA_VERSION,),
+                expected_data_type="builtins.dict",
+            ),
+        ),
+        output_ports=(
+            OutputPort(
+                "knowledge",
+                ORE_USG_KNOWLEDGE_CONTRACT,
+                "1.0.0",
+                "ore_usg.knowledge.USGKnowledgeResource",
+                "Unified read-only USG-derived ORE knowledge snapshot.",
+            ),
+        ),
+        capabilities=USG_KNOWLEDGE_CAPABILITIES,
+        execution_modes=("FUNCTIONAL", "INFER"),
+        limitations=(
+            "No USG database writes or network calls are performed.",
+            "Candidate records are excluded unless explicitly enabled.",
+            "Unresolved, deprecated, and rejected records are not imported as active knowledge.",
+            "Semantic features are not inferred from labels or definitions.",
+            "Predicate-frame roles are preserved as data and are not yet executable constraints.",
+            "Relations are imported only when both endpoints are eligible records.",
+            "Source licensing metadata does not grant redistribution rights.",
+        ),
+    )
+
+
+def register_usg_knowledge_module(
+    registry: ModuleRegistry,
+    *,
+    adapter: USGKnowledgeAdapter | None = None,
+) -> CallableModuleAdapter:
+    """Register and bind the unified read-only USG knowledge importer."""
+    if not isinstance(registry, ModuleRegistry):
+        raise TypeError("registry must be a ModuleRegistry")
+    catalog = registry.contract_catalog
+    register_usg_contracts(catalog)
+    manifest = build_usg_knowledge_manifest()
+    existing = registry.get_manifest(USG_KNOWLEDGE_MODULE_ID)
+    if existing is None:
+        registry.register(manifest)
+    elif existing != manifest:
+        raise ValueError("an incompatible unified USG knowledge module manifest is already registered")
+    if registry.get_backend(USG_KNOWLEDGE_MODULE_ID) is not None:
+        raise ValueError("the unified USG knowledge module already has a bound backend")
+    knowledge_adapter = adapter or USGKnowledgeAdapter()
+
+    def execute(inputs: dict[str, Any], context: Any) -> tuple[ContractArtifact, ...]:
+        """Produce one linked resource artifact from a validated bundle artifact."""
+        source = inputs.get("knowledge_bundle")
+        if not isinstance(source, ContractArtifact):
+            raise TypeError("knowledge_bundle input must be a ContractArtifact")
+        if source.envelope.contract_id != ORE_USG_BUNDLE_CONTRACT:
+            raise ValueError("knowledge_bundle input has the wrong contract ID")
+        if source.envelope.schema_version != USG_KNOWLEDGE_SCHEMA_VERSION:
+            raise ValueError("knowledge_bundle input has an unsupported contract version")
+        validation = catalog.validate_artifact(source)
+        if not validation.valid:
+            raise ValueError("knowledge_bundle artifact is invalid: " + "; ".join(validation.errors))
+        resource = knowledge_adapter.convert(source.payload)
+        envelope = make_envelope(
+            ORE_USG_KNOWLEDGE_CONTRACT,
+            context.run_id,
+            USG_KNOWLEDGE_MODULE_ID,
+            config={"include_candidate_states": knowledge_adapter.lexical_adapter.include_candidate_states},
+            evidence_kind=EvidenceKind.DERIVED,
+            parent_artifact_ids=(source.payload_hash,),
+            data_hash=source.payload_hash,
+            model_version=USG_KNOWLEDGE_MODULE_VERSION,
+        )
+        return (ContractArtifact(
+            envelope,
+            resource,
+            metadata={
+                "usg_bundle_id": resource.bundle_id,
+                "usg_namespace": resource.namespace,
+                "usg_bundle_digest": resource.bundle_digest,
+                "candidate_states_enabled": knowledge_adapter.lexical_adapter.include_candidate_states,
+                "runtime_mutation_performed": False,
+                "source_database_mutation_performed": False,
+            },
+        ),)
+
+    backend = CallableModuleAdapter(manifest, execute)
+    binding = registry.bind_backend(USG_KNOWLEDGE_MODULE_ID, backend)
+    if binding.module_id != USG_KNOWLEDGE_MODULE_ID:
+        raise RuntimeError("ORE registry returned an unexpected unified USG module binding")
+    return backend
+
+
 __all__ = [
+    "USG_KNOWLEDGE_MODULE_ID",
+    "USG_KNOWLEDGE_MODULE_VERSION",
+    "USG_KNOWLEDGE_CAPABILITIES",
+    "build_usg_knowledge_manifest",
+    "register_usg_knowledge_module",
     "USG_LEXICAL_MODULE_ID",
     "USG_LEXICAL_MODULE_VERSION",
     "USG_LEXICAL_CAPABILITIES",

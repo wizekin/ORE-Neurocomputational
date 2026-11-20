@@ -1494,3 +1494,8 @@ The `ore_curiosity_motivation` package implements the 24-step curiosity and moti
 ## Task 04 — Connect sensory processing to language and semantic understanding
 
 The `ore_text_localization` package turns raw printed-text images into ordered glyph patches, reuses the existing N9 visual-language pathway, hands supported interpretations to working memory, and registers as a typed module in Task 3's `CognitiveTaskCoordinator`. It preserves segmentation alternatives and source coordinates, and records annotations in `ore_logger.annotations`. See [`docs/SENSORY_LANGUAGE_INTEGRATION_TASK04.md`](docs/SENSORY_LANGUAGE_INTEGRATION_TASK04.md) for the mathematical operations, API, coordinator registration and limitations.
+
+
+## Task 05 — Connect memory to every relevant cognitive structure
+
+The `ore_memory_integration` package connects the existing Point 7 episodic and semantic stores to the shared workspace, goal-sensitive working memory, semantic processing, schema learning, analogical transfer, reconstructive memory and cognitive control. Recall is read-only and excludes the current sequence; pending semantic claims remain unverified, and optional episode encoding occurs only after recall. See [`docs/MEMORY_INTEGRATION_TASK05.md`](docs/MEMORY_INTEGRATION_TASK05.md) for equations, APIs, source-independence safeguards and limitations.

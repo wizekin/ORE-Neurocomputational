@@ -32,7 +32,7 @@ def _structure_bundle():
                 "frame_key": "transfer",
                 "version": "1.2",
                 "roles": [
-                    {"role": "AGENT", "description": "Entity initiating transfer"},
+                    {"role": "AGENT", "description": "Entity initiating transfer", "required": True},
                     {"role": "THEME", "description": "Item transferred"},
                     {"role": "RECIPIENT", "description": "Transfer destination"},
                 ],

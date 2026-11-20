@@ -14,6 +14,7 @@ from ore_contracts.module_manifest import (
     InputPort, ModuleIdentity, ModuleManifest, OutputPort,
 )
 from ore_contracts.module_registry import ModuleRegistry
+from ore_contracts.module_protocol import ModuleResult, ModuleStatus
 
 from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
@@ -304,11 +305,113 @@ def build_usg_knowledge_manifest() -> ModuleManifest:
     )
 
 
+class USGKnowledgeModuleBackend:
+    """Protocol backend that reports operational capability completion to adaptive ORE."""
+
+    def __init__(
+        self,
+        manifest: ModuleManifest,
+        catalog: ContractCatalog,
+        adapter: USGKnowledgeAdapter,
+    ) -> None:
+        """Bind the exact manifest, validator, and unified read-only adapter."""
+        self.manifest = manifest
+        self.catalog = catalog
+        self.adapter = adapter
+
+    def describe(self) -> ModuleManifest:
+        """Return the module manifest used for registry compatibility checks."""
+        return self.manifest
+
+    def execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
+        """Validate one bundle, emit a typed resource, and report operational support."""
+        try:
+            source = inputs.get("knowledge_bundle")
+            if not isinstance(source, ContractArtifact):
+                return ModuleResult(
+                    USG_KNOWLEDGE_MODULE_ID, USG_KNOWLEDGE_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"error": "knowledge_bundle input must be a ContractArtifact"},
+                )
+            if source.envelope.contract_id != ORE_USG_BUNDLE_CONTRACT:
+                return ModuleResult(
+                    USG_KNOWLEDGE_MODULE_ID, USG_KNOWLEDGE_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"error": "knowledge_bundle input has the wrong contract ID"},
+                )
+            if source.envelope.schema_version != USG_KNOWLEDGE_SCHEMA_VERSION:
+                return ModuleResult(
+                    USG_KNOWLEDGE_MODULE_ID, USG_KNOWLEDGE_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"error": "knowledge_bundle input has an unsupported contract version"},
+                )
+            validation = self.catalog.validate_artifact(source)
+            if not validation.valid:
+                return ModuleResult(
+                    USG_KNOWLEDGE_MODULE_ID, USG_KNOWLEDGE_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"input_validation_errors": list(validation.errors)},
+                )
+            resource = self.adapter.convert(source.payload)
+            envelope = make_envelope(
+                ORE_USG_KNOWLEDGE_CONTRACT,
+                context.run_id,
+                USG_KNOWLEDGE_MODULE_ID,
+                config={"include_candidate_states": self.adapter.lexical_adapter.include_candidate_states},
+                evidence_kind=EvidenceKind.DERIVED,
+                parent_artifact_ids=(source.payload_hash,),
+                data_hash=source.payload_hash,
+                model_version=USG_KNOWLEDGE_MODULE_VERSION,
+            )
+            artifact = ContractArtifact(
+                envelope,
+                resource,
+                metadata={
+                    "usg_bundle_id": resource.bundle_id,
+                    "usg_namespace": resource.namespace,
+                    "usg_bundle_digest": resource.bundle_digest,
+                    "candidate_states_enabled": self.adapter.lexical_adapter.include_candidate_states,
+                    "runtime_mutation_performed": False,
+                    "source_database_mutation_performed": False,
+                },
+            )
+            return ModuleResult(
+                USG_KNOWLEDGE_MODULE_ID,
+                USG_KNOWLEDGE_MODULE_VERSION,
+                ModuleStatus.SUCCESS,
+                artifacts=(artifact,),
+                diagnostics={
+                    "output_count": 1,
+                    "capability_support": {
+                        capability: 1.0 for capability in USG_KNOWLEDGE_CAPABILITIES
+                    },
+                    "capability_support_basis": (
+                        "successful typed import and output validation; not semantic truth or completeness"
+                    ),
+                    "bundle_digest": resource.bundle_digest,
+                },
+                provenance={
+                    "source_artifact_hash": source.payload_hash,
+                    "read_only": True,
+                    "source_database_mutation_performed": False,
+                },
+            )
+        except Exception as exc:
+            return ModuleResult(
+                USG_KNOWLEDGE_MODULE_ID,
+                USG_KNOWLEDGE_MODULE_VERSION,
+                ModuleStatus.FAILED,
+                diagnostics={"exception_type": type(exc).__name__, "error": str(exc)},
+                warnings=("Unified USG import failed; no output artifact was emitted.",),
+                provenance={"read_only": True},
+            )
+
+
 def register_usg_knowledge_module(
     registry: ModuleRegistry,
     *,
     adapter: USGKnowledgeAdapter | None = None,
-) -> CallableModuleAdapter:
+) -> USGKnowledgeModuleBackend:
     """Register and bind the unified read-only USG knowledge importer."""
     if not isinstance(registry, ModuleRegistry):
         raise TypeError("registry must be a ModuleRegistry")
@@ -322,45 +425,9 @@ def register_usg_knowledge_module(
         raise ValueError("an incompatible unified USG knowledge module manifest is already registered")
     if registry.get_backend(USG_KNOWLEDGE_MODULE_ID) is not None:
         raise ValueError("the unified USG knowledge module already has a bound backend")
-    knowledge_adapter = adapter or USGKnowledgeAdapter()
-
-    def execute(inputs: dict[str, Any], context: Any) -> tuple[ContractArtifact, ...]:
-        """Produce one linked resource artifact from a validated bundle artifact."""
-        source = inputs.get("knowledge_bundle")
-        if not isinstance(source, ContractArtifact):
-            raise TypeError("knowledge_bundle input must be a ContractArtifact")
-        if source.envelope.contract_id != ORE_USG_BUNDLE_CONTRACT:
-            raise ValueError("knowledge_bundle input has the wrong contract ID")
-        if source.envelope.schema_version != USG_KNOWLEDGE_SCHEMA_VERSION:
-            raise ValueError("knowledge_bundle input has an unsupported contract version")
-        validation = catalog.validate_artifact(source)
-        if not validation.valid:
-            raise ValueError("knowledge_bundle artifact is invalid: " + "; ".join(validation.errors))
-        resource = knowledge_adapter.convert(source.payload)
-        envelope = make_envelope(
-            ORE_USG_KNOWLEDGE_CONTRACT,
-            context.run_id,
-            USG_KNOWLEDGE_MODULE_ID,
-            config={"include_candidate_states": knowledge_adapter.lexical_adapter.include_candidate_states},
-            evidence_kind=EvidenceKind.DERIVED,
-            parent_artifact_ids=(source.payload_hash,),
-            data_hash=source.payload_hash,
-            model_version=USG_KNOWLEDGE_MODULE_VERSION,
-        )
-        return (ContractArtifact(
-            envelope,
-            resource,
-            metadata={
-                "usg_bundle_id": resource.bundle_id,
-                "usg_namespace": resource.namespace,
-                "usg_bundle_digest": resource.bundle_digest,
-                "candidate_states_enabled": knowledge_adapter.lexical_adapter.include_candidate_states,
-                "runtime_mutation_performed": False,
-                "source_database_mutation_performed": False,
-            },
-        ),)
-
-    backend = CallableModuleAdapter(manifest, execute)
+    backend = USGKnowledgeModuleBackend(
+        manifest, catalog, adapter or USGKnowledgeAdapter(),
+    )
     binding = registry.bind_backend(USG_KNOWLEDGE_MODULE_ID, backend)
     if binding.module_id != USG_KNOWLEDGE_MODULE_ID:
         raise RuntimeError("ORE registry returned an unexpected unified USG module binding")
@@ -368,6 +435,7 @@ def register_usg_knowledge_module(
 
 
 __all__ = [
+    "USGKnowledgeModuleBackend",
     "USG_KNOWLEDGE_MODULE_ID",
     "USG_KNOWLEDGE_MODULE_VERSION",
     "USG_KNOWLEDGE_CAPABILITIES",

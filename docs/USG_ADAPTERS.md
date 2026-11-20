@@ -177,3 +177,29 @@ ID, and digest; construction rejects mixed snapshots.
 
 This is a unified data-access resource, not yet a registered multi-output ORE
 module. The current lexical module registration remains available separately.
+
+
+## ORE module-registry integration
+
+For ORE workflows that need one coordinated output artifact, register the
+unified importer:
+
+    from ore_contracts import ContractCatalog
+    from ore_contracts.module_registry import ModuleRegistry
+    from ore_usg import register_usg_knowledge_module
+
+    catalog = ContractCatalog()
+    registry = ModuleRegistry(catalog)
+    register_usg_knowledge_module(registry)
+
+The module ID is `ore.usg_knowledge_import`; its output contract is
+`ORE.USG.KNOWLEDGE@1.0.0`. It consumes the same versioned
+`ORE.USG.KNOWLEDGE_BUNDLE@0.1.0` input as the lexical importer and emits one
+`USGKnowledgeResource` artifact with the input payload hash in its lineage.
+The existing lexical-only module remains available for consumers that need
+only an ORE lexicon.
+
+The unified resource currently exposes linked data and provenance. It does
+not yet implement runtime retrieval APIs, connect to the Main Brain
+Coordinator automatically, or compile predicate frames into executable
+reasoning operations.

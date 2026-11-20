@@ -13,9 +13,11 @@ _VERIFIED = {"accepted", "verified"}
 
 
 def _content(item: MemoryEvidence) -> dict[str, Any]:
-    """Expose content as a mapping while preserving scalar claims under a value key."""
+    """Expose scalar semantic claims under 'claim' and other scalar values under 'value'."""
     if isinstance(item.content, Mapping):
         return dict(item.content)
+    if item.memory_type == "semantic":
+        return {"claim": item.content}
     return {"value": item.content}
 
 
@@ -171,9 +173,8 @@ class ReconstructiveMemoryAdapter:
     def to_payload(self, evidence: Sequence[MemoryEvidence]) -> dict[str, Any]:
         """Mark every retrieved detail as episodic evidence and leave missing fields unknown."""
         fragments = []
-        for item in evidence:
-            if item.memory_type != "episodic":
-                continue
+        episodic_items = [item for item in evidence if item.memory_type == "episodic"]
+        for item in episodic_items:
             content = _content(item)
             for index, (feature, value) in enumerate(content.items()):
                 fragments.append({
@@ -194,14 +195,14 @@ class ReconstructiveMemoryAdapter:
             "source_history": [
                 {
                     "source_id": item.memory_id,
-                    "source_type": "episodic_retrieval" if item.memory_type == "episodic" else "reported",
+                    "source_type": "episodic_retrieval",
                     "detail_id": item.memory_id,
                     "content": item.content,
                     "reliability": item.confidence,
                     "independence_group": item.independence_group,
                     "parent_source_ids": list(item.parent_memory_ids),
                 }
-                for item in evidence
+                for item in episodic_items
             ],
             "unprovided_details_remain_unknown": True,
         }

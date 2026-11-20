@@ -13,7 +13,7 @@ from .contracts import (
     USGContextSummary,
 )
 from .lexical import USGKnowledgeLexicalAdapter
-from .registration import (
+from .bundle_io import (\n    USGBundleLoadError,\n    USGBundleSnapshot,\n    discover_knowledge_bundle,\n    load_knowledge_bundle,\n)\nfrom .registration import (
     USG_LEXICAL_CAPABILITIES,
     USG_LEXICAL_MODULE_ID,
     USG_LEXICAL_MODULE_VERSION,
@@ -41,6 +41,10 @@ __all__ = [
     "USGEvidenceSummary",
     "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
+    "USGBundleLoadError",
+    "USGBundleSnapshot",
+    "discover_knowledge_bundle",
+    "load_knowledge_bundle",
     "USG_LEXICAL_CAPABILITIES",
     "USG_LEXICAL_MODULE_ID",
     "USG_LEXICAL_MODULE_VERSION",

@@ -5,7 +5,14 @@ from copy import deepcopy
 
 import pytest
 
-from ore_usg import USGKnowledgeAdapter, USGKnowledgeResource
+from ore_contracts import ComputeBudget, ContractCatalog, ModuleStatus, OperationMode, RunContext
+from ore_contracts.module_registry import ModuleRegistry
+from ore_usg import (
+    USGKnowledgeAdapter,
+    USGKnowledgeResource,
+    make_usg_bundle_artifact,
+    register_usg_knowledge_module,
+)
 from test_usg_lexical_adapter import _bundle
 
 
@@ -46,3 +53,34 @@ def test_unified_adapter_uses_one_candidate_policy_for_all_subsystems():
 
     assert len(candidate.lexical.entries) >= len(default.lexical.entries)
     assert candidate.lexical.bundle_digest == default.lexical.bundle_digest
+
+
+def test_unified_knowledge_module_registers_and_emits_one_typed_artifact():
+    catalog = ContractCatalog()
+    registry = ModuleRegistry(catalog)
+    register_usg_knowledge_module(registry)
+    context = RunContext(
+        run_id="usg-knowledge-adapter-test",
+        mode=OperationMode.FUNCTIONAL,
+        deterministic_seed=19,
+        compute_budget=ComputeBudget(),
+    )
+    bundle = _bundle()
+    source = make_usg_bundle_artifact(
+        bundle,
+        run_id=context.run_id,
+        producer_id="test.usg_bundle",
+    )
+    backend = registry.get_backend("ore.usg_knowledge_import")
+    assert backend is not None
+
+    result = backend.execute({"knowledge_bundle": source}, context)
+
+    assert result.status is ModuleStatus.SUCCESS
+    assert len(result.artifacts) == 1
+    artifact = result.artifacts[0]
+    assert catalog.validate_artifact(artifact).valid
+    assert artifact.envelope.contract_id == "ORE.USG.KNOWLEDGE"
+    assert artifact.payload.lexical.bundle_digest == artifact.payload.bundle_digest
+    assert artifact.metadata["source_database_mutation_performed"] is False
+    assert artifact.envelope.parent_artifact_ids == (source.payload_hash,)

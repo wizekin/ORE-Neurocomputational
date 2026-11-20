@@ -77,7 +77,7 @@ def _source_ids_for_record(
 
 def _ore_record_id(namespace: str, bundle_id: str, record: Mapping[str, Any]) -> str:
     """Scope an ORE lexical ID to its USG namespace, bundle, record, and version."""
-    scope = sha256(f"{namespace}\\0{bundle_id}".encode("utf-8")).hexdigest()[:16]
+    scope = sha256(_canonical_json({"namespace": namespace, "bundle_id": bundle_id})).hexdigest()
     record_id = quote(str(record["id"]), safe="")
     return f"usg:{scope}:{record_id}@{int(record['version'])}"
 

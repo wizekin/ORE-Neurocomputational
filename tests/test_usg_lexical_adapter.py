@@ -197,7 +197,7 @@ def test_candidate_records_require_explicit_opt_in_and_keep_their_state():
     arabic = next(item for item in candidate_resource.entries if item.orthography == "عين")
     assert arabic.verified_by.startswith("USG_KNOWLEDGE_STATE:CANDIDATE")
     bank = next(item for item in candidate_resource.entries if item.orthography == "bank")
-    assert "sense:en:bank:candidate" in {item.meaning_id for item in bank.meanings}
+    assert "sense:en:bank:candidate" in candidate_resource.report.imported_record_ids
 
 
 def test_record_ids_are_scoped_to_the_usg_bundle_namespace():

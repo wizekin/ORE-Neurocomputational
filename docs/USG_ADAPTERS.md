@@ -224,7 +224,9 @@ guess synonyms, or perform fuzzy similarity. Results retain source references
 and meaning/frame details. `relations_for(record_id)` returns only explicit
 directed relations incident to the supplied namespaced ORE record ID.
 `frames_by_key(frame_key)` returns all exact versions; it does not choose a
-preferred frame version.
+preferred frame version. Exact `context_by_id`, `evidence_by_id`, and
+`source_by_id` methods expose preserved context, evidence-support status, and
+source-rights summaries without changing or re-evaluating them.
 
 This index is a deterministic retrieval layer. It does not yet provide
 context-weighted ranking, learned confidence, or coordinator-driven routing.

@@ -34,6 +34,8 @@ def test_semantic_composition_processor_receives_imported_concepts_and_frames():
     assert len(processor.frames) == 1
     assert processor.frames[0].predicate == "transfer"
     assert processor.frames[0].roles == ("AGENT", "THEME", "RECIPIENT")
+    assert processor.frames[0].required_roles == ("AGENT",)
+    assert "frame_version=1.2" in processor.frames[0].source_reference
     assert processor.frames[0].source_reference.startswith("usg-knowledge://")
 
 

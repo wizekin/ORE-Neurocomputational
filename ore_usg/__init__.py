@@ -19,6 +19,7 @@ from .bundle_io import (
     discover_knowledge_bundle,
     load_knowledge_bundle,
 )
+from .policy import USGImportPolicy
 from .semantic import (
     USGConceptAdapter,
     USGConceptMapping,
@@ -53,6 +54,7 @@ __all__ = [
     "USGEvidenceSummary",
     "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
+    "USGImportPolicy",
     "USGConceptAdapter",
     "USGConceptMapping",
     "USGSemanticImportReport",

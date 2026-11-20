@@ -85,3 +85,32 @@ rules. No USG resource is promoted, edited, or written back by this package.
 Run the focused tests:
 
     python -m pytest tests/test_usg_lexical_adapter.py
+
+
+## Read-only bundle discovery and loading
+
+The package also exposes a deterministic JSON loader:
+
+    from ore_usg import load_knowledge_bundle
+
+    snapshot = load_knowledge_bundle("exports/knowledge_bundle.json")
+    lexical_resource = USGKnowledgeLexicalAdapter().convert(snapshot.bundle)
+
+A directory may be supplied when it contains exactly one of
+`knowledge_bundle.json`, `usg_knowledge_bundle.json`, or `bundle.json`.
+If more than one conventional filename is present, discovery fails and asks
+the caller to select a file explicitly. The loader rejects duplicate JSON
+keys, non-finite JSON constants, invalid bundle structure, digest mismatches,
+and files larger than the configured limit. It returns a detached snapshot
+with the canonical SHA-256 digest and source path. The loader never connects
+to or writes to the USG database.
+
+    snapshot = load_knowledge_bundle(
+        "exports",
+        expected_digest="<expected-canonical-sha256>",
+        max_bytes=64 * 1024 * 1024,
+    )
+
+The canonical digest is calculated over sorted, compact UTF-8 JSON, matching
+the lexical adapter's bundle fingerprint. This is an integrity check, not a
+digital signature or proof of source authenticity.

@@ -28,7 +28,7 @@ from .bundle_io import (
     load_knowledge_bundle,
 )
 from .policy import USGImportPolicy
-from .structures import (
+from .processors import (\n    USGPredicateFrameConversionError,\n    to_ore_predicate_frame,\n    build_lexical_access_processor,\n    build_semantic_composition_processor,\n)\nfrom .structures import (
     USGKnowledgeRelation,
     USGPredicateFrame,
     USGSemanticClass,
@@ -83,6 +83,10 @@ __all__ = [
     "USGRetrievalResult",
     "USGRetrievedItem",
     "USGImportPolicy",
+    "USGPredicateFrameConversionError",
+    "to_ore_predicate_frame",
+    "build_lexical_access_processor",
+    "build_semantic_composition_processor",
     "USGSemanticStructureAdapter",
     "USGSemanticClass",
     "USGPredicateFrame",

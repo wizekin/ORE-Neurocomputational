@@ -122,7 +122,10 @@ class USGSemanticStructureAdapter:
         excluded: list[USGImportExclusion] = []
         classes: list[USGSemanticClass] = []
         frames: list[USGPredicateFrame] = []
-        supported_kinds = {"SEMANTIC_CLASS", "PREDICATE_FRAME", "CONCEPT"}
+        supported_kinds = {
+            "LEXICAL_FORM", "LEMMA", "LEXICAL_SENSE", "CONCEPT",
+            "SEMANTIC_CLASS", "PREDICATE_FRAME",
+        }
 
         for record in sorted(bundle["records"], key=lambda row: str(row["id"])):
             kind = str(record["kind"])
@@ -172,10 +175,12 @@ class USGSemanticStructureAdapter:
                 ))
             imported.add(record_id)
 
-        # Relations are retained only when both endpoints are imported structures
-        # or concepts. Concept IDs are namespaced identically to the concept adapter.
+        # Build the shared ID index for every active, rights-permitted record
+        # kind supported by the lexical, concept, and structure adapters. This
+        # lets explicit USG relations link lexical senses/forms to concepts and
+        # classes without inventing a relation type or rewriting source records.
         for record_id, record in records.items():
-            if record.get("kind") == "CONCEPT":
+            if record.get("kind") in supported_kinds and record_id not in eligible_ids:
                 state = str(record["state"])
                 if self.policy.state_enabled(state):
                     usable, _, _ = self.policy.source_access(record, sources, evidence)
@@ -191,7 +196,7 @@ class USGSemanticStructureAdapter:
             if subject not in eligible_ids or object_ not in eligible_ids:
                 excluded.append(USGImportExclusion(
                     relation_id, "RELATION",
-                    "both_relation_endpoints_must_be_importable_concepts_or_semantic_structures",
+                    "both_relation_endpoints_must_be_active_rights_permitted_supported_records",
                 ))
                 continue
             state = str(relation["state"])

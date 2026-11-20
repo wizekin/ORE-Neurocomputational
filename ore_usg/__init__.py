@@ -1,5 +1,10 @@
 """Read-only adapters connecting versioned USG resources to ORE cognitive modules."""
-from .coordination import (\n    build_usg_knowledge_task_profile,\n    build_usg_knowledge_cognitive_task,\n    coordinate_usg_knowledge_import,\n)\nfrom .contracts import (
+from .coordination import (
+    build_usg_knowledge_task_profile,
+    build_usg_knowledge_cognitive_task,
+    coordinate_usg_knowledge_import,
+)
+from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
     ORE_USG_KNOWLEDGE_CONTRACT,

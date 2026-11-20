@@ -230,3 +230,35 @@ source-rights summaries without changing or re-evaluating them.
 
 This index is a deterministic retrieval layer. It does not yet provide
 context-weighted ranking, learned confidence, or coordinator-driven routing.
+
+
+## Adaptive coordinator integration
+
+The unified importer declares the four capabilities
+`language.lexical_resource.import`,
+`language.semantic_resource.import`,
+`language.semantic_structure.import`, and
+`language.knowledge.provenance`. Its protocol backend reports operational
+completion for these capabilities only after it validates the input and
+emits the typed output artifact. The diagnostic field explicitly states that
+this is import completion, not semantic truth, factual confidence, or knowledge
+coverage.
+
+A bounded task profile and task can be built and submitted to the existing
+adaptive coordinator:
+
+    from ore_usg import coordinate_usg_knowledge_import
+
+    result = coordinate_usg_knowledge_import(
+        adaptive_coordinator,
+        bundle_artifact,
+        task_id="import-usg-knowledge-001",
+        context=run_context,
+    )
+
+The helper requests all four capabilities, supplies the bundle artifact to
+`ore.usg_knowledge_import`, expects `ORE.USG.KNOWLEDGE`, and defaults to
+one module call with no replanning. The adaptive coordinator still decides
+runnability from the registry, backend binding, contract compatibility, and
+resource budget. This is an optional recruitment path; it does not alter
+canonical N9 processing or cause USG to be loaded for unrelated tasks.

@@ -143,7 +143,7 @@ def test_rtl_reading_order_is_not_replaced_by_left_to_right_order() -> None:
 
     assert len(result.localized_glyphs) == 2
     assert result.localized_glyphs[0].bounding_box[0] > result.localized_glyphs[1].bounding_box[0]
-    assert result.word_spans == ((0, 2),)
+    assert result.word_spans == ((0, 1), (1, 2))
 
 
 def test_touching_glyph_cut_keeps_an_unsplit_alternative() -> None:

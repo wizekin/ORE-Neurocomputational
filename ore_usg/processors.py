@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from urllib.parse import quote
 from typing import TYPE_CHECKING, Any, Iterable
 
 if TYPE_CHECKING:
@@ -101,7 +102,9 @@ def to_ore_predicate_frame(frame: USGPredicateFrame) -> "PredicateFrame":
             roles=tuple(roles),
             required_roles=tuple(required_roles),
             selectional_preferences=normalized_preferences,
-            source_reference=frame.source_reference,
+            source_reference=(
+                f"{frame.source_reference}&frame_version={quote(frame.frame_version, safe='')}"
+            ),
         )
     except (TypeError, ValueError) as exc:
         raise USGPredicateFrameConversionError(

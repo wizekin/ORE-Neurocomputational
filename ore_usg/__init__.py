@@ -16,6 +16,7 @@ from .registration import (
     USG_LEXICAL_MODULE_ID,
     USG_LEXICAL_MODULE_VERSION,
     build_usg_lexical_manifest,
+    make_usg_bundle_artifact,
     register_usg_contracts,
     register_usg_lexical_module,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "USG_LEXICAL_MODULE_ID",
     "USG_LEXICAL_MODULE_VERSION",
     "build_usg_lexical_manifest",
+    "make_usg_bundle_artifact",
     "register_usg_contracts",
     "register_usg_lexical_module",
     "USGKnowledgeValidationError",

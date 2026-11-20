@@ -13,7 +13,6 @@ from ore_contracts import (
     OperationMode,
     RunContext,
 )
-from ore_contracts.module_artifacts import ContractArtifact
 from ore_contracts.module_registry import ModuleRegistry
 from ore_contracts.module_logging import register_module_annotations
 from ore_logger.database import LoggerDatabase

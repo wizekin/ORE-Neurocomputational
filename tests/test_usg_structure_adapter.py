@@ -57,6 +57,16 @@ def _structure_bundle():
         "evidence_ids": ["evidence:lemma"],
         "context_ids": ["context:finance"],
     })
+    bundle["relations"].append({
+        "id": "relation:bank-sense-denotes-money",
+        "subject_record_id": "sense:en:bank:financial",
+        "predicate": "DENOTES",
+        "object_record_id": "concept:money",
+        "direction": "DIRECTED",
+        "state": "ACCEPTED",
+        "evidence_ids": ["evidence:financial"],
+        "context_ids": ["context:finance"],
+    })
     return bundle
 
 

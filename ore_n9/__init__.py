@@ -23,3 +23,7 @@ __all__ = [
     "build_n9_language_adapters",
 ]
 __version__ = "0.1.0"
+
+from .feedback_adapter import N9FeedbackAdapter
+
+__all__ += ["N9FeedbackAdapter"]

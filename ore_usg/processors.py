@@ -2,14 +2,15 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
-from ore_lexical_access import LexicalAccessConfig, LexicalAccessProcessor
-from ore_semantic_composition import (
-    PredicateFrame,
-    SemanticCompositionConfig,
-    SemanticCompositionProcessor,
-)
+if TYPE_CHECKING:
+    from ore_lexical_access import LexicalAccessConfig, LexicalAccessProcessor
+    from ore_semantic_composition import (
+        PredicateFrame,
+        SemanticCompositionConfig,
+        SemanticCompositionProcessor,
+    )
 
 from .knowledge import USGKnowledgeResource
 from .structures import USGPredicateFrame
@@ -19,8 +20,10 @@ class USGPredicateFrameConversionError(ValueError):
     """Raised when a preserved USG frame cannot be safely represented by ORE."""
 
 
-def to_ore_predicate_frame(frame: USGPredicateFrame) -> PredicateFrame:
+def to_ore_predicate_frame(frame: USGPredicateFrame) -> "PredicateFrame":
     """Convert only explicitly declared USG role data into an ORE predicate frame."""
+    from ore_semantic_composition import PredicateFrame
+
     if not isinstance(frame, USGPredicateFrame):
         raise TypeError("frame must be a USGPredicateFrame")
     try:
@@ -109,10 +112,12 @@ def to_ore_predicate_frame(frame: USGPredicateFrame) -> PredicateFrame:
 def build_lexical_access_processor(
     resource: USGKnowledgeResource,
     *,
-    config: LexicalAccessConfig | None = None,
+    config: "LexicalAccessConfig | None" = None,
     morphemes: Iterable[Any] = (),
-) -> LexicalAccessProcessor:
+) -> "LexicalAccessProcessor":
     """Build ORE's lexical-access processor over imported read-only USG entries."""
+    from ore_lexical_access import LexicalAccessProcessor
+
     if not isinstance(resource, USGKnowledgeResource):
         raise TypeError("resource must be a USGKnowledgeResource")
     return LexicalAccessProcessor(
@@ -125,9 +130,11 @@ def build_lexical_access_processor(
 def build_semantic_composition_processor(
     resource: USGKnowledgeResource,
     *,
-    config: SemanticCompositionConfig | None = None,
-) -> SemanticCompositionProcessor:
+    config: "SemanticCompositionConfig | None" = None,
+) -> "SemanticCompositionProcessor":
     """Build ORE semantic composition over imported concepts and explicitly converted frames."""
+    from ore_semantic_composition import SemanticCompositionProcessor
+
     if not isinstance(resource, USGKnowledgeResource):
         raise TypeError("resource must be a USGKnowledgeResource")
     frames = tuple(

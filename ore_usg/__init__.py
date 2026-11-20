@@ -15,6 +15,7 @@ from .contracts import (
 )
 from .lexical import USGKnowledgeLexicalAdapter
 from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
+from .retrieval import USGKnowledgeIndex, USGRetrievalResult, USGRetrievedItem
 from .bundle_io import (
     USGBundleLoadError,
     USGBundleSnapshot,
@@ -72,6 +73,9 @@ __all__ = [
     "USGKnowledgeLexicalAdapter",
     "USGKnowledgeAdapter",
     "USGKnowledgeResource",
+    "USGKnowledgeIndex",
+    "USGRetrievalResult",
+    "USGRetrievedItem",
     "USGImportPolicy",
     "USGSemanticStructureAdapter",
     "USGSemanticClass",

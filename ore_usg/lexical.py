@@ -123,24 +123,14 @@ class USGKnowledgeLexicalAdapter:
     def _state_enabled(self, state: str) -> bool:
         return self.policy.state_enabled(state)
 
-    @staticmethod
     def _source_access(
+        self,
         record: Mapping[str, Any],
         source_by_id: Mapping[str, Mapping[str, Any]],
         evidence_by_id: Mapping[str, Mapping[str, Any]],
     ) -> tuple[bool, str, tuple[str, ...]]:
-        source_ids = _source_ids_for_record(record, evidence_by_id)
-        if not source_ids:
-            return False, "missing_source_provenance", source_ids
-        if any(item not in source_by_id for item in source_ids):
-            return False, "unknown_source_reference", source_ids
-        blocked = [
-            item for item in source_ids
-            if source_by_id[item].get("rights_status") not in _LOCAL_USE_RIGHTS
-        ]
-        if blocked:
-            return False, "source_rights_not_permitted_for_local_import", source_ids
-        return True, "", source_ids
+        """Apply the shared lifecycle-independent source-rights policy."""
+        return self.policy.source_access(record, source_by_id, evidence_by_id)
 
     def convert(self, bundle: Mapping[str, Any]) -> USGLexiconResource:
         """Validate and convert lexical forms, lemmas, and senses into ORE records."""

@@ -28,7 +28,9 @@ _POS_MAP = {
     "NOUN": "noun", "PROPN": "proper_noun", "VERB": "verb", "AUX": "auxiliary",
     "ADJ": "adjective", "ADV": "adverb", "PRON": "pronoun", "DET": "determiner",
     "ADP": "adposition", "NUM": "numeral", "PART": "particle",
-    "CCONJ": "conjunction", "SCONJ": "conjunction", "INTJ": "interjection",
+    "CCONJ": "coordinating_conjunction",
+    "SCONJ": "subordinating_conjunction",
+    "INTJ": "interjection",
     "PUNCT": "punctuation",
 }
 
@@ -323,8 +325,13 @@ class USGKnowledgeLexicalAdapter:
             imported_record_ids.add(str(record["id"]))
             lemma_forms.add(duplicate_key)
 
-        if any(not item["payload"].get("frequency") for item in eligible_lemmas.values()):
-            warnings.append("Missing lemma frequency uses ORE's neutral default of 1.0; it is not an observed frequency.")
+        if any(
+            _positive_number(item["payload"].get("frequency"), 0.0) == 0.0
+            for item in eligible_lemmas.values()
+        ):
+            warnings.append(
+                "Missing or invalid lemma frequency uses ORE's neutral default of 1.0; it is not an observed frequency."
+            )
         warnings.append("USG definitions are preserved as lexical glosses; no numeric semantic features are inferred.")
         warnings.append("Lexical forms without an explicit lemma link remain surface-form-only entries.")
         warnings.append("Importing a USG lifecycle state does not establish semantic truth or ORE verification.")

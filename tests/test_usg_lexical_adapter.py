@@ -173,6 +173,7 @@ def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
     assert "surface_form_only" in surface_form.verified_by
     assert resource.report.meanings_created == 2
     assert "sense:en:bank:candidate" not in resource.report.imported_record_ids
+    assert any("neutral default of 1.0" in item for item in resource.report.warnings)
     contradiction = next(
         item for item in resource.report.evidence_summaries
         if item.evidence_id == "evidence:river"

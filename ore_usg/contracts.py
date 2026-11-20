@@ -30,6 +30,10 @@ class USGSourceSummary:
     redistribution: str
     attribution: str
     usable_for_local_import: bool
+    license_id: str | None = None
+    source_locator: str | None = None
+    retrieved_at: str = ""
+    content_digest: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

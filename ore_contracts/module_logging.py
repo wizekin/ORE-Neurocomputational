@@ -23,7 +23,10 @@ def register_module_annotations(
     database = LoggerDatabase(target)
     result = sync_repository(database, root, include_paths={"ore_contracts", "ore_usg"})
     return {
-        **result, "database_path": str(target), "scope": ("ore_contracts", "ore_usg"),
+        **result,
+        "database_path": str(target),
+        "scope": "ore_contracts",
+        "indexed_scopes": ("ore_contracts", "ore_usg"),
         "annotation_table": "annotations",
     }
 

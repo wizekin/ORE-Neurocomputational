@@ -158,6 +158,7 @@ def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
     assert all(item.features == {} for item in bank.meanings)
     assert "lemma:en:bank" in bank.source_reference
     assert "source:permitted" in bank.source_reference
+    assert "context:english" in bank.source_reference
     assert bundle == original, "the adapter must not mutate its caller-owned bundle"
 
     surface_form = next(item for item in resource.entries if item.orthography == "banks")
@@ -197,6 +198,8 @@ def test_unknown_rights_source_is_excluded_and_reported():
         if item.source_id == "source:restricted"
     )
     assert summary.usable_for_local_import is False
+    assert summary.source_locator is None
+    assert summary.license_id is None
 
 
 def test_invalid_cross_reference_is_rejected_before_conversion():

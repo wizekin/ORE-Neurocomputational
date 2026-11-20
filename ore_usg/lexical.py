@@ -83,10 +83,11 @@ def _source_reference(
     record_id = quote(str(record["id"]), safe="")
     source_list = ",".join(quote(item, safe="") for item in source_ids)
     evidence_list = ",".join(quote(str(item), safe="") for item in record.get("evidence_ids", ()))
+    context_list = ",".join(quote(str(item), safe="") for item in record.get("context_ids", ()))
     return (
         f"usg-knowledge://{quote(namespace, safe='')}/{quote(bundle_id, safe='')}/records/{record_id}"
         f"?version={int(record['version'])}&state={quote(str(record['state']), safe='')}"
-        f"&sources={source_list}&evidence={evidence_list}"
+        f"&sources={source_list}&evidence={evidence_list}&contexts={context_list}"
     )
 
 
@@ -154,6 +155,10 @@ class USGKnowledgeLexicalAdapter:
                 redistribution=str(item["redistribution"]),
                 attribution=str(item["attribution"]),
                 usable_for_local_import=item["rights_status"] in _LOCAL_USE_RIGHTS,
+                license_id=item.get("license_id"),
+                source_locator=item.get("source_locator"),
+                retrieved_at=str(item["retrieved_at"]),
+                content_digest=item.get("content_digest"),
             )
             for item in sorted(bundle["sources"], key=lambda row: row["id"])
         )

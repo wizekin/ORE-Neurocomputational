@@ -1,6 +1,6 @@
 """Typed task requirements and auditable outputs for adaptive resource allocation."""
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import math
 from typing import Any, Mapping
 
@@ -48,7 +48,7 @@ class TaskProfile:
             raise ValueError("stop_confidence must be finite and in [0, 1]")
         if self.max_module_calls < 0 or self.max_replans < 0:
             raise ValueError("max_module_calls and max_replans cannot be negative")
-        mode = str(self.execution_mode).upper()
+        mode = str(getattr(self.execution_mode, "value", self.execution_mode)).upper()
         if mode not in {"FUNCTIONAL", "BIOLOGICAL", "HYBRID", "TRAIN", "INFER", "VALIDATE"}:
             raise ValueError("execution_mode is not a supported ORE operation mode")
         if not isinstance(self.metadata, Mapping):
@@ -196,10 +196,11 @@ class TaskProfileRegistry:
         self._profiles[profile.task_family] = profile
         return profile
 
-    def resolve(self, task_family: str) -> TaskProfile:
-        """Return the exact registered profile for a task family or raise KeyError."""
+    def resolve(self, task_family: str, *, task_id: str | None = None) -> TaskProfile:
+        """Return a family template, optionally assigning the current task's unique ID."""
         try:
-            return self._profiles[task_family]
+            profile = self._profiles[task_family]
+            return replace(profile, task_id=task_id) if task_id is not None else profile
         except KeyError as exc:
             raise KeyError(f"no task profile registered for {task_family!r}") from exc
 

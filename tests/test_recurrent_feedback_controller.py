@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 
 from ore_contracts import LearningRequest, model_fingerprint
+from ore_confirmation_bias.contracts import EvidenceItem as Point21EvidenceItem, EvidenceSource as Point21EvidenceSource
 from ore_corrective_learning import (
     ClarificationOption,
     ConflictDimension,
@@ -287,6 +288,32 @@ def test_conflicting_evidence_keeps_both_hypotheses_in_episode_history() -> None
     assert ids == {"old", "revised"}
     assert result.episode.initial_interpretation["statement"] == "The familiar sense"
     assert result.episode.correction_record["model_updated"] is False
+
+
+def test_point21_evidence_adapter_uses_source_diagnostic_value() -> None:
+    """Convert Point 21 measurements using its actual source-quality contract field."""
+    source = Point21EvidenceSource(
+        source_id="review-source",
+        source_type="expert",
+        reliability=0.9,
+        diagnostic_value=0.85,
+        independence_group="review-group",
+    )
+    item = Point21EvidenceItem(
+        evidence_id="point21-evidence-001",
+        source_id=source.source_id,
+        content="The contextual sense is supported",
+        likelihoods={"old": 0.2, "revised": 0.9},
+        relevance=0.95,
+        measurement_quality=0.8,
+        direct_observation=True,
+    )
+    converted = RecurrentModuleAdapters._p21_evidence(
+        type("Point21RequestLike", (), {"sources": (source,), "evidence": (item,)})()
+    )
+    assert len(converted) == 1
+    assert converted[0].diagnosticity == 0.85
+    assert converted[0].likelihoods == {"old": 0.2 / 0.9, "revised": 1.0}
 
 
 def test_missing_modules_are_reported_as_unavailable_not_fabricated() -> None:

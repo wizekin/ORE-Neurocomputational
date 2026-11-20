@@ -1,7 +1,7 @@
 """Fourteen-operation recurrent feedback controller for ORE's existing cognitive structures."""
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import asdict, replace
 import json
 import math
 import os
@@ -890,6 +890,7 @@ class RecurrentFeedbackController:
                 }, status=result_status, iteration=iteration)
                 if not new_valid:
                     no_progress += 1
+                    episode.consecutive_no_progress = no_progress
                     record_operation(11, {
                         "delta_probability": 0.0,
                         "delta_conflict": 0.0,
@@ -978,6 +979,7 @@ class RecurrentFeedbackController:
                 )
                 current_report = next_report
                 no_progress = no_progress + 1 if progress["converged"] else 0
+                episode.consecutive_no_progress = no_progress
                 record_operation(9, {
                     "conflict_score_before": previous_conflict_score,
                     "conflict_score_after": current_report.conflict_score,

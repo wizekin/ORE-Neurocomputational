@@ -73,7 +73,7 @@ class RecurrentModuleAdapters:
                 source_type=RecurrentModuleAdapters._source_type(source.domain),
                 reliability=float(source.reliability),
                 relevance=float(item.relevance),
-                diagnosticity=float(source.specificity),
+                diagnosticity=float(source.diagnostic_value),
                 directness="indirect",
                 independence_key=str(item.independence_key or source.source_id),
                 context=str(getattr(request, "domain", "")),

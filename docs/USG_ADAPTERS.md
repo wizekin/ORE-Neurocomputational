@@ -262,3 +262,29 @@ one module call with no replanning. The adaptive coordinator still decides
 runnability from the registry, backend binding, contract compatibility, and
 resource budget. This is an optional recruitment path; it does not alter
 canonical N9 processing or cause USG to be loaded for unrelated tasks.
+
+
+## Direct ORE processor bridges
+
+The unified resource can initialize the existing ORE lexical-access and
+semantic-composition processors without replacing their algorithms:
+
+    from ore_usg import (
+        build_lexical_access_processor,
+        build_semantic_composition_processor,
+    )
+
+    lexical_processor = build_lexical_access_processor(knowledge)
+    semantic_processor = build_semantic_composition_processor(knowledge)
+
+The lexical processor receives the imported `LexicalEntry` inventory. The
+semantic-composition processor receives imported `SemanticConcept` records
+and predicate frames converted only from explicit role declarations. Frame
+conversion rejects unsupported role structures rather than silently using
+ORE's default roles. ORE semantic feature maps remain empty unless USG supplied
+an explicit representation supported by the destination contract; labels and
+definitions are not converted into invented numeric features.
+
+These helpers create processors; they do not run a request or mutate either
+inventory. The caller remains responsible for supplying the task's request,
+syntax, and contextual evidence.

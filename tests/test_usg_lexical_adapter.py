@@ -1,6 +1,7 @@
 """Acceptance tests for the read-only USG knowledge-to-ORE lexical adapter."""
 from __future__ import annotations
 
+import ast
 from copy import deepcopy
 from pathlib import Path
 
@@ -294,17 +295,57 @@ def test_ore_module_registration_emits_a_validated_typed_lexicon_artifact():
     assert output.envelope.parent_artifact_ids == (input_artifact.payload_hash,)
 
 
-def test_usg_package_classes_and_methods_are_indexed_in_ore_sqlite_annotations(tmp_path):
-    """Extend ORE's AST annotation catalogue to the new adapter package."""
+def test_every_usg_package_class_and_callable_is_indexed_in_ore_sqlite_annotations(tmp_path):
+    """Verify all new package classes, functions, and methods have SQLite annotations."""
     root = Path(__file__).resolve().parents[1]
     database_path = tmp_path / "ore_logger.sqlite3"
     report = register_module_annotations(database_path, root)
     assert report["parse_errors"] == 0
+    assert report["scope"] == "ore_contracts"
+    assert set(report["indexed_scopes"]) == {"ore_contracts", "ore_usg"}
 
     database = LoggerDatabase(database_path)
-    assert database.get_annotation(
-        "ore_usg.lexical", "USGKnowledgeLexicalAdapter", "class", "ore_usg/lexical.py"
-    )
-    assert database.get_annotation(
-        "ore_usg.lexical", "USGKnowledgeLexicalAdapter.convert", "function", "ore_usg/lexical.py"
-    )
+    package_root = root / "ore_usg"
+    python_files = sorted(package_root.rglob("*.py"))
+    assert python_files
+
+    expected: list[tuple[str, str, str]] = []
+
+    def collect_symbols(body, module_name: str, parent: str = "") -> None:
+        """Collect AST class and callable symbols using the logger's qualified-name convention."""
+        for node in body:
+            if isinstance(node, ast.ClassDef):
+                qualified_name = f"{parent}.{node.name}" if parent else node.name
+                expected.append((module_name, qualified_name, "class"))
+                collect_symbols(node.body, module_name, qualified_name)
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                qualified_name = f"{parent}.{node.name}" if parent else node.name
+                expected.append((module_name, qualified_name, "function"))
+                collect_symbols(node.body, module_name, qualified_name)
+
+    for source_path in python_files:
+        relative = source_path.relative_to(root).as_posix()
+        module_parts = list(Path(relative).with_suffix("").parts)
+        if module_parts and module_parts[-1] == "__init__":
+            module_parts.pop()
+        module_name = ".".join(module_parts) or "__root__"
+        tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=relative)
+        collect_symbols(tree.body, module_name)
+
+    assert expected, "the adapter package should declare classes and callables"
+    missing = [
+        (module_name, qualified_name, kind)
+        for module_name, qualified_name, kind in expected
+        if database.get_annotation(
+            module_name, qualified_name, kind,
+            next(
+                source_path.relative_to(root).as_posix()
+                for source_path in python_files
+                if ".".join(
+                    part for part in Path(source_path.relative_to(root).with_suffix("")).parts
+                    if part != "__init__"
+                ) == module_name
+            ),
+        ) is None
+    ]
+    assert not missing, f"unindexed ORE USG symbols: {missing}"

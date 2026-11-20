@@ -13,7 +13,13 @@ from .contracts import (
     USGContextSummary,
 )
 from .lexical import USGKnowledgeLexicalAdapter
-from .bundle_io import (\n    USGBundleLoadError,\n    USGBundleSnapshot,\n    discover_knowledge_bundle,\n    load_knowledge_bundle,\n)\nfrom .registration import (
+from .bundle_io import (
+    USGBundleLoadError,
+    USGBundleSnapshot,
+    discover_knowledge_bundle,
+    load_knowledge_bundle,
+)
+from .registration import (
     USG_LEXICAL_CAPABILITIES,
     USG_LEXICAL_MODULE_ID,
     USG_LEXICAL_MODULE_VERSION,

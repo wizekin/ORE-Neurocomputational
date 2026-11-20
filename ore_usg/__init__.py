@@ -20,6 +20,14 @@ from .bundle_io import (
     load_knowledge_bundle,
 )
 from .policy import USGImportPolicy
+from .structures import (
+    USGKnowledgeRelation,
+    USGPredicateFrame,
+    USGSemanticClass,
+    USGSemanticStructureAdapter,
+    USGStructureImportReport,
+    USGStructureResource,
+)
 from .semantic import (
     USGConceptAdapter,
     USGConceptMapping,
@@ -55,6 +63,12 @@ __all__ = [
     "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
     "USGImportPolicy",
+    "USGSemanticStructureAdapter",
+    "USGSemanticClass",
+    "USGPredicateFrame",
+    "USGKnowledgeRelation",
+    "USGStructureImportReport",
+    "USGStructureResource",
     "USGConceptAdapter",
     "USGConceptMapping",
     "USGSemanticImportReport",

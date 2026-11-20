@@ -97,6 +97,16 @@ def test_task_profiles_are_deterministic_and_validate_requirements():
     )
     registry.register(profile)
     assert registry.resolve("word_recognition") is profile
+    assert registry.resolve("word_recognition", task_id="task-b") == TaskProfile(
+        "task-b", "word_recognition",
+        (CapabilityDemand("vision.feature_extraction", 1.0, True, 0.9),),
+    )
+    enum_profile = TaskProfile(
+        "task-enum", "enum_mode",
+        (CapabilityDemand("language.lexical_access"),),
+        execution_mode=OperationMode.FUNCTIONAL,
+    )
+    assert enum_profile.execution_mode == "FUNCTIONAL"
     assert registry.list_profiles() == (profile,)
     with pytest.raises(ValueError):
         registry.register(profile)

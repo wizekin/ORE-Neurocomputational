@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 
@@ -100,7 +101,7 @@ def test_unified_usg_import_is_routed_by_adaptive_resource_coordinator(tmp_path)
     coordinator = AdaptiveResourceCoordinator(
         registry,
         catalog,
-        repository_root=__import__("pathlib").Path(__file__).resolve().parents[1],
+        repository_root=Path(__file__).resolve().parents[1],
         logger_database_path=tmp_path / "ore_logger.sqlite3",
         enable_logging=False,
         declared_estimates={

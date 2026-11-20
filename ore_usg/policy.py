@@ -46,6 +46,11 @@ class USGImportPolicy:
                 source_id = evidence.get("source_id")
                 if isinstance(source_id, str) and source_id:
                     source_ids.add(source_id)
+        payload = record.get("payload", {})
+        if record.get("kind") == "LEXICAL_SENSE" and isinstance(payload, Mapping):
+            sense_source = payload.get("sense_source_id")
+            if isinstance(sense_source, str) and sense_source:
+                source_ids.add(sense_source)
         if not source_ids:
             return False, "missing_source_provenance", ()
         ordered = tuple(sorted(source_ids))

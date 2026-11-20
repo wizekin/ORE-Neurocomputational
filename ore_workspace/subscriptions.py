@@ -10,12 +10,17 @@ from .models import WORKSPACE_FIELDS
 DEFAULT_SUBSCRIPTIONS: dict[str, tuple[str, ...]] = {
     "lexical_processor": ("current_input", "current_goal"),
     "syntax_processor": ("current_input", "lexical_hypotheses"),
-    "semantic_processor": ("lexical_hypotheses", "syntactic_hypotheses", "retrieved_memories"),
-    "working_memory": ("lexical_hypotheses", "syntactic_hypotheses", "semantic_hypotheses", "current_goal"),
-    "memory_retrieval": ("lexical_hypotheses", "semantic_hypotheses", "discourse_context"),
-    "cognitive_control": ("semantic_hypotheses", "unresolved_questions", "module_status"),
-    "discourse_processor": ("semantic_hypotheses", "discourse_context", "current_input"),
-    "goal_control": ("module_status", "unresolved_questions", "semantic_hypotheses"),
+    "semantic_processor": ("lexical_hypotheses", "syntactic_hypotheses", "retrieved_memories", "working_memory", "current_goal"),
+    "working_memory": ("lexical_hypotheses", "syntactic_hypotheses", "semantic_hypotheses", "retrieved_memories", "current_goal"),
+    "memory_retrieval": ("lexical_hypotheses", "semantic_hypotheses", "discourse_context", "working_memory", "current_goal"),
+    "schema_formation": ("retrieved_memories", "working_memory", "current_goal"),
+    "schema_guided_inference": ("retrieved_memories", "semantic_hypotheses", "working_memory", "current_goal"),
+    "analogical_transfer": ("retrieved_memories", "working_memory", "current_goal"),
+    "reconstructive_memory": ("retrieved_memories", "working_memory", "unresolved_questions", "current_goal"),
+    "working_memory_overload": ("retrieved_memories", "working_memory", "unresolved_questions", "current_goal"),
+    "cognitive_control": ("semantic_hypotheses", "retrieved_memories", "working_memory", "unresolved_questions", "module_status"),
+    "discourse_processor": ("semantic_hypotheses", "discourse_context", "retrieved_memories", "working_memory", "current_input"),
+    "goal_control": ("module_status", "unresolved_questions", "semantic_hypotheses", "retrieved_memories", "working_memory"),
 }
 
 

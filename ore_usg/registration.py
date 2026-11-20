@@ -46,8 +46,8 @@ def _ensure_model_contract(
     """Register a model-backed contract once, rejecting incompatible pre-registration."""
     existing = catalog.get_contract(contract_id, version)
     if existing is not None:
-        if existing.model_type is not model_type:
-            raise ValueError(f"{contract_id}@{version} is already registered with another model")
+        if existing.model_type is not model_type or existing.required_fields != required_fields:
+            raise ValueError(f"{contract_id}@{version} is already registered with an incompatible model contract")
         return
     catalog.register_model(
         contract_id, version, model_type,
@@ -183,6 +183,8 @@ def register_usg_lexical_module(
         registry.register(manifest)
     elif existing != manifest:
         raise ValueError("an incompatible USG lexical module manifest is already registered")
+    if registry.get_backend(USG_LEXICAL_MODULE_ID) is not None:
+        raise ValueError("the USG lexical module already has a bound backend")
 
     lexical_adapter = adapter or USGKnowledgeLexicalAdapter()
 

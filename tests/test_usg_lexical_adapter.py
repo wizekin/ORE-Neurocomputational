@@ -230,11 +230,15 @@ def test_ore_module_registration_emits_a_validated_typed_lexicon_artifact():
         deterministic_seed=17,
         compute_budget=ComputeBudget(),
     )
+    input_bundle = _bundle()
     input_artifact = make_usg_bundle_artifact(
-        _bundle(),
+        input_bundle,
         run_id=run_context.run_id,
         producer_id="test.usg_bundle",
     )
+    assert input_artifact.envelope.schema_version == "0.1.0"
+    assert input_artifact.payload == input_bundle
+    assert input_artifact.payload is not input_bundle
     backend = registry.get_backend("ore.usg_lexical_import")
     assert backend is not None
     result = backend.execute({"knowledge_bundle": input_artifact}, run_context)
@@ -247,6 +251,7 @@ def test_ore_module_registration_emits_a_validated_typed_lexicon_artifact():
     assert output.payload.bundle_id == "ore-usg-lexical-test"
     assert len(output.payload.entries) == 2
     assert output.metadata["runtime_mutation_performed"] is False
+    assert output.envelope.parent_artifact_ids == (input_artifact.payload_hash,)
 
 
 def test_usg_package_classes_and_methods_are_indexed_in_ore_sqlite_annotations(tmp_path):

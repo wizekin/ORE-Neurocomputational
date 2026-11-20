@@ -190,6 +190,12 @@ class USGKnowledgeLexicalAdapter:
                     str(record["id"]), "LEXICAL_SENSE", "referenced_lemma_not_importable",
                 ))
                 continue
+            lemma_language = str(eligible_lemmas[lemma_id]["payload"]["language"])
+            if str(record["payload"]["language"]) != lemma_language:
+                excluded.append(USGImportExclusion(
+                    str(record["id"]), "LEXICAL_SENSE", "sense_language_differs_from_lemma_language",
+                ))
+                continue
             usable, reason, source_ids = self._source_access(record, source_by_id, evidence_by_id)
             if not usable:
                 excluded.append(USGImportExclusion(str(record["id"]), "LEXICAL_SENSE", reason))

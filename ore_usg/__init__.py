@@ -19,6 +19,12 @@ from .bundle_io import (
     discover_knowledge_bundle,
     load_knowledge_bundle,
 )
+from .semantic import (
+    USGConceptAdapter,
+    USGConceptMapping,
+    USGSemanticImportReport,
+    USGSemanticResource,
+)
 from .registration import (
     USG_LEXICAL_CAPABILITIES,
     USG_LEXICAL_MODULE_ID,
@@ -47,6 +53,10 @@ __all__ = [
     "USGEvidenceSummary",
     "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
+    "USGConceptAdapter",
+    "USGConceptMapping",
+    "USGSemanticImportReport",
+    "USGSemanticResource",
     "USGBundleLoadError",
     "USGBundleSnapshot",
     "discover_knowledge_bundle",

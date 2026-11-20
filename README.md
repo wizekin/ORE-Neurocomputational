@@ -1504,3 +1504,16 @@ The `ore_memory_integration` package connects the existing Point 7 episodic and 
 ## Task 06 — Create recurrent feedback and corrective learning
 
 The `RecurrentFeedbackController` wraps Point 24's corrective-learning engine in a bounded multi-module feedback cycle. It records the initial interpretation, scores measured semantic-conflict dimensions, routes checks to confirmation-bias, heuristic, feedback-seeking, memory and semantic modules, and ranks supplied actions by expected information gain minus cost. Every evidence batch is validated and applied once against the previous posterior; repeated actions are fingerprinted, source dependence is retained, and no-progress, iteration and shared action budgets bound recurrence. N9 reprocessing is an optional read-only pass. Ordinary inference never updates model parameters; the separate learning-transaction method requires explicit authorization and regression gates and returns an unpromoted child model. All controller functions and classes are indexed in the existing logger annotation SQLite catalogue, and each of the fourteen operations is recorded as a run event. See [`docs/RECURRENT_FEEDBACK_TASK06.md`](docs/RECURRENT_FEEDBACK_TASK06.md).
+
+
+## USG knowledge adapter (initial lexical integration)
+
+The additive `ore_usg` package provides a read-only importer for
+`USG-KNOWLEDGE/0.1.0` bundles. Its first adapter converts eligible lexical
+forms, lemmas, and senses into ORE lexical records while retaining source
+provenance, lifecycle state, rights metadata, and a deterministic bundle
+digest. Candidate records are excluded by default; the importer does not write
+to the USG repository or infer missing semantic features.
+
+See [docs/USG_ADAPTERS.md](docs/USG_ADAPTERS.md) for the contract boundary,
+registration API, validation behavior, and focused tests.

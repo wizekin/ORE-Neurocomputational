@@ -406,8 +406,19 @@ class DependencyGraphPlanner:
                 matches.append(module_id)
         return sorted(matches)[0] if matches else None
 
-    def build(self, task: CognitiveTask) -> CognitiveTaskPlan:
-        """Discover capabilities, close required dependencies, resolve ports, and layer the task DAG."""
+    def build(
+        self,
+        task: CognitiveTask,
+        preferred_modules_by_capability: Mapping[str, str] | None = None,
+        excluded_module_ids: Iterable[str] = (),
+    ) -> CognitiveTaskPlan:
+        """Discover capabilities and build a DAG while honoring scored providers and exclusions."""
+        preferred_modules = dict(preferred_modules_by_capability or {})
+        excluded_modules = set(excluded_module_ids)
+        if any(not isinstance(key, str) or not isinstance(value, str) for key, value in preferred_modules.items()):
+            raise TypeError("preferred module mapping must contain string capability and module IDs")
+        if any(not isinstance(item, str) for item in excluded_modules):
+            raise TypeError("excluded module IDs must be strings")
         selected: dict[str, ModuleManifest] = {}
         required_modules: set[str] = set()
         edges: set[tuple[str, str]] = set()
@@ -434,11 +445,14 @@ class DependencyGraphPlanner:
                 required_modules.add(module_id)
 
         for capability in task.required_capabilities:
-            providers = sorted(
+            providers = [
                 record.module_id
                 for record in self.registry.find_by_capability(capability)
-                if self._runnable(record.module_id, task.execution_mode)
-            )
+                if record.module_id not in excluded_modules
+                and self._runnable(record.module_id, task.execution_mode)
+            ]
+            preferred = preferred_modules.get(capability)
+            providers.sort(key=lambda module_id: (module_id != preferred, module_id))
             if not providers:
                 missing_capabilities.append(capability)
             else:
@@ -446,11 +460,14 @@ class DependencyGraphPlanner:
                 matched += 1
 
         for capability in task.optional_capabilities:
-            providers = sorted(
+            providers = [
                 record.module_id
                 for record in self.registry.find_by_capability(capability)
-                if self._runnable(record.module_id, task.execution_mode)
-            )
+                if record.module_id not in excluded_modules
+                and self._runnable(record.module_id, task.execution_mode)
+            ]
+            preferred = preferred_modules.get(capability)
+            providers.sort(key=lambda module_id: (module_id != preferred, module_id))
             if providers:
                 include(providers[0])
             else:
@@ -872,7 +889,13 @@ class CognitiveTaskCoordinator:
                     "required_capabilities": list(task.required_capabilities),
                     "max_workers": self.max_workers,
                 })
-                plan = self.planner.build(task)
+                preferences = task.metadata.get("resource_module_preferences", {})
+                excluded_modules = task.metadata.get("resource_excluded_modules", ())
+                if not isinstance(preferences, Mapping):
+                    raise TypeError("resource_module_preferences must be a mapping")
+                if isinstance(excluded_modules, str) or not isinstance(excluded_modules, Iterable):
+                    raise TypeError("resource_excluded_modules must be an iterable of module IDs")
+                plan = self.planner.build(task, preferences, excluded_modules)
                 self._record(logger, "DependencyGraphPlanner", "build", {
                     "task_id": task.task_id,
                     "selected_modules": list(plan.selected_modules),
@@ -884,6 +907,20 @@ class CognitiveTaskCoordinator:
 
                 results: dict[str, ModuleResult] = {}
                 statuses: dict[str, str] = {}
+                completed_results = task.metadata.get("_completed_module_results", {})
+                if not isinstance(completed_results, Mapping):
+                    raise TypeError("_completed_module_results must be a mapping")
+                for completed_module_id, completed_result in completed_results.items():
+                    manifest = self.registry.get_manifest(completed_module_id)
+                    if (
+                        not isinstance(completed_result, ModuleResult)
+                        or completed_result.module_id != completed_module_id
+                        or manifest is None
+                        or completed_result.module_version != manifest.identity.module_version
+                    ):
+                        raise ValueError(f"invalid completed module result for {completed_module_id!r}")
+                    results[completed_module_id] = completed_result
+                    statuses[completed_module_id] = completed_result.status.value.upper()
                 trace: list[TraceEvent] = []
                 started = time.monotonic()
                 timeout_map = dict(run_context.timeout_limits_seconds)
@@ -909,6 +946,9 @@ class CognitiveTaskCoordinator:
                         )
                         for module_id in order:
                             manifest = self.registry.get_manifest(module_id)
+                            if module_id in results:
+                                self._publish_status(workspace, module_id, statuses[module_id])
+                                continue
                             if manifest is None:
                                 continue
                             blocked = [

@@ -1,4 +1,4 @@
-"""Register the USG lexical import as a normal, versioned ORE module."""
+"""Register versioned read-only USG knowledge import modules in ORE."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -110,7 +110,7 @@ def make_usg_bundle_artifact(
 
 
 def register_usg_contracts(catalog: ContractCatalog) -> tuple[Any, ...]:
-    """Register the inbound USG bundle and outbound ORE lexicon payload contracts."""
+    """Register inbound USG bundle and outbound ORE lexical and unified knowledge contracts."""
     if not isinstance(catalog, ContractCatalog):
         raise TypeError("catalog must be a ContractCatalog")
     _ensure_model_contract(

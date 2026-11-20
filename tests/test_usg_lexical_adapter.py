@@ -243,7 +243,7 @@ def test_unknown_rights_source_is_excluded_and_reported():
 @pytest.mark.parametrize(
     "unicode_id",
     [
-        "lemma:ar:عين",
+        "lemma:ar:عين:regression",
         "lemma:fr:café",
         "lemma:fr:cafe\u0301",
         "lemma:ja:猫",
@@ -262,7 +262,7 @@ def test_unicode_letters_and_combining_marks_are_valid_in_record_ids(unicode_id:
     assert validate_knowledge_bundle(bundle) == ()
 
 
-@pytest.mark.parametrize("invalid_id", ["lemma:en:bad id", "lemma:en:bad\\nname", "lemma:en:bad#name", ":lemma:en:bad"])
+@pytest.mark.parametrize("invalid_id", ["lemma:en:bad id", "lemma:en:bad\nname", "lemma:en:bad#name", ":lemma:en:bad"])
 def test_unicode_id_validation_still_rejects_whitespace_controls_and_bad_punctuation(invalid_id: str):
     """Unicode support must not admit whitespace, controls, or unapproved punctuation."""
     bundle = _bundle()

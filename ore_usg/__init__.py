@@ -1,5 +1,5 @@
 """Read-only adapters connecting versioned USG resources to ORE cognitive modules."""
-from .contracts import (
+from .coordination import (\n    build_usg_knowledge_task_profile,\n    build_usg_knowledge_cognitive_task,\n    coordinate_usg_knowledge_import,\n)\nfrom .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
     ORE_USG_KNOWLEDGE_CONTRACT,
@@ -38,6 +38,7 @@ from .semantic import (
     USGSemanticResource,
 )
 from .registration import (
+    USGKnowledgeModuleBackend,
     USG_KNOWLEDGE_CAPABILITIES,
     USG_KNOWLEDGE_MODULE_ID,
     USG_KNOWLEDGE_MODULE_VERSION,
@@ -91,6 +92,10 @@ __all__ = [
     "USGBundleSnapshot",
     "discover_knowledge_bundle",
     "load_knowledge_bundle",
+    "USGKnowledgeModuleBackend",
+    "build_usg_knowledge_task_profile",
+    "build_usg_knowledge_cognitive_task",
+    "coordinate_usg_knowledge_import",
     "USG_KNOWLEDGE_CAPABILITIES",
     "USG_KNOWLEDGE_MODULE_ID",
     "USG_KNOWLEDGE_MODULE_VERSION",

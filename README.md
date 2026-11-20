@@ -1490,3 +1490,7 @@ The `ore_feedback_seeking` package implements the 18-step Point 07 feedback-corr
 ## Point 08 — Stay Motivated and Curious
 
 The `ore_curiosity_motivation` package implements the 24-step curiosity and motivated-learning algorithm with distinct functional and distributed biological-reference tracks, mathematical operation registry, delayed-learning evaluation, and shared SQLite annotation/event logging. See [`docs/CURIOSITY_MOTIVATION_POINT08.md`](docs/CURIOSITY_MOTIVATION_POINT08.md) for the API, equations, scientific caveats, and validation instructions.
+
+## Task 04 — Connect sensory processing to language and semantic understanding
+
+The `ore_text_localization` package turns raw printed-text images into ordered glyph patches, reuses the existing N9 visual-language pathway, hands supported interpretations to working memory, and registers as a typed module in Task 3's `CognitiveTaskCoordinator`. It preserves segmentation alternatives and source coordinates, and records annotations in `ore_logger.annotations`. See [`docs/SENSORY_LANGUAGE_INTEGRATION_TASK04.md`](docs/SENSORY_LANGUAGE_INTEGRATION_TASK04.md) for the mathematical operations, API, coordinator registration and limitations.

@@ -47,14 +47,21 @@ form-to-lemma mapping are separate future adapters.
 The importer can also be registered in the ORE module registry:
 
     from ore_contracts import ContractCatalog, ModuleRegistry
-    from ore_usg import register_usg_lexical_module
+    from ore_usg import make_usg_bundle_artifact, register_usg_lexical_module
 
     catalog = ContractCatalog()
     registry = ModuleRegistry(catalog)
     register_usg_lexical_module(registry)
+    bundle_artifact = make_usg_bundle_artifact(
+        knowledge_bundle,
+        run_id="example-run",
+    )
 
-It registers ORE.USG.KNOWLEDGE_BUNDLE@0.1.0 as the input contract and
-ORE.USG.LEXICON@1.0.0 as the output contract. The resulting module ID is
+make_usg_bundle_artifact creates a detached ContractArtifact with the exact
+USG input contract version (0.1.0); the general ORE envelope helper defaults
+to 1.0.0 and should not be used for this input. The importer registers
+ORE.USG.KNOWLEDGE_BUNDLE@0.1.0 as its input contract and ORE.USG.LEXICON@1.0.0
+as its output contract. The resulting module ID is
 ore.usg_lexical_import. Its backend accepts one ContractArtifact at the
 knowledge_bundle input and emits one provenance-tracked ContractArtifact.
 

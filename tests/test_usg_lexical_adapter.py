@@ -9,20 +9,18 @@ import pytest
 from ore_contracts import (
     ComputeBudget,
     ContractCatalog,
-    EvidenceKind,
     ModuleStatus,
     OperationMode,
     RunContext,
-    make_envelope,
 )
 from ore_contracts.module_artifacts import ContractArtifact
 from ore_contracts.module_registry import ModuleRegistry
 from ore_contracts.module_logging import register_module_annotations
 from ore_logger.database import LoggerDatabase
 from ore_usg import (
-    ORE_USG_BUNDLE_CONTRACT,
     USGKnowledgeLexicalAdapter,
     USGKnowledgeValidationError,
+    make_usg_bundle_artifact,
     register_usg_lexical_module,
     validate_knowledge_bundle,
 )
@@ -233,14 +231,10 @@ def test_ore_module_registration_emits_a_validated_typed_lexicon_artifact():
         deterministic_seed=17,
         compute_budget=ComputeBudget(),
     )
-    input_artifact = ContractArtifact(
-        make_envelope(
-            ORE_USG_BUNDLE_CONTRACT,
-            run_context.run_id,
-            "test.usg_bundle",
-            evidence_kind=EvidenceKind.EXTERNAL_REFERENCE,
-        ),
+    input_artifact = make_usg_bundle_artifact(
         _bundle(),
+        run_id=run_context.run_id,
+        producer_id="test.usg_bundle",
     )
     backend = registry.get_backend("ore.usg_lexical_import")
     assert backend is not None

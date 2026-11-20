@@ -1,12 +1,15 @@
 """Register the USG lexical import as a normal, versioned ORE module."""
 from __future__ import annotations
 
-from typing import Any
+from copy import deepcopy
+from typing import Any, Mapping
 
-from ore_contracts import EvidenceKind, make_envelope
+from ore_contracts import (
+    ContractEnvelope, EvidenceKind, make_envelope, sha256_json, utc_now_iso,
+)
 from ore_contracts.contracts_registry import ContractCatalog
 from ore_contracts.module_adapters import CallableModuleAdapter
-from ore_contracts.module_artifacts import ContractArtifact
+from ore_contracts.module_artifacts import ContractArtifact, content_hash
 from ore_contracts.module_manifest import (
     InputPort, ModuleIdentity, ModuleManifest, OutputPort,
 )
@@ -51,6 +54,46 @@ def _ensure_model_contract(
         required_fields=required_fields,
         description=description,
         validator=validator,
+    )
+
+
+def make_usg_bundle_artifact(
+    bundle: Mapping[str, Any],
+    *,
+    run_id: str,
+    producer_id: str = "usg.workbench.knowledge_provider",
+    config: Mapping[str, Any] | None = None,
+) -> ContractArtifact:
+    """Wrap a detached USG bundle in the exact ORE input contract version (0.1.0)."""
+    if not isinstance(run_id, str) or not run_id.strip():
+        raise ValueError("run_id must be non-empty")
+    if not isinstance(producer_id, str) or not producer_id.strip():
+        raise ValueError("producer_id must be non-empty")
+    errors = validate_knowledge_bundle(bundle)
+    if errors:
+        raise ValueError("USG knowledge bundle is invalid: " + "; ".join(errors))
+    payload = deepcopy(dict(bundle))
+    configuration = dict(config or {})
+    envelope = ContractEnvelope(
+        contract_id=ORE_USG_BUNDLE_CONTRACT,
+        schema_version=USG_KNOWLEDGE_SCHEMA_VERSION,
+        run_id=run_id,
+        producer_id=producer_id,
+        config_hash=sha256_json(configuration),
+        created_at=utc_now_iso(),
+        evidence_kind=EvidenceKind.EXTERNAL_REFERENCE,
+        model_version=USG_KNOWLEDGE_SCHEMA_VERSION,
+        data_hash=content_hash(payload),
+    )
+    return ContractArtifact(
+        envelope,
+        payload,
+        metadata={
+            "usg_contract": payload["contract"],
+            "usg_bundle_id": payload["bundle_id"],
+            "read_only": True,
+            "source_database_mutation_performed": False,
+        },
     )
 
 
@@ -197,6 +240,7 @@ __all__ = [
     "USG_LEXICAL_MODULE_VERSION",
     "USG_LEXICAL_CAPABILITIES",
     "register_usg_contracts",
+    "make_usg_bundle_artifact",
     "build_usg_lexical_manifest",
     "register_usg_lexical_module",
 ]

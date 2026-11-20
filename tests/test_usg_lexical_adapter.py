@@ -159,9 +159,9 @@ def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
         "A financial institution.", "The land alongside a river.",
     }
     assert all(item.features == {} for item in bank.meanings)
-    assert "lemma:en:bank" in bank.source_reference
-    assert "source:permitted" in bank.source_reference
-    assert "context:english" in bank.source_reference
+    assert "lemma%3Aen%3Abank" in bank.source_reference
+    assert "source%3Apermitted" in bank.source_reference
+    assert "context%3Aenglish" in bank.source_reference
     assert bundle == original, "the adapter must not mutate its caller-owned bundle"
 
     surface_form = next(item for item in resource.entries if item.orthography == "banks")

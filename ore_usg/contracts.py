@@ -37,6 +37,31 @@ class USGSourceSummary:
 
 
 @dataclass(frozen=True, slots=True)
+class USGEvidenceSummary:
+    """Expose evidence type and support/contradiction state without copying evidence text."""
+
+    evidence_id: str
+    source_id: str
+    evidence_type: str
+    support_status: str
+    locator: str | None
+    text_digest: str | None
+    captured_at: str
+    transformation_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class USGContextSummary:
+    """Preserve language, domain, and other explicit context scopes by stable ID."""
+
+    context_id: str
+    context_type: str
+    value: str
+    language_profile: str | None
+    scope: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class USGLexiconImportReport:
     """Summarize deterministic lexical import decisions without asserting truth."""
 
@@ -48,6 +73,8 @@ class USGLexiconImportReport:
     imported_record_ids: tuple[str, ...]
     excluded_records: tuple[USGImportExclusion, ...]
     source_summaries: tuple[USGSourceSummary, ...]
+    evidence_summaries: tuple[USGEvidenceSummary, ...]
+    context_summaries: tuple[USGContextSummary, ...]
     warnings: tuple[str, ...] = ()
 
 

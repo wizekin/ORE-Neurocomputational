@@ -13,6 +13,8 @@ from .contracts import (
     USG_LEXICAL_ADAPTER_VERSION,
     USGLexiconImportReport,
     USGLexiconResource,
+    USGContextSummary,
+    USGEvidenceSummary,
     USGImportExclusion,
     USGSourceSummary,
 )
@@ -163,6 +165,30 @@ class USGKnowledgeLexicalAdapter:
             for item in sorted(bundle["sources"], key=lambda row: row["id"])
         )
 
+        evidence_summaries = tuple(
+            USGEvidenceSummary(
+                evidence_id=str(item["id"]),
+                source_id=str(item["source_id"]),
+                evidence_type=str(item["evidence_type"]),
+                support_status=str(item["support_status"]),
+                locator=item.get("locator"),
+                text_digest=item.get("text_digest"),
+                captured_at=str(item["captured_at"]),
+                transformation_ids=tuple(str(value) for value in item["transformation_ids"]),
+            )
+            for item in sorted(bundle["evidence"], key=lambda row: row["id"])
+        )
+        context_summaries = tuple(
+            USGContextSummary(
+                context_id=str(item["id"]),
+                context_type=str(item["context_type"]),
+                value=str(item["value"]),
+                language_profile=item.get("language_profile"),
+                scope=item.get("scope"),
+            )
+            for item in sorted(bundle["contexts"], key=lambda row: row["id"])
+        )
+
         eligible_lemmas: dict[str, Mapping[str, Any]] = {}
         for record in records:
             if record["kind"] != "LEMMA":
@@ -310,6 +336,8 @@ class USGKnowledgeLexicalAdapter:
             imported_record_ids=tuple(sorted(imported_record_ids)),
             excluded_records=tuple(sorted(excluded, key=lambda item: (item.record_id, item.reason))),
             source_summaries=source_summaries,
+            evidence_summaries=evidence_summaries,
+            context_summaries=context_summaries,
             warnings=tuple(warnings),
         )
         return USGLexiconResource(

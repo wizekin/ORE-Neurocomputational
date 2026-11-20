@@ -9,6 +9,8 @@ from .contracts import (
     USGLexiconImportReport,
     USGLexiconResource,
     USGSourceSummary,
+    USGEvidenceSummary,
+    USGContextSummary,
 )
 from .lexical import USGKnowledgeLexicalAdapter
 from .registration import (
@@ -36,6 +38,8 @@ __all__ = [
     "USGLexiconImportReport",
     "USGLexiconResource",
     "USGSourceSummary",
+    "USGEvidenceSummary",
+    "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
     "USG_LEXICAL_CAPABILITIES",
     "USG_LEXICAL_MODULE_ID",

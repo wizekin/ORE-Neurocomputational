@@ -16,8 +16,10 @@ The main entry point is USGKnowledgeLexicalAdapter:
 The output entries are ordinary ore_lexical_context LexicalEntry records and
 can be passed to LexicalAccessProcessor or LexicalContextProcessor. The
 USGLexiconResource also retains the bundle ID, namespace, SHA-256 digest,
-adapter version, source-rights summary, imported record IDs, exclusions, and
-warnings.
+adapter version, source-rights summary (including license and source locator),
+evidence summaries (including contradictions), context summaries, imported
+record IDs, exclusions, and warnings. Evidence text itself is not copied into
+the report; stable locators and digests remain available where supplied.
 
 ## Lifecycle and rights policy
 
@@ -31,8 +33,11 @@ than KNOWN_PERMITTED or INTERNAL, or when the record has no source/evidence
 provenance. Rights and redistribution fields remain in the import report.
 This internal adapter does not grant redistribution rights.
 
-LEXICAL_SENSE records attach to their referenced LEMMA. Every eligible sense
-becomes a separate LexicalMeaning so polysemy is preserved. Definitions are
+LEXICAL_SENSE records attach to their referenced LEMMA only when the languages
+match. Every eligible sense becomes a separate LexicalMeaning so polysemy is
+preserved. Evidence support/contradiction states and context descriptors remain
+available in the resource report; the adapter does not select a winner when
+evidence conflicts. Definitions are
 copied into gloss fields only; they are not converted into numeric semantic
 features. ORE's neutral frequency default is used when USG provides no
 positive finite frequency. This default is not an observed frequency.

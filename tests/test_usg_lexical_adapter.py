@@ -142,6 +142,9 @@ def _bundle() -> dict:
 def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
     """Keep polysemy as multiple ORE meanings rather than choosing or merging senses."""
     bundle = _bundle()
+    next(item for item in bundle["evidence"] if item["id"] == "evidence:river")[
+        "support_status"
+    ] = "CONTRADICTS"
     original = deepcopy(bundle)
     resource = USGKnowledgeLexicalAdapter().convert(bundle)
 
@@ -168,6 +171,17 @@ def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
     assert "surface_form_only" in surface_form.verified_by
     assert resource.report.meanings_created == 2
     assert "sense:en:bank:candidate" not in resource.report.imported_record_ids
+    contradiction = next(
+        item for item in resource.report.evidence_summaries
+        if item.evidence_id == "evidence:river"
+    )
+    assert contradiction.support_status == "CONTRADICTS"
+    finance_context = next(
+        item for item in resource.report.context_summaries
+        if item.context_id == "context:finance"
+    )
+    assert finance_context.context_type == "DOMAIN"
+    assert finance_context.value == "finance"
 
 
 def test_candidate_records_require_explicit_opt_in_and_keep_their_state():

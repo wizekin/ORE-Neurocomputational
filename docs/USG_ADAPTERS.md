@@ -114,3 +114,29 @@ to or writes to the USG database.
 The canonical digest is calculated over sorted, compact UTF-8 JSON, matching
 the lexical adapter's bundle fingerprint. This is an integrity check, not a
 digital signature or proof of source authenticity.
+
+
+## Shared import policy and semantic concept adapter
+
+`USGImportPolicy` centralizes the lifecycle-state and source-rights rules used
+by lexical and semantic imports. Accepted and profile-validated records are
+eligible by default; candidate records require explicit opt-in. Local import
+requires every direct or evidence-derived source to declare
+`KNOWN_PERMITTED` or `INTERNAL` rights.
+
+The first semantic adapter is available through:
+
+    from ore_usg import USGConceptAdapter
+
+    semantic_resource = USGConceptAdapter().convert(snapshot.bundle)
+
+It imports eligible `CONCEPT` records as ORE `SemanticConcept` objects and
+preserves eligible USG mappings as separate typed `USGConceptMapping`
+records. Mapping endpoints must both be imported concepts. The adapter does
+not merge concepts, even for `EQUIVALENT` mappings, and does not infer
+semantic or modality feature values from labels or definitions. The import
+report records imported IDs, exclusions, and explicit limitations.
+
+This adapter does not yet import `SEMANTIC_CLASS` or `PREDICATE_FRAME`
+records, nor does it register a separate semantic module backend in ORE's
+module registry.

@@ -2,6 +2,7 @@
 from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
+    ORE_USG_KNOWLEDGE_CONTRACT,
     USG_KNOWLEDGE_CONTRACT,
     USG_KNOWLEDGE_SCHEMA_VERSION,
     USG_LEXICAL_ADAPTER_VERSION,
@@ -36,6 +37,11 @@ from .semantic import (
     USGSemanticResource,
 )
 from .registration import (
+    USG_KNOWLEDGE_CAPABILITIES,
+    USG_KNOWLEDGE_MODULE_ID,
+    USG_KNOWLEDGE_MODULE_VERSION,
+    build_usg_knowledge_manifest,
+    register_usg_knowledge_module,
     USG_LEXICAL_CAPABILITIES,
     USG_LEXICAL_MODULE_ID,
     USG_LEXICAL_MODULE_VERSION,
@@ -53,6 +59,7 @@ from .validation import (
 __all__ = [
     "ORE_USG_BUNDLE_CONTRACT",
     "ORE_USG_LEXICON_CONTRACT",
+    "ORE_USG_KNOWLEDGE_CONTRACT",
     "USG_KNOWLEDGE_CONTRACT",
     "USG_KNOWLEDGE_SCHEMA_VERSION",
     "USG_LEXICAL_ADAPTER_VERSION",
@@ -80,6 +87,11 @@ __all__ = [
     "USGBundleSnapshot",
     "discover_knowledge_bundle",
     "load_knowledge_bundle",
+    "USG_KNOWLEDGE_CAPABILITIES",
+    "USG_KNOWLEDGE_MODULE_ID",
+    "USG_KNOWLEDGE_MODULE_VERSION",
+    "build_usg_knowledge_manifest",
+    "register_usg_knowledge_module",
     "USG_LEXICAL_CAPABILITIES",
     "USG_LEXICAL_MODULE_ID",
     "USG_LEXICAL_MODULE_VERSION",

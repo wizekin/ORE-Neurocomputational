@@ -51,3 +51,22 @@ def test_lookup_rejects_unknown_kind_and_empty_query():
         index.lookup(" ")
     with pytest.raises(ValueError, match="kind must be one of"):
         index.lookup("bank", kind="FUZZY")
+
+
+def test_explicit_lexical_sense_relation_links_to_concept_without_guessing():
+    resource = USGKnowledgeAdapter().convert(_structure_bundle())
+    index = USGKnowledgeIndex(resource)
+    bank_entry = next(
+        entry for entry in resource.lexical.entries
+        if entry.orthography == "bank" and entry.meanings
+    )
+    financial_meaning = next(
+        meaning for meaning in bank_entry.meanings
+        if "financial institution" in meaning.gloss.casefold()
+    )
+    relations = index.relations_for(financial_meaning.meaning_id)
+
+    assert len(relations) == 1
+    assert relations[0].predicate == "DENOTES"
+    assert relations[0].subject_id == financial_meaning.meaning_id
+    assert relations[0].object_id in {item.concept_id for item in resource.semantic.concepts}

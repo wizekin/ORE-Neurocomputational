@@ -140,3 +140,40 @@ report records imported IDs, exclusions, and explicit limitations.
 This adapter does not yet import `SEMANTIC_CLASS` or `PREDICATE_FRAME`
 records, nor does it register a separate semantic module backend in ORE's
 module registry.
+
+
+## Semantic classes, predicate frames, and cross-resource relations
+
+`USGSemanticStructureAdapter` imports `SEMANTIC_CLASS` and
+`PREDICATE_FRAME` records using the same lifecycle and source-rights policy.
+Class and frame payloads are retained as canonical JSON so additional USG
+fields are not discarded. Predicate-frame roles are preserved verbatim as
+canonical JSON; they are not yet compiled into executable ORE argument
+validation or inference rules.
+
+Explicit directed USG relations are retained when both endpoints are active,
+rights-permitted records supported by the lexical, concept, or structure
+adapters. The relation's predicate, direction, lifecycle, evidence IDs, and
+context IDs are preserved. No inverse, transitive, or inferred relations are
+generated.
+
+## Unified knowledge resource
+
+The current adapters can be coordinated through one read-only entry point:
+
+    from ore_usg import USGKnowledgeAdapter
+
+    importer = USGKnowledgeAdapter()
+    snapshot, knowledge = importer.load_and_convert(
+        "exports/knowledge_bundle.json",
+        expected_digest="<canonical-sha256>",
+    )
+
+The returned `USGKnowledgeResource` contains the lexical resource, semantic
+concept resource, semantic structures, and cross-resource relations. It also
+exposes the source, evidence, and context summaries retained in the lexical
+import report. All component resources must share the same namespace, bundle
+ID, and digest; construction rejects mixed snapshots.
+
+This is a unified data-access resource, not yet a registered multi-output ORE
+module. The current lexical module registration remains available separately.

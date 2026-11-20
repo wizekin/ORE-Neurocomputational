@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-import re
+import unicodedata
 from typing import Any, Mapping, Sequence
 
 from .contracts import USG_KNOWLEDGE_CONTRACT
 
 
-_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@+-]*$")
 _STATES = {
     "CANDIDATE", "VALIDATED_FOR_PROFILE", "ACCEPTED",
     "DEPRECATED", "REJECTED", "UNRESOLVED",
@@ -47,7 +46,31 @@ def _is_text(value: Any) -> bool:
 
 
 def _is_id(value: Any) -> bool:
-    return _is_text(value) and bool(_ID_RE.fullmatch(value))
+    """Return whether value is a stable Unicode identifier under the USG profile.
+
+    Identifiers start with a Unicode letter or number. Subsequent characters may
+    be letters, numbers, combining marks attached to a preceding letter/number,
+    or the ASCII separators already supported by the original profile.
+    """
+    if not _is_text(value):
+        return False
+    first_category = unicodedata.category(value[0])
+    if first_category[0] not in {"L", "N"}:
+        return False
+
+    has_base_character = True
+    for character in value[1:]:
+        category = unicodedata.category(character)
+        if category[0] in {"L", "N"}:
+            has_base_character = True
+        elif category[0] == "M" and has_base_character:
+            # Combining marks belong to the immediately preceding base sequence.
+            has_base_character = True
+        elif character in "._:/@+-":
+            has_base_character = False
+        else:
+            return False
+    return True
 
 
 def _is_timestamp(value: Any) -> bool:

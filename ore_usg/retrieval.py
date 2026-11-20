@@ -127,6 +127,34 @@ class USGKnowledgeIndex:
             if relation.subject_id == record_id or relation.object_id == record_id
         )
 
+
+    def context_by_id(self, context_id: str) -> Any | None:
+        """Retrieve one exact preserved USG context summary by source ID."""
+        if not isinstance(context_id, str) or not context_id.strip():
+            raise ValueError("context_id must be non-empty text")
+        return next(
+            (item for item in self.resource.contexts if item.context_id == context_id),
+            None,
+        )
+
+    def evidence_by_id(self, evidence_id: str) -> Any | None:
+        """Retrieve one exact preserved USG evidence summary by source ID."""
+        if not isinstance(evidence_id, str) or not evidence_id.strip():
+            raise ValueError("evidence_id must be non-empty text")
+        return next(
+            (item for item in self.resource.evidence if item.evidence_id == evidence_id),
+            None,
+        )
+
+    def source_by_id(self, source_id: str) -> Any | None:
+        """Retrieve one exact preserved source-rights summary by source ID."""
+        if not isinstance(source_id, str) or not source_id.strip():
+            raise ValueError("source_id must be non-empty text")
+        return next(
+            (item for item in self.resource.sources if item.source_id == source_id),
+            None,
+        )
+
     def frames_by_key(self, frame_key: str) -> tuple[Any, ...]:
         """Return all exact frame-key matches without selecting a preferred version."""
         result = self.lookup(frame_key, kind="PREDICATE_FRAME")

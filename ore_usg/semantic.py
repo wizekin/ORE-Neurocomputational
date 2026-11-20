@@ -15,7 +15,7 @@ from .lexical import (
     _canonical_json,
     _ore_record_id,
     _positive_number,
-    _source_access,
+    USGKnowledgeLexicalAdapter,
     _source_reference,
     _source_ids_for_record,
 )
@@ -81,7 +81,6 @@ class USGConceptAdapter:
         digest = sha256(_canonical_json(bundle)).hexdigest()
         source_by_id = {item["id"]: item for item in bundle["sources"]}
         evidence_by_id = {item["id"]: item for item in bundle["evidence"]}
-        record_by_id = {item["id"]: item for item in bundle["records"]}
 
         concepts: list[SemanticConcept] = []
         excluded: list[USGImportExclusion] = []
@@ -97,7 +96,7 @@ class USGConceptAdapter:
                     str(record["id"]), "CONCEPT", f"lifecycle_state_not_enabled:{state}",
                 ))
                 continue
-            usable, reason, source_ids = _source_access(
+            usable, reason, source_ids = USGKnowledgeLexicalAdapter._source_access(
                 record, source_by_id, evidence_by_id,
             )
             if not usable:
@@ -157,7 +156,7 @@ class USGConceptAdapter:
                     f"lifecycle_state_not_enabled:{state}",
                 ))
                 continue
-            usable, reason, source_ids = _source_access(
+            usable, reason, source_ids = USGKnowledgeLexicalAdapter._source_access(
                 mapping, source_by_id, evidence_by_id,
             )
             if not usable:

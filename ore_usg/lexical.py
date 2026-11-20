@@ -19,11 +19,10 @@ from .contracts import (
     USGSourceSummary,
 )
 from .validation import require_valid_knowledge_bundle
+from .policy import LOCAL_IMPORT_RIGHTS, USGImportPolicy
 
 
-_ACCEPTED_STATES = {"ACCEPTED", "VALIDATED_FOR_PROFILE"}
-_CANDIDATE_STATES = {"CANDIDATE"}
-_LOCAL_USE_RIGHTS = {"KNOWN_PERMITTED", "INTERNAL"}
+_LOCAL_USE_RIGHTS = LOCAL_IMPORT_RIGHTS
 _POS_MAP = {
     "NOUN": "noun", "PROPN": "proper_noun", "VERB": "verb", "AUX": "auxiliary",
     "ADJ": "adjective", "ADV": "adverb", "PRON": "pronoun", "DET": "determiner",
@@ -114,6 +113,7 @@ class USGKnowledgeLexicalAdapter:
         if not isinstance(include_candidate_states, bool):
             raise TypeError("include_candidate_states must be a bool")
         self.include_candidate_states = include_candidate_states
+        self.policy = USGImportPolicy(include_candidate_states=include_candidate_states)
 
     @property
     def version(self) -> str:
@@ -121,9 +121,7 @@ class USGKnowledgeLexicalAdapter:
         return USG_LEXICAL_ADAPTER_VERSION
 
     def _state_enabled(self, state: str) -> bool:
-        return state in _ACCEPTED_STATES or (
-            self.include_candidate_states and state in _CANDIDATE_STATES
-        )
+        return self.policy.state_enabled(state)
 
     @staticmethod
     def _source_access(

@@ -203,3 +203,28 @@ The unified resource currently exposes linked data and provenance. It does
 not yet implement runtime retrieval APIs, connect to the Main Brain
 Coordinator automatically, or compile predicate frames into executable
 reasoning operations.
+
+
+## Deterministic retrieval API
+
+The unified resource can be queried without fuzzy matching or invented
+confidence values:
+
+    from ore_usg import USGKnowledgeIndex
+
+    index = USGKnowledgeIndex(knowledge)
+    result = index.lookup("bank", kind="LEXICAL_ENTRY", language="en")
+    for item in result.items:
+        print(item.record_id, item.label, item.source_reference)
+
+Supported exact lookup kinds are `LEXICAL_ENTRY`, `SEMANTIC_CONCEPT`,
+`SEMANTIC_CLASS`, and `PREDICATE_FRAME`. Matching trims surrounding
+whitespace and applies Unicode case-folding only; it does not stem, tokenize,
+guess synonyms, or perform fuzzy similarity. Results retain source references
+and meaning/frame details. `relations_for(record_id)` returns only explicit
+directed relations incident to the supplied namespaced ORE record ID.
+`frames_by_key(frame_key)` returns all exact versions; it does not choose a
+preferred frame version.
+
+This index is a deterministic retrieval layer. It does not yet provide
+context-weighted ranking, learned confidence, or coordinator-driven routing.

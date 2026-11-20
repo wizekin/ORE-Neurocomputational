@@ -75,6 +75,13 @@ def _source_ids_for_record(
     return tuple(sorted(source_ids))
 
 
+def _ore_record_id(namespace: str, bundle_id: str, record: Mapping[str, Any]) -> str:
+    """Scope an ORE lexical ID to its USG namespace, bundle, record, and version."""
+    scope = sha256(f"{namespace}\\0{bundle_id}".encode("utf-8")).hexdigest()[:16]
+    record_id = quote(str(record["id"]), safe="")
+    return f"usg:{scope}:{record_id}@{int(record['version'])}"
+
+
 def _source_reference(
     namespace: str,
     bundle_id: str,
@@ -243,7 +250,7 @@ class USGKnowledgeLexicalAdapter:
             )
             meanings = tuple(
                 LexicalMeaning(
-                    meaning_id=str(sense["id"]),
+                    meaning_id=_ore_record_id(namespace, bundle_id, sense),
                     features={},
                     prior=_positive_number(sense["payload"].get("prior"), 1.0),
                     gloss=str(sense["payload"]["definition"]),
@@ -259,7 +266,7 @@ class USGKnowledgeLexicalAdapter:
             )
             source_ids = _source_ids_for_record(record, evidence_by_id)
             entries.append(LexicalEntry(
-                entry_id=lemma_id,
+                entry_id=_ore_record_id(namespace, bundle_id, record),
                 orthography=str(payload["lemma"]),
                 frequency=_positive_number(payload.get("frequency"), 1.0),
                 meanings=meanings,
@@ -302,7 +309,7 @@ class USGKnowledgeLexicalAdapter:
                 ))
                 continue
             entries.append(LexicalEntry(
-                entry_id=str(record["id"]),
+                entry_id=_ore_record_id(namespace, bundle_id, record),
                 orthography=form,
                 meanings=(),
                 lexical_category="unknown",

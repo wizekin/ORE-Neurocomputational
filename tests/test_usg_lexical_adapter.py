@@ -149,12 +149,14 @@ def test_accepted_lemma_preserves_multiple_senses_and_separate_glosses():
     resource = USGKnowledgeLexicalAdapter().convert(bundle)
 
     bank = next(item for item in resource.entries if item.orthography == "bank")
-    assert bank.entry_id == "lemma:en:bank"
+    assert bank.entry_id.startswith("usg:")
+    assert bank.entry_id != "lemma:en:bank"
     assert bank.lexical_category == "noun"
     assert bank.language == "en"
-    assert {item.meaning_id for item in bank.meanings} == {
-        "sense:en:bank:financial", "sense:en:bank:river",
-    }
+    assert len({item.meaning_id for item in bank.meanings}) == 2
+    assert all(item.meaning_id.startswith("usg:") for item in bank.meanings)
+    assert any("sense%3Aen%3Abank%3Afinancial" in item.source_reference for item in bank.meanings)
+    assert any("sense%3Aen%3Abank%3Ariver" in item.source_reference for item in bank.meanings)
     assert {item.gloss for item in bank.meanings} == {
         "A financial institution.", "The land alongside a river.",
     }
@@ -196,6 +198,26 @@ def test_candidate_records_require_explicit_opt_in_and_keep_their_state():
     assert arabic.verified_by.startswith("USG_KNOWLEDGE_STATE:CANDIDATE")
     bank = next(item for item in candidate_resource.entries if item.orthography == "bank")
     assert "sense:en:bank:candidate" in {item.meaning_id for item in bank.meanings}
+
+
+def test_record_ids_are_scoped_to_the_usg_bundle_namespace():
+    """Do not collide when independent USG bundles reuse local record IDs."""
+    first = USGKnowledgeLexicalAdapter().convert(_bundle())
+    second_bundle = _bundle()
+    second_bundle["namespace"] = "urn:usg:another-namespace"
+    second_bundle["bundle_id"] = "another-bundle"
+    second = USGKnowledgeLexicalAdapter().convert(second_bundle)
+
+    first_bank = next(item for item in first.entries if item.orthography == "bank")
+    second_bank = next(item for item in second.entries if item.orthography == "bank")
+    assert first_bank.entry_id != second_bank.entry_id
+    assert {
+        item.meaning_id for item in first_bank.meanings
+    }.isdisjoint({
+        item.meaning_id for item in second_bank.meanings
+    })
+    assert "lemma:en:bank" in first.report.imported_record_ids
+    assert "lemma:en:bank" in second.report.imported_record_ids
 
 
 def test_unknown_rights_source_is_excluded_and_reported():

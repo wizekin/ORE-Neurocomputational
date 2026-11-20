@@ -93,7 +93,7 @@ def test_candidate_structures_and_relations_are_excluded_by_default():
     reasons = {item.record_id: item.reason for item in resource.report.excluded_records}
     assert reasons["class:financial-entity"] == "lifecycle_state_not_enabled:CANDIDATE"
     assert reasons["relation:classifies-money"] == (
-        "both_relation_endpoints_must_be_importable_concepts_or_semantic_structures"
+        "both_relation_endpoints_must_be_active_rights_permitted_supported_records"
     )
 
 

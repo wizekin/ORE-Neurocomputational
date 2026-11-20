@@ -13,6 +13,7 @@ from .contracts import (
     USGContextSummary,
 )
 from .lexical import USGKnowledgeLexicalAdapter
+from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
 from .bundle_io import (
     USGBundleLoadError,
     USGBundleSnapshot,
@@ -62,6 +63,8 @@ __all__ = [
     "USGEvidenceSummary",
     "USGContextSummary",
     "USGKnowledgeLexicalAdapter",
+    "USGKnowledgeAdapter",
+    "USGKnowledgeResource",
     "USGImportPolicy",
     "USGSemanticStructureAdapter",
     "USGSemanticClass",

@@ -39,7 +39,7 @@ def test_unified_adapter_assembles_all_resources_with_one_bundle_identity():
 
 def test_unified_resource_rejects_mixed_bundle_snapshots():
     resource = USGKnowledgeAdapter().convert(_bundle())
-    with pytest.raises(ValueError, match="same namespace, bundle ID, and digest"):
+    with pytest.raises(ValueError, match="unified USG identity does not match its component resources"):
         USGKnowledgeResource(
             lexical=resource.lexical,
             semantic=resource.semantic,

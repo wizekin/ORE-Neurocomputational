@@ -240,6 +240,37 @@ def test_unknown_rights_source_is_excluded_and_reported():
     assert summary.license_id is None
 
 
+@pytest.mark.parametrize(
+    "unicode_id",
+    [
+        "lemma:ar:عين:regression",
+        "lemma:fr:café",
+        "lemma:fr:cafe\u0301",
+        "lemma:ja:猫",
+    ],
+)
+def test_unicode_letters_and_combining_marks_are_valid_in_record_ids(unicode_id: str):
+    """Accept Unicode scripts and both composed and decomposed accented IDs."""
+    bundle = _bundle()
+    original_id = bundle["records"][0]["id"]
+    bundle["records"][0]["id"] = unicode_id
+    for record in bundle["records"]:
+        payload = record.get("payload", {})
+        if payload.get("lemma_record_id") == original_id:
+            payload["lemma_record_id"] = unicode_id
+
+    assert validate_knowledge_bundle(bundle) == ()
+
+
+@pytest.mark.parametrize("invalid_id", ["lemma:en:bad id", "lemma:en:bad\nname", "lemma:en:bad#name", ":lemma:en:bad"])
+def test_unicode_id_validation_still_rejects_whitespace_controls_and_bad_punctuation(invalid_id: str):
+    """Unicode support must not admit whitespace, controls, or unapproved punctuation."""
+    bundle = _bundle()
+    bundle["records"][0]["id"] = invalid_id
+
+    assert any("records[0].id is not a valid" in error for error in validate_knowledge_bundle(bundle))
+
+
 def test_invalid_cross_reference_is_rejected_before_conversion():
     """Reject malformed knowledge snapshots rather than silently dropping bad references."""
     bundle = _bundle()

@@ -83,12 +83,12 @@ def test_imports_semantic_classes_frames_and_directed_relations_losslessly():
     assert resource.predicate_frames[0].frame_version == "1.2"
     assert '"role":"AGENT"' in resource.predicate_frames[0].roles_json
     assert '"custom_constraint"' in resource.predicate_frames[0].payload_json
-    assert len(resource.relations) == 1
-    relation = resource.relations[0]
-    assert relation.predicate == "INSTANCE_OF"
+    assert len(resource.relations) == 2
+    relation = next(item for item in resource.relations if item.predicate == "INSTANCE_OF")
     assert relation.subject_id.startswith("usg:")
     assert relation.object_id == resource.classes[0].class_id
     assert relation.subject_id != relation.object_id
+    assert any(item.predicate == "DENOTES" for item in resource.relations)
     assert bundle == original
 
 
@@ -99,7 +99,7 @@ def test_candidate_structures_and_relations_are_excluded_by_default():
     resource = USGSemanticStructureAdapter().convert(bundle)
 
     assert not resource.classes
-    assert not resource.relations
+    assert {item.predicate for item in resource.relations} == {"DENOTES"}
     reasons = {item.record_id: item.reason for item in resource.report.excluded_records}
     assert reasons["class:financial-entity"] == "lifecycle_state_not_enabled:CANDIDATE"
     assert reasons["relation:classifies-money"] == (

@@ -10,16 +10,14 @@ from ore_semantic.contracts import SemanticConcept
 
 from .contracts import USGImportExclusion
 from .lexical import (
-    _ACCEPTED_STATES,
-    _CANDIDATE_STATES,
     _canonical_json,
     _ore_record_id,
     _positive_number,
-    USGKnowledgeLexicalAdapter,
     _source_reference,
     _source_ids_for_record,
 )
 from .validation import require_valid_knowledge_bundle
+from .policy import USGImportPolicy
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,11 +65,10 @@ class USGConceptAdapter:
         if not isinstance(include_candidate_states, bool):
             raise TypeError("include_candidate_states must be a bool")
         self.include_candidate_states = include_candidate_states
+        self.policy = USGImportPolicy(include_candidate_states=include_candidate_states)
 
     def _state_enabled(self, state: str) -> bool:
-        return state in _ACCEPTED_STATES or (
-            self.include_candidate_states and state in _CANDIDATE_STATES
-        )
+        return self.policy.state_enabled(state)
 
     def convert(self, bundle: Mapping[str, Any]) -> USGSemanticResource:
         """Convert eligible CONCEPT records and explicit mappings between them."""
@@ -96,9 +93,7 @@ class USGConceptAdapter:
                     str(record["id"]), "CONCEPT", f"lifecycle_state_not_enabled:{state}",
                 ))
                 continue
-            usable, reason, source_ids = USGKnowledgeLexicalAdapter._source_access(
-                record, source_by_id, evidence_by_id,
-            )
+            usable, reason, source_ids = self.policy.source_access(record, source_by_id, evidence_by_id)
             if not usable:
                 excluded.append(USGImportExclusion(str(record["id"]), "CONCEPT", reason))
                 continue
@@ -156,9 +151,7 @@ class USGConceptAdapter:
                     f"lifecycle_state_not_enabled:{state}",
                 ))
                 continue
-            usable, reason, source_ids = USGKnowledgeLexicalAdapter._source_access(
-                mapping, source_by_id, evidence_by_id,
-            )
+            usable, reason, source_ids = self.policy.source_access(mapping, source_by_id, evidence_by_id)
             if not usable:
                 excluded.append(USGImportExclusion(
                     str(mapping["id"]), "MAPPING", reason,

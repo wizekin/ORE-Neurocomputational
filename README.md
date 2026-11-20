@@ -1504,3 +1504,20 @@ The `ore_memory_integration` package connects the existing Point 7 episodic and 
 ## Task 06 — Create recurrent feedback and corrective learning
 
 The `RecurrentFeedbackController` wraps Point 24's corrective-learning engine in a bounded multi-module feedback cycle. It records the initial interpretation, scores measured semantic-conflict dimensions, routes checks to confirmation-bias, heuristic, feedback-seeking, memory and semantic modules, and ranks supplied actions by expected information gain minus cost. Every evidence batch is validated and applied once against the previous posterior; repeated actions are fingerprinted, source dependence is retained, and no-progress, iteration and shared action budgets bound recurrence. N9 reprocessing is an optional read-only pass. Ordinary inference never updates model parameters; the separate learning-transaction method requires explicit authorization and regression gates and returns an unpromoted child model. All controller functions and classes are indexed in the existing logger annotation SQLite catalogue, and each of the fourteen operations is recorded as a run event. See [`docs/RECURRENT_FEEDBACK_TASK06.md`](docs/RECURRENT_FEEDBACK_TASK06.md).
+
+
+## USG knowledge integration
+
+The additive `ore_usg` package provides read-only import of
+`USG-KNOWLEDGE/0.1.0` bundles. It converts lexical forms, lemmas, and senses;
+concepts and typed mappings; semantic classes; predicate frames; and explicit
+cross-resource relations. A unified `USGKnowledgeResource` retains source,
+evidence, context, lifecycle, and bundle provenance. The deterministic loader
+supports local JSON files/directories and digest verification. The package
+also exposes exact retrieval and an ORE module-registry integration through
+`ore.usg_knowledge_import`. Candidate records are excluded by default; no
+USG database writes or inferred semantic features are performed. Predicate
+frames remain preserved data and are not yet compiled into executable rules.
+
+See [docs/USG_ADAPTERS.md](docs/USG_ADAPTERS.md) for contracts, APIs,
+limitations, registration, and focused tests.

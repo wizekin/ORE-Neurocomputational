@@ -11,7 +11,7 @@ def register_module_annotations(
     database_path: str | Path | None = None,
     repository_root: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Index every ore_contracts module, class, function, and method in ore_logger.annotations."""
+    """Index every ore_contracts and ore_usg module, class, function, and method in ore_logger.annotations."""
     from ore_logger.catalog import sync_repository
     from ore_logger.database import LoggerDatabase
 
@@ -21,9 +21,12 @@ def register_module_annotations(
         if database_path else root / "ore_logs" / "ore_logger.sqlite3"
     )
     database = LoggerDatabase(target)
-    result = sync_repository(database, root, include_paths={"ore_contracts"})
+    result = sync_repository(database, root, include_paths={"ore_contracts", "ore_usg"})
     return {
-        **result, "database_path": str(target), "scope": "ore_contracts",
+        **result,
+        "database_path": str(target),
+        "scope": "ore_contracts",
+        "indexed_scopes": ("ore_contracts", "ore_usg"),
         "annotation_table": "annotations",
     }
 
@@ -55,7 +58,7 @@ class SQLiteModuleEventLogger:
         from ore_logger.database import LoggerDatabase
 
         self.database = LoggerDatabase(self.path)
-        sync_repository(self.database, self.root, include_paths={"ore_contracts"})
+        sync_repository(self.database, self.root, include_paths={"ore_contracts", "ore_usg"})
         self.run_id = self.database.create_run(
             script_path="ore_contracts/module_registry",
             module_name="ore_contracts.module_registry",

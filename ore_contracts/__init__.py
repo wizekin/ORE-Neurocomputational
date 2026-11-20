@@ -575,3 +575,22 @@ __all__ += [
     "ModuleAvailability", "ModuleAvailabilityMonitor", "ModuleInputPlan",
     "calculate_module_priority", "normalized_entropy", "weighted_disagreement",
 ]
+
+# Adaptive cognitive resource allocation (Task 07).
+from .resource_profiles import (
+    CapabilityDemand, CoordinationResult, ModuleResourceEstimate,
+    ResourceDecision, ResourceExecutionPlan, TaskProfile, TaskProfileRegistry,
+)
+from .resource_coordination import (
+    AdaptiveResourceCoordinator, ExecutionPlanBuilder, InformationGainEstimator,
+    ModuleReliabilityTracker, ModuleResourceEstimator, ResourceScorer,
+    SQLiteResourceHistory, normalized_entropy as resource_normalized_entropy,
+)
+
+__all__ += [
+    "CapabilityDemand", "TaskProfile", "ModuleResourceEstimate", "ResourceDecision",
+    "ResourceExecutionPlan", "CoordinationResult", "TaskProfileRegistry",
+    "AdaptiveResourceCoordinator", "ExecutionPlanBuilder", "InformationGainEstimator",
+    "ModuleReliabilityTracker", "ModuleResourceEstimator", "ResourceScorer",
+    "SQLiteResourceHistory", "resource_normalized_entropy",
+]

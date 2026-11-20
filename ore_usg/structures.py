@@ -250,7 +250,7 @@ class USGSemanticStructureAdapter:
             warnings=(
                 "Predicate-frame roles and class payloads are preserved as canonical JSON, not inferred into ORE execution semantics.",
                 "Relations retain their declared predicate and direction; no inverse or transitive relations are generated.",
-                "Relations are imported only when both endpoints are eligible concepts or semantic structures.",
+                "Relations are imported only when both endpoints are eligible supported lexical or semantic records.",
                 "USG lifecycle states and evidence references do not establish semantic truth.",
             ),
         )

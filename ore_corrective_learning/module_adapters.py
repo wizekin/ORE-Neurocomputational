@@ -105,7 +105,7 @@ class RecurrentModuleAdapters:
                 source_type=source_kind,
                 reliability=float(source.reliability),
                 relevance=float(item.relevance),
-                diagnosticity=float(item.measurement_quality),
+                diagnosticity=float(source.diagnostic_value),
                 directness="direct" if item.direct_observation else "indirect",
                 independence_key=str(source.independence_group or source.source_id),
                 context=str(item.feature),

@@ -72,7 +72,11 @@ def test_unified_knowledge_module_registers_and_emits_one_typed_artifact():
         producer_id="test.usg_bundle",
     )
     backend = registry.get_backend("ore.usg_knowledge_import")
+    manifest = registry.get_manifest("ore.usg_knowledge_import")
     assert backend is not None
+    assert manifest is not None
+    assert "language.semantic_resource.import" in manifest.capabilities
+    assert "language.semantic_structure.import" in manifest.capabilities
 
     result = backend.execute({"knowledge_bundle": source}, context)
 

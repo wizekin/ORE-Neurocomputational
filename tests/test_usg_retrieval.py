@@ -70,3 +70,17 @@ def test_explicit_lexical_sense_relation_links_to_concept_without_guessing():
     assert relations[0].predicate == "DENOTES"
     assert relations[0].subject_id == financial_meaning.meaning_id
     assert relations[0].object_id in {item.concept_id for item in resource.semantic.concepts}
+
+
+def test_exact_context_evidence_and_source_lookups_preserve_status_and_rights():
+    resource = USGKnowledgeAdapter().convert(_structure_bundle())
+    index = USGKnowledgeIndex(resource)
+
+    context = index.context_by_id("context:finance")
+    evidence = index.evidence_by_id("evidence:financial")
+    source = index.source_by_id("source:permitted")
+
+    assert context is not None and context.value
+    assert evidence is not None and evidence.support_status
+    assert source is not None and source.rights_status == "KNOWN_PERMITTED"
+    assert index.context_by_id("missing") is None

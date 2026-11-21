@@ -1,0 +1,27 @@
+{
+  "point": 2,
+  "title": "Cognitive architectures: Soar, ACT-R and CLARION",
+  "version": "0.1.0-foundation",
+  "status": "implemented-foundation-not-full-40-step-completion",
+  "modules": [
+    "ore_cognitive_control/__init__.py",
+    "ore_cognitive_control/models.py",
+    "ore_cognitive_control/retrieval.py",
+    "ore_cognitive_control/registry.py",
+    "ore_cognitive_control/engine.py",
+    "tests/test_cognitive_control_point02.py",
+    "docs/ORE_POINT02_COGNITIVE_CONTROL.md",
+    "BATCH_02_POINT02_INSTALL.md"
+  ],
+  "principles": [
+    "Soar-inspired bounded operator selection",
+    "ACT-R-inspired base-level activation and cue-based retrieval",
+    "CLARION-inspired explicit separation of procedural and declarative contracts",
+    "at most one operator per engine invocation",
+    "no guessed ORE integration signatures",
+    "no automatic persistence or side effects"
+  ],
+  "test_command": "python -m pytest tests/test_cognitive_control_point02.py -q",
+  "tests_executed": false,
+  "integration_status": "deferred-pending-adapter-contract-verification"
+}

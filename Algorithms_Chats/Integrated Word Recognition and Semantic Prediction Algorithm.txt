@@ -1,0 +1,1487 @@
+# **Integrated Word Recognition and Semantic Prediction Algorithm**
+
+**Scope:** An algorithmic model of how the human brain processes word frequency, repetition, morphology, spelling-to-sound relationships, competing word forms, ambiguous meanings, contextual expectations, and semantic prediction errors.
+
+The objective is to connect all eight mechanisms into one computational architecture, rather than describe them as eight unrelated psychological effects.
+
+I will organize the algorithm into **40 numbered operations**, grouped into eight interconnected subsystems.
+
+An important scientific distinction: the human brain does not necessarily execute these operations as literal sequential computer instructions. The algorithm below is a computational reconstruction of plausible neural computations using evidence from psycholinguistics, neuroscience, EEG, fMRI, and computational models.
+
+## **1. Overall architecture**
+
+## **Integrated word-processing architecture**
+
+**A. Word frequency effects**
+
+Long-term lexical exposure and baseline activation
+
+**B. Repetition priming**
+
+Recent activation and memory-dependent facilitation
+
+**C. Morphological decomposition**
+
+Stem, affix, morpheme and whole-word analysis
+
+**D. Spelling-sound consistency**
+
+Orthographic-to-phonological evidence
+
+**E. Orthographic neighborhood competition**
+
+Activation of similar written words and competition
+
+**F. Polysemy and homonym disambiguation**
+
+Activation and selection of possible meanings
+
+**G. Contextual word predictability**
+
+Top-down predictions from sentence context
+
+**H. Semantic prediction error**
+
+Comparison of expected and incoming semantic evidence
+
+**Integrated lexical-semantic state**
+
+Recognized word, selected meaning, uncertainty and updated context
+
+The architecture has an important property: some computations operate in parallel, while others depend on the outcome of earlier computations.
+
+For example, morphological decomposition and spelling-to-sound analysis can operate simultaneously. Both can influence lexical candidates, which then interact with contextual expectations.
+
+# **Part A — Word Frequency Effects**
+
+OPERATIONS WF-001 to WF-005
+
+## **Biological/computational objective**
+
+The brain encounters words repeatedly throughout life. Frequently encountered words generally become easier and faster to recognize than words encountered rarely.
+
+Word frequency affects lexical activation, recognition speed, and access to associated representations.
+
+Research identifies frequency as one of the strongest influences on visual word recognition. Its influence also depends on individual experience, word prevalence, and the diversity of contexts in which a word occurs.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://journals.sagepub.com\&sz=32)
+
+journals.sagepub.com+1
+
+
+
+## **Operation WF-001 — Retrieve accumulated word exposure**
+
+**Objective:** Estimate how frequently a particular word has been encountered.
+
+The lexical system maintains representations influenced by accumulated language experience.
+
+For a word \\(w\\), define:
+
+- \\(F_w\\): estimated exposure frequency.
+- \\(N_w\\): number of encounters.
+- \\(T\\): observation period.
+- \\(D_w\\): diversity of contexts in which the word was encountered.
+
+A simplified frequency estimate is:
+
+\\[ F_w=\frac{N_w}{T} \\]
+
+A more elaborate representation can distinguish exposures across language environments:
+
+\\[ F_w=\sum\_{j=1}^{m}\alpha_jN\_{w,j} \\]
+
+where \\(\alpha_j\\) weights different environments, such as conversation, reading, and listening.
+
+**Possible neural computation:**
+
+- Accumulation of experience-dependent synaptic changes.
+- Changes in the effectiveness of connections between word-form and lexical representations.
+- Long-term changes in the probability of activating a particular lexical representation.
+
+These equations describe computationally useful estimates, not a known neuron-by-neuron frequency counter.
+
+## **Operation WF-002 — Calculate logarithmic frequency strength**
+
+**Objective:** Transform accumulated exposure into a bounded or diminishing-return activation bias.
+
+A possible mathematical model is:
+
+\\[ B_w=\log(1+F_w) \\]
+
+Why use a logarithm?
+
+Suppose one word is encountered 10 times and another 100 times.
+
+Their exposure ratio is 10:1, but the difference in neural or computational readiness need not grow proportionally with that ratio.
+
+The logarithm provides diminishing returns:
+
+\\[ \frac{dB_w}{dF_w}=\frac{1}{1+F_w} \\]
+
+As exposure increases, another encounter produces progressively less additional frequency bias.
+
+## **Operation WF-003 — Construct the lexical resting activation**
+
+**Objective:** Use accumulated experience to influence the initial activation level of the word.
+
+A possible model:
+
+\\[ R_w=R_0+\beta B_w \\]
+
+where:
+
+- \\(R_0\\): baseline activation.
+- \\(\beta\\): influence of accumulated frequency.
+- \\(R_w\\): resting activation of the word representation.
+
+Consequently, a familiar word starts closer to its recognition threshold than an unfamiliar word.
+
+The resting-activation concept is an established feature of computational visual-word-recognition models, including activation-based lexical models.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+## **Operation WF-004 — Adjust lexical activation thresholds**
+
+**Objective:** Make strongly established lexical representations easier to activate.
+
+One possible formulation is:
+
+\\[ \theta_w=\theta_0-\gamma B_w \\]
+
+where:
+
+- \\(\theta_0\\): initial recognition threshold.
+- \\(\theta_w\\): adjusted threshold.
+- \\(\gamma\\): frequency influence.
+
+The word can therefore reach its recognition condition with less additional evidence.
+
+This does not mean that neurons literally calculate a logarithm or subtract a threshold. It is a mathematical description of experience-dependent changes in activation dynamics.
+
+## **Operation WF-005 — Generate frequency-conditioned activation**
+
+**Objective:** Send the frequency-derived activation into the subsequent word recognition process.
+
+The initial word activation can be represented as:
+
+\\[ A_w^{(0)} = f(V_w+B_w) \\]
+
+where:
+
+- \\(V_w\\): current orthographic evidence.
+- \\(B_w\\): accumulated frequency bias.
+- \\(f\\): a nonlinear activation function.
+
+A sigmoid is one possible approximation:
+
+\\[ f(x)=\frac{1}{1+e^{-x}} \\]
+
+The resulting activity becomes one input to subsequent lexical competition.
+
+Part A output
+
+A frequency-conditioned activation state for each plausible lexical candidate.
+
+# **Part B — Repetition Priming**
+
+OPERATIONS RP-006 to RP-010
+
+## **Biological/computational objective**
+
+Repetition priming occurs when a recent encounter with a stimulus facilitates processing of the same or a related stimulus.
+
+For example:
+
+1. The brain recognizes the word HOUSE.
+2. Shortly afterward, it encounters HOUSE again.
+3. The second encounter can be processed more efficiently.
+
+Experiments have found repetition-related reductions in activation in visual word-processing regions, including the left fusiform gyrus, even when the prime is masked and its case differs from the target. ERP studies also show repetition-related changes across several processing stages.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.nature.com\&sz=32)
+
+nature.com+1
+
+
+
+## **Operation RP-006 — Retrieve recent lexical activation history**
+
+**Objective:** Determine whether the current word resembles a recently encountered word.
+
+The system retrieves recent activation traces:
+
+\\[ M=\\{m_1,m_2,\ldots,m_n\\} \\]
+
+Each trace may contain:
+
+- Orthographic identity.
+- Phonological representation.
+- Lexical representation.
+- Semantic features.
+- Encounter time.
+- Context of occurrence.
+
+## **Operation RP-007 — Calculate stimulus similarity**
+
+**Objective:** Determine how much the incoming word overlaps with recent memory traces.
+
+For current word \\(w\\) and remembered word \\(m_i\\):
+
+\\[ S(w,m_i)= \frac{\mathbf{x}\_w\cdot\mathbf{x}\_{m_i}} {\\|\mathbf{x}\_w\\|\\|\mathbf{x}\_{m_i}\\|} \\]
+
+This is cosine similarity.
+
+A higher similarity means stronger overlap between their representations.
+
+The similarity can be evaluated independently for orthographic, phonological, and semantic channels.
+
+## **Operation RP-008 — Calculate temporal decay**
+
+**Objective:** Reduce the influence of older activation traces.
+
+A simple exponential decay model:
+
+\\[ P_i(t)=P\_{i,0}e^{-\Delta t/\tau} \\]
+
+where:
+
+- \\(P\_{i,0}\\): initial priming strength.
+- \\(\Delta t\\): elapsed time.
+- \\(\tau\\): decay constant.
+
+A more elaborate model may contain fast and slow components:
+
+\\[ P_i(t)= a e^{-\Delta t/\tau_f} + b e^{-\Delta t/\tau_s} \\]
+
+This allows a short-lived activation effect to coexist with more persistent memory-related facilitation.
+
+## **Operation RP-009 — Generate repetition-dependent facilitation**
+
+**Objective:** Increase the readiness of representations that overlap with recent encounters.
+
+\\[ G_w= \sum_i P_i(t)S(w,m_i) \\]
+
+The priming contribution can then be added to lexical activation:
+
+\\[ A_w'=A_w+\lambda_pG_w \\]
+
+Importantly, repetition priming may affect different processing levels independently:
+
+- Orthographic processing.
+- Phonological processing.
+- Lexical access.
+- Semantic activation.
+
+## **Operation RP-010 — Apply repetition-related neural adaptation**
+
+**Objective:** Model the changes associated with repeated stimulation.
+
+A possible adaptation model is:
+
+\\[ N_w(t)=N\_{\max}(1-\kappa P_w(t)) \\]
+
+where \\(N_w\\) describes a modeled neural-response magnitude.
+
+This captures repetition suppression: a repeated stimulus can produce a smaller measured response while being processed more efficiently.
+
+There is an important distinction here:
+
+- Facilitation refers to improved subsequent processing.
+- Repetition suppression refers to reduced neural response under particular measurement conditions.
+
+They are related phenomena, but they are not identical mechanisms.
+
+Part B output
+
+A recent-experience activation bias, together with updated repetition-related response characteristics.
+
+# **Part C — Morphological Decomposition**
+
+OPERATIONS MD-011 to MD-015
+
+## **Biological/computational objective**
+
+Morphology concerns how words are constructed from meaningful components.
+
+For example:
+
+\\[ \text{unhappiness} = \text{un}+\text{happy}+\text{ness} \\]
+
+The brain can use information from:
+
+- Roots.
+- Prefixes.
+- Suffixes.
+- Inflectional endings.
+- Derivational structures.
+
+A morphological analysis can help access the meaning of a complex word even when its complete form is less familiar.
+
+There are competing scientific accounts: some emphasize explicit morpheme decomposition, while others explain morphological sensitivity through distributed representations that learn statistical regularities between word forms and meanings. The most useful computational architecture should accommodate both.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov+1
+
+
+
+## **Operation MD-011 — Detect possible morphological boundaries**
+
+**Objective:** Identify possible locations where a complex word could be separated into morphemes.
+
+Given the character sequence:
+
+`unhappiness`
+
+The system generates segmentation hypotheses:
+
+\\[ H_1=[\text{un},\text{happy},\text{ness}] \\]
+
+It may also consider a whole-word representation:
+
+\\[ H_2=[\text{unhappiness}] \\]
+
+Possible computations include:
+
+- Detection of recurring letter sequences.
+- Boundary probability estimation.
+- Comparison against learned morphological patterns.
+- Evaluation of possible root and affix positions.
+
+A segmentation hypothesis can be represented as:
+
+\\[ P(H\mid w) \\]
+
+## **Operation MD-012 — Evaluate stem and affix candidates**
+
+**Objective:** Determine whether the proposed components correspond to plausible learned morphological units.
+
+For each component \\(m\\):
+
+\\[ A_m= \alpha O_m+\beta L_m+\gamma F_m \\]
+
+where:
+
+- \\(O_m\\): orthographic compatibility.
+- \\(L_m\\): learned lexical/morphological strength.
+- \\(F_m\\): frequency contribution.
+
+A component becomes a stronger candidate when it matches a recurring learned pattern.
+
+## **Operation MD-013 — Retrieve morpheme-associated meanings**
+
+**Objective:** Retrieve semantic and grammatical information associated with each component.
+
+For example:
+
+| Morpheme | Possible contribution    |
+| -------- | ------------------------ |
+| un-      | Negation or reversal     |
+| happy    | Positive emotional state |
+| -ness    | Noun-forming derivation  |
+
+The semantic representation may be expressed as:
+
+\\[ \mathbf{m}\_{word} = \mathbf{m}\_{stem} + \mathbf{m}\_{prefix} + \mathbf{m}\_{suffix} \\]
+
+The addition is illustrative. The actual semantic composition may be nonlinear and may depend on the particular word and language.
+
+## **Operation MD-014 — Evaluate morphological composition**
+
+**Objective:** Determine whether the individual components combine into a plausible whole-word interpretation.
+
+One possible scoring function is:
+
+\\[ S(H)= \log P(O\mid H) + \log P(M\mid H) + \log P(G\mid H) \\]
+
+where:
+
+- \\(O\\): observed spelling.
+- \\(M\\): semantic interpretation.
+- \\(G\\): grammatical/morphological constraints.
+- \\(H\\): a proposed decomposition.
+
+The best-supported morphological interpretation receives greater activation.
+
+## **Operation MD-015 — Integrate whole-word and decomposed representations**
+
+**Objective:** Maintain both whole-word and morpheme-based processing.
+
+This is important because not all complex words are equally transparent.
+
+A familiar word may activate its complete lexical representation quickly, while an unfamiliar complex word may benefit more from its components.
+
+A possible integration:
+
+\\[ A\_{word} = \lambda A\_{whole} + (1-\lambda)A\_{morpheme} \\]
+
+The weight \\(\lambda\\) depends on learned experience, morphological structure, and evidence quality.
+
+Part C output
+
+A whole-word representation accompanied by possible morpheme identities, grammatical features, and compositional semantic evidence.
+
+# **Part D — Spelling-Sound Consistency**
+
+SSC-016 to SSC-020
+
+## **Biological/computational objective**
+
+The written form of a word can activate possible pronunciations.
+
+The relationship between spelling and pronunciation differs across languages and across words within a language.
+
+Consider English:
+
+- CAT: relatively regular spelling-to-sound correspondences.
+- PINT: an irregular relationship.
+- THOUGH: a spelling sequence whose pronunciation is difficult to infer from simpler correspondences.
+
+This mechanism concerns the consistency of orthographic-to-phonological mappings.
+
+Neuroimaging research has identified spelling-to-sound consistency effects involving left frontal and motor regions during reading aloud.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov
+
+
+
+## **Operation SSC-016 — Generate candidate grapheme-to-phoneme correspondences**
+
+**Objective:** Divide the orthographic input into units that can contribute to pronunciation.
+
+For example:
+
+`SHIP`
+
+Possible units:
+
+\\[ SH+I+P \\]
+
+Each unit activates associated phonological candidates.
+
+Mathematically:
+
+\\[ G=\\{g_1,g_2,\ldots,g_n\\} \\]
+
+The system retrieves possible mappings for each grapheme or grapheme combination.
+
+## **Operation SSC-017 — Calculate mapping consistency**
+
+**Objective:** Estimate how reliably a grapheme predicts a particular phoneme.
+
+For grapheme \\(g\\) and phoneme \\(p\\):
+
+\\[ P(p\mid g)= \frac{N(g,p)}{\sum_qN(g,q)} \\]
+
+where \\(N(g,p)\\) represents learned association strength.
+
+Consistency can be measured as:
+
+\\[ C(g,p)=P(p\mid g) \\]
+
+High consistency means the grapheme usually corresponds to the same phoneme.
+
+Another useful measurement is mapping entropy:
+
+\\[ H(P\mid g)= -\sum_pP(p\mid g)\log P(p\mid g) \\]
+
+Low entropy means a relatively predictable correspondence.
+
+High entropy means multiple pronunciations are associated with the same spelling unit.
+
+## **Operation SSC-018 — Activate competing pronunciation representations**
+
+**Objective:** Generate multiple possible phonological sequences.
+
+The system can operate through two routes:
+
+1. Lexical route: retrieve pronunciation from a stored word representation.
+2. Sublexical route: assemble pronunciation using grapheme-to-phoneme correspondences.
+
+For example:
+
+\\[ P\_{lexical}(\phi\mid w) \\]
+
+and
+
+\\[ P\_{sublexical}(\phi\mid G) \\]
+
+are two sources of pronunciation evidence.
+
+## **Operation SSC-019 — Weight pronunciation alternatives**
+
+**Objective:** Combine the two routes according to the available evidence.
+
+\\[ P(\phi\mid w)= \lambda_lP\_{lexical}(\phi\mid w) + \lambda_sP\_{sublexical}(\phi\mid G) \\]
+
+The weights can depend on:
+
+- Word familiarity.
+- Mapping consistency.
+- Irregularity.
+- Quality of orthographic evidence.
+- Availability of stored pronunciation.
+
+This is especially important when the sublexical route generates an incorrect or competing pronunciation.
+
+## **Operation SSC-020 — Send phonological evidence into lexical recognition**
+
+**Objective:** Make phonological compatibility available to word recognition.
+
+A phonological match score can be:
+
+\\[ S\_{phon}(w)= \operatorname{Similarity} (\phi\_{observed},\phi\_{candidate}) \\]
+
+This score contributes to word candidate activation, but must remain distinct from visual spelling evidence.
+
+Part D output
+
+A phonological representation containing candidate pronunciations, consistency measurements, and route-specific confidence.
+
+# **Part E — Orthographic Neighborhood Competition**
+
+ONC-021 to ONC-025
+
+## **Biological/computational objective**
+
+When the brain encounters a written word, it does not necessarily activate only one lexical representation.
+
+Similar words can become partially activated simultaneously.
+
+For example:
+
+- CAT
+- BAT
+- CAR
+- CAN
+- CAP
+
+These words share orthographic information.
+
+Their representations can compete for recognition.
+
+Computational models of visual word recognition, particularly Interactive Activation models, describe this process using activation and lateral inhibition between competing lexical representations. However, neighborhood effects can be facilitatory or inhibitory depending on neighborhood composition, word frequency, and processing task.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+## **Operation ONC-021 — Generate orthographic neighbors**
+
+**Objective:** Retrieve words that resemble the incoming word in spelling.
+
+A simple definition uses single-letter substitutions.
+
+For example:
+
+\\[ N(\text{CAT})= \\{\text{BAT},\text{CAR},\text{CAN},\text{CAP},\ldots\\} \\]
+
+The system can also consider:
+
+- Letter insertions.
+- Letter deletions.
+- Letter substitutions.
+- Shared bigrams.
+- Shared ordered letter sequences.
+- Position-sensitive similarities.
+
+One possible similarity metric is normalized edit distance:
+
+\\[ S(w_i,w_j)= 1-\frac{d(w_i,w_j)} {\max(|w_i|,|w_j|)} \\]
+
+where \\(d\\) is Levenshtein distance.
+
+The system creates a neighborhood:
+
+\\[ N_w=\\{w_1,w_2,\ldots,w_n\\} \\]
+
+## **Operation ONC-022 — Calculate neighborhood strength**
+
+**Objective:** Estimate how strongly each neighboring word is represented.
+
+A neighbor's activation may be determined by:
+
+\\[ A_j=B_j+V_j+P_j \\]
+
+where:
+
+- \\(B_j\\): frequency-related baseline activation.
+- \\(V_j\\): orthographic evidence.
+- \\(P_j\\): repetition-priming contribution.
+
+An important detail is that two equally similar neighbors may not have equal activation.
+
+A highly familiar word can have a stronger lexical representation than an uncommon word.
+
+## **Operation ONC-023 — Calculate shared orthographic activation**
+
+**Objective:** Identify how much overlapping spelling information supports multiple candidates.
+
+Suppose CAT and BAT both activate the letter units A and T.
+
+Shared character features can increase the initial activation of multiple candidates:
+
+\\[ E_w=\sum\_{j\in N_w}S(w,j)A_j \\]
+
+This represents the combined neighborhood evidence.
+
+The biological interpretation is that shared orthographic features activate overlapping populations of lexical representations.
+
+## **Operation ONC-024 — Apply competitive inhibition**
+
+**Objective:** Reduce the activation of competing candidates when they cannot all represent the same recognized word.
+
+An illustrative competition equation is:
+
+\\[ I_w= \sum\_{j\neq w}K\_{wj}A_j \\]
+
+where:
+
+- \\(K\_{wj}\\): inhibitory coupling between candidates.
+- \\(A_j\\): activation of competing candidate \\(j\\).
+
+The net activation becomes:
+
+\\[ A_w'=A_w+E_w-\lambda_iI_w \\]
+
+Here, \\(\lambda_i\\) controls inhibitory strength.
+
+This operation should not be interpreted as universal inhibition from every neighbor. Some neighbors provide useful familiarity or partial evidence, while particular strongly activated neighbors may interfere with the target.
+
+## **Operation ONC-025 — Settle the lexical competition**
+
+**Objective:** Allow candidate activation to stabilize through repeated interaction.
+
+A recurrent update can be represented as:
+
+\\[ A_w^{(t+1)} = (1-\rho)A_w^{(t)} + \rho f\left( B_w+V_w+G_w+E_w-\lambda_iI_w \right) \\]
+
+where:
+
+- \\(B_w\\): frequency.
+- \\(V_w\\): visual evidence.
+- \\(G_w\\): repetition priming.
+- \\(E_w\\): neighborhood excitation.
+- \\(I_w\\): competition.
+- \\(f\\): nonlinear activation function.
+- \\(\rho\\): update rate.
+
+The system repeats the update until:
+
+\\[ \max_w|A_w^{(t+1)}-A_w^{(t)}|<\epsilon \\]
+
+or a predetermined processing limit is reached.
+
+Part E output
+
+A set of competing lexical candidates with individual activation levels, similarities, and competition values.
+
+# **Part F — Polysemy and Homonym Disambiguation**
+
+PHD-026 to PHD-030
+
+## **Biological/computational objective**
+
+A recognized word does not necessarily have one meaning.
+
+There are two important cases:
+
+**Polysemy:** A word has several related meanings.
+
+Example:
+
+- Head of a person.
+- Head of an organization.
+- Head of a table.
+
+**Homonymy:** The same word form has different, relatively unrelated meanings.
+
+Example:
+
+- Bank: financial institution.
+- Bank: side of a river.
+
+The lexical form must therefore be connected to an appropriate meaning representation.
+
+Contextual information plays an important role in this process. Studies of ambiguous words find that meanings compatible with the sentence context can remain preferentially activated during later processing.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov
+
+
+
+## **Operation PHD-026 — Detect semantic ambiguity**
+
+**Objective:** Determine whether the recognized lexical representation is associated with multiple meanings.
+
+For word \\(w\\), retrieve:
+
+\\[ S_w=\\{s_1,s_2,\ldots,s_n\\} \\]
+
+where each \\(s_i\\) represents a possible sense.
+
+For example:
+
+\\[ S\_{\text{bank}}= \\{ \text{FINANCIAL}, \text{RIVER\\\_EDGE} \\} \\]
+
+The system should not prematurely discard alternative meanings.
+
+## **Operation PHD-027 — Generate prior probabilities for meanings**
+
+**Objective:** Estimate how likely each meaning is before considering the current sentence.
+
+A possible prior is:
+
+\\[ P(s_i\mid w)= \frac{F\_{s_i}} {\sum_jF\_{s_j}} \\]
+
+where \\(F\_{s_i}\\) represents the estimated experience frequency of sense \\(s_i\\).
+
+A particular meaning may have a higher prior because it is encountered more frequently.
+
+Importantly, sense frequency and word frequency are separate quantities:
+
+- Word frequency measures encounters with the word form.
+- Sense frequency measures encounters with a particular interpretation.
+
+## **Operation PHD-028 — Retrieve meaning-specific semantic features**
+
+**Objective:** Activate the semantic features associated with each possible interpretation.
+
+For example:
+
+| Meaning        | Possible semantic features     |
+| -------------- | ------------------------------ |
+| Financial bank | MONEY, ACCOUNT, LOAN, BUILDING |
+| River bank     | WATER, LAND, SHORE, GEOGRAPHY  |
+
+Each sense can be represented by a semantic feature vector:
+
+\\[ \mathbf{s}\_i= (s\_{i1},s\_{i2},\ldots,s\_{ik}) \\]
+
+The system also retrieves associated conceptual, functional, and relational information.
+
+These features can be activated in distributed semantic networks and combined with multimodal information.
+
+## **Operation PHD-029 — Calculate contextual compatibility**
+
+**Objective:** Determine which possible meaning best fits the surrounding linguistic information.
+
+For each candidate meaning:
+
+\\[ C_i= \operatorname{Similarity}( \mathbf{s}\_i,\mathbf{C}\_{sentence} ) \\]
+
+where \\(\mathbf{C}\_{sentence}\\) represents the semantic information available from the sentence.
+
+For example:
+
+"The fisherman sat on the bank."
+
+The words fisherman and sat provide contextual evidence favoring the river-edge interpretation.
+
+A possible Bayesian calculation is:
+
+\\[ P(s_i\mid w,C) = \frac{P(C\mid s_i,w)P(s_i\mid w)} {\sum_jP(C\mid s_j,w)P(s_j\mid w)} \\]
+
+This combines:
+
+1. Prior sense frequency.
+2. Contextual compatibility.
+3. Evidence from the recognized lexical representation.
+
+## **Operation PHD-030 — Select or retain competing meanings**
+
+**Objective:** Determine whether the available evidence supports one meaning sufficiently strongly.
+
+The system can use:
+
+\\[ s^\*=\arg\max_iP(s_i\mid w,C) \\]
+
+However, selection should depend on uncertainty as well as maximum probability.
+
+One possible measure is semantic entropy:
+
+\\[ H(S)=-\sum_iP(s_i\mid w,C)\log P(s_i\mid w,C) \\]
+
+- Low entropy: one interpretation strongly dominates.
+- High entropy: several interpretations remain plausible.
+
+The system should retain alternatives if the contextual evidence is insufficient.
+
+This is important because ambiguity resolution is not always immediate or complete.
+
+Part F output
+
+A selected or unresolved meaning representation, together with competing interpretations and their contextual probabilities.
+
+# **Part G — Contextual Word Predictability**
+
+CWP-031 to CWP-035
+
+## **Biological/computational objective**
+
+The brain processes words using information from the preceding sentence and broader linguistic context.
+
+Consider:
+
+"The farmer harvested the..."
+
+Possible upcoming words might include:
+
+- Crops.
+- Wheat.
+- Vegetables.
+- Field.
+
+The preceding information constrains the possibilities.
+
+Rather than waiting for every word to arrive, the brain can form expectations about likely upcoming linguistic and semantic information.
+
+Predictability influences reading behavior and neural responses. Research also indicates that frequency and contextual predictability can contribute partly independently to word-processing activity.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+## **Operation CWP-031 — Construct the current sentence context**
+
+**Objective:** Maintain a representation of previously processed linguistic information.
+
+Let the context state be:
+
+\\[ \mathbf{C}\_t= \\{w_1,w_2,\ldots,w\_{t-1}\\} \\]
+
+A more useful representation contains:
+
+- Previously recognized words.
+- Their semantic features.
+- Grammatical information.
+- Relationships between concepts.
+- Topic and discourse information.
+- Uncertainty about previous interpretations.
+
+The context state can be updated incrementally:
+
+\\[ \mathbf{C}\_{t} = f(\mathbf{C}\_{t-1},\mathbf{M}\_{t-1}) \\]
+
+where \\(\mathbf{M}\_{t-1}\\) represents the previous word's semantic information.
+
+## **Operation CWP-032 — Generate upcoming word predictions**
+
+**Objective:** Estimate probabilities for possible upcoming words.
+
+A computational model can calculate:
+
+\\[ P(w_t\mid C_t) \\]
+
+For example:
+
+\\[ P(\text{crops}\mid C_t)=0.45 \\]
+
+\\[ P(\text{wheat}\mid C_t)=0.30 \\]
+
+\\[ P(\text{vegetables}\mid C_t)=0.15 \\]
+
+\\[ P(\text{other}\mid C_t)=0.10 \\]
+
+These are illustrative probabilities, not experimentally measured brain values.
+
+The brain can generate distributed expectations involving several possible words or concepts rather than necessarily predicting one exact word.
+
+## **Operation CWP-033 — Calculate contextual predictability**
+
+**Objective:** Determine how strongly the context constrains an upcoming word.
+
+One measure is contextual surprisal:
+
+\\[ I(w_t\mid C_t) = -\log P(w_t\mid C_t) \\]
+
+When the probability of a word is high, its surprisal is low.
+
+When its probability is low, surprisal is high.
+
+Another measure is contextual uncertainty:
+
+\\[ H(W\mid C_t) = -\sum_wP(w\mid C_t)\log P(w\mid C_t) \\]
+
+This indicates how many plausible alternatives remain.
+
+Low entropy means the context strongly constrains upcoming words.
+
+High entropy means the context permits many alternatives.
+
+## **Operation CWP-034 — Pre-activate expected lexical and semantic features**
+
+**Objective:** Use contextual predictions to prepare relevant representations before the next word arrives.
+
+For each possible upcoming word, retrieve its feature representation:
+
+\\[ \boldsymbol{\phi}(w) \\]
+
+The predicted semantic state is:
+
+\\[ \hat{\boldsymbol{\phi}}\_{t} = \sum_wP(w\mid C_t)\boldsymbol{\phi}(w) \\]
+
+This generates an expected semantic feature pattern.
+
+For example, after "The farmer harvested the...", expected features might include:
+
+- PLANT.
+- FOOD.
+- AGRICULTURE.
+- GROWTH.
+- CROP.
+
+The predicted representation can influence activity in lexical and semantic networks.
+
+## **Operation CWP-035 — Modulate predictions according to context reliability**
+
+**Objective:** Prevent unreliable contextual expectations from dominating actual incoming information.
+
+The system should estimate how reliable the contextual prediction is.
+
+Let:
+
+\\[ \pi_C=\frac{1}{\sigma_C^2+\epsilon} \\]
+
+where \\(\sigma_C^2\\) represents contextual uncertainty.
+
+A reliable context receives greater predictive influence.
+
+An ambiguous or unreliable context receives less.
+
+This is a precision-weighting principle: information with lower estimated uncertainty can exert greater influence over the integration process.
+
+Part G output
+
+A predicted lexical distribution, an expected semantic feature state, contextual entropy, and a reliability estimate.
+
+# **Part H — Semantic Prediction Error**
+
+SPE-036 to SPE-040
+
+## **Biological/computational objective**
+
+This subsystem compares what the brain expected to encounter with the actual information arriving from the recognized word.
+
+For example:
+
+Expected sentence:
+
+"The farmer harvested the crops."
+
+Actual sentence:
+
+"The farmer harvested the engine."
+
+The word *engine* is recognizable, but its semantic features differ considerably from the expected semantic features.
+
+The system must evaluate this discrepancy and update its interpretation of the sentence.
+
+This is related to predictive-processing models of language comprehension and research on the N400 event-related potential.
+
+A recent computational predictive-coding model has demonstrated how lexical-semantic prediction errors can account for several N400 effects involving contextual probability, lexical properties, and priming. However, the precise neural interpretation of the N400 remains debated.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+## **Operation SPE-036 — Construct the incoming semantic representation**
+
+**Objective:** Retrieve the semantic features associated with the recognized word and its selected meaning.
+
+Let the incoming word be \\(w_t\\).
+
+Retrieve its semantic feature representation:
+
+\\[ \mathbf{x}\_t= [x_1,x_2,\ldots,x_n] \\]
+
+For example, ENGINE could activate:
+
+| Semantic feature | Activation (illustrative) |
+| ---------------- | ------------------------- |
+| MACHINE          | 0.95                      |
+| MECHANICAL       | 0.90                      |
+| TRANSPORT        | 0.80                      |
+| ENERGY           | 0.85                      |
+| AGRICULTURE      | 0.10                      |
+
+The representation can receive contributions from:
+
+- Lexical meaning.
+- Morphological composition.
+- Phonological associations.
+- Distributed semantic features.
+- Selected interpretation of an ambiguous word.
+
+Observed and inferred features should remain distinguishable.
+
+## **Operation SPE-037 — Calculate the semantic prediction residual**
+
+**Objective:** Compare the incoming semantic representation with the predicted semantic representation.
+
+Let:
+
+\\[ \hat{\mathbf{x}}\_t \\]
+
+be the expected semantic state from Part G.
+
+The prediction residual is:
+
+\\[ \boldsymbol{\varepsilon}\_t = \mathbf{x}\_t-\hat{\mathbf{x}}\_t \\]
+
+For each feature:
+
+\\[ \varepsilon_i=x_i-\hat{x}\_i \\]
+
+A positive error means the incoming feature is stronger than expected.
+
+A negative error means the incoming feature is weaker than expected.
+
+For example:
+
+| Feature    | Expected | Actual | Residual |
+| ---------- | -------- | ------ | -------- |
+| PLANT      | 0.90     | 0.05   | -0.85    |
+| FOOD       | 0.80     | 0.02   | -0.78    |
+| MACHINE    | 0.05     | 0.95   | +0.90    |
+| MECHANICAL | 0.02     | 0.90   | +0.88    |
+
+The brain now has information that its current semantic expectations do not adequately explain the incoming word.
+
+## **Operation SPE-038 — Calculate precision-weighted semantic error**
+
+**Objective:** Determine the importance of the mismatch, considering the reliability of the incoming and predicted information.
+
+Not every difference is equally important.
+
+For example, a weakly activated feature may be unreliable, whereas a strongly supported feature may be more informative.
+
+A possible weighted error is:
+
+\\[ \boldsymbol{\varepsilon}\_p = \boldsymbol{\Pi} (\mathbf{x}\_t-\hat{\mathbf{x}}\_t) \\]
+
+where \\(\boldsymbol{\Pi}\\) is a precision matrix.
+
+The overall prediction-error energy can be estimated as:
+
+\\[ E_t= \frac{1}{2} \boldsymbol{\varepsilon}\_t^T \boldsymbol{\Pi} \boldsymbol{\varepsilon}\_t \\]
+
+This equation combines:
+
+- Difference between expectation and observation.
+- Reliability of each semantic feature.
+- Relative importance of the detected discrepancy.
+
+In an actual neural system, precision is not necessarily represented as an explicit matrix. This is a mathematical approximation of confidence-sensitive neural processing.
+
+An important related observation is the N400 component, whose amplitude is generally sensitive to semantic expectancy and contextual probability. It is not, however, a direct measurement of the mathematical error variable defined above.
+
+## **Operation SPE-039 — Update the semantic interpretation**
+
+**Objective:** Revise the internal semantic representation using incoming evidence.
+
+A simple correction model is:
+
+\\[ \mathbf{C}\_{t}^{new} = \mathbf{C}\_{t}^{old} + \eta\boldsymbol{\Pi} (\mathbf{x}\_t-\hat{\mathbf{x}}\_t) \\]
+
+where \\(\eta\\) controls the update rate.
+
+This correction can influence:
+
+- The interpretation of the current sentence.
+- The relevance of previously activated concepts.
+- Expectations about upcoming words.
+- The activation of alternative interpretations.
+- The strength of the current situation representation.
+
+The correction does not necessarily erase the earlier interpretation. Some information may need to be retained until the sentence becomes sufficiently clear.
+
+A Bayesian alternative is:
+
+\\[ P(M\mid E,C) \propto P(E\mid M,C)P(M\mid C) \\]
+
+where \\(M\\) is a possible interpretation and \\(E\\) is the incoming semantic evidence.
+
+## **Operation SPE-040 — Update the prediction system for subsequent words**
+
+**Objective:** Use the newly interpreted word to construct an updated context for the next processing cycle.
+
+The context is updated:
+
+\\[ \mathbf{C}\_{t+1} = (1-\eta_c)\mathbf{C}\_t + \eta_c\mathbf{x}\_t^{updated} \\]
+
+The brain can now generate a new prediction:
+
+\\[ P(w\_{t+1}\mid C\_{t+1}) \\]
+
+The entire sequence repeats as additional words arrive.
+
+Part H output
+
+An updated semantic state, a measured prediction-error representation, revised contextual expectations, and an uncertainty estimate.
+
+# **2. Master integrated algorithm**
+
+Now we connect all 40 operations into one algorithm.
+
+The most important architectural decision is that these processes are not eight independent pipelines.
+
+They influence one another.
+
+For example:
+
+- Word frequency affects the initial activation of lexical candidates.
+- Repetition priming changes their readiness.
+- Morphological and phonological information provides additional evidence.
+- Orthographic neighbors compete with one another.
+- Context influences which lexical and semantic candidates become dominant.
+- Prediction errors revise the current interpretation and influence the next processing cycle.
+
+## **2.1 Global mathematical representation**
+
+We can represent the activation of candidate word \\(w\\) as:
+
+\\[ A_w^{(0)} = f( V_w+ B_w+ G_w+ M_w+ P_w ) \\]
+
+where:
+
+| Symbol    | Meaning                         |
+| --------- | ------------------------------- |
+| \\(V_w\\) | Orthographic evidence           |
+| \\(B_w\\) | Word-frequency bias             |
+| \\(G_w\\) | Repetition-priming contribution |
+| \\(M_w\\) | Morphological contribution      |
+| \\(P_w\\) | Phonological contribution       |
+
+Lexical competition subsequently modifies the candidate activation:
+
+\\[ A_w^{(t+1)} = (1-\rho)A_w^{(t)} + \rho f \left( A_w^{(0)} + E_w^{(t)} - I_w^{(t)} + T_w^{(t)} \right) \\]
+
+where:
+
+- \\(E_w\\): excitatory evidence from related representations.
+- \\(I_w\\): inhibitory competition.
+- \\(T_w\\): contextual and semantic feedback.
+- \\(\rho\\): recurrent update rate.
+
+The selected word activates possible meanings, which are subsequently evaluated against the sentence context.
+
+Finally:
+
+\\[ \boxed{ \text{Recognition} \rightarrow \text{Semantic interpretation} \rightarrow \text{Prediction error} \rightarrow \text{Context update} } \\]
+
+## **2.2 Complete operation sequence**
+
+## **40-operation execution registry**
+
+**A. Word frequency**
+
+WF-001–005
+
+**1**
+
+Retrieve accumulated word exposure
+
+**2**
+
+Calculate logarithmic frequency strength
+
+**3**
+
+Construct lexical resting activation
+
+**4**
+
+Adjust lexical activation thresholds
+
+**5**
+
+Generate frequency-conditioned activation
+
+**B. Repetition priming**
+
+RP-006–010
+
+**6**
+
+Retrieve recent lexical activation history
+
+**7**
+
+Calculate stimulus similarity
+
+**8**
+
+Calculate temporal decay
+
+**9**
+
+Generate repetition-dependent facilitation
+
+**10**
+
+Apply repetition-related neural adaptation
+
+**C. Morphological decomposition**
+
+MD-011–015
+
+**11**
+
+Detect possible morphological boundaries
+
+**12**
+
+Evaluate stem and affix candidates
+
+**13**
+
+Retrieve morpheme-associated meanings
+
+**14**
+
+Evaluate morphological composition
+
+**15**
+
+Integrate whole-word and decomposed representations
+
+**D. Spelling-sound consistency**
+
+SSC-016–020
+
+**16**
+
+Generate grapheme-to-phoneme correspondences
+
+**17**
+
+Calculate mapping consistency
+
+**18**
+
+Activate competing pronunciations
+
+**19**
+
+Weight pronunciation alternatives
+
+**20**
+
+Send phonological evidence into lexical recognition
+
+**E. Orthographic neighborhood**
+
+ONC-021–025
+
+**21**
+
+Generate orthographic neighbors
+
+**22**
+
+Calculate neighborhood strength
+
+**23**
+
+Calculate shared orthographic activation
+
+**24**
+
+Apply competitive inhibition
+
+**25**
+
+Settle lexical competition
+
+**F. Semantic disambiguation**
+
+PHD-026–030
+
+**26**
+
+Detect semantic ambiguity
+
+**27**
+
+Generate prior probabilities for meanings
+
+**28**
+
+Retrieve meaning-specific features
+
+**29**
+
+Calculate contextual compatibility
+
+**30**
+
+Select or retain competing meanings
+
+**G. Contextual predictability**
+
+CWP-031–035
+
+**31**
+
+Construct the current sentence context
+
+**32**
+
+Generate upcoming word predictions
+
+**33**
+
+Calculate contextual predictability
+
+**34**
+
+Pre-activate expected features
+
+**35**
+
+Modulate predictions by reliability
+
+**H. Semantic prediction error**
+
+SPE-036–040
+
+**36**
+
+Construct incoming semantic representation
+
+**37**
+
+Calculate semantic prediction residual
+
+**38**
+
+Calculate precision-weighted error
+
+**39**
+
+Update semantic interpretation
+
+**40**
+
+Update predictions for subsequent words
+
+## **2.3 Master pseudocode**
+
+The following pseudocode describes how the complete architecture could be implemented in a computer simulation.
+
+```
+def integrated_word_processing(word, sentence_context, memory):    # A. Word frequency    frequency = retrieve_word_frequency(word, memory)    frequency_bias = logarithmic_frequency(frequency)    lexical_activation = initialize_lexical_activation(        word, frequency_bias    )    # B. Repetition priming    recent_traces = retrieve_recent_word_traces(word, memory)    repetition_strength = calculate_repetition_priming(        word, recent_traces    )    lexical_activation += repetition_strength    # C. Morphological processing    morphological_candidates = generate_morpheme_hypotheses(word)    morphological_features = retrieve_morpheme_features(        morphological_candidates    )    morphology_score = evaluate_morphological_composition(        word, morphological_candidates, morphological_features    )    # D. Spelling-sound consistency    phonological_candidates = generate_pronunciation_hypotheses(word)    consistency = calculate_spelling_sound_consistency(        word, phonological_candidates    )    phonology_score = evaluate_phonological_evidence(        phonological_candidates, consistency    )    # E. Orthographic competition    neighbors = retrieve_orthographic_neighbors(word)
+```
+
+The key feature is that the process is recurrent. The output of semantic interpretation becomes input to subsequent prediction and interpretation.
+
+# **3. The mathematical operations involved**
+
+The different subsystems can be understood through a relatively small collection of mathematical operations.
+
+| Mathematical operation             | Application                                        |
+| ---------------------------------- | -------------------------------------------------- |
+| Counting and accumulation          | Word exposure and repetition history               |
+| Logarithmic transformation         | Frequency effects and diminishing returns          |
+| Exponential decay                  | Priming strength over time                         |
+| Vector similarity                  | Repetition, morphology, and semantic compatibility |
+| Segmentation and sequence matching | Morphological decomposition                        |
+| Conditional probability            | Spelling-to-sound consistency                      |
+| Entropy                            | Pronunciation and meaning uncertainty              |
+| Weighted summation                 | Integration of lexical evidence                    |
+| Lateral inhibition                 | Lexical and semantic competition                   |
+| Recurrent updating                 | Lexical settling and contextual refinement         |
+| Bayesian inference                 | Sense disambiguation                               |
+| Conditional probability            | Contextual word predictability                     |
+| Logarithmic surprisal              | Unexpectedness of incoming words                   |
+| Vector subtraction                 | Semantic prediction error                          |
+| Precision weighting                | Reliability-sensitive error processing             |
+| Gradient-like updating             | Revision of internal predictions                   |
+
+These are candidate mathematical descriptions of neural computations. They should not all be treated as experimentally established biological mechanisms.
+
+# **4. Important biological architecture considerations**
+
+There are four properties that should be preserved when translating this algorithm into a brain-inspired computational system.
+
+**1. Parallel processing**
+
+Morphology, phonology, orthographic activation, frequency, and repetition can influence word recognition concurrently.
+
+A strictly serial implementation would be a useful first approximation, but it would not capture all the interactions.
+
+**2. Recurrent processing**
+
+Word recognition should not terminate immediately after identifying a lexical candidate.
+
+Lexical, phonological, and semantic representations can exchange information through feedback.
+
+**3. Uncertainty preservation**
+
+The architecture should retain:
+
+- Alternative word candidates.
+- Alternative morphological segmentations.
+- Alternative pronunciations.
+- Alternative meanings.
+- Contextual uncertainty.
+- Unresolved prediction errors.
+
+Prematurely selecting one candidate would discard information that may become useful later.
+
+**4. Different evidence channels**
+
+Visual evidence, phonological evidence, lexical frequency, repetition, and semantic expectations must not be treated as interchangeable.
+
+For example, a strong semantic expectation must not silently rewrite the actual written form.
+
+This distinction is especially important when implementing predictive processing.
+
+# **5. Scientific references**
+
+These are useful research foundations for the architecture:
+
+1. [The Word Frequency Effect in Word Processing: An Updated Review](https://journals.sagepub.com/doi/full/10.1177/0963721417727521?utm_source=chatgpt.com) — Brysbaert and colleagues. Frequency, word prevalence, and semantic diversity.
+2. [Cerebral mechanisms of word masking and unconscious repetition priming](https://www.nature.com/articles/nn0701_752?utm_source=chatgpt.com) — Dehaene and colleagues. Repetition suppression and visual word processing.
+3. [From decomposition to distributed theories of morphological processing in reading](https://pubmed.ncbi.nlm.nih.gov/35595965/?utm_source=chatgpt.com) — Morphological decomposition versus distributed representations.
+4. [Effects of lexicality, frequency, and spelling-to-sound consistency on the functional anatomy of reading](https://pubmed.ncbi.nlm.nih.gov/10677038/?utm_source=chatgpt.com) — Neural correlates of spelling-to-sound consistency.
+5. [Models of visual word recognition](https://pmc.ncbi.nlm.nih.gov/articles/PMC3843812?utm_source=chatgpt.com) — Interactive activation, lexical competition, and orthographic representations.
+6. [Ambiguous words in sentences: brain indices for native and non-native disambiguation](https://pubmed.ncbi.nlm.nih.gov/17204368/?utm_source=chatgpt.com) — Contextual meaning selection.
+7. [Prediction in reading: A review of predictability effects, their theoretical implications, and beyond](https://pmc.ncbi.nlm.nih.gov/articles/PMC12092549/?utm_source=chatgpt.com) — Contextual predictability.
+8. [A Predictive Coding Model of the N400](https://pmc.ncbi.nlm.nih.gov/articles/PMC10984641/?utm_source=chatgpt.com) — Computational treatment of semantic prediction errors.
+
+## **6. Final architectural result**
+
+The 40 operations together describe a system that does much more than identify a sequence of letters.
+
+It attempts to explain how the brain:
+
+1. Uses accumulated experience to recognize familiar words.
+2. Benefits from recently activated representations.
+3. Extracts meaningful subword structures.
+4. Relates orthographic information to pronunciation.
+5. Resolves competition among similar words.
+6. Selects the appropriate meaning of ambiguous words.
+7. Predicts words and semantic features from context.
+8. Detects unexpected information and updates its internal interpretation.
+
+**The central computational principle is probabilistic, recurrent integration of evidence.**
+
+Word recognition is not merely a lookup operation. It is an interaction among learned representations, competing hypotheses, contextual expectations, and incoming evidence.
+
+This algorithm can serve as a separate computational subsystem upstream of full sentence-level semantic composition. It also provides a useful foundation for eventually connecting word recognition to the ATL semantic hub, distributed semantic networks, and IFG semantic control described in the earlier architecture.

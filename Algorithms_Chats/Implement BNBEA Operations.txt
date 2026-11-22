@@ -1,119 +1,4 @@
-Title: Implement BNBEA Operations
-Conversation ID: 6af9b557-776c-83e9-a7fd-87e6c1bd5f49
-
----
-
-[USER]
-from "Brain Networks and Biological Evidence Algorithm.txt" file in the library , Auto implement the 12 operations both functionally and biologically in python and consider the mathematical operations involved. You can use github through github plugin for the implementation. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin. Create the annotations for every function and classes to be stored in logger's the sqlite database
-
----
-
-[ASSISTANT]
-<badge color="success">Implementation complete — CI passed</badge>
-
-Implemented the **12-operation Brain Networks and Biological Evidence Algorithm (BNBEA)** in `wizekin/ORE-Neurocomputational`, using the GitHub integration directly.
-
-### GitHub delivery
-
-<box border radius="lg" padding={3} gap={2}>
-  **Pull Request #14**
-
-  [Implement BNBEA — 12 operations](https://github.com/wizekin/ORE-Neurocomputational/pull/14)
-
-  <row justify="between">
-    <text color="secondary" size="sm">Branch</text>
-    <text size="sm" weight="medium">feature/bnbea-12-operation-implementation</text>
-  </row>
-  <row justify="between">
-    <text color="secondary" size="sm">Files changed</text>
-    **22**
-  </row>
-  <row justify="between">
-    <text color="secondary" size="sm">New Python package</text>
-    **18 Python files**
-  </row>
-  <row justify="between">
-    <text color="secondary" size="sm">PR status</text>
-    <badge color="success">Open / Mergeable</badge>
-  </row>
-</box>
-
-### Implemented operations
-
-| # | Operation | Implementation |
-|---:|---|---|
-| 1 | Gabor-inspired visual processing | Gabor filterbank, quadrature energy, normalization |
-| 2 | Grapheme populations | Prototype tuning, distance calculations, softmax |
-| 3 | Neural dynamics | Recurrent LIF simulation, membrane currents, spikes |
-| 4 | Visual hierarchy | Retina/LGN/V1/V2/V4, attention and feedback |
-| 5 | VWFA hierarchy | Ordered graphemes, n-grams, lexical competition |
-| 6 | IFG/MTG/ATL | Recurrent distributed language network |
-| 7 | Auditory streams | STFT, cochlear-inspired filters, dorsal/ventral processing |
-| 8 | EEG/MEG | Forward and inverse models, ERP and time-frequency analysis |
-| 9 | fMRI | HRF convolution, GLM, representational similarity |
-| 10 | Lesions | Virtual lesions, lesion-symptom regression |
-| 11 | TMS | Virtual perturbations, active/sham/control comparisons |
-| 12 | Human validation | Accuracy, MAE/RMSE, RDMs, held-out subjects |
-
-### SQLite annotations
-
-Implemented automatic annotation registration through the existing `ore_logger` system.
-
-Every class and function has an explanatory docstring. The logger indexes these descriptions into:
-
-`ore_logs/ore_logger.sqlite3`
-
-The integration is available through:
-
-Creating a `BNBEAProcessor()` also triggers annotation registration by default. The database is generated locally rather than committed to GitHub.
-
-### Testing results
-
-<box border radius="lg" padding={3} gap={2}>
-  <row align="center" justify="between">
-    **GitHub Actions — complete repository**
-    <badge color="success">Passed</badge>
-  </row>
-  <title size="2xl" color="success" tabularNums>224 passed</title>
-  No failed tests in the successful full-repository test run.
-  <divider color="subtle"/>
-  **Additional checks**
-
-  - 13 focused local tests passed.
-  - All 18 Python package files passed compilation.
-  - Zero missing class/function docstrings.
-  - SQLite annotation integration included in repository tests.
-</box>
-
-### Documentation
-
-Created `docs/BNBEA_12_OPERATION_ARCHITECTURE.md` with the mathematical equations, biological references, operation descriptions, API and scientific limitations.
-
-Also updated the main README and setuptools package discovery.
-
-**Important scientific distinction:** The biological track is an explicit LIF-based computational reference, not a literal simulation of the human brain. EEG/MEG and fMRI outputs are predictions, and lesion/TMS operations are virtual interventions.
-
-**Final step:** PR #14 is ready to merge into `main`. It has not been merged yet.
-
----
-
-[USER]
-I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
-
-— Neural simulation foundations
-— Biological visual processing
-— Hierarchical visual architecture
-— Neural orthographic representations
-— Neural connectivity and recurrence
-— Biological learning and memory
-— Predictive and contextual processing
-— Brain-data validation
-— Integrated neurocomputational ORE
-
----
-
-[ASSISTANT]
-# Master Biological Neurocomputational ORE Algorithm
+# **Master Biological Neurocomputational ORE Algorithm**
 
 The nine components can be organized into one large, sequential neurocomputational algorithm that starts with the simulation of neurons, reconstructs the biological processing of visual and orthographic information, develops recurrent neural representations, learns from experience, makes predictions, and finally validates its behavior against real brain data.
 
@@ -121,117 +6,82 @@ The central objective is to develop a computational architecture in which **each
 
 I will organize the architecture into nine major stages, with smaller numbered algorithmic operations inside each stage.
 
-## 1. Overall architecture
+## **1. Overall architecture**
 
-<box border radius="lg" padding={3} gap={3}>
-  <title size="lg">Master processing sequence</title>
-  <list connector="solid" marker="number" gap={2}>
-    <list-item>
-      **Neural simulation foundations**
+## **Master processing sequence**
 
-      Establish neurons, synapses, neural populations, electrical dynamics and time-dependent activity.
-    </list-item>
-    <list-item>
-      **Biological visual processing**
+1. **Neural simulation foundations**
 
-      Transform incoming visual signals into contrast, orientation, edges and local visual features.
-    </list-item>
-    <list-item>
-      **Hierarchical visual architecture**
+   Establish neurons, synapses, neural populations, electrical dynamics and time-dependent activity.
+2. **Biological visual processing**
 
-      Combine simple visual features into increasingly complex representations through hierarchical processing.
-    </list-item>
-    <list-item>
-      **Neural orthographic representations**
+   Transform incoming visual signals into contrast, orientation, edges and local visual features.
+3. **Hierarchical visual architecture**
 
-      Represent letters, graphemes, letter combinations, positions and word forms.
-    </list-item>
-    <list-item>
-      **Neural connectivity and recurrence**
+   Combine simple visual features into increasingly complex representations through hierarchical processing.
+4. **Neural orthographic representations**
 
-      Connect specialized neural populations and allow information to circulate between them.
-    </list-item>
-    <list-item>
-      **Biological learning and memory**
+   Represent letters, graphemes, letter combinations, positions and word forms.
+5. **Neural connectivity and recurrence**
 
-      Modify neural connections, maintain learned representations and consolidate experience.
-    </list-item>
-    <list-item>
-      **Predictive and contextual processing**
+   Connect specialized neural populations and allow information to circulate between them.
+6. **Biological learning and memory**
 
-      Generate predictions, compare them with incoming information, calculate prediction errors and revise interpretations.
-    </list-item>
-    <list-item>
-      **Brain-data validation**
+   Modify neural connections, maintain learned representations and consolidate experience.
+7. **Predictive and contextual processing**
 
-      Compare model-generated neural activity and behavioral outcomes with actual experimental observations.
-    </list-item>
-    <list-item>
-      **Integrated neurocomputational ORE**
+   Generate predictions, compare them with incoming information, calculate prediction errors and revise interpretations.
+8. **Brain-data validation**
 
-      Coordinate all previous stages into one complete reading and language-processing architecture.
-    </list-item>
-  </list>
-</box>
+   Compare model-generated neural activity and behavioral outcomes with actual experimental observations.
+9. **Integrated neurocomputational ORE**
 
-### Important mathematical principle
+   Coordinate all previous stages into one complete reading and language-processing architecture.
+
+### **Important mathematical principle**
 
 The equations below describe computational models of neural mechanisms. The brain does not necessarily perform symbolic arithmetic or execute these exact equations. They are mathematical approximations of processes such as synaptic integration, neuronal excitation and inhibition, population coding, plasticity and recurrent information processing.
 
 For example, the weighted sum
 
-\[
-I_i(t)=\sum_j w_{ij}s_j(t)
-\]
+\\[ I_i(t)=\sum_j w\_{ij}s_j(t) \\]
 
-represents the combined influence of incoming synaptic activity on neuron \(i\). It does not imply that a biological neuron literally runs a software multiplication-and-addition instruction.
+represents the combined influence of incoming synaptic activity on neuron \\(i\\). It does not imply that a biological neuron literally runs a software multiplication-and-addition instruction.
 
-## Mathematical notation used throughout the algorithm
+## **Mathematical notation used throughout the algorithm**
 
 Before defining the operations, establish common mathematical objects.
 
-| Symbol | Meaning |
-|---|---|
-| \(V_i(t)\) | Membrane potential of neuron \(i\) |
-| \(I_i(t)\) | Total input current |
-| \(s_i(t)\) | Neural spike or activity signal |
-| \(w_{ij}\) | Synaptic weight from neuron \(j\) to neuron \(i\) |
-| \(W\) | Synaptic connectivity matrix |
-| \(x_i(t)\) | Continuous population activity |
-| \(r_i(t)\) | Population firing rate |
-| \(E\) | Neural prediction error |
-| \(P\) | Prediction or prior |
-| \(\eta\) | Learning rate |
-| \(\phi\) | Neuronal activation function |
-| \(\tau\) | Time constant |
+| Symbol        | Meaning                                               |
+| ------------- | ----------------------------------------------------- |
+| \\(V_i(t)\\)  | Membrane potential of neuron \\(i\\)                  |
+| \\(I_i(t)\\)  | Total input current                                   |
+| \\(s_i(t)\\)  | Neural spike or activity signal                       |
+| \\(w\_{ij}\\) | Synaptic weight from neuron \\(j\\) to neuron \\(i\\) |
+| \\(W\\)       | Synaptic connectivity matrix                          |
+| \\(x_i(t)\\)  | Continuous population activity                        |
+| \\(r_i(t)\\)  | Population firing rate                                |
+| \\(E\\)       | Neural prediction error                               |
+| \\(P\\)       | Prediction or prior                                   |
+| \\(\eta\\)    | Learning rate                                         |
+| \\(\phi\\)    | Neuronal activation function                          |
+| \\(\tau\\)    | Time constant                                         |
 
 A useful general representation is:
 
-\[
-\boxed{
-\text{Sensory Input}
-\rightarrow
-\text{Neural Encoding}
-\rightarrow
-\text{Population Activity}
-\rightarrow
-\text{Network Integration}
-\rightarrow
-\text{Learning}
-\rightarrow
-\text{Prediction}
-\rightarrow
-\text{Behavior}
-}
-\]
+\\[ \boxed{ \text{Sensory Input} \rightarrow \text{Neural Encoding} \rightarrow \text{Population Activity} \rightarrow \text{Network Integration} \rightarrow \text{Learning} \rightarrow \text{Prediction} \rightarrow \text{Behavior} } \\]
 
----
+# **Stage 1 — Neural simulation foundations**
 
-# Stage 1 — Neural simulation foundations
+[Physiology Series Part 2: Neurophysiology & Action Potentials - Wasil Zafar](https://images.openai.com/static-rsc-4/b3Ay3UEnapO7dcbd-zfDHT3BjITIxrLlzFSDN75ne2TJ7rs4HCAa6H6Ah1ZdA4SO17DcQLpncY3DvM7Y6_0EJfCYNclQx9ERcEyPOdE3KFAPc4gv_3L0EmFp4TsTVsYyZY0g-Nc9C8dwbEkEbfn5M9t_-fBw9tKpPutoQ4tTPbQ?purpose=inline)
 
-<AsyncImageGroup query={["biological neuron dendrites soma axon synapse anatomical neuroscience illustration","leaky integrate and fire neuron membrane potential action potential scientific diagram","excitatory inhibitory neural circuit population neuroscience diagram"]} aspectRatio="5:4" layout="carousel"/>
+[File:Integrate-and-Fire-Neuron-Model schematic drawing.jpg - Wikimedia Commons](https://images.openai.com/static-rsc-4/_sP9Z1PY43F4DN6xUjHwoh3sf0R4WYqwy34Je1CELZrkGa71W5dcQ1V-1RkLJeOjiSaVBNBmDEWm4MJ4B21yuDNQeTGoXvtWzXEz_YsEH40mGPwE9yR1pz6xoTixyT_rkmFpLUlMzcNmNj7jw2br3UGOdKMGKeJ9Z-2RO5vXPvg?purpose=inline)
 
-### Objective
+[Frontiers | Complex Dynamics of Noise-Perturbed Excitatory-Inhibitory Neural Networks With Intra-Correlative and Inter-Independent Connections](https://images.openai.com/static-rsc-4/ZU_KXwQIwO9uSoZI0DF62S6tDYFxmgdXgywPILNSCYJVlPTFn9rHkppMGMcNkuDa834IYgl0jNkUnH7lk7ruxzA2UhlhMj-ISY9_EC-1SHBSAeEd8IT0EU2YTLlb73t8CDGMgRiIEmiBVXDTBEg-WXWPclYo7qoZryLzQC0PmIU?purpose=inline)
+
+6
+
+### **Objective**
 
 Establish the basic computational units needed to construct a biologically motivated neural system.
 
@@ -239,7 +89,7 @@ This stage defines how neurons receive signals, integrate synaptic inputs, chang
 
 The key idea is that all subsequent stages should use a common neural simulation framework rather than independently inventing their own neural behavior.
 
-### Subsystem A — Neuron construction and electrical behavior
+### **Subsystem A — Neuron construction and electrical behavior**
 
 **Operation 1.1 — Define individual biological neuron models**
 
@@ -254,16 +104,11 @@ Create neurons with the following variables:
 - Refractory state.
 - Current produced by synaptic activity.
 
-Represent neuron \(i\) as:
+Represent neuron \\(i\\) as:
 
-\[
-N_i(t)=
-\left[
-V_i(t),I_i(t),\theta_i,\tau_i,R_i,C_i
-\right]
-\]
+\\[ N_i(t)= \left[ V_i(t),I_i(t),\theta_i,\tau_i,R_i,C_i \right] \\]
 
-Where \(\theta_i\) is its firing threshold.
+Where \\(\theta_i\\) is its firing threshold.
 
 **Possible mathematical operations:**
 
@@ -282,23 +127,17 @@ Each incoming signal contributes to the postsynaptic current.
 
 A simplified model is:
 
-\[
-I_i(t)=\sum_j w_{ij}s_j(t)
-\]
+\\[ I_i(t)=\sum_j w\_{ij}s_j(t) \\]
 
 For a more biologically detailed conductance-based representation:
 
-\[
-I_i(t)=
-\sum_j g_{ij}(t)
-\left(E_j-V_i(t)\right)
-\]
+\\[ I_i(t)= \sum_j g\_{ij}(t) \left(E_j-V_i(t)\right) \\]
 
 Where:
 
-- \(g_{ij}\) is synaptic conductance.
-- \(E_j\) is the synaptic reversal potential.
-- \(V_i\) is postsynaptic membrane potential.
+- \\(g\_{ij}\\) is synaptic conductance.
+- \\(E_j\\) is the synaptic reversal potential.
+- \\(V_i\\) is postsynaptic membrane potential.
 
 **Mathematical operations:**
 
@@ -309,9 +148,7 @@ Where:
 
 For example, a simple synaptic response can decay according to:
 
-\[
-g(t)=g_0e^{-t/\tau_s}
-\]
+\\[ g(t)=g_0e^{-t/\tau_s} \\]
 
 This captures the fact that synaptic influence develops and decays over time rather than remaining permanently active.
 
@@ -321,20 +158,11 @@ The neuron must integrate both excitatory and inhibitory activity.
 
 Separate the input:
 
-\[
-I_i(t)=I_i^{exc}(t)+I_i^{inh}(t)+I_i^{ext}(t)
-\]
+\\[ I_i(t)=I_i^{exc}(t)+I_i^{inh}(t)+I_i^{ext}(t) \\]
 
 In a simplified current convention, excitatory and inhibitory influences have opposite signs:
 
-\[
-I_i(t)=
-\sum_j w_{ij}^{exc}s_j(t)
--
-\sum_k w_{ik}^{inh}s_k(t)
-+
-I_i^{ext}(t)
-\]
+\\[ I_i(t)= \sum_j w\_{ij}^{exc}s_j(t) - \sum_k w\_{ik}^{inh}s_k(t) + I_i^{ext}(t) \\]
 
 This allows the neural network to regulate its own activity.
 
@@ -351,37 +179,24 @@ An important biological qualification: excitation and inhibition are not merely 
 
 Use a leaky integrate-and-fire model as an initial computational reference.
 
-\[
-C_m\frac{dV_i}{dt}
-=
--g_L(V_i-E_L)+I_i(t)
-\]
+\\[ C_m\frac{dV_i}{dt} = -g_L(V_i-E_L)+I_i(t) \\]
 
 Where:
 
-- \(C_m\): membrane capacitance.
-- \(g_L\): leak conductance.
-- \(E_L\): resting or leak reversal potential.
-- \(I_i\): total synaptic current.
+- \\(C_m\\): membrane capacitance.
+- \\(g_L\\): leak conductance.
+- \\(E_L\\): resting or leak reversal potential.
+- \\(I_i\\): total synaptic current.
 
 This equation combines incoming electrical influence and membrane leakage.
 
 Using forward Euler integration:
 
-\[
-V_i(t+\Delta t)=
-V_i(t)+
-\frac{\Delta t}{\tau_m}
-\left[
-E_L-V_i(t)+R_mI_i(t)
-\right]
-\]
+\\[ V_i(t+\Delta t)= V_i(t)+ \frac{\Delta t}{\tau_m} \left[ E_L-V_i(t)+R_mI_i(t) \right] \\]
 
 Here:
 
-\[
-\tau_m=\frac{C_m}{g_L}
-\]
+\\[ \tau_m=\frac{C_m}{g_L} \\]
 
 **Mathematical operations:**
 
@@ -393,33 +208,29 @@ Here:
 
 This is a fundamental operation that should be reusable across every biological subsystem.
 
-LIF models are simplified reference models used in computational neuroscience, not complete descriptions of neuronal electrophysiology. <Cite refs={["turn788860search3","turn788860search8"]}/>
+LIF models are simplified reference models used in computational neuroscience, not complete descriptions of neuronal electrophysiology.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 1.5 — Generate neural spikes**
 
 When membrane potential reaches the firing threshold:
 
-\[
-V_i(t)\geq V_{threshold}
-\]
+\\[ V_i(t)\geq V\_{threshold} \\]
 
 The neuron generates a spike.
 
 The simulation records:
 
-\[
-s_i(t)=
-\begin{cases}
-1,&\text{if a spike occurs}\\
-0,&\text{otherwise}
-\end{cases}
-\]
+\\[ s_i(t)= \begin{cases} 1,&\text{if a spike occurs}\\\ 0,&\text{otherwise} \end{cases} \\]
 
 Then reset:
 
-\[
-V_i(t)\leftarrow V_{reset}
-\]
+\\[ V_i(t)\leftarrow V\_{reset} \\]
 
 **Mathematical operations:**
 
@@ -432,16 +243,11 @@ V_i(t)\leftarrow V_{reset}
 
 After firing, the neuron enters a temporary period during which its ability to fire another spike is reduced or unavailable, depending on the refractory model.
 
-\[
-R_i(t+\Delta t)=
-\max(0,R_i(t)-\Delta t)
-\]
+\\[ R_i(t+\Delta t)= \max(0,R_i(t)-\Delta t) \\]
 
 When:
 
-\[
-R_i(t)>0
-\]
+\\[ R_i(t)>0 \\]
 
 The neuron is prevented from generating another ordinary spike.
 
@@ -451,11 +257,9 @@ This introduces temporal restrictions into the simulation.
 
 Instead of only representing individual spikes, calculate the firing rate over a time window.
 
-\[
-r_i(t)=\frac{N_i(t,t+\Delta T)}{\Delta T}
-\]
+\\[ r_i(t)=\frac{N_i(t,t+\Delta T)}{\Delta T} \\]
 
-Where \(N_i\) is the number of spikes during the interval.
+Where \\(N_i\\) is the number of spikes during the interval.
 
 **Mathematical operations:**
 
@@ -471,7 +275,7 @@ This creates two useful representations:
 
 Both should be preserved because later algorithms may require different temporal resolutions.
 
-### Subsystem B — Neural populations
+### **Subsystem B — Neural populations**
 
 **Operation 1.8 — Construct specialized neural populations**
 
@@ -479,26 +283,22 @@ A population represents a group of neurons with related computational responsibi
 
 Examples:
 
-| Population | Functional responsibility |
-|---|---|
-| Visual population | Responds to visual input |
-| Orientation population | Responds to preferred edge orientations |
-| Grapheme population | Responds to letter features |
-| Orthographic population | Responds to ordered letter patterns |
-| Semantic population | Represents conceptual features |
-| Control population | Regulates competing representations |
+| Population              | Functional responsibility               |
+| ----------------------- | --------------------------------------- |
+| Visual population       | Responds to visual input                |
+| Orientation population  | Responds to preferred edge orientations |
+| Grapheme population     | Responds to letter features             |
+| Orthographic population | Responds to ordered letter patterns     |
+| Semantic population     | Represents conceptual features          |
+| Control population      | Regulates competing representations     |
 
-Represent population \(p\) as:
+Represent population \\(p\\) as:
 
-\[
-P_p(t)=\{N_1(t),N_2(t),...,N_n(t)\}
-\]
+\\[ P_p(t)=\\{N_1(t),N_2(t),...,N_n(t)\\} \\]
 
 Calculate average population activity:
 
-\[
-A_p(t)=\frac{1}{n}\sum_{i=1}^{n}r_i(t)
-\]
+\\[ A_p(t)=\frac{1}{n}\sum\_{i=1}^{n}r_i(t) \\]
 
 **Operation 1.9 — Implement population competition**
 
@@ -506,21 +306,13 @@ Different populations may respond to the same stimulus.
 
 To simulate competitive activity, introduce lateral inhibition.
 
-\[
-u_i(t)=
-I_i(t)+
-\sum_j w_{ij}^{exc}A_j(t)
--
-\lambda\sum_k w_{ik}^{inh}A_k(t)
-\]
+\\[ u_i(t)= I_i(t)+ \sum_j w\_{ij}^{exc}A_j(t) - \lambda\sum_k w\_{ik}^{inh}A_k(t) \\]
 
 Then:
 
-\[
-A_i(t+1)=\phi(u_i(t))
-\]
+\\[ A_i(t+1)=\phi(u_i(t)) \\]
 
-The function \(\phi\) could be a rectified-linear function or sigmoid.
+The function \\(\phi\\) could be a rectified-linear function or sigmoid.
 
 This enables competing neural representations to influence one another.
 
@@ -530,15 +322,11 @@ Biological neurons do not respond identically every time.
 
 A simplified model:
 
-\[
-I_i^{actual}(t)=I_i^{input}(t)+\epsilon_i(t)
-\]
+\\[ I_i^{actual}(t)=I_i^{input}(t)+\epsilon_i(t) \\]
 
 Where:
 
-\[
-\epsilon_i(t)\sim\mathcal{N}(0,\sigma_i^2)
-\]
+\\[ \epsilon_i(t)\sim\mathcal{N}(0,\sigma_i^2) \\]
 
 This allows the simulation to represent variation in neuronal responses and test whether its behavior remains stable under noise.
 
@@ -559,35 +347,39 @@ At every step:
 
 The time engine becomes the shared biological execution layer for all remaining stages.
 
-<badge color="success">Stage 1 output</badge>
+Stage 1 output
 
 A reusable neural simulation foundation containing individual neurons, neural populations, synaptic connections, electrical dynamics, spikes, firing rates, inhibition and temporal state.
 
----
+# **Stage 2 — Biological visual processing**
 
-# Stage 2 — Biological visual processing
+[Checking your browser - reCAPTCHA](https://images.openai.com/static-rsc-4/eV14zzA0oyMGxsDZom8mN3rDa1gbnIOemsI2hWA9gJVzglAWmYJIvhIXotpZJc-ldEo-rLN6pDxNh3J_cm3vC3Gk1xM_zKg2qgWFpzwHFBiLXpEyWcFuSRgYPdNR6BJKV_45gCxTkzzoQ2PFAQLq-TU2532eCgTNoDX7JQrCYdA?purpose=inline)
 
-<AsyncImageGroup query={["human retina photoreceptors bipolar ganglion cells ON OFF pathway diagram","lateral geniculate nucleus retinal visual pathways neuroscience diagram","primary visual cortex V1 orientation selective simple complex cells Gabor receptive fields scientific diagram"]} aspectRatio="5:4"/>
+[6.5: The Thalamus and Primary Visual Cortex - Social Sci LibreTexts](https://images.openai.com/static-rsc-4/4Y93SzGJGRO1H3JWtlv2NtRHCuq4y8VJnEhFyNc8WHgcTlVgA-fAjXvPRPXhvTNVRSQxPTx_4BUPk4B1s-YK4DEQHfp3Alke0izfzCrylaWDucn28xfw64DRkd5BsLK8h5tkjRzlZTtUneRNEs8QHHi4bLz8HsWH6X84OafKsTM?purpose=inline)
 
-### Objective
+[PPT - Principles of Sensory Neuroscience PowerPoint Presentation, free download - ID:5594066](https://images.openai.com/static-rsc-4/E1VxkxcdRYhHyMjqXFcjSFpbnCGXm3HSE4Ky-DYq6F1liBaTe5oXFGP2_6vkv0PWaIWu1p0VeRg3H6Q5T12kWfJW90cxyb5Cwz9TreSXMnAIfca4MDDvQJnR7NireumKFx19fGdcOriIDuA0vaDUCgTjzdBwc3BqsYlTx7h-KDk?purpose=inline)
+
+9
+
+### **Objective**
 
 Reproduce the functional sequence through which visual information is transformed into neural representations.
 
 The major biological pathway is:
 
-\[
-\text{Retina}
-\rightarrow
-\text{LGN}
-\rightarrow
-\text{V1}
-\]
+\\[ \text{Retina} \rightarrow \text{LGN} \rightarrow \text{V1} \\]
 
 This stage concentrates on early sensory processing rather than full object recognition.
 
-The actual visual system contains parallel pathways and extensive interactions; the sequence below is a useful computational decomposition, not a claim that all processing follows one strictly serial path. <Cite refs={["turn317998search0","turn317998search4"]}/>
+The actual visual system contains parallel pathways and extensive interactions; the sequence below is a useful computational decomposition, not a claim that all processing follows one strictly serial path.&#x20;
 
-### Subsystem A — Retinal processing
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Subsystem A — Retinal processing**
 
 **Operation 2.1 — Simulate photoreceptor input**
 
@@ -595,27 +387,21 @@ Light entering the eye produces changes in photoreceptor activity.
 
 For the computational model, begin with an image:
 
-\[
-I(x,y)
-\]
+\\[ I(x,y) \\]
 
 Apply a spatial sensitivity model.
 
 For example:
 
-\[
-R(x,y)=f(I(x,y),A(x,y))
-\]
+\\[ R(x,y)=f(I(x,y),A(x,y)) \\]
 
-Where \(A(x,y)\) is local adaptation.
+Where \\(A(x,y)\\) is local adaptation.
 
 One possible approximation:
 
-\[
-A(x,y)=G_{\sigma}*I(x,y)
-\]
+\\[ A(x,y)=G\_{\sigma}\*I(x,y) \\]
 
-Here \(G_\sigma\) is a Gaussian smoothing kernel.
+Here \\(G\_\sigma\\) is a Gaussian smoothing kernel.
 
 The result represents an estimate of the local illumination environment.
 
@@ -632,12 +418,7 @@ The visual system must accommodate changing illumination.
 
 A computational approximation:
 
-\[
-R(x,y)=
-\log\left(
-1+\frac{I(x,y)}{A(x,y)+\epsilon}
-\right)
-\]
+\\[ R(x,y)= \log\left( 1+\frac{I(x,y)}{A(x,y)+\epsilon} \right) \\]
 
 This makes the output depend on both local intensity and surrounding illumination.
 
@@ -649,19 +430,13 @@ The retina processes increments and decrements of visual input through different
 
 First calculate a local contrast signal:
 
-\[
-C(x,y)=I(x,y)-(G_\sigma*I)(x,y)
-\]
+\\[ C(x,y)=I(x,y)-(G\_\sigma\*I)(x,y) \\]
 
 Then separate:
 
-\[
-ON(x,y)=\max(C(x,y),0)
-\]
+\\[ ON(x,y)=\max(C(x,y),0) \\]
 
-\[
-OFF(x,y)=\max(-C(x,y),0)
-\]
+\\[ OFF(x,y)=\max(-C(x,y),0) \\]
 
 **Mathematical operations:**
 
@@ -678,26 +453,17 @@ Many retinal and LGN neurons respond to contrast between a central region and it
 
 A difference-of-Gaussians model:
 
-\[
-DOG(x,y)=
-G_{\sigma_c}(x,y)
--
-\alpha G_{\sigma_s}(x,y)
-\]
+\\[ DOG(x,y)= G\_{\sigma_c}(x,y) - \alpha G\_{\sigma_s}(x,y) \\]
 
 Where:
 
-\[
-\sigma_s>\sigma_c
-\]
+\\[ \sigma_s>\sigma_c \\]
 
 The resulting receptive field can have ON-center/OFF-surround or OFF-center/ON-surround characteristics.
 
 Convolve the image with the receptive field:
 
-\[
-R(x,y)=I*DOG
-\]
+\\[ R(x,y)=I\*DOG \\]
 
 This emphasizes local contrast boundaries.
 
@@ -707,11 +473,7 @@ Retinal processing is dynamic.
 
 A basic temporal model:
 
-\[
-R(t)=
-\alpha R(t-\Delta t)+
-(1-\alpha)I(t)
-\]
+\\[ R(t)= \alpha R(t-\Delta t)+ (1-\alpha)I(t) \\]
 
 The difference between current input and the adapted state can provide a simplified temporal-change signal.
 
@@ -722,7 +484,7 @@ The difference between current input and the adapted state can provide a simplif
 - Adaptive gain.
 - State updating.
 
-### Subsystem B — LGN processing
+### **Subsystem B — LGN processing**
 
 **Operation 2.6 — Transform retinal signals into LGN inputs**
 
@@ -730,13 +492,9 @@ The lateral geniculate nucleus receives organized retinal input and transmits it
 
 Build separate ON and OFF channels:
 
-\[
-L_{ON}=W_{ON}R_{ON}
-\]
+\\[ L\_{ON}=W\_{ON}R\_{ON} \\]
 
-\[
-L_{OFF}=W_{OFF}R_{OFF}
-\]
+\\[ L\_{OFF}=W\_{OFF}R\_{OFF} \\]
 
 Here the weights represent modeled pathway transmission.
 
@@ -748,56 +506,39 @@ Neural responses often depend on the strength of surrounding activity.
 
 A divisive normalization approximation:
 
-\[
-r_i=
-\frac{f_i}
-{\sigma+\sum_jw_{ij}|f_j|}
-\]
+\\[ r_i= \frac{f_i} {\sigma+\sum_jw\_{ij}|f_j|} \\]
 
 Where:
 
-- \(f_i\): feature drive.
-- \(w_{ij}\): pooling weights.
-- \(\sigma\): stabilizing constant.
+- \\(f_i\\): feature drive.
+- \\(w\_{ij}\\): pooling weights.
+- \\(\sigma\\): stabilizing constant.
 
 This allows the system to regulate its response when many visual channels are simultaneously active.
 
-### Subsystem C — Primary visual cortex
+### **Subsystem C — Primary visual cortex**
 
 **Operation 2.8 — Construct orientation-selective populations**
 
 Create a population of artificial receptive fields, each responding preferentially to a specific orientation.
 
-For orientation \(\theta\), a Gabor filter can be defined as:
+For orientation \\(\theta\\), a Gabor filter can be defined as:
 
-\[
-G(x,y)=
-\exp\left(
--\frac{x'^2+\gamma^2y'^2}{2\sigma^2}
-\right)
-\cos(2\pi fx'+\psi)
-\]
+\\[ G(x,y)= \exp\left( -\frac{x'^2+\gamma^2y'^2}{2\sigma^2} \right) \cos(2\pi fx'+\psi) \\]
 
 Where:
 
-\[
-x'=x\cos\theta+y\sin\theta
-\]
+\\[ x'=x\cos\theta+y\sin\theta \\]
 
 The response is:
 
-\[
-R_\theta=I*G_\theta
-\]
+\\[ R\_\theta=I\*G\_\theta \\]
 
 Repeat for different orientations.
 
 For example:
 
-\[
-\theta\in
-\{0^\circ,45^\circ,90^\circ,135^\circ\}
-\]
+\\[ \theta\in \\{0^\circ,45^\circ,90^\circ,135^\circ\\} \\]
 
 This creates different channels for edge orientations.
 
@@ -805,13 +546,9 @@ This creates different channels for edge orientations.
 
 Create separate ON and OFF responses to filter outputs.
 
-\[
-S_{ON}=\max(R_\theta,0)
-\]
+\\[ S\_{ON}=\max(R\_\theta,0) \\]
 
-\[
-S_{OFF}=\max(-R_\theta,0)
-\]
+\\[ S\_{OFF}=\max(-R\_\theta,0) \\]
 
 This preserves phase-sensitive information about the visual input.
 
@@ -819,14 +556,7 @@ This preserves phase-sensitive information about the visual input.
 
 Combine quadrature filter responses.
 
-\[
-E_\theta=
-\sqrt{
-R_{\theta,even}^{2}
-+
-R_{\theta,odd}^{2}
-}
-\]
+\\[ E\_\theta= \sqrt{ R\_{\theta,even}^{2} + R\_{\theta,odd}^{2} } \\]
 
 This produces an energy response that is less sensitive to the precise phase of the local pattern.
 
@@ -834,11 +564,7 @@ This produces an energy response that is less sensitive to the precise phase of 
 
 Combine activity across orientation-selective populations.
 
-\[
-N_\theta=
-\frac{E_\theta}
-{\epsilon+\sum_{\phi}w_{\theta\phi}E_\phi}
-\]
+\\[ N\_\theta= \frac{E\_\theta} {\epsilon+\sum\_{\phi}w\_{\theta\phi}E\_\phi} \\]
 
 This regulates responses according to activity in other channels.
 
@@ -855,24 +581,25 @@ For each spatial location, record:
 
 Represent the resulting visual state as:
 
-\[
-F(x,y)=
-[f_1(x,y),f_2(x,y),...,f_n(x,y)]
-\]
+\\[ F(x,y)= [f_1(x,y),f_2(x,y),...,f_n(x,y)] \\]
 
 This becomes the input to the higher visual hierarchy.
 
-<badge color="success">Stage 2 output</badge>
+Stage 2 output
 
 A collection of spatially organized visual feature maps representing orientation, contrast, edges, frequency and local image structure.
 
----
+# **Stage 3 — Hierarchical visual architecture**
 
-# Stage 3 — Hierarchical visual architecture
+[Optimal Stimulus Properties for Steady-State Visually Evoked Potential Brain–Computer Interfaces: A Scoping Review](https://images.openai.com/static-rsc-4/VLGdhzzmVRl3ly2t0QEyxORXMPpu4EsgCciIu2X5QbNHaYF__9jBAtCScWmeOS99X4PrzbF5LI4FvJU8O19rtPWpMJUW8H0LXjZqjtH38MFNZ2pTd6wBvuaOFMuxcNc22tV1BwhbenPEOj6V_4D1p_qQ41Yf8gtFp0bXvDCRERQ?purpose=inline)
 
-<AsyncImageGroup query={["visual cortex hierarchy V1 V2 V4 inferior temporal ventral stream scientific diagram","dorsal ventral visual pathways brain anatomy neuroscience illustration","hierarchical receptive fields visual cortex feedforward feedback connections diagram"]} aspectRatio="5:4"/>
+[Top-down influences on visual processing | Nature Reviews Neuroscience](https://images.openai.com/static-rsc-4/LBZdKKjl6uFE3l0A9MxTsjxrjNwAIYDgN3Dp9t2OqCHCyRbiKKFLnb-KaOkGqJgJ6QWuj8sLRPvaU6iPjd_h-hdJ8kgItzr-HjRKDdnLtsIbTFn_bQlswP-E1RMl2leJ4CVGus2EkTfaQ3oSpOEiVeER4EdUsEXZ_0FFVJA12PQ?purpose=inline)
 
-### Objective
+[Frontiers | Combined contributions of feedforward and feedback inputs to bottom-up attention](https://images.openai.com/static-rsc-4/5klW8ctjkyNkI0jpQFLrwobRLx4RWV2qwbvlfNRCSpoTMbQ10WJI2W3yS2srMDOcKZA_yUcfZWuLh4wAfPfqXrsHBS9-SBh3MrwbhWHgEL6aXTdCEScBa7HFlE7olOQi49XXwaPGw1try0yZV-Cm4nSS9xbBqwO_09PBaozRrOw?purpose=inline)
+
+8
+
+### **Objective**
 
 Transform local visual features into increasingly complex representations by integrating activity across different neural populations and cortical levels.
 
@@ -880,22 +607,28 @@ Stage 2 produces local sensory features.
 
 Stage 3 combines them into structured representations of visual objects, shapes and patterns.
 
-The visual cortex is not merely a stack of independent processing layers: feedforward, horizontal and feedback connections influence processing across the hierarchy. <Cite refs={["turn317998search0","turn317998search1","turn317998search8"]}/>
+The visual cortex is not merely a stack of independent processing layers: feedforward, horizontal and feedback connections influence processing across the hierarchy.&#x20;
 
-### Subsystem A — Feedforward hierarchical construction
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+### **Subsystem A — Feedforward hierarchical construction**
 
 **Operation 3.1 — Define hierarchical visual levels**
 
 Establish a computational representation of:
 
-| Biological reference | Computational responsibility |
-|---|---|
-| Retina/LGN | Initial visual signal |
-| V1 | Local orientation and spatial features |
-| V2 | Combinations of edges and contours |
-| V4 | More complex shape, surface and color features |
-| Inferior temporal cortex | Higher-level object representations |
-| Posterior parietal regions | Spatial and action-related representations |
+| Biological reference       | Computational responsibility                   |
+| -------------------------- | ---------------------------------------------- |
+| Retina/LGN                 | Initial visual signal                          |
+| V1                         | Local orientation and spatial features         |
+| V2                         | Combinations of edges and contours             |
+| V4                         | More complex shape, surface and color features |
+| Inferior temporal cortex   | Higher-level object representations            |
+| Posterior parietal regions | Spatial and action-related representations     |
 
 These are approximate functional correspondences, not exclusive assignments of individual functions to individual regions.
 
@@ -903,10 +636,7 @@ These are approximate functional correspondences, not exclusive assignments of i
 
 Take nearby feature responses and combine them.
 
-\[
-H_i=
-\sum_jw_{ij}F_j
-\]
+\\[ H_i= \sum_jw\_{ij}F_j \\]
 
 The combination allows a higher-level population to respond to a larger visual pattern instead of only an individual edge.
 
@@ -923,21 +653,11 @@ Combine simple features into more complex structures.
 
 For example:
 
-\[
-\text{Edges}
-\rightarrow
-\text{Corners}
-\rightarrow
-\text{Contours}
-\rightarrow
-\text{Shapes}
-\]
+\\[ \text{Edges} \rightarrow \text{Corners} \rightarrow \text{Contours} \rightarrow \text{Shapes} \\]
 
 The model can use feature compositions:
 
-\[
-H_k=\phi\left(\sum_iw_{ki}F_i+b_k\right)
-\]
+\\[ H_k=\phi\left(\sum_iw\_{ki}F_i+b_k\right) \\]
 
 Different populations respond to different combinations.
 
@@ -947,19 +667,11 @@ Combine local information to produce more general representations.
 
 For example:
 
-\[
-P_k=
-\max_{(x,y)\in\Omega_k}
-H_k(x,y)
-\]
+\\[ P_k= \max\_{(x,y)\in\Omega_k} H_k(x,y) \\]
 
 Or average pooling:
 
-\[
-P_k=
-\frac{1}{|\Omega_k|}
-\sum_{(x,y)\in\Omega_k}H_k(x,y)
-\]
+\\[ P_k= \frac{1}{|\Omega_k|} \sum\_{(x,y)\in\Omega_k}H_k(x,y) \\]
 
 Biologically, pooling should be treated as a computational analogy for integration across receptive fields and populations.
 
@@ -975,23 +687,19 @@ Learn to recognize a pattern despite changes in:
 
 A simplified invariant representation:
 
-\[
-Z=T(F)
-\]
+\\[ Z=T(F) \\]
 
-Where \(T\) is a learned transformation designed to preserve task-relevant structure across nuisance variations.
+Where \\(T\\) is a learned transformation designed to preserve task-relevant structure across nuisance variations.
 
 Do not discard all spatial information. Exact position remains important for reading and other visual tasks.
 
-### Subsystem B — Parallel visual pathways
+### **Subsystem B — Parallel visual pathways**
 
 **Operation 3.6 — Construct the ventral visual stream**
 
 Develop a pathway that progressively integrates information for visual identification.
 
-\[
-V_1\rightarrow V_2\rightarrow V_4\rightarrow IT
-\]
+\\[ V_1\rightarrow V_2\rightarrow V_4\rightarrow IT \\]
 
 The functional representation becomes increasingly sensitive to complex visual combinations.
 
@@ -1007,9 +715,7 @@ The functional representation becomes increasingly sensitive to complex visual c
 
 Build a separate pathway for spatial relationships and visual guidance.
 
-\[
-V_1\rightarrow V_2\rightarrow MT/\text{parietal}
-\]
+\\[ V_1\rightarrow V_2\rightarrow MT/\text{parietal} \\]
 
 It can represent:
 
@@ -1021,9 +727,7 @@ It can represent:
 
 For motion:
 
-\[
-M(x,y,t)=I(x,y,t)-I(x,y,t-\Delta t)
-\]
+\\[ M(x,y,t)=I(x,y,t)-I(x,y,t-\Delta t) \\]
 
 This gives a simplified temporal-change measurement.
 
@@ -1031,26 +735,17 @@ This gives a simplified temporal-change measurement.
 
 The two pathways should exchange information without losing their separate functional responsibilities.
 
-\[
-Z_{integrated}=
-W_vZ_{ventral}+W_dZ_{dorsal}
-\]
+\\[ Z\_{integrated}= W_vZ\_{ventral}+W_dZ\_{dorsal} \\]
 
 This can help combine object identity and spatial context.
 
-### Subsystem C — Recurrent hierarchical visual processing
+### **Subsystem C — Recurrent hierarchical visual processing**
 
 **Operation 3.9 — Introduce descending visual feedback**
 
 Higher visual populations provide contextual information to lower populations.
 
-\[
-F_{lower}^{new}
-=
-F_{lower}^{bottom-up}
-+
-\lambda F_{higher}^{feedback}
-\]
+\\[ F\_{lower}^{new} = F\_{lower}^{bottom-up} + \lambda F\_{higher}^{feedback} \\]
 
 This allows the current interpretation to influence subsequent visual processing.
 
@@ -1060,14 +755,7 @@ Suppose the input could represent two visual patterns.
 
 Maintain competing population activations:
 
-\[
-A_i(t+1)=
-\phi\left(
-D_i+
-\sum_jw_{ij}A_j-
-\lambda\sum_{k\neq i}A_k
-\right)
-\]
+\\[ A_i(t+1)= \phi\left( D_i+ \sum_jw\_{ij}A_j- \lambda\sum\_{k\neq i}A_k \right) \\]
 
 This produces competition rather than prematurely committing to a single interpretation.
 
@@ -1075,20 +763,13 @@ This produces competition rather than prematurely committing to a single interpr
 
 Introduce a spatial and feature-based attentional modulation signal.
 
-\[
-A_{attended}(x,y)=
-G(x,y)F(x,y)
-\]
+\\[ A\_{attended}(x,y)= G(x,y)F(x,y) \\]
 
-Where \(G(x,y)\) describes attention allocation.
+Where \\(G(x,y)\\) describes attention allocation.
 
 A softmax allocation can be used as a computational approximation:
 
-\[
-G_i=
-\frac{e^{a_i/T}}
-{\sum_je^{a_j/T}}
-\]
+\\[ G_i= \frac{e^{a_i/T}} {\sum_je^{a_j/T}} \\]
 
 This directs more processing resources toward selected features or spatial positions.
 
@@ -1096,11 +777,7 @@ This directs more processing resources toward selected features or spatial posit
 
 Combine the resulting layers:
 
-\[
-Z_v=
-\operatorname{Integrate}
-(V_1,V_2,V_4,IT,MT,\text{Attention})
-\]
+\\[ Z_v= \operatorname{Integrate} (V_1,V_2,V_4,IT,MT,\text{Attention}) \\]
 
 Preserve both:
 
@@ -1109,17 +786,21 @@ Preserve both:
 
 This is particularly important because the next stage must identify the visual structures that correspond to letters.
 
-<badge color="success">Stage 3 output</badge>
+Stage 3 output
 
 A hierarchical visual representation containing local features, complex shapes, spatial relationships, attention signals and higher-level visual candidates.
 
----
+# **Stage 4 — Neural orthographic representations**
 
-# Stage 4 — Neural orthographic representations
+[Does the Brain Read Chinese or Spanish the Same Way It Reads English? · Frontiers for Young Minds](https://images.openai.com/static-rsc-4/WGAI77z1KVraq4jfBCb1NtmXu9N6fbJT4MnR01zDGtK9n9DofLNQ1pv0vGM42dg8FPWp211sDymwelo6sIIMpGC3YfDxYolTxSZz_SDyBFMzFyy4YbyWI42TmlnIW1XYzfqMh6VVp64_TPPN-hy2mzprS6xicDixVi81N4LOm7E?purpose=inline)
 
-<AsyncImageGroup query={["human visual word form area VWFA location ventral occipitotemporal cortex brain illustration","neural letter recognition letter position coding brain visual word recognition scientific diagram","orthographic processing letter bigrams trigrams neural population coding illustration"]} aspectRatio="5:4"/>
+[Letters, Words, Sentences, and Reading | Journal of Cognition](https://images.openai.com/static-rsc-4/sJcwt3kL2orTjy9HesKHSfyoQZDgMSlbZ5GUfS7Fn2lnhARPSBBW8iWOOm0HilAWrkp3vkPdIxQOKzzFcr3hKwzCeupQGVG2_K68FjC2c3RsAkTj5_wi7Qw59rnUVn_uAJ7yUddsEvH2RWoXs8n38EAp06QQXj3Xx4fm5InA0iI?purpose=inline)
 
-### Objective
+[Frontiers | On Coding Non-Contiguous Letter Combinations](https://images.openai.com/static-rsc-4/T47d0vufkj8VhGeAC2tes-_XA-u0uzdia6W0F-dCtIu06gRkHiMHCdUKRNYw04kEDo91W5rJdWYY77eLx5L4M_HNI6j-onYVKtBUGjJzIWFYvuMYVYB17LWbcIoF2-s3pWTGWCLx9Gmhb4NgwYwwGxZ092_Y-ipHV_r8qavXBIo?purpose=inline)
+
+10
+
+### **Objective**
 
 Transform hierarchical visual representations into neural representations of written language.
 
@@ -1134,9 +815,15 @@ For example:
 - An orthographic system can recognize a sequence of letters.
 - A lexical system can activate a stored word representation.
 
-Reading research describes a progression from early retinotopic visual representations toward more abstract representations of letter order in higher-level visual word-processing regions. <Cite refs={["turn317998search2","turn788860search11","turn317998search10"]}/>
+Reading research describes a progression from early retinotopic visual representations toward more abstract representations of letter order in higher-level visual word-processing regions.&#x20;
 
-### Subsystem A — Individual grapheme representation
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+### **Subsystem A — Individual grapheme representation**
 
 **Operation 4.1 — Extract candidate grapheme regions**
 
@@ -1154,11 +841,9 @@ For each candidate, calculate:
 
 Represent a candidate as:
 
-\[
-G_i=[x_i,y_i,w_i,h_i,F_i]
-\]
+\\[ G_i=[x_i,y_i,w_i,h_i,F_i] \\]
 
-Where \(F_i\) contains its visual characteristics.
+Where \\(F_i\\) contains its visual characteristics.
 
 **Mathematical operations:**
 
@@ -1176,9 +861,7 @@ Create separate neural populations for different possible graphemes.
 
 For example:
 
-\[
-P_A,P_B,P_C,\ldots,P_Z
-\]
+\\[ P_A,P_B,P_C,\ldots,P_Z \\]
 
 Each population contains neurons with different preferences for:
 
@@ -1191,16 +874,11 @@ Each population contains neurons with different preferences for:
 
 A feature vector for a candidate grapheme:
 
-\[
-\mathbf{g}=[g_1,g_2,\ldots,g_n]
-\]
+\\[ \mathbf{g}=[g_1,g_2,\ldots,g_n] \\]
 
 A prototype representation:
 
-\[
-\boldsymbol{\mu}_k=
-[\mu_{k1},\mu_{k2},\ldots,\mu_{kn}]
-\]
+\\[ \boldsymbol{\mu}\_k= [\mu\_{k1},\mu\_{k2},\ldots,\mu\_{kn}] \\]
 
 **Operation 4.3 — Calculate grapheme population similarity**
 
@@ -1208,28 +886,17 @@ Compare incoming features against the learned prototype of each grapheme populat
 
 One possible model is a Mahalanobis-like distance:
 
-\[
-d_k^2=
-(\mathbf{g}-\boldsymbol{\mu}_k)^T
-\Sigma_k^{-1}
-(\mathbf{g}-\boldsymbol{\mu}_k)
-\]
+\\[ d_k^2= (\mathbf{g}-\boldsymbol{\mu}\_k)^T \Sigma_k^{-1} (\mathbf{g}-\boldsymbol{\mu}\_k) \\]
 
 Convert distances into activation strengths:
 
-\[
-a_k=\exp\left(-\frac{d_k^2}{2}\right)
-\]
+\\[ a_k=\exp\left(-\frac{d_k^2}{2}\right) \\]
 
 Then normalize:
 
-\[
-P(G_k|\mathbf{g})=
-\frac{\exp(-d_k^2/2T)}
-{\sum_j\exp(-d_j^2/2T)}
-\]
+\\[ P(G_k|\mathbf{g})= \frac{\exp(-d_k^2/2T)} {\sum_j\exp(-d_j^2/2T)} \\]
 
-Where \(T\) controls the sharpness of competition.
+Where \\(T\\) controls the sharpness of competition.
 
 These are candidate computations for population coding, not proven equations used by biological grapheme-selective neurons.
 
@@ -1242,16 +909,14 @@ Maintain the competing representations.
 For example:
 
 | Candidate | Activation |
-|---|---:|
-| O | 0.46 |
-| Q | 0.39 |
-| D | 0.15 |
+| --------- | ---------- |
+| O         | 0.46       |
+| Q         | 0.39       |
+| D         | 0.15       |
 
 Calculate the uncertainty:
 
-\[
-H(G)=-\sum_iP(G_i)\log P(G_i)
-\]
+\\[ H(G)=-\sum_iP(G_i)\log P(G_i) \\]
 
 High entropy means the candidate is ambiguous.
 
@@ -1259,7 +924,7 @@ Low entropy means one candidate dominates.
 
 This is important because visual ambiguity should be resolved using additional context rather than arbitrary classification.
 
-### Subsystem B — Letter-position coding
+### **Subsystem B — Letter-position coding**
 
 **Operation 4.5 — Establish retinotopic letter positions**
 
@@ -1267,9 +932,7 @@ Retinotopic representations preserve spatial location.
 
 For each grapheme, record:
 
-\[
-L_i=(G_i,x_i,y_i)
-\]
+\\[ L_i=(G_i,x_i,y_i) \\]
 
 The system must retain where a grapheme appeared in the visual field.
 
@@ -1279,27 +942,27 @@ Determine the position of each grapheme within a candidate word.
 
 For example:
 
-\[
-W=[C,A,T]
-\]
+\\[ W=[C,A,T] \\]
 
 Represent it as:
 
-\[
-W=\{(C,1),(A,2),(T,3)\}
-\]
+\\[ W=\\{(C,1),(A,2),(T,3)\\} \\]
 
 Calculate normalized ordinal positions:
 
-\[
-p_i=\frac{i-1}{n-1}
-\]
+\\[ p_i=\frac{i-1}{n-1} \\]
 
-For \(n>1\).
+For \\(n>1\\).
 
 The distinction matters because position invariance should not mean losing letter order.
 
-The distinction between early retinotopic representations and higher-level ordinal coding is supported by recent visual word-recognition research using fMRI and MEG. <Cite refs={["turn317998search2","turn317998search9"]}/>
+The distinction between early retinotopic representations and higher-level ordinal coding is supported by recent visual word-recognition research using fMRI and MEG.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 4.7 — Construct letter combinations**
 
@@ -1307,9 +970,7 @@ Combine individual grapheme representations into overlapping combinations.
 
 For:
 
-\[
-W=[C,A,T]
-\]
+\\[ W=[C,A,T] \\]
 
 The system can construct:
 
@@ -1317,11 +978,9 @@ The system can construct:
 - Bigrams: CA, AT.
 - Trigram: CAT.
 
-For a sequence of length \(n\), the number of overlapping n-grams of size \(k\) is:
+For a sequence of length \\(n\\), the number of overlapping n-grams of size \\(k\\) is:
 
-\[
-N_k=\max(0,n-k+1)
-\]
+\\[ N_k=\max(0,n-k+1) \\]
 
 Each combination is represented by a population of neurons sensitive to that ordered pattern.
 
@@ -1331,11 +990,7 @@ Compare the incoming ordered sequence with stored patterns.
 
 One mathematical approximation is normalized edit similarity:
 
-\[
-S(A,B)=
-1-\frac{D_{edit}(A,B)}
-{\max(|A|,|B|)}
-\]
+\\[ S(A,B)= 1-\frac{D\_{edit}(A,B)} {\max(|A|,|B|)} \\]
 
 This must preserve ordering.
 
@@ -1343,7 +998,7 @@ For example, `FORM` and `FROM` contain the same letters but are different sequen
 
 The neural system must not treat their representations as identical.
 
-### Subsystem C — VWFA hierarchy
+### **Subsystem C — VWFA hierarchy**
 
 **Operation 4.9 — Construct posterior orthographic representations**
 
@@ -1355,12 +1010,7 @@ These populations should remain sensitive to spatial detail.
 
 Integrate neighboring letter features into increasingly complex ordered combinations.
 
-\[
-H_k=
-\phi\left(
-\sum_iw_{ki}G_i
-\right)
-\]
+\\[ H_k= \phi\left( \sum_iw\_{ki}G_i \right) \\]
 
 The representation can include letter pairs, triplets and larger combinations.
 
@@ -1368,17 +1018,9 @@ The representation can include letter pairs, triplets and larger combinations.
 
 Create more integrated word-form representations.
 
-For candidate word \(w\):
+For candidate word \\(w\\):
 
-\[
-A_w=
-f(
-\text{letters},
-\text{positions},
-\text{ngrams},
-\text{visual evidence}
-)
-\]
+\\[ A_w= f( \text{letters}, \text{positions}, \text{ngrams}, \text{visual evidence} ) \\]
 
 The resulting activity represents the degree to which the incoming visual sequence matches the learned word form.
 
@@ -1394,13 +1036,9 @@ The system should recognize familiar letter sequences despite changes in:
 
 A transformation-invariant matching objective could be:
 
-\[
-S(w,I)=
-\max_{T\in\mathcal{T}}
-\operatorname{Similarity}(w,T(I))
-\]
+\\[ S(w,I)= \max\_{T\in\mathcal{T}} \operatorname{Similarity}(w,T(I)) \\]
 
-Where \(\mathcal{T}\) contains the allowed visual transformations.
+Where \\(\mathcal{T}\\) contains the allowed visual transformations.
 
 Do not make this invariance absolute: different visual and orthographic properties can remain relevant to discrimination.
 
@@ -1410,15 +1048,11 @@ The neural architecture should include connections between visual word-form popu
 
 For a grapheme sequence:
 
-\[
-G=[g_1,g_2,\ldots,g_n]
-\]
+\\[ G=[g_1,g_2,\ldots,g_n] \\]
 
 The system can activate corresponding sound representations:
 
-\[
-P(\Phi|G)
-\]
+\\[ P(\Phi|G) \\]
 
 The mapping can be learned through repeated paired exposure between written and spoken forms.
 
@@ -1442,17 +1076,21 @@ The output should contain:
 7. Phonological activation links.
 8. Unresolved visual ambiguity.
 
-<badge color="success">Stage 4 output</badge>
+Stage 4 output
 
 A neural-inspired orthographic representation that preserves visual features, individual graphemes, letter order, word-form candidates and phonological associations.
 
----
+# **Stage 5 — Neural connectivity and recurrence**
 
-# Stage 5 — Neural connectivity and recurrence
+[Kavli Prize Laureate Marcus E. Raichle | The Kavli Prize](https://images.openai.com/static-rsc-4/9hBm2cGJKw0WCYl1RaQ2s1CbbbI0pNPRxqmtB2EbNEiFHGJGspWuj4RRL_Kilam0A5Vlfl3dEmkQbNqROjt2oD_XOQlmxpx9d5AjMLHeK-RBDznYD9EJRM09FjkBE3d4Qrs-8gpcfvDiBr41CH6JA1aaQVlzlVZswsFxCB81uGU?purpose=inline)
 
-<AsyncImageGroup query={["brain structural connectivity connectome white matter tractography scientific illustration","recurrent neural circuit excitatory inhibitory feedback loop diagram","cortical neural network feedforward feedback horizontal connections illustration"]} aspectRatio="5:4"/>
+[Microcircuits and their interactions in epilepsy: is the focus out of focus? | Nature Neuroscience](https://images.openai.com/static-rsc-4/jvdQaSe855Qr8cbS-h7IEmucFfghbkC73IsoxusPUVSLzgOfLpXKGyeCMJ05xoRQHSgjidka6ecU906rh3GH16Jw7cDfHxW_i4FKx1nhVYA7kh4yCQpqptrKMpxpRMmzdkzVQcJgm5i9KBYMogHn3oyMAPAMaBcEmZnrlU-Nl7k?purpose=inline)
 
-### Objective
+[Frontiers | Boosting visual cortex function and plasticity with acetylcholine to enhance visual perception](https://images.openai.com/static-rsc-4/xMN7r2msI4P8zWYKe6X1wMjTawcJkwp_TPhJcHljpbGdGvRxq5GGkG_KWsfhWJhkAW5o00pcTA72sQFVJjBGhSNq9fZNcuaUVZAX3q9xQCZ84Y0ap3xUYx1cgw-yWXGBkwFgLbC4OIRzeq9uA5nWG5maGpCL6gh-o9T49wW9Ub0?purpose=inline)
+
+10
+
+### **Objective**
 
 Connect all specialized populations into an interacting neural network.
 
@@ -1462,9 +1100,15 @@ However, independent populations cannot adequately model the distributed interac
 
 We therefore construct a neural network in which information can move forward, backward and laterally.
 
-Cortical research identifies feedforward selectivity, recurrent gain control and interactions across hierarchical levels as important candidate computations. <Cite refs={["turn317998search1","turn317998search7"]}/>
+Cortical research identifies feedforward selectivity, recurrent gain control and interactions across hierarchical levels as important candidate computations.&#x20;
 
-### Subsystem A — Anatomical connectivity
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Subsystem A — Anatomical connectivity**
 
 **Operation 5.1 — Define neural network nodes**
 
@@ -1472,12 +1116,7 @@ Each neural population becomes a node.
 
 Example:
 
-\[
-V=
-\{
-V1,V2,V4,VWFA,MTG,IFG,ATL,STG,AG
-\}
-\]
+\\[ V= \\{ V1,V2,V4,VWFA,MTG,IFG,ATL,STG,AG \\} \\]
 
 The regions have specialized computational responsibilities, but those responsibilities overlap and depend on their network interactions.
 
@@ -1485,22 +1124,13 @@ The regions have specialized computational responsibilities, but those responsib
 
 Create a matrix:
 
-\[
-W=
-\begin{bmatrix}
-w_{11}&w_{12}&\cdots\\
-w_{21}&w_{22}&\cdots\\
-\vdots&\vdots&\ddots
-\end{bmatrix}
-\]
+\\[ W= \begin{bmatrix} w\_{11}&w\_{12}&\cdots\\\ w\_{21}&w\_{22}&\cdots\\\ \vdots&\vdots&\ddots \end{bmatrix} \\]
 
 Where:
 
-\[
-w_{ij}
-\]
+\\[ w\_{ij} \\]
 
-describes the modeled connection from population \(j\) to population \(i\).
+describes the modeled connection from population \\(j\\) to population \\(i\\).
 
 The model must distinguish:
 
@@ -1523,10 +1153,7 @@ For each connection, define:
 
 A connection becomes:
 
-\[
-C_{ij}=
-(w_{ij},d_{ij},q_{ij},e_{ij})
-\]
+\\[ C\_{ij}= (w\_{ij},d\_{ij},q\_{ij},e\_{ij}) \\]
 
 Where the fields represent weight, delay, connection type and plasticity eligibility.
 
@@ -1538,15 +1165,13 @@ Where the fields represent weight, delay, connection type and plasticity eligibi
 - Parameter initialization.
 - Graph connectivity checks.
 
-### Subsystem B — Signal propagation
+### **Subsystem B — Signal propagation**
 
 **Operation 5.4 — Implement feedforward information propagation**
 
 Allow lower-level neural populations to transmit information to higher-level populations.
 
-\[
-x^{FF}_{t+1}=W_{FF}x_t
-\]
+\\[ x^{FF}\_{t+1}=W\_{FF}x_t \\]
 
 The receiving populations integrate the incoming activity.
 
@@ -1554,9 +1179,7 @@ The receiving populations integrate the incoming activity.
 
 Allow higher-level populations to influence lower-level populations.
 
-\[
-x^{FB}_{t+1}=W_{FB}x_t
-\]
+\\[ x^{FB}\_{t+1}=W\_{FB}x_t \\]
 
 This is important for contextual perception and prediction.
 
@@ -1564,9 +1187,7 @@ This is important for contextual perception and prediction.
 
 Connect populations within the same processing level.
 
-\[
-x^{LAT}_{t+1}=W_{LAT}x_t
-\]
+\\[ x^{LAT}\_{t+1}=W\_{LAT}x_t \\]
 
 Lateral connections can support:
 
@@ -1578,25 +1199,17 @@ Lateral connections can support:
 
 **Operation 5.7 — Combine all incoming neural signals**
 
-The general input to population \(i\) becomes:
+The general input to population \\(i\\) becomes:
 
-\[
-I_i(t)=
-I_i^{FF}(t)+
-I_i^{FB}(t)+
-I_i^{LAT}(t)+
-I_i^{EXT}(t)
-\]
+\\[ I_i(t)= I_i^{FF}(t)+ I_i^{FB}(t)+ I_i^{LAT}(t)+ I_i^{EXT}(t) \\]
 
 The population then converts its combined input into activity:
 
-\[
-x_i(t+1)=\phi(I_i(t))
-\]
+\\[ x_i(t+1)=\phi(I_i(t)) \\]
 
 This becomes the common communication framework for subsequent processing stages.
 
-### Subsystem C — Recurrent dynamics
+### **Subsystem C — Recurrent dynamics**
 
 **Operation 5.8 — Implement recurrent neural loops**
 
@@ -1604,18 +1217,15 @@ A population's activity affects other populations, whose outputs can eventually 
 
 A simplified recurrent network:
 
-\[
-\tau\frac{dx}{dt}=
--x+\phi(Wx+Bu)
-\]
+\\[ \tau\frac{dx}{dt}= -x+\phi(Wx+Bu) \\]
 
 Where:
 
-- \(x\): population activity.
-- \(W\): recurrent connectivity.
-- \(u\): external input.
-- \(B\): input projection.
-- \(\tau\): time constant.
+- \\(x\\): population activity.
+- \\(W\\): recurrent connectivity.
+- \\(u\\): external input.
+- \\(B\\): input projection.
+- \\(\tau\\): time constant.
 
 **Operation 5.9 — Stabilize recurrent activity**
 
@@ -1623,10 +1233,7 @@ Strong recurrent excitation can produce unstable or excessive activity.
 
 Introduce inhibitory feedback:
 
-\[
-I_i^{net}=
-I_i^{exc}-\lambda I_i^{inh}
-\]
+\\[ I_i^{net}= I_i^{exc}-\lambda I_i^{inh} \\]
 
 The network should monitor:
 
@@ -1642,17 +1249,11 @@ Model relationships between population activity rhythms.
 
 A possible mathematical measurement is phase coherence:
 
-\[
-R=
-\left|
-\frac{1}{N}
-\sum_{j=1}^{N}e^{i\theta_j}
-\right|
-\]
+\\[ R= \left| \frac{1}{N} \sum\_{j=1}^{N}e^{i\theta_j} \right| \\]
 
-Where \(\theta_j\) is the phase of the oscillatory signal of population \(j\).
+Where \\(\theta_j\\) is the phase of the oscillatory signal of population \\(j\\).
 
-A larger \(R\) indicates stronger phase alignment in this representation.
+A larger \\(R\\) indicates stronger phase alignment in this representation.
 
 Do not assume that every cognitive process requires complete synchronization.
 
@@ -1660,15 +1261,7 @@ Do not assume that every cognitive process requires complete synchronization.
 
 Allow the network to maintain several possible interpretations while one gradually becomes more strongly represented.
 
-\[
-x_i(t+1)=
-\phi\left(
-I_i(t)+
-\sum_jw_{ij}x_j(t)
--
-\lambda\sum_{k\neq i}v_{ik}x_k(t)
-\right)
-\]
+\\[ x_i(t+1)= \phi\left( I_i(t)+ \sum_jw\_{ij}x_j(t) - \lambda\sum\_{k\neq i}v\_{ik}x_k(t) \right) \\]
 
 This provides a foundation for resolving:
 
@@ -1681,17 +1274,11 @@ This provides a foundation for resolving:
 
 Calculate the state of the network as a whole:
 
-\[
-X(t)=
-[x_1(t),x_2(t),...,x_n(t)]
-\]
+\\[ X(t)= [x_1(t),x_2(t),...,x_n(t)] \\]
 
 Then measure:
 
-\[
-A_{network}(t)=
-\frac{1}{n}\sum_i x_i(t)
-\]
+\\[ A\_{network}(t)= \frac{1}{n}\sum_i x_i(t) \\]
 
 Also track:
 
@@ -1707,47 +1294,49 @@ Allow connection effectiveness to change according to the current network state.
 
 For example:
 
-\[
-w_{ij}^{effective}(t)=
-w_{ij}^{base}g_{ij}(t)
-\]
+\\[ w\_{ij}^{effective}(t)= w\_{ij}^{base}g\_{ij}(t) \\]
 
-Where \(g_{ij}(t)\) represents task-dependent or state-dependent modulation.
+Where \\(g\_{ij}(t)\\) represents task-dependent or state-dependent modulation.
 
 This allows the same anatomical network to support different computational configurations.
 
-<badge color="success">Stage 5 output</badge>
+Stage 5 output
 
 A recurrent, distributed neural architecture with weighted connectivity, feedforward and feedback pathways, lateral interactions, inhibition, synchronization and network-wide state tracking.
 
----
+# **Stage 6 — Biological learning and memory**
 
-# Stage 6 — Biological learning and memory
+[18.5: Synaptic Mechanisms of Long-Term Memory - Social Sci LibreTexts](https://images.openai.com/static-rsc-4/d1cgw2lGFW0d4Pp0KrvTUSlkeRwd_30M6gjn-oMDSxuEsL2qZYbiLAcOBNQgthzQd_F1kt7Az2Cl-H1DvuXw9i9ttjR13ex3gqOHnmhayiY5koZUSYg7wOQJ5icHPxgzT3xw8By-xg3SLudfApugNDkJtOwtuQhOoRhWj9rIm7k?purpose=inline)
 
-<AsyncImageGroup query={["synaptic plasticity long term potentiation depression dendritic spine neuroscience diagram","spike timing dependent plasticity STDP pre post spike timing graph","hippocampal neocortical memory consolidation replay diagram"]} aspectRatio="5:4"/>
+[Spike-timing-dependent plasticity (STDP) - Fabrizio Musacchio](https://images.openai.com/static-rsc-4/tqSQtFwgMjfCFnRRW8rs7Ns5IBRRRd_4zw_ZGz4-ci5wvBp9wI5XbQ8Rtw6xfhx4IlKvlwd99np8aXjb1sdja9AzjN-cB83CNBwAg1gDhHmpRUeUAbXEAIlrk7U_2Fw6A_G3PpsrBjEir2XuHlkqlonCXNz39ORPgoStfpQoks4?purpose=inline)
 
-### Objective
+[The Five Breakthroughs of Intelligence — Book review of Max Bennett’s A Brief History of Intelligence — Evidence, analogies, and limits. | by Adnan Masood, PhD. | Medium](https://images.openai.com/static-rsc-4/w4Xz-i0_MQZAlpw7ClUaFI6dC918S5xkgCy8yS2hcZbHh49ZFStReyepmxKGziQ6KLGW9wPI0iqd4j3cIyvVOjzI6PtGSHhyJJd0J8BU_pbT7s8wdTpW0kpMutALxm2E3wvTTBz-2qJgyV4uCvTJ7nPolpI4Tkukm39Yw5M_O3k?purpose=inline)
+
+9
+
+### **Objective**
 
 Enable the neural network to change its representations through experience.
 
 Without this stage, the architecture remains a fixed neural simulator.
 
-The biological nervous system can modify synaptic efficacy and circuit activity through different plasticity mechanisms. These include Hebbian and spike-timing-dependent plasticity, LTP, LTD, homeostatic mechanisms and changes associated with memory consolidation. <Cite refs={["turn126122view3","turn370436search0","turn370436search7","turn370436search10"]}/>
+The biological nervous system can modify synaptic efficacy and circuit activity through different plasticity mechanisms. These include Hebbian and spike-timing-dependent plasticity, LTP, LTD, homeostatic mechanisms and changes associated with memory consolidation.&#x20;
 
-### Subsystem A — Activity-dependent learning
+[image](https://www.google.com/s2/favicons?domain=https://www.annualreviews.org\&sz=32)
+
+Annual Reviews+3
+
+
+
+### **Subsystem A — Activity-dependent learning**
 
 **Operation 6.1 — Record neural co-activation**
 
 When two connected populations become active, record their joint activity.
 
-For neurons \(i\) and \(j\):
+For neurons \\(i\\) and \\(j\\):
 
-\[
-C_{ij}=
-\frac{1}{T}
-\int_0^T
-r_i(t)r_j(t)\,dt
-\]
+\\[ C\_{ij}= \frac{1}{T} \int_0^T r_i(t)r_j(t)\\,dt \\]
 
 This measures their average co-activation over an observation period.
 
@@ -1755,17 +1344,11 @@ This measures their average co-activation over an observation period.
 
 A simplified Hebbian update:
 
-\[
-\Delta w_{ij}=
-\eta x_i x_j
-\]
+\\[ \Delta w\_{ij}= \eta x_i x_j \\]
 
 Then:
 
-\[
-w_{ij}^{new}=
-w_{ij}^{old}+\Delta w_{ij}
-\]
+\\[ w\_{ij}^{new}= w\_{ij}^{old}+\Delta w\_{ij} \\]
 
 The connection becomes stronger when its pre- and postsynaptic components are jointly active, within this simplified rule.
 
@@ -1775,25 +1358,21 @@ The relative timing of pre- and postsynaptic spikes can affect synaptic modifica
 
 Define:
 
-\[
-\Delta t=t_{post}-t_{pre}
-\]
+\\[ \Delta t=t\_{post}-t\_{pre} \\]
 
 A simplified STDP window:
 
-\[
-\Delta w=
-\begin{cases}
-A_+e^{-\Delta t/\tau_+},
-&\Delta t>0\\
--A_-e^{\Delta t/\tau_-},
-&\Delta t<0
-\end{cases}
-\]
+\\[ \Delta w= \begin{cases} A\_+e^{-\Delta t/\tau\_+}, &\Delta t>0\\\ -A\_-e^{\Delta t/\tau\_-}, &\Delta t<0 \end{cases} \\]
 
 This represents a simplified timing-dependent learning hypothesis.
 
-The biological effect depends on more than spike ordering, including synapse type, dendritic location and other modulatory conditions. <Cite refs={["turn788860search2","turn126122view3"]}/>
+The biological effect depends on more than spike ordering, including synapse type, dendritic location and other modulatory conditions.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 6.4 — Simulate long-term potentiation**
 
@@ -1801,23 +1380,17 @@ LTP represents persistent increases in synaptic transmission efficacy under appr
 
 The computational model can accumulate repeated potentiation:
 
-\[
-w_{ij}(t+1)=
-w_{ij}(t)+\eta_{LTP}E_{ij}(t)
-\]
+\\[ w\_{ij}(t+1)= w\_{ij}(t)+\eta\_{LTP}E\_{ij}(t) \\]
 
-Where \(E_{ij}\) measures the qualifying activity pattern.
+Where \\(E\_{ij}\\) measures the qualifying activity pattern.
 
 **Operation 6.5 — Simulate long-term depression**
 
 LTD represents persistent reductions in synaptic transmission efficacy under appropriate conditions.
 
-\[
-w_{ij}(t+1)=
-w_{ij}(t)-\eta_{LTD}D_{ij}(t)
-\]
+\\[ w\_{ij}(t+1)= w\_{ij}(t)-\eta\_{LTD}D\_{ij}(t) \\]
 
-Where \(D_{ij}\) measures the relevant depression-driving activity.
+Where \\(D\_{ij}\\) measures the relevant depression-driving activity.
 
 These mechanisms should coexist rather than implementing learning solely as weight strengthening.
 
@@ -1827,47 +1400,31 @@ Prevent unrestricted weight growth.
 
 One simplified implementation:
 
-\[
-w_{ij}\leftarrow
-\operatorname{clip}(w_{ij},w_{min},w_{max})
-\]
+\\[ w\_{ij}\leftarrow \operatorname{clip}(w\_{ij},w\_{min},w\_{max}) \\]
 
 Alternatively, use normalization:
 
-\[
-w_{ij}^{new}=
-\frac{w_{ij}}
-{\sqrt{\sum_jw_{ij}^{2}+\epsilon}}
-\]
+\\[ w\_{ij}^{new}= \frac{w\_{ij}} {\sqrt{\sum_jw\_{ij}^{2}+\epsilon}} \\]
 
 This is an engineering stabilization rule, not a claim that all biological synapses follow this normalization.
 
-### Subsystem B — Homeostatic regulation
+### **Subsystem B — Homeostatic regulation**
 
 **Operation 6.7 — Monitor average neuronal activity**
 
 Calculate a moving average:
 
-\[
-\bar r_i(t)=
-(1-\alpha)\bar r_i(t-1)+\alpha r_i(t)
-\]
+\\[ \bar r_i(t)= (1-\alpha)\bar r_i(t-1)+\alpha r_i(t) \\]
 
 Compare it with a target activity level:
 
-\[
-e_i(t)=r_i^{target}-\bar r_i(t)
-\]
+\\[ e_i(t)=r_i^{target}-\bar r_i(t) \\]
 
 **Operation 6.8 — Implement homeostatic synaptic adjustment**
 
 A simplified adjustment:
 
-\[
-w_{ij}^{new}=
-w_{ij}^{old}
-+\eta_h e_iw_{ij}
-\]
+\\[ w\_{ij}^{new}= w\_{ij}^{old} +\eta_h e_iw\_{ij} \\]
 
 This models proportional scaling of synaptic input as one possible stabilization strategy.
 
@@ -1875,28 +1432,29 @@ This models proportional scaling of synaptic input as one possible stabilization
 
 Allow the learning threshold to depend on previous neural activity.
 
-\[
-\theta_i(t)=f(\bar r_i(t))
-\]
+\\[ \theta_i(t)=f(\bar r_i(t)) \\]
 
 Then update the learning rule according to the difference between incoming activity and the adaptive threshold.
 
 This allows the same activity pattern to have different learning effects depending on the history of the neuron.
 
-Homeostatic and Hebbian plasticity operate at different timescales and help address the stability problem created by changing synaptic weights. <Cite refs={["turn370436search7","turn370436search9"]}/>
+Homeostatic and Hebbian plasticity operate at different timescales and help address the stability problem created by changing synaptic weights.&#x20;
 
-### Subsystem C — Memory formation
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Subsystem C — Memory formation**
 
 **Operation 6.10 — Encode new neural representations**
 
 When a new pattern is processed, construct an experience representation:
 
-\[
-M_{new}=
-(X_{visual},X_{orthographic},X_{phonological},X_{semantic},C)
-\]
+\\[ M\_{new}= (X\_{visual},X\_{orthographic},X\_{phonological},X\_{semantic},C) \\]
 
-Where \(C\) contains contextual information.
+Where \\(C\\) contains contextual information.
 
 Store the relationships between its components.
 
@@ -1906,23 +1464,23 @@ Create a fast-learning memory system that can temporarily bind the components of
 
 A simplified associative memory:
 
-\[
-M=W_mX
-\]
+\\[ M=W_mX \\]
 
-The matrix \(W_m\) stores learned associations between active representations.
+The matrix \\(W_m\\) stores learned associations between active representations.
 
-The hippocampal system and neocortex have different roles in memory formation and consolidation; this should be represented through distinct model components rather than one undifferentiated memory array. <Cite refs={["turn370436search10","turn370436search1"]}/>
+The hippocampal system and neocortex have different roles in memory formation and consolidation; this should be represented through distinct model components rather than one undifferentiated memory array.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 6.12 — Implement memory retrieval**
 
-Given a partial cue \(Q\), retrieve stored patterns:
+Given a partial cue \\(Q\\), retrieve stored patterns:
 
-\[
-M^*=
-\arg\max_{M_i}
-\operatorname{Similarity}(Q,M_i)
-\]
+\\[ M^\*= \arg\max\_{M_i} \operatorname{Similarity}(Q,M_i) \\]
 
 The system should preserve multiple candidates when retrieval is uncertain.
 
@@ -1932,14 +1490,17 @@ Reactivate previous neural sequences using stored activity patterns.
 
 A replay sequence can be represented as:
 
-\[
-X^{replay}=
-[x_1,x_2,\ldots,x_T]
-\]
+\\[ X^{replay}= [x_1,x_2,\ldots,x_T] \\]
 
 The model can reactivate these patterns in a separate simulation phase, allowing previously learned relationships to be revisited.
 
-Replay has been investigated in relation to hippocampal memory retrieval and consolidation, but its exact functions are not fully settled. <Cite refs={["turn370436search6","turn370436search4"]}/>
+Replay has been investigated in relation to hippocampal memory retrieval and consolidation, but its exact functions are not fully settled.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 6.14 — Implement systems consolidation**
 
@@ -1947,11 +1508,7 @@ Develop a fast-learning component and a slower-learning distributed cortical com
 
 The process can be represented as:
 
-\[
-W_{cortex}(t+1)=
-W_{cortex}(t)+
-\eta_sX^{replay}(t)
-\]
+\\[ W\_{cortex}(t+1)= W\_{cortex}(t)+ \eta_sX^{replay}(t) \\]
 
 The slowly updated network gradually incorporates information previously represented by the fast memory system.
 
@@ -1961,10 +1518,7 @@ New experiences may interfere with old ones.
 
 The model can represent gradual forgetting through:
 
-\[
-w_{ij}(t+1)=
-(1-\lambda)w_{ij}(t)
-\]
+\\[ w\_{ij}(t+1)= (1-\lambda)w\_{ij}(t) \\]
 
 However, forgetting should not be implemented as uniform deletion. Some information is strengthened through continued use, while other associations become less accessible.
 
@@ -1972,28 +1526,32 @@ However, forgetting should not be implemented as uniform deletion. Some informat
 
 Maintain distinct memory components:
 
-| Memory system | Computational responsibility |
-|---|---|
-| Immediate neural state | Current processing |
-| Working memory | Temporary maintenance |
-| Fast associative memory | Rapid binding |
-| Long-term synaptic memory | Learned neural relationships |
-| Semantic memory | Generalized conceptual representations |
-| Episodic memory | Experience-specific associations |
+| Memory system             | Computational responsibility           |
+| ------------------------- | -------------------------------------- |
+| Immediate neural state    | Current processing                     |
+| Working memory            | Temporary maintenance                  |
+| Fast associative memory   | Rapid binding                          |
+| Long-term synaptic memory | Learned neural relationships           |
+| Semantic memory           | Generalized conceptual representations |
+| Episodic memory           | Experience-specific associations       |
 
 This is a model architecture. Its memory components should not be interpreted as exact one-to-one anatomical replicas.
 
-<badge color="success">Stage 6 output</badge>
+Stage 6 output
 
 A plastic neural network with associative learning, STDP-inspired timing rules, LTP/LTD, homeostatic regulation, memory storage, retrieval, replay, consolidation and forgetting.
 
----
+# **Stage 7 — Predictive and contextual processing**
 
-# Stage 7 — Predictive and contextual processing
+[The free-energy principle: a unified brain theory? | Nature Reviews Neuroscience](https://images.openai.com/static-rsc-4/nChDDOX5v1UAqaDdYprYmGEdk3zkupJZ7JIFW3NZ4P8cIJ01rl-q9MhbEVu8KXpBctwZDcSDCwXYYxGb5Vx748F2k4uHga6kGwYYql7pM7kjRgR7stgm35XAo_CZzzq29Z6HXaIwgEePZRPImWxYd0XZqgkAu5fqaH8_4VRYI20?purpose=inline)
 
-<AsyncImageGroup query={["predictive coding hierarchical brain feedback prediction error neuroscience model diagram","Bayesian brain perception prior likelihood prediction error neural hierarchy diagram","top down bottom up neural information processing cortical circuit scientific illustration"]} aspectRatio="5:4"/>
+[pt02.html](https://images.openai.com/static-rsc-4/fz6fUOP8dez9KaDIyiQ1bvmUpFb07RH1WiErI7WFPRMfAsVywj4_QfN5tn5hggzmeGnMFN78KHKP0LrA38PT4xunZeHjUCs9cpJNWAenOaHXGznnevvbJrRDw30ZHfjF7DckzZTRXFVz7yiQW_v7mBT69-B7Ay51pISsqlfuMPM?purpose=inline)
 
-### Objective
+[Theories of consciousness | Nature Reviews Neuroscience](https://images.openai.com/static-rsc-4/gIzLAZAC0RP9YRtbnSQbl2qaQNNZPHP9rBt9fVOfjU5LWjqnQRh7aUhfXbE1ncOSEfaWJzgi9mHnjKDbvpKLsdHy5mPFsbmH2SGQ-oXUV-b2EH7bmlVgU2Va-XRIw9dEV1U9lusnbLyCMrBCAnPUxxGfkHOv3zpjTpPVzqnEqBU?purpose=inline)
+
+10
+
+### **Objective**
 
 Enable the neural architecture to predict incoming information, compare predictions against sensory evidence, and update its internal representations.
 
@@ -2001,9 +1559,15 @@ This is a particularly important stage because human perception is not simply th
 
 The brain can use previously acquired knowledge, contextual information and learned associations to influence the processing of incoming information.
 
-Predictive processing theories describe a hierarchical architecture in which higher-level representations generate predictions that interact with lower-level sensory information. The resulting differences can be represented as prediction errors. This is an influential theoretical framework, not an established universal explanation of every cortical computation. <Cite refs={["turn788860search10","turn317998search8"]}/>
+Predictive processing theories describe a hierarchical architecture in which higher-level representations generate predictions that interact with lower-level sensory information. The resulting differences can be represented as prediction errors. This is an influential theoretical framework, not an established universal explanation of every cortical computation.&#x20;
 
-### Subsystem A — Generative neural representations
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Subsystem A — Generative neural representations**
 
 **Operation 7.1 — Construct hierarchical generative models**
 
@@ -2019,14 +1583,12 @@ For example:
 
 Represent the generative network as:
 
-\[
-P(X|Z)
-\]
+\\[ P(X|Z) \\]
 
 Where:
 
-- \(X\): expected sensory information.
-- \(Z\): higher-level latent representation.
+- \\(X\\): expected sensory information.
+- \\(Z\\): higher-level latent representation.
 
 The network attempts to infer the hidden representation that best explains the available information.
 
@@ -2034,11 +1596,9 @@ The network attempts to infer the hidden representation that best explains the a
 
 Use the memory system from Stage 6 to retrieve information relevant to the current input.
 
-\[
-P(Z|C)
-\]
+\\[ P(Z|C) \\]
 
-Where \(C\) represents context.
+Where \\(C\\) represents context.
 
 Context may include:
 
@@ -2063,9 +1623,7 @@ Use higher-level information to predict lower-level representations.
 
 For instance, a candidate word might generate expectations about its constituent letters.
 
-\[
-\hat X_{lower}=f(Z_{higher})
-\]
+\\[ \hat X\_{lower}=f(Z\_{higher}) \\]
 
 The predicted representation is transmitted to the lower-level processing populations.
 
@@ -2073,37 +1631,29 @@ The predicted representation is transmitted to the lower-level processing popula
 
 Each level should generate predictions about the level immediately below it.
 
-\[
-\hat X_1=f_1(Z_2)
-\]
+\\[ \hat X_1=f_1(Z_2) \\]
 
-\[
-\hat X_2=f_2(Z_3)
-\]
+\\[ \hat X_2=f_2(Z_3) \\]
 
-\[
-\hat X_3=f_3(Z_4)
-\]
+\\[ \hat X_3=f_3(Z_4) \\]
 
 This produces a hierarchical generative system.
 
 Predictions should remain linked to the neural populations responsible for the information they predict.
 
-### Subsystem B — Prediction-error processing
+### **Subsystem B — Prediction-error processing**
 
 **Operation 7.5 — Compare predictions with incoming sensory evidence**
 
 For each predicted feature:
 
-\[
-E_i=X_i-\hat X_i
-\]
+\\[ E_i=X_i-\hat X_i \\]
 
 Where:
 
-- \(X_i\): actual sensory representation.
-- \(\hat X_i\): predicted representation.
-- \(E_i\): prediction error.
+- \\(X_i\\): actual sensory representation.
+- \\(\hat X_i\\): predicted representation.
+- \\(E_i\\): prediction error.
 
 For visual processing, the error can represent differences between predicted and observed visual features.
 
@@ -2117,15 +1667,11 @@ For example, the system may have greater confidence in a clear visual letter tha
 
 Introduce precision:
 
-\[
-\Pi_i=\frac{1}{\sigma_i^2+\epsilon}
-\]
+\\[ \Pi_i=\frac{1}{\sigma_i^2+\epsilon} \\]
 
 Then:
 
-\[
-E_i^{weighted}=\Pi_iE_i
-\]
+\\[ E_i^{weighted}=\Pi_iE_i \\]
 
 Precision represents the estimated reliability of information.
 
@@ -2140,10 +1686,7 @@ The system can therefore distinguish between:
 
 Send weighted prediction errors through recurrent pathways.
 
-\[
-I_i^{error}=
-\sum_jw_{ij}^{error}E_j^{weighted}
-\]
+\\[ I_i^{error}= \sum_jw\_{ij}^{error}E_j^{weighted} \\]
 
 These signals influence the relevant higher-level representations.
 
@@ -2155,26 +1698,17 @@ Modify the current interpretation according to the prediction error.
 
 A generic gradient-based approximation is:
 
-\[
-Z(t+1)=
-Z(t)-\eta
-\nabla_Z\mathcal{L}(Z)
-\]
+\\[ Z(t+1)= Z(t)-\eta \nabla_Z\mathcal{L}(Z) \\]
 
-Where \(\mathcal{L}\) represents prediction mismatch.
+Where \\(\mathcal{L}\\) represents prediction mismatch.
 
 One possible objective is:
 
-\[
-\mathcal{L}=
-\frac{1}{2}
-\sum_i
-\Pi_i(X_i-\hat X_i)^2
-\]
+\\[ \mathcal{L}= \frac{1}{2} \sum_i \Pi_i(X_i-\hat X_i)^2 \\]
 
 This establishes a mathematical mechanism for changing internal beliefs based on incoming evidence.
 
-### Subsystem C — Bayesian inference
+### **Subsystem C — Bayesian inference**
 
 **Operation 7.9 — Calculate posterior probabilities**
 
@@ -2182,19 +1716,15 @@ Combine previous expectations with current sensory evidence.
 
 Using Bayes' rule:
 
-\[
-P(H|E,C)=
-\frac{P(E|H,C)P(H|C)}
-{P(E|C)}
-\]
+\\[ P(H|E,C)= \frac{P(E|H,C)P(H|C)} {P(E|C)} \\]
 
 Where:
 
-- \(H\): candidate interpretation.
-- \(E\): observed evidence.
-- \(C\): context.
-- \(P(H|C)\): contextual prior.
-- \(P(E|H,C)\): likelihood.
+- \\(H\\): candidate interpretation.
+- \\(E\\): observed evidence.
+- \\(C\\): context.
+- \\(P(H|C)\\): contextual prior.
+- \\(P(E|H,C)\\): likelihood.
 
 For example, if a visual character could be either `O` or `Q`, the system evaluates both interpretations using visual and contextual evidence.
 
@@ -2202,31 +1732,23 @@ For example, if a visual character could be either `O` or `Q`, the system evalua
 
 For each hypothesis:
 
-\[
-Cost(H_i)=
--\log P(E|H_i,C)
--\log P(H_i|C)
-\]
+\\[ Cost(H_i)= -\log P(E|H_i,C) -\log P(H_i|C) \\]
 
 Then:
 
-\[
-H^*=\arg\min_i Cost(H_i)
-\]
+\\[ H^\*=\arg\min_i Cost(H_i) \\]
 
 Keep the other hypotheses available.
 
 This provides a coherent probabilistic selection mechanism.
 
-### Subsystem D — Language and contextual prediction
+### **Subsystem D — Language and contextual prediction**
 
 **Operation 7.11 — Predict upcoming lexical candidates**
 
 Use the current sequence and learned linguistic patterns to calculate:
 
-\[
-P(w_t|w_1,\ldots,w_{t-1},C)
-\]
+\\[ P(w_t|w_1,\ldots,w\_{t-1},C) \\]
 
 This predicts possible next words.
 
@@ -2243,10 +1765,7 @@ The model can combine:
 
 Measure how unexpected an incoming word is.
 
-\[
-S(w_t)=
--\log P(w_t|Context)
-\]
+\\[ S(w_t)= -\log P(w_t|Context) \\]
 
 For example:
 
@@ -2262,22 +1781,14 @@ Suppose several words are partially compatible with the same visual sequence.
 
 Maintain:
 
-\[
-A_i(t)=
-f(
-V_i,
-P_i,
-C_i,
-F_i
-)
-\]
+\\[ A_i(t)= f( V_i, P_i, C_i, F_i ) \\]
 
 Where:
 
-- \(V_i\): visual evidence.
-- \(P_i\): phonological evidence.
-- \(C_i\): contextual support.
-- \(F_i\): learned frequency or familiarity.
+- \\(V_i\\): visual evidence.
+- \\(P_i\\): phonological evidence.
+- \\(C_i\\): contextual support.
+- \\(F_i\\): learned frequency or familiarity.
 
 Allow the populations to compete through recurrent excitation and inhibition.
 
@@ -2289,21 +1800,11 @@ For example, a word describing an animal should activate different related conce
 
 Represent semantic features as:
 
-\[
-Z_{semantic}=
-[f_1,f_2,\ldots,f_n]
-\]
+\\[ Z\_{semantic}= [f_1,f_2,\ldots,f_n] \\]
 
 Calculate compatibility:
 
-\[
-S_{semantic}(H_i,C)=
-\frac{
-Z_{H_i}\cdot Z_C
-}{
-\|Z_{H_i}\|\|Z_C\|+\epsilon
-}
-\]
+\\[ S\_{semantic}(H_i,C)= \frac{ Z\_{H_i}\cdot Z_C }{ \\|Z\_{H_i}\\|\\|Z_C\\|+\epsilon } \\]
 
 This provides an approximate semantic compatibility score.
 
@@ -2311,11 +1812,7 @@ This provides an approximate semantic compatibility score.
 
 When new evidence contradicts the current interpretation, update the representation.
 
-\[
-P_{new}(H_i)
-\propto
-P(E_{new}|H_i,E_{old})P_{old}(H_i)
-\]
+\\[ P\_{new}(H_i) \propto P(E\_{new}|H_i,E\_{old})P\_{old}(H_i) \\]
 
 This allows incremental reanalysis instead of permanently committing to an earlier interpretation.
 
@@ -2323,16 +1820,11 @@ This allows incremental reanalysis instead of permanently committing to an earli
 
 Calculate uncertainty:
 
-\[
-H(P)=
--\sum_iP(H_i)\log P(H_i)
-\]
+\\[ H(P)= -\sum_iP(H_i)\log P(H_i) \\]
 
 Also calculate the difference between the highest and second-highest candidates:
 
-\[
-M=P(H_1)-P(H_2)
-\]
+\\[ M=P(H_1)-P(H_2) \\]
 
 A decision can be made only if the confidence and margin criteria are satisfied.
 
@@ -2344,10 +1836,7 @@ Prioritize information that is expected to reduce uncertainty.
 
 A simplified information-gain objective:
 
-\[
-IG=
-H(P_{before})-H(P_{after})
-\]
+\\[ IG= H(P\_{before})-H(P\_{after}) \\]
 
 This gives the architecture a way to allocate processing resources toward features that could resolve uncertainty.
 
@@ -2355,28 +1844,27 @@ This gives the architecture a way to allocate processing resources toward featur
 
 When prediction errors persist, the learning system can update its predictive associations.
 
-\[
-W_{predictive}^{new}=
-W_{predictive}^{old}
--
-\eta\nabla_W\mathcal{L}
-\]
+\\[ W\_{predictive}^{new}= W\_{predictive}^{old} - \eta\nabla_W\mathcal{L} \\]
 
 This connects prediction error with Stage 6 learning mechanisms.
 
 However, real synaptic learning involves several mechanisms and does not necessarily perform gradient descent as implemented in software.
 
-<badge color="success">Stage 7 output</badge>
+Stage 7 output
 
 A predictive neural system with contextual priors, hierarchical feedback, prediction errors, Bayesian candidate evaluation, lexical surprisal, semantic integration, ambiguity resolution and adaptive expectations.
 
----
+# **Stage 8 — Brain-data validation**
 
-# Stage 8 — Brain-data validation
+[Current Projects | University of East London](https://images.openai.com/static-rsc-4/R4hbVAQZcPMDfpI3TUO5Duu2I48r7d9n3e0Dz6CniyXE4oxKqk2llsoC2Z7dOPdj4FKI3Zsxjly9eB9jm0wcAHKtuJSt4wWUgKoIQAg1vxC-aRTcObvtcv3YO-AI4cz8A9SQa4JXBrFxguOhhPHM6MbZSzKhbZodfxI1ZyEiIhY?purpose=inline)
 
-<AsyncImageGroup query={["EEG cap electrophysiology brain measurement laboratory scientific photograph","fMRI scanner human brain functional MRI image","magnetoencephalography MEG helmet brain research measurement","brain neural network computational model to experimental data comparison visualization"]} aspectRatio="5:4"/>
+[Functional MRI (fMRI): How It Works, Uses, Benefits & Risks](https://images.openai.com/static-rsc-4/nYOajhth_xJWOwLgjA4gSckXBDj3HYb6hmsiQMzqNdOVv-fzbocciGCSYndcziSNQVm7jitkbxDwILY_ofqnLJ_AJjlioh0jJi__YFILkDRLEOddL6PF6owjLsFpjeiApBb_xXqTGO3r8AhQrU6iuaojfV6U9PBQ0ysGIPmhyj0?purpose=inline)
 
-### Objective
+[Welcoming our new (and upgraded) OPM MEG!](https://images.openai.com/static-rsc-4/B61Mu-cNJNGInnLx36uQuPzjyVyLBEEX44XU5a7h240X0bDDEsW9qWyqSbB5ughpKA_DZJd2ywaA-E0sJjIWzukBJ7w3Mp17S8H4DxXx12ij5XW3VOCOZXs6y9tln0tzJ93Jb4fnsbdnGCP8XRVBIwSLOoqBPUYVVYL36ofatBc?purpose=inline)
+
+9
+
+### **Objective**
 
 Determine whether the proposed computational and biological models actually correspond to measurable brain behavior.
 
@@ -2386,9 +1874,15 @@ A neural simulation may be mathematically sophisticated while still failing to r
 
 Therefore, the architecture needs to make testable predictions and compare them with independent human behavioral and neural measurements.
 
-Neuroimaging research distinguishes between statistical models of observed responses and mechanistic models that explain how neuronal activity generates those responses. <Cite refs={["turn132590view3","turn126122view4"]}/>
+Neuroimaging research distinguishes between statistical models of observed responses and mechanistic models that explain how neuronal activity generates those responses.&#x20;
 
-### Subsystem A — Experimental data construction
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+PMC+1
+
+
+
+### **Subsystem A — Experimental data construction**
 
 **Operation 8.1 — Define experimental tasks**
 
@@ -2396,16 +1890,16 @@ Construct experiments corresponding to the capabilities being tested.
 
 Examples:
 
-| Experiment | Main purpose |
-|---|---|
-| Single-letter recognition | Visual character processing |
-| Grapheme discrimination | Grapheme representation |
-| Word recognition | Orthographic and lexical processing |
-| Pseudoword reading | Sublexical processing |
-| Word-frequency comparison | Familiarity effects |
-| Sentence comprehension | Linguistic integration |
-| Ambiguous sentence interpretation | Reanalysis and prediction |
-| Contextual reading | Predictive processing |
+| Experiment                        | Main purpose                        |
+| --------------------------------- | ----------------------------------- |
+| Single-letter recognition         | Visual character processing         |
+| Grapheme discrimination           | Grapheme representation             |
+| Word recognition                  | Orthographic and lexical processing |
+| Pseudoword reading                | Sublexical processing               |
+| Word-frequency comparison         | Familiarity effects                 |
+| Sentence comprehension            | Linguistic integration              |
+| Ambiguous sentence interpretation | Reanalysis and prediction           |
+| Contextual reading                | Predictive processing               |
 
 For every experiment define:
 
@@ -2419,21 +1913,16 @@ For every experiment define:
 
 Organize the actual data into a common format.
 
-\[
-D=
-\{
-S,B,E,M,F,P
-\}
-\]
+\\[ D= \\{ S,B,E,M,F,P \\} \\]
 
 Where:
 
-- \(S\): stimuli.
-- \(B\): behavioral results.
-- \(E\): EEG recordings.
-- \(M\): MEG recordings.
-- \(F\): fMRI measurements.
-- \(P\): participant and experimental metadata.
+- \\(S\\): stimuli.
+- \\(B\\): behavioral results.
+- \\(E\\): EEG recordings.
+- \\(M\\): MEG recordings.
+- \\(F\\): fMRI measurements.
+- \\(P\\): participant and experimental metadata.
 
 Maintain trial identifiers, participant identifiers, stimulus identifiers and accurate timing.
 
@@ -2467,27 +1956,23 @@ Behavioral data may require:
 
 The procedures must be chosen according to the actual dataset, not assumed to be identical across experiments.
 
-### Subsystem B — Neural measurement models
+### **Subsystem B — Neural measurement models**
 
 **Operation 8.4 — Generate EEG predictions**
 
 The simulated neural populations produce time-dependent source activity:
 
-\[
-S(t)
-\]
+\\[ S(t) \\]
 
 A measurement model projects this activity into sensor space:
 
-\[
-Y_{EEG}(t)=L_{EEG}S(t)+\epsilon(t)
-\]
+\\[ Y\_{EEG}(t)=L\_{EEG}S(t)+\epsilon(t) \\]
 
 Where:
 
-- \(L_{EEG}\): EEG lead-field matrix.
-- \(S(t)\): modeled neural sources.
-- \(\epsilon(t)\): measurement noise.
+- \\(L\_{EEG}\\): EEG lead-field matrix.
+- \\(S(t)\\): modeled neural sources.
+- \\(\epsilon(t)\\): measurement noise.
 
 The lead field depends on the anatomical and electrical properties of the head.
 
@@ -2495,9 +1980,7 @@ The lead field depends on the anatomical and electrical properties of the head.
 
 Likewise:
 
-\[
-Y_{MEG}(t)=L_{MEG}S(t)+\epsilon(t)
-\]
+\\[ Y\_{MEG}(t)=L\_{MEG}S(t)+\epsilon(t) \\]
 
 The MEG and EEG forward models must be distinct because they describe different sensor measurements.
 
@@ -2507,25 +1990,21 @@ The inverse problem attempts to estimate source activity from sensor recordings.
 
 A regularized least-squares example:
 
-\[
-\hat S=
-\arg\min_S
-\left[
-\|Y-LS\|_2^2+
-\lambda\|S\|_2^2
-\right]
-\]
+\\[ \hat S= \arg\min_S \left[ \\|Y-LS\\|\_2^2+ \lambda\\|S\\|\_2^2 \right] \\]
 
 This produces a regularized estimate:
 
-\[
-\hat S=
-(L^TL+\lambda I)^{-1}L^TY
-\]
+\\[ \hat S= (L^TL+\lambda I)^{-1}L^TY \\]
 
 This is an important but simplified inverse solution.
 
-The inverse problem is underdetermined and sensitive to anatomical assumptions, sensor geometry and regularization. <Cite refs={["turn788860search0","turn788860search4"]}/>
+The inverse problem is underdetermined and sensitive to anatomical assumptions, sensor geometry and regularization.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
 
 **Operation 8.7 — Compare event-related neural responses**
 
@@ -2533,10 +2012,7 @@ Align individual trials around an event, such as the presentation of a word.
 
 Calculate:
 
-\[
-ERP(t)=
-\frac{1}{N}\sum_{i=1}^{N}Y_i(t)
-\]
+\\[ ERP(t)= \frac{1}{N}\sum\_{i=1}^{N}Y_i(t) \\]
 
 Compare modeled and recorded ERP waveforms.
 
@@ -2553,22 +2029,17 @@ Do not interpret a single ERP component as a unique measurement of one neural me
 
 Calculate spectral power over time.
 
-For a signal \(x(t)\), a simplified short-time Fourier transform:
+For a signal \\(x(t)\\), a simplified short-time Fourier transform:
 
-\[
-X(\tau,f)=
-\int x(t)w(t-\tau)e^{-i2\pi ft}dt
-\]
+\\[ X(\tau,f)= \int x(t)w(t-\tau)e^{-i2\pi ft}dt \\]
 
 Then:
 
-\[
-P(\tau,f)=|X(\tau,f)|^2
-\]
+\\[ P(\tau,f)=|X(\tau,f)|^2 \\]
 
 This allows comparison of modeled and experimental neural oscillatory activity.
 
-### Subsystem C — fMRI validation
+### **Subsystem C — fMRI validation**
 
 **Operation 8.9 — Convert neural activity into a hemodynamic prediction**
 
@@ -2576,15 +2047,13 @@ fMRI BOLD measurements are indirect consequences of neurovascular processes.
 
 A simplified model:
 
-\[
-BOLD(t)=h(t)*N(t)
-\]
+\\[ BOLD(t)=h(t)\*N(t) \\]
 
 Where:
 
-- \(h(t)\): hemodynamic response function.
-- \(N(t)\): modeled neural activity.
-- \(*\): convolution.
+- \\(h(t)\\): hemodynamic response function.
+- \\(N(t)\\): modeled neural activity.
+- \\(\*\\): convolution.
 
 The model should not compare raw membrane voltage directly with BOLD measurements.
 
@@ -2592,16 +2061,11 @@ The model should not compare raw membrane voltage directly with BOLD measurement
 
 Use the general linear model:
 
-\[
-Y=X\beta+\epsilon
-\]
+\\[ Y=X\beta+\epsilon \\]
 
 Estimate:
 
-\[
-\hat\beta=
-(X^TX)^{-1}X^TY
-\]
+\\[ \hat\beta= (X^TX)^{-1}X^TY \\]
 
 Or use a suitable regularized or generalized estimator where necessary.
 
@@ -2613,56 +2077,35 @@ Compare the patterns represented by the model with patterns measured in the brai
 
 Construct a model representational dissimilarity matrix:
 
-\[
-RDM_{model}(i,j)=
-d(Z_i,Z_j)
-\]
+\\[ RDM\_{model}(i,j)= d(Z_i,Z_j) \\]
 
 Construct an experimental RDM:
 
-\[
-RDM_{brain}(i,j)=
-d(B_i,B_j)
-\]
+\\[ RDM\_{brain}(i,j)= d(B_i,B_j) \\]
 
 Then calculate their correspondence:
 
-\[
-\rho=
-\operatorname{corr}
-\left(
-RDM_{model},
-RDM_{brain}
-\right)
-\]
+\\[ \rho= \operatorname{corr} \left( RDM\_{model}, RDM\_{brain} \right) \\]
 
 A high correlation indicates similarity in representational geometry. It does not by itself prove that the model implements the same biological mechanism.
 
-### Subsystem D — Causal and behavioral validation
+### **Subsystem D — Causal and behavioral validation**
 
 **Operation 8.12 — Conduct lesion-based model comparisons**
 
 Simulate disruption of an individual population.
 
-For region \(i\):
+For region \\(i\\):
 
-\[
-x_i^{lesion}=(1-\rho_i)x_i
-\]
+\\[ x_i^{lesion}=(1-\rho_i)x_i \\]
 
-Where \(\rho_i\) represents model disruption.
+Where \\(\rho_i\\) represents model disruption.
 
 Then calculate the behavioral difference:
 
-\[
-\Delta Accuracy=
-Accuracy_{normal}-Accuracy_{lesion}
-\]
+\\[ \Delta Accuracy= Accuracy\_{normal}-Accuracy\_{lesion} \\]
 
-\[
-\Delta RT=
-RT_{lesion}-RT_{normal}
-\]
+\\[ \Delta RT= RT\_{lesion}-RT\_{normal} \\]
 
 Compare the predicted impairment patterns with independent lesion-patient observations.
 
@@ -2684,37 +2127,23 @@ For each task calculate:
 
 Accuracy:
 
-\[
-Accuracy=
-\frac{N_{correct}}{N_{total}}
-\]
+\\[ Accuracy= \frac{N\_{correct}}{N\_{total}} \\]
 
 Mean absolute error:
 
-\[
-MAE=
-\frac{1}{N}\sum_i|y_i-\hat y_i|
-\]
+\\[ MAE= \frac{1}{N}\sum_i|y_i-\hat y_i| \\]
 
 Root mean squared error:
 
-\[
-RMSE=
-\sqrt{
-\frac{1}{N}\sum_i(y_i-\hat y_i)^2
-}
-\]
+\\[ RMSE= \sqrt{ \frac{1}{N}\sum_i(y_i-\hat y_i)^2 } \\]
 
 Reaction-time error:
 
-\[
-\Delta RT=
-RT_{model}-RT_{human}
-\]
+\\[ \Delta RT= RT\_{model}-RT\_{human} \\]
 
 Perform these comparisons separately for each experiment and participant group.
 
-### Subsystem E — Statistical validation
+### **Subsystem E — Statistical validation**
 
 **Operation 8.15 — Perform held-out evaluation**
 
@@ -2741,10 +2170,7 @@ Calculate:
 
 For example:
 
-\[
-CI_{95\%}=
-[Q_{0.025},Q_{0.975}]
-\]
+\\[ CI\_{95\\%}= [Q\_{0.025},Q\_{0.975}] \\]
 
 Using a suitable sampling procedure.
 
@@ -2763,10 +2189,7 @@ Examples:
 
 Then calculate:
 
-\[
-\Delta L_i=
-L_{ablated_i}-L_{complete}
-\]
+\\[ \Delta L_i= L\_{ablated_i}-L\_{complete} \\]
 
 This identifies which components are necessary for the model's measured performance.
 
@@ -2774,14 +2197,14 @@ This identifies which components are necessary for the model's measured performa
 
 Organize evidence into distinct categories:
 
-| Evidence | What it can establish |
-|---|---|
-| Similar behavior | Behavioral correspondence |
-| Similar EEG/MEG responses | Electrophysiological correspondence |
-| Similar fMRI patterns | Hemodynamic/representational correspondence |
-| Similar connectivity | Network-organization correspondence |
-| Lesion-related deficits | Evidence about necessity and network dependence |
-| Perturbation effects | Evidence about causal contributions |
+| Evidence                  | What it can establish                           |
+| ------------------------- | ----------------------------------------------- |
+| Similar behavior          | Behavioral correspondence                       |
+| Similar EEG/MEG responses | Electrophysiological correspondence             |
+| Similar fMRI patterns     | Hemodynamic/representational correspondence     |
+| Similar connectivity      | Network-organization correspondence             |
+| Lesion-related deficits   | Evidence about necessity and network dependence |
+| Perturbation effects      | Evidence about causal contributions             |
 
 No single category establishes complete biological equivalence.
 
@@ -2799,17 +2222,21 @@ Assign a result:
 
 The algorithm must be allowed to reject its own assumptions.
 
-<badge color="success">Stage 8 output</badge>
+Stage 8 output
 
 A research-validation system containing experimental comparisons, EEG/MEG and fMRI predictions, behavioral evaluations, representational similarity, causal testing, statistical uncertainty and falsifiable hypotheses.
 
----
+# **Stage 9 — Integrated neurocomputational ORE**
 
-# Stage 9 — Integrated neurocomputational ORE
+[Comment naissent les idées lumineuses ? Le grand mystère de la créativité](https://images.openai.com/static-rsc-4/AG0zk-KMr1yIB306grBmkOhSCTDlA4nR6yIXhc9BdAQE5AH4uYYkiqeZlElLWmr3ph_alCS58eZ87vi79CvKcbSf6INRdjHF5si7Jp0mUWpzj54nS7IbloSb3WKjNvwGKXIUdmKYsWMEOYT-vJ3TF3T8yZRGhsNeWDxyg3Q2eQk?purpose=inline)
 
-<AsyncImageGroup query={["large distributed brain neural networks connectome multiregion scientific illustration","modular artificial neural network interconnected specialized modules architecture visualization","human brain computational neuroscience whole brain network visualization"]} aspectRatio="5:4"/>
+[NeuroMarvl](https://images.openai.com/static-rsc-4/ySHnO0hg9_efOyyiAQJfl7Lq89sIABWu_vk2gxTDjxNTe0nER9CAMUb79xg3H5DQGHp_0cKx4YivcW25uUQcxAYV8EhK3NqJAuKqDpnpdISxtAiTpyz_ZtxzQqdqkH1l_E6Zkjr3uXef1BL82IuN9YGtKbYkWHloevCf_f7_qXA?purpose=inline)
 
-### Objective
+[Artificial Neural Network - Logicmojo](https://images.openai.com/static-rsc-4/ErjLR49bjSGydbc3Fb5hqlZ2PcStKt5LqCAZhXlwOeU8sRtaGQ6Tno8yVtDyJq2dpphw88MEBeoxBwUys4m7jkav78mc9MPNuAKSAhimTn0Xl5Q449qb_7YQHHKaarTEnxyCg_1osHbv5NJACNBfi5zlfUu5QwMgFxFyi2U9Rto?purpose=inline)
+
+13
+
+### **Objective**
 
 Integrate all eight previous stages into one coordinated neurocomputational architecture.
 
@@ -2817,11 +2244,17 @@ The objective is not to create nine independent simulations that run without com
 
 Instead, construct a distributed architecture whose modules have specialized responsibilities but share information, neural states, memory, predictions and control signals.
 
-This is consistent with the distinction between functional specialization and functional integration in neuroscience: complex functions depend on both specialized regions and their interactions. <Cite refs={["turn132590view3","turn317998search1"]}/>
+This is consistent with the distinction between functional specialization and functional integration in neuroscience: complex functions depend on both specialized regions and their interactions.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+PMC+1
+
+
 
 I would organize this stage into the following subsystems.
 
-### Subsystem A — Master architecture construction
+### **Subsystem A — Master architecture construction**
 
 **Operation 9.1 — Construct the master ORE controller**
 
@@ -2841,12 +2274,9 @@ Its responsibilities:
 
 Represent the controller:
 
-\[
-ORE_{controller}=
-\{M_1,M_2,\ldots,M_9\}
-\]
+\\[ ORE\_{controller}= \\{M_1,M_2,\ldots,M_9\\} \\]
 
-Where each \(M_i\) is a major subsystem.
+Where each \\(M_i\\) is a major subsystem.
 
 **Operation 9.2 — Construct specialized subsystem controllers**
 
@@ -2854,16 +2284,16 @@ Each major stage should have its own controller.
 
 For example:
 
-| Controller | Responsibility |
-|---|---|
-| Neural Simulation Controller | Neurons and neural populations |
-| Visual Controller | Retina, LGN and V1 |
-| Visual Hierarchy Controller | Higher visual representations |
-| Orthographic Controller | Letters, graphemes and words |
-| Connectivity Controller | Recurrent network communication |
-| Learning Controller | Plasticity and memory |
-| Predictive Controller | Prediction and contextual integration |
-| Validation Controller | Experimental comparisons |
+| Controller                    | Responsibility                          |
+| ----------------------------- | --------------------------------------- |
+| Neural Simulation Controller  | Neurons and neural populations          |
+| Visual Controller             | Retina, LGN and V1                      |
+| Visual Hierarchy Controller   | Higher visual representations           |
+| Orthographic Controller       | Letters, graphemes and words            |
+| Connectivity Controller       | Recurrent network communication         |
+| Learning Controller           | Plasticity and memory                   |
+| Predictive Controller         | Prediction and contextual integration   |
+| Validation Controller         | Experimental comparisons                |
 | Master Integration Controller | Coordination of the complete ORE system |
 
 Each controller should expose an explicit input/output contract.
@@ -2874,17 +2304,7 @@ Define common representations that all compatible modules can exchange.
 
 For example:
 
-\[
-State=
-\{
-SensoryState,
-NeuralState,
-MemoryState,
-ContextState,
-PredictionState,
-ConfidenceState
-\}
-\]
+\\[ State= \\{ SensoryState, NeuralState, MemoryState, ContextState, PredictionState, ConfidenceState \\} \\]
 
 Each component must describe:
 
@@ -2899,21 +2319,19 @@ Each component must describe:
 
 This prevents incompatible representations from being passed between modules.
 
-### Subsystem B — Integrated processing coordination
+### **Subsystem B — Integrated processing coordination**
 
 **Operation 9.4 — Initialize the complete neural network**
 
 Construct the neural populations and their connections.
 
-\[
-G=(V,E,W)
-\]
+\\[ G=(V,E,W) \\]
 
 Where:
 
-- \(V\): populations.
-- \(E\): connections.
-- \(W\): synaptic weights.
+- \\(V\\): populations.
+- \\(E\\): connections.
+- \\(W\\): synaptic weights.
 
 Initialize:
 
@@ -2933,14 +2351,7 @@ Store its original representation.
 
 Generate the initial sensory-state object:
 
-\[
-S_0=
-\{
-I_{visual},
-I_{auditory},
-I_{other}
-\}
-\]
+\\[ S_0= \\{ I\_{visual}, I\_{auditory}, I\_{other} \\} \\]
 
 The original input must remain distinguishable from derived neural representations.
 
@@ -2950,15 +2361,7 @@ Send the sensory information through the appropriate neural populations.
 
 For visual input:
 
-\[
-S_0
-\rightarrow
-Retina
-\rightarrow
-LGN
-\rightarrow
-V1
-\]
+\\[ S_0 \rightarrow Retina \rightarrow LGN \rightarrow V1 \\]
 
 For auditory input, initialize the corresponding auditory sensory populations.
 
@@ -2968,9 +2371,7 @@ The two sensory streams may converge later through shared higher-level network r
 
 Send early visual outputs through hierarchical populations.
 
-\[
-V1\rightarrow V2\rightarrow V4\rightarrow IT
-\]
+\\[ V1\rightarrow V2\rightarrow V4\rightarrow IT \\]
 
 In parallel, process spatial and attentional information through the dorsal pathway.
 
@@ -2978,17 +2379,7 @@ In parallel, process spatial and attentional information through the dorsal path
 
 When the stimulus contains written language, process:
 
-\[
-VisualFeatures
-\rightarrow
-GraphemePopulations
-\rightarrow
-LetterPositions
-\rightarrow
-Ngrams
-\rightarrow
-VWFA
-\]
+\\[ VisualFeatures \rightarrow GraphemePopulations \rightarrow LetterPositions \rightarrow Ngrams \rightarrow VWFA \\]
 
 Preserve ambiguity and uncertainty at every level.
 
@@ -2998,25 +2389,15 @@ Connect orthographic representations with the relevant language populations.
 
 For example:
 
-\[
-VWFA\leftrightarrow MTG
-\]
+\\[ VWFA\leftrightarrow MTG \\]
 
-\[
-MTG\leftrightarrow IFG
-\]
+\\[ MTG\leftrightarrow IFG \\]
 
-\[
-MTG\leftrightarrow ATL
-\]
+\\[ MTG\leftrightarrow ATL \\]
 
-\[
-STG\leftrightarrow MTG
-\]
+\\[ STG\leftrightarrow MTG \\]
 
-\[
-AG\leftrightarrow ATL
-\]
+\\[ AG\leftrightarrow ATL \\]
 
 These are illustrative network relationships, not a complete anatomical connectivity specification.
 
@@ -3024,41 +2405,23 @@ These are illustrative network relationships, not a complete anatomical connecti
 
 Collect the population activity and calculate the current global state.
 
-\[
-X(t)=
-\begin{bmatrix}
-X_{visual}(t)\\
-X_{orthographic}(t)\\
-X_{phonological}(t)\\
-X_{semantic}(t)\\
-X_{contextual}(t)\\
-X_{control}(t)
-\end{bmatrix}
-\]
+\\[ X(t)= \begin{bmatrix} X\_{visual}(t)\\\ X\_{orthographic}(t)\\\ X\_{phonological}(t)\\\ X\_{semantic}(t)\\\ X\_{contextual}(t)\\\ X\_{control}(t) \end{bmatrix} \\]
 
 Do not simply average all representations.
 
 Preserve their separate dimensions and allow each subsystem to operate on the information relevant to its task.
 
-### Subsystem C — Distributed neural control
+### **Subsystem C — Distributed neural control**
 
 **Operation 9.11 — Coordinate recurrent communication**
 
 At each processing cycle, allow each subsystem to exchange messages with connected subsystems.
 
-\[
-m_{ij}(t)=f_{ij}(X_i(t),W_{ij})
-\]
+\\[ m\_{ij}(t)=f\_{ij}(X_i(t),W\_{ij}) \\]
 
 The receiving subsystem integrates the received message into its own state:
 
-\[
-X_i(t+1)=
-\phi\left(
-X_i(t)+
-\sum_jm_{ij}(t)
-\right)
-\]
+\\[ X_i(t+1)= \phi\left( X_i(t)+ \sum_jm\_{ij}(t) \right) \\]
 
 This creates a distributed recurrent architecture.
 
@@ -3066,30 +2429,27 @@ This creates a distributed recurrent architecture.
 
 Maintain two distinguishable processing tracks.
 
-<box border radius="lg" padding={3} gap={3}>
-  <title size="lg">Two interacting computational tracks</title>
-  <box background="rgba(45,125,210,0.09)" radius="md" padding={3} gap={1}>
-    **Track A — Functional processing**
+## **Two interacting computational tracks**
 
-    - Visual features.
-    - Grapheme recognition.
-    - Orthographic representations.
-    - Lexical and semantic representations.
-    - Predictive inference.
-    - Final interpretation.
-  </box>
-  <box background="rgba(20,160,110,0.09)" radius="md" padding={3} gap={1}>
-    **Track B — Biological reference simulation**
+**Track A — Functional processing**
 
-    - Membrane voltages.
-    - Synaptic currents.
-    - Neural spikes.
-    - Recurrent populations.
-    - Synaptic plasticity.
-    - Simulated network dynamics.
-  </box>
-  <text color="secondary" size="xs">The functional track determines what the model represents. The biological track simulates a proposed neural implementation of those computations.</text>
-</box>
+- Visual features.
+- Grapheme recognition.
+- Orthographic representations.
+- Lexical and semantic representations.
+- Predictive inference.
+- Final interpretation.
+
+**Track B — Biological reference simulation**
+
+- Membrane voltages.
+- Synaptic currents.
+- Neural spikes.
+- Recurrent populations.
+- Synaptic plasticity.
+- Simulated network dynamics.
+
+The functional track determines what the model represents. The biological track simulates a proposed neural implementation of those computations.
 
 They should exchange explicitly defined information.
 
@@ -3143,16 +2503,13 @@ An orthographic error may require:
 
 The corresponding system-level error can be:
 
-\[
-E_{ORE}=
-\sum_i\lambda_iE_i
-\]
+\\[ E\_{ORE}= \sum_i\lambda_iE_i \\]
 
-Where \(E_i\) represents an error from a particular subsystem and \(\lambda_i\) determines its contribution.
+Where \\(E_i\\) represents an error from a particular subsystem and \\(\lambda_i\\) determines its contribution.
 
 This is a software-level aggregation rule, not a single biological error signal.
 
-### Subsystem D — Global stability and control
+### **Subsystem D — Global stability and control**
 
 **Operation 9.16 — Monitor the integrated network**
 
@@ -3173,20 +2530,14 @@ Give processing priority to modules with relevant unresolved tasks.
 
 One possible model:
 
-\[
-Priority_i=
-w_1U_i+
-w_2E_i+
-w_3R_i+
-w_4G_i
-\]
+\\[ Priority_i= w_1U_i+ w_2E_i+ w_3R_i+ w_4G_i \\]
 
 Where:
 
-- \(U_i\): uncertainty.
-- \(E_i\): prediction error.
-- \(R_i\): task relevance.
-- \(G_i\): goal relevance.
+- \\(U_i\\): uncertainty.
+- \\(E_i\\): prediction error.
+- \\(R_i\\): task relevance.
+- \\(G_i\\): goal relevance.
 
 This is an engineering scheduling mechanism motivated by neural attention and control.
 
@@ -3209,24 +2560,21 @@ The system should determine whether sufficient information is available for a fi
 
 A simplified completion criterion:
 
-\[
-Complete=
-V\land O\land L\land S\land C
-\]
+\\[ Complete= V\land O\land L\land S\land C \\]
 
 Where:
 
-- \(V\): required visual evidence is available.
-- \(O\): orthographic processing is sufficiently complete.
-- \(L\): required lexical processing is complete.
-- \(S\): semantic interpretation is sufficiently resolved.
-- \(C\): no blocking contextual or control conflict remains.
+- \\(V\\): required visual evidence is available.
+- \\(O\\): orthographic processing is sufficiently complete.
+- \\(L\\): required lexical processing is complete.
+- \\(S\\): semantic interpretation is sufficiently resolved.
+- \\(C\\): no blocking contextual or control conflict remains.
 
 Not every task requires all these components.
 
 The architecture must allow partial processing and abstention.
 
-### Subsystem E — Integrated brain validation and governance
+### **Subsystem E — Integrated brain validation and governance**
 
 **Operation 9.20 — Collect the complete execution trace**
 
@@ -3247,15 +2595,7 @@ Every operation must report:
 
 Combine functional and biological reports without mixing their meanings.
 
-\[
-Report=
-\{
-R_{functional},
-R_{biological},
-R_{experimental},
-R_{diagnostics}
-\}
-\]
+\\[ Report= \\{ R\_{functional}, R\_{biological}, R\_{experimental}, R\_{diagnostics} \\} \\]
 
 **Operation 9.22 — Compare all stages against experimental evidence**
 
@@ -3299,189 +2639,21 @@ The master controller returns:
 - Experimental correspondence.
 - Validation diagnostics.
 
-<badge color="success">Stage 9 output</badge>
+Stage 9 output
 
 An integrated, modular neurocomputational ORE architecture coordinating functional processing, neural simulation, learning, memory, recurrence, prediction, validation and controlled model evolution.
 
----
-
-# 10. The complete master algorithm
+# **10. The complete master algorithm**
 
 We can now combine all nine stages into one large algorithm.
 
 The following pseudocode describes the complete execution sequence.
 
-<CodeBlock language="python" editable>
-def MASTER_BIOLOGICAL_NEUROCOMPUTATIONAL_ORE(stimulus):
+```
+def MASTER_BIOLOGICAL_NEUROCOMPUTATIONAL_ORE(stimulus):    # STAGE 1: NEURAL SIMULATION FOUNDATIONS    neural_engine = initialize_neural_engine()    create_neurons(neural_engine)    initialize_synapses(neural_engine)    initialize_excitatory_inhibitory_circuits(neural_engine)    initialize_membrane_dynamics(neural_engine)    initialize_spike_generation(neural_engine)    initialize_refractory_periods(neural_engine)    initialize_neural_populations(neural_engine)    initialize_neural_time_engine(neural_engine)    # STAGE 2: BIOLOGICAL VISUAL PROCESSING    sensory = process_sensory_input(stimulus)    retina = simulate_photoreceptors(sensory)    adapted = perform_light_adaptation(retina)    on_off = separate_ON_OFF_pathways(adapted)    retinal_edges = calculate_center_surround(on_off)    lgn = process_LGN(retinal_edges)    v1 = calculate_orientation_populations(lgn)    v1 = calculate_simple_complex_cell_responses(v1)    v1 = perform_population_normalization(v1)    # STAGE 3: HIERARCHICAL VISUAL ARCHITECTURE    hierarchy = construct_visual_hierarchy(v1)    v2 = integrate_local_features(hierarchy)    v4 = construct_complex_visual_features(v2)    ventral = process_ventral_stream(v4)    dorsal = process_dorsal_stream(v2)    visual_state = integrate_visual_pathways(ventral, dorsal)    visual_state = apply_visual_attention(visual_state)
+```
 
-    # STAGE 1: NEURAL SIMULATION FOUNDATIONS
-    neural_engine = initialize_neural_engine()
-
-    create_neurons(neural_engine)
-    initialize_synapses(neural_engine)
-    initialize_excitatory_inhibitory_circuits(neural_engine)
-    initialize_membrane_dynamics(neural_engine)
-    initialize_spike_generation(neural_engine)
-    initialize_refractory_periods(neural_engine)
-    initialize_neural_populations(neural_engine)
-    initialize_neural_time_engine(neural_engine)
-
-    # STAGE 2: BIOLOGICAL VISUAL PROCESSING
-    sensory = process_sensory_input(stimulus)
-
-    retina = simulate_photoreceptors(sensory)
-    adapted = perform_light_adaptation(retina)
-    on_off = separate_ON_OFF_pathways(adapted)
-    retinal_edges = calculate_center_surround(on_off)
-    lgn = process_LGN(retinal_edges)
-    v1 = calculate_orientation_populations(lgn)
-    v1 = calculate_simple_complex_cell_responses(v1)
-    v1 = perform_population_normalization(v1)
-
-    # STAGE 3: HIERARCHICAL VISUAL ARCHITECTURE
-    hierarchy = construct_visual_hierarchy(v1)
-
-    v2 = integrate_local_features(hierarchy)
-    v4 = construct_complex_visual_features(v2)
-    ventral = process_ventral_stream(v4)
-    dorsal = process_dorsal_stream(v2)
-    visual_state = integrate_visual_pathways(ventral, dorsal)
-    visual_state = apply_visual_attention(visual_state)
-    visual_state = recurrent_visual_processing(visual_state)
-
-    # STAGE 4: NEURAL ORTHOGRAPHIC REPRESENTATIONS
-    graphemes = segment_grapheme_regions(visual_state)
-    graphemes = activate_grapheme_populations(graphemes)
-    graphemes = calculate_grapheme_similarity(graphemes)
-    graphemes = preserve_grapheme_uncertainty(graphemes)
-
-    ordered_letters = assign_ordinal_positions(graphemes)
-    ngrams = construct_letter_combinations(ordered_letters)
-    vwfa = activate_VWFA_hierarchy(ngrams)
-    orthographic_state = construct_orthographic_representation(vwfa)
-
-    # STAGE 5: NEURAL CONNECTIVITY AND RECURRENCE
-    network = construct_neural_connectome()
-
-    initialize_feedforward_connections(network)
-    initialize_feedback_connections(network)
-    initialize_lateral_connections(network)
-    initialize_recurrent_dynamics(network)
-    establish_excitation_inhibition_balance(network)
-
-    integrated_state = propagate_neural_activity(
-        network, orthographic_state
-    )
-
-    integrated_state = recurrent_network_integration(
-        network, integrated_state
-    )
-
-    # STAGE 6: BIOLOGICAL LEARNING AND MEMORY
-    memory = retrieve_relevant_memories(integrated_state)
-
-    record_neural_coactivation(integrated_state)
-    update_hebbian_connections(network)
-    apply_STDP(network)
-    apply_LTP_LTD(network)
-    apply_homeostatic_regulation(network)
-
-    memory = encode_new_experience(
-        memory, integrated_state
-    )
-
-    memory = consolidate_memory(memory)
-    memory = update_memory_associations(memory)
-
-    # STAGE 7: PREDICTIVE AND CONTEXTUAL PROCESSING
-    predictions = generate_hierarchical_predictions(
-        integrated_state, memory
-    )
-
-    errors = calculate_prediction_errors(
-        integrated_state, predictions
-    )
-
-    errors = apply_precision_weighting(errors)
-
-    predictions = update_bayesian_beliefs(
-        predictions, errors
-    )
-
-    lexical_candidates = predict_lexical_candidates(
-        integrated_state, memory
-    )
-
-    lexical_candidates = calculate_word_surprisal(
-        lexical_candidates
-    )
-
-    semantic_state = integrate_semantic_context(
-        lexical_candidates, memory
-    )
-
-    interpretation = resolve_competing_interpretations(
-        semantic_state
-    )
-
-    interpretation = revise_if_new_evidence_arrives(
-        interpretation, errors
-    )
-
-    # STAGE 8: BRAIN-DATA VALIDATION
-    measurements = generate_neural_measurements(
-        network
-    )
-
-    eeg = validate_EEG(measurements)
-    meg = validate_MEG(measurements)
-    fmri = validate_fMRI(measurements)
-
-    behavioral = compare_behavior(
-        interpretation
-    )
-
-    causal = evaluate_virtual_lesions_and_perturbations(
-        network, interpretation
-    )
-
-    validation = compare_with_independent_human_data(
-        eeg, meg, fmri, behavioral, causal
-    )
-
-    # STAGE 9: INTEGRATED NEUROCOMPUTATIONAL ORE
-    integrated_ore = coordinate_all_subsystems(
-        neural_engine,
-        visual_state,
-        orthographic_state,
-        integrated_state,
-        memory,
-        predictions,
-        interpretation,
-        validation
-    )
-
-    integrated_ore = check_network_stability(integrated_ore)
-    integrated_ore = check_processing_completion(integrated_ore)
-
-    trace = generate_complete_operation_trace(integrated_ore)
-
-    return {
-        "visual": visual_state,
-        "orthographic": orthographic_state,
-        "neural": network,
-        "memory": memory,
-        "predictions": predictions,
-        "interpretation": interpretation,
-        "validation": validation,
-        "integrated_ore": integrated_ore,
-        "trace": trace
-    }
-</CodeBlock>
-
----
-
-# 11. How the nine stages interact
+# **11. How the nine stages interact**
 
 Although the stages are numbered sequentially, a biologically motivated implementation must not assume that every process executes only once in a strict forward direction.
 
@@ -3498,138 +2670,127 @@ For example:
 
 The correct overall model is therefore a combination of sequential processing and recurrent interaction.
 
-<box border radius="lg" padding={3} gap={2}>
-  <title size="lg">Integrated processing relationships</title>
-  <box background="rgba(45,125,210,0.08)" radius="md" padding={3} align="center">
-    **Foundational neural substrate**
+## **Integrated processing relationships**
 
-    Stage 1 — Neural simulation
-  </box>
-  <grid columns={2} gap={2}>
-    <grid-item>
-      <box background="rgba(45,125,210,0.07)" radius="md" padding={2} align="center">
-        **Stage 2**
+**Foundational neural substrate**
 
-        Biological vision
-      </box>
-    </grid-item>
-    <grid-item>
-      <box background="rgba(45,125,210,0.07)" radius="md" padding={2} align="center">
-        **Stage 3**
+Stage 1 — Neural simulation
 
-        Visual hierarchy
-      </box>
-    </grid-item>
-  </grid>
-  <box background="rgba(45,125,210,0.07)" radius="md" padding={3} align="center">
-    **Stage 4 — Neural orthographic representations**
-  </box>
-  <box background="rgba(20,160,110,0.09)" radius="md" padding={3} align="center">
-    **Stage 5 — Connectivity and recurrence**
+**Stage 2**
 
-    Continuous communication across all populations
-  </box>
-  <grid columns={2} gap={2}>
-    <grid-item>
-      <box background="rgba(20,160,110,0.07)" radius="md" padding={2} align="center">
-        **Stage 6**
+Biological vision
 
-        Learning and memory
-      </box>
-    </grid-item>
-    <grid-item>
-      <box background="rgba(20,160,110,0.07)" radius="md" padding={2} align="center">
-        **Stage 7**
+**Stage 3**
 
-        Prediction and context
-      </box>
-    </grid-item>
-  </grid>
-  <box border radius="md" padding={3} align="center">
-    **Stage 8 — Independent brain-data validation**
-  </box>
-  <box background="rgba(20,160,110,0.1)" radius="md" padding={3} align="center">
-    **Stage 9 — Integrated neurocomputational ORE**
-  </box>
-  <caption>Conceptual data flow. Recurrence, memory and prediction also send information back to preceding stages.</caption>
-</box>
+Visual hierarchy
 
-# 12. Recommended mathematical operation families for ORE
+**Stage 4 — Neural orthographic representations**
+
+**Stage 5 — Connectivity and recurrence**
+
+Continuous communication across all populations
+
+**Stage 6**
+
+Learning and memory
+
+**Stage 7**
+
+Prediction and context
+
+**Stage 8 — Independent brain-data validation**
+
+**Stage 9 — Integrated neurocomputational ORE**
+
+Conceptual data flow. Recurrence, memory and prediction also send information back to preceding stages.
+
+# **12. Recommended mathematical operation families for ORE**
 
 One particularly important design decision is to avoid inventing a different mathematical framework for every module.
 
 Instead, build a reusable mathematical library and allow each biological subsystem to use the appropriate operations.
 
-| Mathematical family | Operations | Main application |
-|---|---|---|
-| Linear algebra | Matrix multiplication, vector addition, eigenvalues | Neural connectivity |
-| Differential equations | Euler integration, exponential decay | Neural dynamics |
-| Signal processing | Convolution, Fourier transform, filtering | Visual and auditory processing |
-| Nonlinear functions | ReLU, sigmoid, thresholding | Neuronal responses |
-| Probability | Bayesian inference, softmax, entropy | Prediction and uncertainty |
-| Statistics | Correlation, regression, variance | Brain-data validation |
-| Graph theory | Centrality, shortest paths, network efficiency | Neural connectivity |
-| Optimization | Gradient descent, constrained minimization | Parameter fitting |
-| Plasticity | Hebbian updates, STDP, LTP/LTD models | Learning |
-| Information theory | Entropy, surprisal, mutual information | Prediction and communication |
-| Temporal analysis | Cross-correlation, phase coherence | Neural synchronization |
-| Memory operations | Retrieval, association, replay, consolidation | Learning and memory |
+| Mathematical family    | Operations                                          | Main application               |
+| ---------------------- | --------------------------------------------------- | ------------------------------ |
+| Linear algebra         | Matrix multiplication, vector addition, eigenvalues | Neural connectivity            |
+| Differential equations | Euler integration, exponential decay                | Neural dynamics                |
+| Signal processing      | Convolution, Fourier transform, filtering           | Visual and auditory processing |
+| Nonlinear functions    | ReLU, sigmoid, thresholding                         | Neuronal responses             |
+| Probability            | Bayesian inference, softmax, entropy                | Prediction and uncertainty     |
+| Statistics             | Correlation, regression, variance                   | Brain-data validation          |
+| Graph theory           | Centrality, shortest paths, network efficiency      | Neural connectivity            |
+| Optimization           | Gradient descent, constrained minimization          | Parameter fitting              |
+| Plasticity             | Hebbian updates, STDP, LTP/LTD models               | Learning                       |
+| Information theory     | Entropy, surprisal, mutual information              | Prediction and communication   |
+| Temporal analysis      | Cross-correlation, phase coherence                  | Neural synchronization         |
+| Memory operations      | Retrieval, association, replay, consolidation       | Learning and memory            |
 
 These are reusable computational tools, not twelve different biological mechanisms.
 
----
-
-# 13. Proposed operation registry
+# **13. Proposed operation registry**
 
 To make the master algorithm implementable in Python, I recommend an initial registry of 108 operations distributed across the nine stages.
 
-<box border radius="lg" padding={3} gap={3}>
-  <title size="lg">Master ORE operation registry</title>
-  <title size="2xl" color="success" tabularNums>108 operations</title>
-  <text color="secondary" size="xs">Proposed initial engineering breakdown — not a count of experimentally established brain operations.</text>
-  {#each [
-    ["NFS","Neural simulation foundations",11,11],
-    ["BVP","Biological visual processing",8,12],
-    ["HVA","Hierarchical visual architecture",8,12],
-    ["NOR","Neural orthographic representations",14,14],
-    ["NCR","Neural connectivity and recurrence",13,13],
-    ["BLM","Biological learning and memory",16,16],
-    ["PCP","Predictive and contextual processing",18,18],
-    ["BDV","Brain-data validation",19,19],
-    ["INO","Integrated neurocomputational ORE",24,24]
-  ] as stage}
-    <box gap={1}>
-      <row justify="between" align="center">
-        **{stage[0]} — {stage[1]}**
-        <title size="lg" tabularNums>{stage[2]}</title>
-      </row>
-      <box background="surface-tertiary" height="7px" radius="full" clip>
-        <box background="#269C78" height="7px" radius="full" width={`${stage[2]/24*100}%`}/>
-      </box>
-    </box>
-  {/each}
-  <divider color="subtle"/>
-  <row justify="between">
-    **Total**
-    **135 operations**
-  </row>
-</box>
+## **Master ORE operation registry**
+
+# **108 operations**
+
+Proposed initial engineering breakdown — not a count of experimentally established brain operations.
+
+**NFS — Neural simulation foundations**
+
+## **11**
+
+**BVP — Biological visual processing**
+
+## **8**
+
+**HVA — Hierarchical visual architecture**
+
+## **8**
+
+**NOR — Neural orthographic representations**
+
+## **14**
+
+**NCR — Neural connectivity and recurrence**
+
+## **13**
+
+**BLM — Biological learning and memory**
+
+## **16**
+
+**PCP — Predictive and contextual processing**
+
+## **18**
+
+**BDV — Brain-data validation**
+
+## **19**
+
+**INO — Integrated neurocomputational ORE**
+
+## **24**
+
+**Total**\
+**135 operations**
 
 One correction to the proposed total: the nine displayed allocations sum to **135 operations**, not 108. The 135-operation registry is the consistent version and is the one I recommend freezing for implementation.
 
 Suggested identifier ranges:
 
-| Stage | Operation identifiers |
-|---|---|
-| Neural simulation | NFS-001–011 |
-| Biological vision | BVP-001–012 |
-| Visual hierarchy | HVA-001–012 |
-| Orthographic representations | NOR-001–014 |
-| Connectivity and recurrence | NCR-001–013 |
-| Learning and memory | BLM-001–016 |
-| Predictive processing | PCP-001–018 |
-| Brain-data validation | BDV-001–019 |
-| Integrated ORE | INO-001–024 |
+| Stage                        | Operation identifiers |
+| ---------------------------- | --------------------- |
+| Neural simulation            | NFS-001–011           |
+| Biological vision            | BVP-001–012           |
+| Visual hierarchy             | HVA-001–012           |
+| Orthographic representations | NOR-001–014           |
+| Connectivity and recurrence  | NCR-001–013           |
+| Learning and memory          | BLM-001–016           |
+| Predictive processing        | PCP-001–018           |
+| Brain-data validation        | BDV-001–019           |
+| Integrated ORE               | INO-001–024           |
 
 Each registry entry should contain:
 
@@ -3646,7 +2807,7 @@ Each registry entry should contain:
 11. Validation criteria.
 12. Scientific limitations.
 
-## 14. Important implementation principle
+## **14. Important implementation principle**
 
 I recommend that the master ORE architecture have three independent but interacting layers:
 
@@ -3666,906 +2827,18 @@ This separation is important because a functional system can succeed without usi
 
 The purpose of ORE should be to investigate how these three layers can be connected and progressively validated.
 
----
-
-## 15. Research references
+## **15. Research references**
 
 These are useful scientific foundations for the architecture:
 
-1. <Link ref="turn788860search8" title="The Neurodynamics of Cognition"/> — neural dynamics and computational neuron models.
-2. <Link ref="turn317998search0" title="How Cortical Neurons Help Us See"/> — visual pathways and hierarchical processing.
-3. <Link ref="turn317998search1" title="Canonical Computations of Cerebral Cortex"/> — feedforward processing and recurrent gain control.
-4. <Link ref="turn317998search2" title="From Retinotopic to Ordinal Coding"/> — visual word recognition and letter-position coding.
-5. <Link ref="turn126122view3" title="Spike Timing-Dependent Plasticity: A Hebbian Learning Rule"/> — temporal synaptic learning.
-6. <Link ref="turn370436search0" title="Long-Term Potentiation in the Brain: A Synaptic Memory Mechanism"/> — current review of LTP.
-7. <Link ref="turn788860search10" title="Predictive Processing: A Canonical Cortical Computation"/> — hierarchical prediction and prediction errors.
-8. <Link ref="turn132590view3" title="Models of Functional Neuroimaging Data"/> — statistical, biophysical and causal brain models.
-9. <Link ref="turn126122view4" title="Inferring Neural Sources from Electroencephalography: Foundations and Frontiers (2026)"/> — modern EEG forward and inverse modeling.
-
----
-
-**My recommendation for the next implementation step:** Freeze this as the master biological architecture before implementing another large Python package. Then formalize the 135 individual operations into a numbered, mathematically specified registry, identifying which operations are shared with your existing ORE subsystems and which genuinely require new biological implementations. This will help prevent duplicated algorithms, incompatible neural models and unnecessary complexity.
-
----
-
-[ASSISTANT]
-# Stage 9 — Integrated neurocomputational ORE
-
-<AsyncImageGroup query={["large distributed brain neural networks connectome multiregion scientific illustration","modular artificial neural network interconnected specialized modules architecture visualization","human brain computational neuroscience whole brain network visualization"]} aspectRatio="5:4"/>
-
-### Objective
-
-Integrate all eight previous stages into one coordinated neurocomputational architecture.
-
-The objective is not to create nine independent simulations that run without communicating.
-
-Instead, construct a distributed architecture whose modules have specialized responsibilities but share information, neural states, memory, predictions and control signals.
-
-This is consistent with the distinction between functional specialization and functional integration in neuroscience: complex functions depend on both specialized regions and their interactions. <Cite refs={["turn132590view3","turn317998search1"]}/>
-
-I would organize this stage into the following subsystems.
-
-### Subsystem A — Master architecture construction
-
-**Operation 9.1 — Construct the master ORE controller**
-
-Create one central controller responsible for coordinating all subsystems.
-
-Its responsibilities:
-
-1. Receive processing requests.
-2. Identify required processing stages.
-3. Initialize the necessary neural populations.
-4. Dispatch computations to specialized modules.
-5. Maintain the global processing state.
-6. Coordinate recurrent interactions.
-7. Collect module outputs.
-8. Handle unresolved information.
-9. Return the final result.
-
-Represent the controller:
-
-\[
-ORE_{controller}=
-\{M_1,M_2,\ldots,M_9\}
-\]
-
-Where each \(M_i\) is a major subsystem.
-
-**Operation 9.2 — Construct specialized subsystem controllers**
-
-Each major stage should have its own controller.
-
-For example:
-
-| Controller | Responsibility |
-|---|---|
-| Neural Simulation Controller | Neurons and neural populations |
-| Visual Controller | Retina, LGN and V1 |
-| Visual Hierarchy Controller | Higher visual representations |
-| Orthographic Controller | Letters, graphemes and words |
-| Connectivity Controller | Recurrent network communication |
-| Learning Controller | Plasticity and memory |
-| Predictive Controller | Prediction and contextual integration |
-| Validation Controller | Experimental comparisons |
-| Master Integration Controller | Coordination of the complete ORE system |
-
-Each controller should expose an explicit input/output contract.
-
-**Operation 9.3 — Construct shared computational contracts**
-
-Define common representations that all compatible modules can exchange.
-
-For example:
-
-\[
-State=
-\{
-SensoryState,
-NeuralState,
-MemoryState,
-ContextState,
-PredictionState,
-ConfidenceState
-\}
-\]
-
-Each component must describe:
-
-- Data type.
-- Dimensions.
-- Units.
-- Processing origin.
-- Timestamp.
-- Confidence.
-- Provenance.
-- Version.
-
-This prevents incompatible representations from being passed between modules.
-
-### Subsystem B — Integrated processing coordination
-
-**Operation 9.4 — Initialize the complete neural network**
-
-Construct the neural populations and their connections.
-
-\[
-G=(V,E,W)
-\]
-
-Where:
-
-- \(V\): populations.
-- \(E\): connections.
-- \(W\): synaptic weights.
-
-Initialize:
-
-- Neural electrical parameters.
-- Connectivity.
-- Learning parameters.
-- Memory structures.
-- Recurrent states.
-- Predictive models.
-- Experimental measurement models.
-
-**Operation 9.5 — Initialize the sensory input**
-
-Receive an image, audio input or another supported stimulus.
-
-Store its original representation.
-
-Generate the initial sensory-state object:
-
-\[
-S_0=
-\{
-I_{visual},
-I_{auditory},
-I_{other}
-\}
-\]
-
-The original input must remain distinguishable from derived neural representations.
-
-**Operation 9.6 — Execute biological sensory processing**
-
-Send the sensory information through the appropriate neural populations.
-
-For visual input:
-
-\[
-S_0
-\rightarrow
-Retina
-\rightarrow
-LGN
-\rightarrow
-V1
-\]
-
-For auditory input, initialize the corresponding auditory sensory populations.
-
-The two sensory streams may converge later through shared higher-level network representations.
-
-**Operation 9.7 — Execute hierarchical visual processing**
-
-Send early visual outputs through hierarchical populations.
-
-\[
-V1\rightarrow V2\rightarrow V4\rightarrow IT
-\]
-
-In parallel, process spatial and attentional information through the dorsal pathway.
-
-**Operation 9.8 — Generate orthographic neural representations**
-
-When the stimulus contains written language, process:
-
-\[
-VisualFeatures
-\rightarrow
-GraphemePopulations
-\rightarrow
-LetterPositions
-\rightarrow
-Ngrams
-\rightarrow
-VWFA
-\]
-
-Preserve ambiguity and uncertainty at every level.
-
-**Operation 9.9 — Activate the language network**
-
-Connect orthographic representations with the relevant language populations.
-
-For example:
-
-\[
-VWFA\leftrightarrow MTG
-\]
-
-\[
-MTG\leftrightarrow IFG
-\]
-
-\[
-MTG\leftrightarrow ATL
-\]
-
-\[
-STG\leftrightarrow MTG
-\]
-
-\[
-AG\leftrightarrow ATL
-\]
-
-These are illustrative network relationships, not a complete anatomical connectivity specification.
-
-**Operation 9.10 — Integrate all neural activity**
-
-Collect the population activity and calculate the current global state.
-
-\[
-X(t)=
-\begin{bmatrix}
-X_{visual}(t)\\
-X_{orthographic}(t)\\
-X_{phonological}(t)\\
-X_{semantic}(t)\\
-X_{contextual}(t)\\
-X_{control}(t)
-\end{bmatrix}
-\]
-
-Do not simply average all representations.
-
-Preserve their separate dimensions and allow each subsystem to operate on the information relevant to its task.
-
-### Subsystem C — Distributed neural control
-
-**Operation 9.11 — Coordinate recurrent communication**
-
-At each processing cycle, allow each subsystem to exchange messages with connected subsystems.
-
-\[
-m_{ij}(t)=f_{ij}(X_i(t),W_{ij})
-\]
-
-The receiving subsystem integrates the received message into its own state:
-
-\[
-X_i(t+1)=
-\phi\left(
-X_i(t)+
-\sum_jm_{ij}(t)
-\right)
-\]
-
-This creates a distributed recurrent architecture.
-
-**Operation 9.12 — Coordinate biological simulation and functional computation**
-
-Maintain two distinguishable processing tracks.
-
-<box border radius="lg" padding={3} gap={3}>
-  <title size="lg">Two interacting computational tracks</title>
-  <box background="rgba(45,125,210,0.09)" radius="md" padding={3} gap={1}>
-    **Track A — Functional processing**
-
-    - Visual features.
-    - Grapheme recognition.
-    - Orthographic representations.
-    - Lexical and semantic representations.
-    - Predictive inference.
-    - Final interpretation.
-  </box>
-  <box background="rgba(20,160,110,0.09)" radius="md" padding={3} gap={1}>
-    **Track B — Biological reference simulation**
-
-    - Membrane voltages.
-    - Synaptic currents.
-    - Neural spikes.
-    - Recurrent populations.
-    - Synaptic plasticity.
-    - Simulated network dynamics.
-  </box>
-  <text color="secondary" size="xs">The functional track determines what the model represents. The biological track simulates a proposed neural implementation of those computations.</text>
-</box>
-
-They should exchange explicitly defined information.
-
-For example:
-
-- Functional activity can drive neural populations.
-- Neural activity can generate measurements.
-- Learned synaptic changes can alter future functional processing.
-- Recurrent neural activity can influence processing dynamics.
-
-However, the two tracks should not be assumed to be equivalent merely because they produce similar outputs.
-
-**Operation 9.13 — Coordinate memory and learning**
-
-The learning controller receives information about the processing experience.
-
-It determines:
-
-- Which representations were activated.
-- Which connections participated.
-- Which predictions were incorrect.
-- Which patterns were successfully recognized.
-- Which associations should be strengthened or weakened.
-
-It then updates the appropriate learning system.
-
-**Operation 9.14 — Coordinate predictive processing**
-
-The predictive controller uses:
-
-- Current sensory information.
-- Learned neural representations.
-- Contextual information.
-- Previous processing states.
-- Semantic and lexical expectations.
-
-It generates predictions and sends them to the relevant processing populations.
-
-**Operation 9.15 — Implement cross-module error propagation**
-
-Prediction errors should be transmitted to the modules that contributed to the incorrect prediction.
-
-For example:
-
-An orthographic error may require:
-
-- Reconsidering grapheme identity.
-- Reconsidering letter position.
-- Re-evaluating lexical candidates.
-- Revising the predicted word form.
-
-The corresponding system-level error can be:
-
-\[
-E_{ORE}=
-\sum_i\lambda_iE_i
-\]
-
-Where \(E_i\) represents an error from a particular subsystem and \(\lambda_i\) determines its contribution.
-
-This is a software-level aggregation rule, not a single biological error signal.
-
-### Subsystem D — Global stability and control
-
-**Operation 9.16 — Monitor the integrated network**
-
-Continuously monitor:
-
-- Neural activity.
-- Recurrent stability.
-- Prediction uncertainty.
-- Memory state.
-- Population competition.
-- Processing completion.
-
-The controller should detect unstable neural activity and invalid module outputs.
-
-**Operation 9.17 — Allocate computational resources**
-
-Give processing priority to modules with relevant unresolved tasks.
-
-One possible model:
-
-\[
-Priority_i=
-w_1U_i+
-w_2E_i+
-w_3R_i+
-w_4G_i
-\]
-
-Where:
-
-- \(U_i\): uncertainty.
-- \(E_i\): prediction error.
-- \(R_i\): task relevance.
-- \(G_i\): goal relevance.
-
-This is an engineering scheduling mechanism motivated by neural attention and control.
-
-**Operation 9.18 — Maintain persistent neural and cognitive states**
-
-Preserve:
-
-- Learned connections.
-- Neural population state.
-- Orthographic memory.
-- Semantic knowledge.
-- Contextual representations.
-- Previous processing results.
-
-The system should distinguish temporary simulation states from persistent learned parameters.
-
-**Operation 9.19 — Detect processing completion**
-
-The system should determine whether sufficient information is available for a final interpretation.
-
-A simplified completion criterion:
-
-\[
-Complete=
-V\land O\land L\land S\land C
-\]
-
-Where:
-
-- \(V\): required visual evidence is available.
-- \(O\): orthographic processing is sufficiently complete.
-- \(L\): required lexical processing is complete.
-- \(S\): semantic interpretation is sufficiently resolved.
-- \(C\): no blocking contextual or control conflict remains.
-
-Not every task requires all these components.
-
-The architecture must allow partial processing and abstention.
-
-### Subsystem E — Integrated brain validation and governance
-
-**Operation 9.20 — Collect the complete execution trace**
-
-Every operation must report:
-
-- Operation identifier.
-- Processing input.
-- Processing output.
-- Mathematical operation.
-- Biological reference.
-- Execution time.
-- Neural population activity.
-- Confidence.
-- Prediction error.
-- Validation status.
-
-**Operation 9.21 — Generate the integrated neural report**
-
-Combine functional and biological reports without mixing their meanings.
-
-\[
-Report=
-\{
-R_{functional},
-R_{biological},
-R_{experimental},
-R_{diagnostics}
-\}
-\]
-
-**Operation 9.22 — Compare all stages against experimental evidence**
-
-Connect the integrated output with Stage 8.
-
-Evaluate the complete architecture rather than validating only isolated components.
-
-For example:
-
-Does improvement in visual recognition result from a biologically plausible orthographic mechanism, or is the final accuracy improvement caused entirely by a non-biological shortcut?
-
-This distinction is essential.
-
-**Operation 9.23 — Update the system under controlled learning**
-
-If validation or authorized learning provides new evidence:
-
-1. Record the evidence.
-2. Identify the affected subsystem.
-3. Generate a proposed update.
-4. Check compatibility with shared contracts.
-5. Test the update independently.
-6. Compare against the previous model.
-7. Preserve the previous version.
-8. Promote the update only if it passes acceptance criteria.
-
-This creates a controlled, auditable research architecture.
-
-**Operation 9.24 — Produce the complete neurocomputational output**
-
-The master controller returns:
-
-- Visual representations.
-- Orthographic representations.
-- Lexical and semantic representations.
-- Neural activity traces.
-- Learned connection changes.
-- Predictive state.
-- Prediction errors.
-- Processing confidence.
-- Experimental correspondence.
-- Validation diagnostics.
-
-<badge color="success">Stage 9 output</badge>
-
-An integrated, modular neurocomputational ORE architecture coordinating functional processing, neural simulation, learning, memory, recurrence, prediction, validation and controlled model evolution.
-
----
-
-# 10. The complete master algorithm
-
-We can now combine all nine stages into one large algorithm.
-
-The following pseudocode describes the complete execution sequence.
-
-<CodeBlock language="python" editable>
-def MASTER_BIOLOGICAL_NEUROCOMPUTATIONAL_ORE(stimulus):
-
-    # STAGE 1: NEURAL SIMULATION FOUNDATIONS
-    neural_engine = initialize_neural_engine()
-
-    create_neurons(neural_engine)
-    initialize_synapses(neural_engine)
-    initialize_excitatory_inhibitory_circuits(neural_engine)
-    initialize_membrane_dynamics(neural_engine)
-    initialize_spike_generation(neural_engine)
-    initialize_refractory_periods(neural_engine)
-    initialize_neural_populations(neural_engine)
-    initialize_neural_time_engine(neural_engine)
-
-    # STAGE 2: BIOLOGICAL VISUAL PROCESSING
-    sensory = process_sensory_input(stimulus)
-
-    retina = simulate_photoreceptors(sensory)
-    adapted = perform_light_adaptation(retina)
-    on_off = separate_ON_OFF_pathways(adapted)
-    retinal_edges = calculate_center_surround(on_off)
-    lgn = process_LGN(retinal_edges)
-    v1 = calculate_orientation_populations(lgn)
-    v1 = calculate_simple_complex_cell_responses(v1)
-    v1 = perform_population_normalization(v1)
-
-    # STAGE 3: HIERARCHICAL VISUAL ARCHITECTURE
-    hierarchy = construct_visual_hierarchy(v1)
-
-    v2 = integrate_local_features(hierarchy)
-    v4 = construct_complex_visual_features(v2)
-    ventral = process_ventral_stream(v4)
-    dorsal = process_dorsal_stream(v2)
-    visual_state = integrate_visual_pathways(ventral, dorsal)
-    visual_state = apply_visual_attention(visual_state)
-    visual_state = recurrent_visual_processing(visual_state)
-
-    # STAGE 4: NEURAL ORTHOGRAPHIC REPRESENTATIONS
-    graphemes = segment_grapheme_regions(visual_state)
-    graphemes = activate_grapheme_populations(graphemes)
-    graphemes = calculate_grapheme_similarity(graphemes)
-    graphemes = preserve_grapheme_uncertainty(graphemes)
-
-    ordered_letters = assign_ordinal_positions(graphemes)
-    ngrams = construct_letter_combinations(ordered_letters)
-    vwfa = activate_VWFA_hierarchy(ngrams)
-    orthographic_state = construct_orthographic_representation(vwfa)
-
-    # STAGE 5: NEURAL CONNECTIVITY AND RECURRENCE
-    network = construct_neural_connectome()
-
-    initialize_feedforward_connections(network)
-    initialize_feedback_connections(network)
-    initialize_lateral_connections(network)
-    initialize_recurrent_dynamics(network)
-    establish_excitation_inhibition_balance(network)
-
-    integrated_state = propagate_neural_activity(
-        network, orthographic_state
-    )
-
-    integrated_state = recurrent_network_integration(
-        network, integrated_state
-    )
-
-    # STAGE 6: BIOLOGICAL LEARNING AND MEMORY
-    memory = retrieve_relevant_memories(integrated_state)
-
-    record_neural_coactivation(integrated_state)
-    update_hebbian_connections(network)
-    apply_STDP(network)
-    apply_LTP_LTD(network)
-    apply_homeostatic_regulation(network)
-
-    memory = encode_new_experience(
-        memory, integrated_state
-    )
-
-    memory = consolidate_memory(memory)
-    memory = update_memory_associations(memory)
-
-    # STAGE 7: PREDICTIVE AND CONTEXTUAL PROCESSING
-    predictions = generate_hierarchical_predictions(
-        integrated_state, memory
-    )
-
-    errors = calculate_prediction_errors(
-        integrated_state, predictions
-    )
-
-    errors = apply_precision_weighting(errors)
-
-    predictions = update_bayesian_beliefs(
-        predictions, errors
-    )
-
-    lexical_candidates = predict_lexical_candidates(
-        integrated_state, memory
-    )
-
-    lexical_candidates = calculate_word_surprisal(
-        lexical_candidates
-    )
-
-    semantic_state = integrate_semantic_context(
-        lexical_candidates, memory
-    )
-
-    interpretation = resolve_competing_interpretations(
-        semantic_state
-    )
-
-    interpretation = revise_if_new_evidence_arrives(
-        interpretation, errors
-    )
-
-    # STAGE 8: BRAIN-DATA VALIDATION
-    measurements = generate_neural_measurements(
-        network
-    )
-
-    eeg = validate_EEG(measurements)
-    meg = validate_MEG(measurements)
-    fmri = validate_fMRI(measurements)
-
-    behavioral = compare_behavior(
-        interpretation
-    )
-
-    causal = evaluate_virtual_lesions_and_perturbations(
-        network, interpretation
-    )
-
-    validation = compare_with_independent_human_data(
-        eeg, meg, fmri, behavioral, causal
-    )
-
-    # STAGE 9: INTEGRATED NEUROCOMPUTATIONAL ORE
-    integrated_ore = coordinate_all_subsystems(
-        neural_engine,
-        visual_state,
-        orthographic_state,
-        integrated_state,
-        memory,
-        predictions,
-        interpretation,
-        validation
-    )
-
-    integrated_ore = check_network_stability(integrated_ore)
-    integrated_ore = check_processing_completion(integrated_ore)
-
-    trace = generate_complete_operation_trace(integrated_ore)
-
-    return {
-        "visual": visual_state,
-        "orthographic": orthographic_state,
-        "neural": network,
-        "memory": memory,
-        "predictions": predictions,
-        "interpretation": interpretation,
-        "validation": validation,
-        "integrated_ore": integrated_ore,
-        "trace": trace
-    }
-</CodeBlock>
-
----
-
-# 11. How the nine stages interact
-
-Although the stages are numbered sequentially, a biologically motivated implementation must not assume that every process executes only once in a strict forward direction.
-
-Some stages represent foundational capabilities, while others operate continuously during processing.
-
-For example:
-
-- Neural dynamics continue throughout the entire computation.
-- Recurrent connectivity operates while visual and linguistic processing takes place.
-- Learning modifies representations across experiences.
-- Memory retrieval can influence early sensory and orthographic interpretation.
-- Predictive signals can return from higher to lower processing levels.
-- Brain-data validation evaluates the architecture rather than acting as another perceptual stage.
-
-The correct overall model is therefore a combination of sequential processing and recurrent interaction.
-
-<box border radius="lg" padding={3} gap={2}>
-  <title size="lg">Integrated processing relationships</title>
-  <box background="rgba(45,125,210,0.08)" radius="md" padding={3} align="center">
-    **Foundational neural substrate**
-
-    Stage 1 — Neural simulation
-  </box>
-  <grid columns={2} gap={2}>
-    <grid-item>
-      <box background="rgba(45,125,210,0.07)" radius="md" padding={2} align="center">
-        **Stage 2**
-
-        Biological vision
-      </box>
-    </grid-item>
-    <grid-item>
-      <box background="rgba(45,125,210,0.07)" radius="md" padding={2} align="center">
-        **Stage 3**
-
-        Visual hierarchy
-      </box>
-    </grid-item>
-  </grid>
-  <box background="rgba(45,125,210,0.07)" radius="md" padding={3} align="center">
-    **Stage 4 — Neural orthographic representations**
-  </box>
-  <box background="rgba(20,160,110,0.09)" radius="md" padding={3} align="center">
-    **Stage 5 — Connectivity and recurrence**
-
-    Continuous communication across all populations
-  </box>
-  <grid columns={2} gap={2}>
-    <grid-item>
-      <box background="rgba(20,160,110,0.07)" radius="md" padding={2} align="center">
-        **Stage 6**
-
-        Learning and memory
-      </box>
-    </grid-item>
-    <grid-item>
-      <box background="rgba(20,160,110,0.07)" radius="md" padding={2} align="center">
-        **Stage 7**
-
-        Prediction and context
-      </box>
-    </grid-item>
-  </grid>
-  <box border radius="md" padding={3} align="center">
-    **Stage 8 — Independent brain-data validation**
-  </box>
-  <box background="rgba(20,160,110,0.1)" radius="md" padding={3} align="center">
-    **Stage 9 — Integrated neurocomputational ORE**
-  </box>
-  <caption>Conceptual data flow. Recurrence, memory and prediction also send information back to preceding stages.</caption>
-</box>
-
-# 12. Recommended mathematical operation families for ORE
-
-One particularly important design decision is to avoid inventing a different mathematical framework for every module.
-
-Instead, build a reusable mathematical library and allow each biological subsystem to use the appropriate operations.
-
-| Mathematical family | Operations | Main application |
-|---|---|---|
-| Linear algebra | Matrix multiplication, vector addition, eigenvalues | Neural connectivity |
-| Differential equations | Euler integration, exponential decay | Neural dynamics |
-| Signal processing | Convolution, Fourier transform, filtering | Visual and auditory processing |
-| Nonlinear functions | ReLU, sigmoid, thresholding | Neuronal responses |
-| Probability | Bayesian inference, softmax, entropy | Prediction and uncertainty |
-| Statistics | Correlation, regression, variance | Brain-data validation |
-| Graph theory | Centrality, shortest paths, network efficiency | Neural connectivity |
-| Optimization | Gradient descent, constrained minimization | Parameter fitting |
-| Plasticity | Hebbian updates, STDP, LTP/LTD models | Learning |
-| Information theory | Entropy, surprisal, mutual information | Prediction and communication |
-| Temporal analysis | Cross-correlation, phase coherence | Neural synchronization |
-| Memory operations | Retrieval, association, replay, consolidation | Learning and memory |
-
-These are reusable computational tools, not twelve different biological mechanisms.
-
----
-
-# 13. Proposed operation registry
-
-To make the master algorithm implementable in Python, I recommend an initial registry of 108 operations distributed across the nine stages.
-
-<box border radius="lg" padding={3} gap={3}>
-  <title size="lg">Master ORE operation registry</title>
-  <title size="2xl" color="success" tabularNums>108 operations</title>
-  <text color="secondary" size="xs">Proposed initial engineering breakdown — not a count of experimentally established brain operations.</text>
-  {#each [
-    ["NFS","Neural simulation foundations",11,11],
-    ["BVP","Biological visual processing",8,12],
-    ["HVA","Hierarchical visual architecture",8,12],
-    ["NOR","Neural orthographic representations",14,14],
-    ["NCR","Neural connectivity and recurrence",13,13],
-    ["BLM","Biological learning and memory",16,16],
-    ["PCP","Predictive and contextual processing",18,18],
-    ["BDV","Brain-data validation",19,19],
-    ["INO","Integrated neurocomputational ORE",24,24]
-  ] as stage}
-    <box gap={1}>
-      <row justify="between" align="center">
-        **{stage[0]} — {stage[1]}**
-        <title size="lg" tabularNums>{stage[2]}</title>
-      </row>
-      <box background="surface-tertiary" height="7px" radius="full" clip>
-        <box background="#269C78" height="7px" radius="full" width={`${stage[2]/24*100}%`}/>
-      </box>
-    </box>
-  {/each}
-  <divider color="subtle"/>
-  <row justify="between">
-    **Total**
-    **135 operations**
-  </row>
-</box>
-
-One correction to the proposed total: the nine displayed allocations sum to **135 operations**, not 108. The 135-operation registry is the consistent version and is the one I recommend freezing for implementation.
-
-Suggested identifier ranges:
-
-| Stage | Operation identifiers |
-|---|---|
-| Neural simulation | NFS-001–011 |
-| Biological vision | BVP-001–012 |
-| Visual hierarchy | HVA-001–012 |
-| Orthographic representations | NOR-001–014 |
-| Connectivity and recurrence | NCR-001–013 |
-| Learning and memory | BLM-001–016 |
-| Predictive processing | PCP-001–018 |
-| Brain-data validation | BDV-001–019 |
-| Integrated ORE | INO-001–024 |
-
-Each registry entry should contain:
-
-1. Unique operation ID.
-2. Operation name.
-3. Functional responsibility.
-4. Mathematical operations.
-5. Biological reference.
-6. Required inputs.
-7. Expected outputs.
-8. Neural population dependencies.
-9. Related operations.
-10. Implementation module.
-11. Validation criteria.
-12. Scientific limitations.
-
-## 14. Important implementation principle
-
-I recommend that the master ORE architecture have three independent but interacting layers:
-
-**Layer A — Functional computational layer**
-
-Implements what the system needs to accomplish: visual processing, orthographic recognition, memory retrieval, contextual reasoning and prediction.
-
-**Layer B — Biological simulation layer**
-
-Implements proposed neural mechanisms: membrane dynamics, synaptic transmission, spikes, neural connectivity, recurrence and plasticity.
-
-**Layer C — Experimental validation layer**
-
-Determines whether the first two layers make predictions that agree with actual human behavior and neural measurements.
-
-This separation is important because a functional system can succeed without using biologically realistic computations, while a biologically detailed simulation can still fail to recognize words or understand sentences.
-
-The purpose of ORE should be to investigate how these three layers can be connected and progressively validated.
-
----
-
-## 15. Research references
-
-These are useful scientific foundations for the architecture:
-
-1. <Link ref="turn788860search8" title="The Neurodynamics of Cognition"/> — neural dynamics and computational neuron models.
-2. <Link ref="turn317998search0" title="How Cortical Neurons Help Us See"/> — visual pathways and hierarchical processing.
-3. <Link ref="turn317998search1" title="Canonical Computations of Cerebral Cortex"/> — feedforward processing and recurrent gain control.
-4. <Link ref="turn317998search2" title="From Retinotopic to Ordinal Coding"/> — visual word recognition and letter-position coding.
-5. <Link ref="turn126122view3" title="Spike Timing-Dependent Plasticity: A Hebbian Learning Rule"/> — temporal synaptic learning.
-6. <Link ref="turn370436search0" title="Long-Term Potentiation in the Brain: A Synaptic Memory Mechanism"/> — current review of LTP.
-7. <Link ref="turn788860search10" title="Predictive Processing: A Canonical Cortical Computation"/> — hierarchical prediction and prediction errors.
-8. <Link ref="turn132590view3" title="Models of Functional Neuroimaging Data"/> — statistical, biophysical and causal brain models.
-9. <Link ref="turn126122view4" title="Inferring Neural Sources from Electroencephalography: Foundations and Frontiers (2026)"/> — modern EEG forward and inverse modeling.
-
----
+1. [The Neurodynamics of Cognition](https://pmc.ncbi.nlm.nih.gov/articles/PMC3153062/?utm_source=chatgpt.com) — neural dynamics and computational neuron models.
+2. [How Cortical Neurons Help Us See](https://pmc.ncbi.nlm.nih.gov/articles/PMC2929717/?utm_source=chatgpt.com) — visual pathways and hierarchical processing.
+3. [Canonical Computations of Cerebral Cortex](https://pmc.ncbi.nlm.nih.gov/articles/PMC4944655/?utm_source=chatgpt.com) — feedforward processing and recurrent gain control.
+4. [From Retinotopic to Ordinal Coding](https://pmc.ncbi.nlm.nih.gov/articles/PMC12582272/?utm_source=chatgpt.com) — visual word recognition and letter-position coding.
+5. [Spike Timing-Dependent Plasticity: A Hebbian Learning Rule](https://www.annualreviews.org/content/journals/10.1146/annurev.neuro.31.060407.125639?utm_source=chatgpt.com) — temporal synaptic learning.
+6. [Long-Term Potentiation in the Brain: A Synaptic Memory Mechanism](https://journals.physiology.org/doi/full/10.1152/physrev.00028.2025?utm_source=chatgpt.com) — current review of LTP.
+7. [Predictive Processing: A Canonical Cortical Computation](https://pmc.ncbi.nlm.nih.gov/articles/6400266/?utm_source=chatgpt.com) — hierarchical prediction and prediction errors.
+8. [Models of Functional Neuroimaging Data](https://pmc.ncbi.nlm.nih.gov/articles/PMC2880445/?utm_source=chatgpt.com) — statistical, biophysical and causal brain models.
+9. [Inferring Neural Sources from Electroencephalography: Foundations and Frontiers (2026)](https://pmc.ncbi.nlm.nih.gov/articles/PMC12903115/?utm_source=chatgpt.com) — modern EEG forward and inverse modeling.
 
 **My recommendation for the next implementation step:** Freeze this as the master biological architecture before implementing another large Python package. Then formalize the 135 individual operations into a numbered, mathematically specified registry, identifying which operations are shared with your existing ORE subsystems and which genuinely require new biological implementations. This will help prevent duplicated algorithms, incompatible neural models and unnecessary complexity.

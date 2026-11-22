@@ -1,0 +1,1321 @@
+# **Human Semantic and Lexical Memory Algorithm**
+
+**Proposed name:** Integrated Semantic Representation, Retrieval and Lexical Memory Algorithm (ISR-RLM)
+
+The algorithm will combine seven interacting mechanisms into one computational architecture:
+
+1. Anterior temporal lobe (ATL) semantic hub.
+2. Modality-specific semantic spokes.
+3. Distributed semantic feature networks.
+4. Inferior frontal semantic control.
+5. Semantic retrieval and concept selection.
+6. Episodic word-form memories.
+7. Abstract lexical prototypes.
+
+## **1. The underlying architecture**
+
+An important biological distinction comes first: these are not seven isolated brain modules that simply pass information to one another in a fixed sequence.
+
+The Controlled Semantic Cognition framework distinguishes two major, interacting systems:
+
+- **Semantic representation:** bilateral ATL and distributed modality-specific cortical networks. These jointly represent conceptual knowledge.
+- **Semantic control:** primarily a left-lateralized network involving the inferior frontal gyrus (IFG), posterior middle temporal gyrus (pMTG), and other frontal and temporal regions. It regulates which knowledge becomes available for a particular task.
+
+The ATL integrates information from different modalities into coherent concepts, while the spokes preserve modality-specific information. The control system adjusts the activation and selection of this knowledge.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.nature.com\&sz=32)
+
+nature.com+3
+
+
+
+[The neural and computational bases of semantic cognition | Nature Reviews Neuroscience](https://images.openai.com/static-rsc-4/cFj3PEHXlDNs1JkEpDaG3cA3Wk_1pkV7ewrBSLEXEjCDWlQ78YjVUnydaJmYIM-JpCdO1ZWi83Ns_Iqod3mVA74SFBpIDkguLVL7TNo8tp-PLYdbQcwi6AvUYMyaxLLMfzEbXS6yqhi4IO0FadM0DY-RcVIP9M5diCZhZviPFzI?purpose=inline)
+
+[nature.com](https://www.nature.com/articles/nrn.2016.150?utm_source=chatgpt.com)
+
+We can therefore build the algorithm around three interacting computational systems:
+
+System A
+
+**Semantic representations**
+
+ATL hub + modality-specific spokes + distributed feature networks
+
+System B
+
+**Semantic control**
+
+IFG + posterior temporal control + task-dependent regulation
+
+System C
+
+**Lexical and memory system**
+
+Episodic word forms + abstract lexical representations + memory consolidation
+
+The arrows represent recurrent interactions, not a strict anatomical pathway.
+
+The proposed algorithm will have a forward recognition process and a recurrent learning process. The forward process activates and selects meaning. The learning process stores new experiences and gradually strengthens abstract representations.
+
+## **2. Establish the computational representation**
+
+Before implementing the algorithm, define the information that the brain must represent.
+
+A word such as **APPLE** can activate several different kinds of information:
+
+[Red apple isolated on white background](https://images.openai.com/static-rsc-4/FzVY-DVzU-2KklMMg8WTKJq8lMCKPXmdUxHLLvrGUyC1PP12UBa8mlhfleAieB4lTyWImy0hI6JMxZjGmcjB15_dUFRJgvWrKbX6P8F_kDL5cumjGqkbXgnvSuM3l4u1wI8F07cNgwCvx2vmaf9DVYPeVCI4pxEXVSJFZiMYRKoI6wqhpAJM1HFsciM7vpdE?purpose=inline)
+
+[Apple slice isolated on white. Top view. With clipping path](https://images.openai.com/static-rsc-4/_pW2XhETG5-hEWjc0rRLYea0iCnXeNoBnMZNO3o71rD2nVZ7Ck-3PGcPtEEUvWo-mKKelAug_JansK2gWDyPYTcK6sKx0NYgZY7TBcYuTCmxSaIbUrNCXEJWU1y5PCDfdwweSwJ4uG1wCf5StT8YiONVjOdBGAVucWeNaR3aYyqobM3W6MFiZ9Pkw9_YGFZV?purpose=inline)
+
+[Close up healthy young black woman eating apple outdoors](https://images.openai.com/static-rsc-4/Jqj49xfcVG_4HWlqZJ79v3gJ4eq21oKwoQ4CWN7vEm7XuMJP09LLcVmSdA7xs5rK6ECkw03hkXfLDDuqzzNT5qPER93lVwrQ7DY5Q3cNpeEjFVo3VQ7AItl6cp03weqxTrvRzIJaWc8DlefoMvUIwLFCf4Rzx8vf16t4Lv3UcK4X_l9eCmESHopNcXuj6L9j?purpose=inline)
+
+4
+
+| Representation | Information                                 |
+| -------------- | ------------------------------------------- |
+| Orthographic   | The written sequence APPLE                  |
+| Phonological   | The pronunciation of APPLE                  |
+| Visual         | Its shape, color and appearance             |
+| Auditory       | Sounds associated with it                   |
+| Motor          | Actions such as holding, biting and chewing |
+| Tactile        | Texture, weight and surface                 |
+| Gustatory      | Sweetness and taste                         |
+| Functional     | Food, nutrition and eating                  |
+| Emotional      | Personal experiences and feelings           |
+| Contextual     | The situation in which the word occurs      |
+
+These representations must not be collapsed into one undifferentiated vector.
+
+We will use the following variables:
+
+| Symbol    | Meaning                                 |
+| --------- | --------------------------------------- |
+| \\(X\\)   | Incoming word or concept cue            |
+| \\(E\\)   | Episodic memory traces                  |
+| \\(P\\)   | Abstract lexical prototypes             |
+| \\(S_m\\) | Feature activation in modality \\(m\\)  |
+| \\(H\\)   | ATL semantic-hub activation             |
+| \\(F\\)   | Distributed semantic feature activation |
+| \\(G\\)   | Semantic-control signal                 |
+| \\(C\\)   | Candidate concepts                      |
+| \\(Y\\)   | Selected semantic interpretation        |
+
+We will treat each activation as a numerical value or vector representing the activity of a population, not the activity of a single neuron.
+
+# **3. The complete algorithm**
+
+## **Part A — Anterior temporal lobe semantic hub**
+
+[Checking your browser - reCAPTCHA](https://images.openai.com/static-rsc-4/vaRqsuL1gPsGB_tJwE-dDRvqf1UWReE8og_2mMhP8n5wP0g8CCziqiBxTbXzMnMXbvYjrnaHD47qPrdtBnIZ2X_NZ1mOL6WEh4Lik7k4CVvr0Jiimx3LuXtyKf5DWyGf9l8Y8Sq9r80w1aGRD9SQvN81yzPgxOQIs4XhGa4eLdc?purpose=inline)
+
+[pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC3461109/?utm_source=chatgpt.com)
+
+The ATL is proposed to serve as a multimodal convergence region. Its role is to integrate information from different modalities and form coherent, generalizable conceptual representations.
+
+Both ATLs participate, with graded functional specialization associated with their connectivity to other cortical regions.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.nature.com\&sz=32)
+
+nature.com+1
+
+
+
+### **Step 1. Receive an incoming lexical or conceptual activation**
+
+The processing system receives an already identified word form or another meaningful stimulus.
+
+For example:
+
+```
+Input = APPLE
+```
+
+The system creates an initial input representation:
+
+\\[ X = [x_1,x_2,\ldots,x_n] \\]
+
+Here, the components may represent orthographic, phonological or other available input features.
+
+**Possible mathematical operations:**
+
+- Vector construction.
+- Normalization.
+- Feature encoding.
+- Linear projection.
+- Threshold-based activation.
+
+The initial projection can be represented as:
+
+\\[ Z_H=W_HX+b_H \\]
+
+Where:
+
+- \\(W_H\\) represents learned connections into the hub.
+- \\(b_H\\) represents baseline bias.
+- \\(Z_H\\) is the preliminary hub input.
+
+### **Step 2. Activate the appropriate ATL neuronal populations**
+
+Different combinations of incoming features activate different populations in the ATL.
+
+The activation of a population can be approximated by:
+
+\\[ H^{(0)}=\phi(Z_H) \\]
+
+Where \\(\phi\\) is a nonlinear activation function.
+
+For example:
+
+\\[ \phi(z)=\frac{1}{1+e^{-z}} \\]
+
+This sigmoid is a computational approximation, not a claim that ATL neurons literally implement the sigmoid function.
+
+The result is an initial distributed activation representing the incoming concept.
+
+### **Step 3. Integrate information arriving from multiple modalities**
+
+The hub receives inputs from different cortical regions.
+
+It must combine these inputs into a common conceptual representation.
+
+Suppose the input represents:
+
+- Visual information about an apple.
+- Auditory information associated with its name.
+- Functional information about eating.
+- Tactile information about its texture.
+
+The integrated representation can be approximated by:
+
+\\[ H=\sum\_{m=1}^{M}W_mS_m \\]
+
+Where:
+
+- \\(S_m\\) is the activity of modality \\(m\\).
+- \\(W_m\\) represents its connection strength to the hub.
+- \\(M\\) is the number of contributing modalities.
+
+This operation is called weighted convergence.
+
+The brain does not need to give all modalities equal influence. Their relative contributions depend on connectivity, experience and the task.
+
+### **Step 4. Construct a coherent conceptual representation**
+
+The ATL must integrate features that belong together.
+
+For example:
+
+```
+APPLE
+
+visual appearance
+    +
+edible fruit
+    +
+taste
+    +
+tree origin
+    +
+eating function
+```
+
+These features must collectively activate a representation of an apple rather than remain unrelated sensory signals.
+
+One possible computational mechanism is recurrent settling:
+
+\\[ H^{(t+1)} = \phi \left( W\_{SH}S+ W\_{HH}H^{(t)} -\theta_H \right) \\]
+
+Where:
+
+- \\(W\_{SH}\\): spoke-to-hub connections.
+- \\(W\_{HH}\\): recurrent hub connections.
+- \\(\theta_H\\): activation threshold.
+
+The recurrent term allows the current conceptual state to influence subsequent activation.
+
+### **Step 5. Complete an incomplete conceptual representation**
+
+Sometimes the word or stimulus does not supply all information.
+
+For example, hearing the word *apple* does not provide a visual image of a particular apple.
+
+Nevertheless, the brain can activate associated knowledge.
+
+The computational approximation is pattern completion:
+
+\\[ H^\*=\arg\min_H \left[ D(H,H\_{\text{input}}) +\lambda R(H) \right] \\]
+
+Here:
+
+- \\(D\\) measures mismatch with the available evidence.
+- \\(R(H)\\) represents consistency with previously learned conceptual patterns.
+- \\(\lambda\\) controls the influence of stored knowledge.
+
+The hub can therefore produce a sufficiently coherent conceptual state even when the original input is incomplete.
+
+This optimization describes a possible computational implementation, not an established literal optimization procedure inside the ATL.
+
+**Output of Part A:**
+
+An initial integrated conceptual representation:
+
+\\[ H\_{\text{concept}} \\]
+
+This activates the modality-specific spokes and distributed semantic features.
+
+## **Part B — Modality-specific semantic spokes**
+
+[This was the Mother of all Headaches — Innovgas | Optimising Anaesthetics](https://images.openai.com/static-rsc-4/WCaY1wTdQm5BX7TQJoFXaNGsOitln4lAPjp0KNDL0ekcKQNfY94fQYlSjFav_cptEkhR01i6mCvwjXGsQXgFE2YnbX5Qhb-snwMveoT28ONHxU24f9ZItEdk6Os21SyFsryvdN5HD6NTyKhc0BqhlEU_SE82KPiorcjO9LuvPcs?purpose=inline)
+
+[innovgas.com](https://www.innovgas.com/news/this-was-the-mother-of-all-headaches?utm_source=chatgpt.com)
+
+The spokes are distributed cortical systems containing modality-related information.
+
+They contribute the sensory, motor, perceptual, emotional and other information from which conceptual knowledge is formed.
+
+The ATL and spokes work together; neither is sufficient by itself for the complete hub-and-spoke representation.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Step 6. Identify the modalities associated with the concept**
+
+The system identifies which modality-related feature networks are relevant.
+
+For APPLE, it might activate:
+
+\\[ M=\\{ V,A,T,M,G,O \\} \\]
+
+Where:
+
+- \\(V\\): visual.
+- \\(A\\): auditory.
+- \\(T\\): tactile.
+- \\(M\\): motor.
+- \\(G\\): gustatory.
+- \\(O\\): olfactory.
+
+The actual number of active networks depends on the concept and task.
+
+### **Step 7. Activate the modality-specific feature populations**
+
+Each modality processes its own information.
+
+For example, the visual system can activate representations concerning:
+
+- Color.
+- Shape.
+- Size.
+- Surface appearance.
+
+The motor system can activate actions related to grasping and eating.
+
+We can model each spoke separately:
+
+\\[ S_m^{(0)}=\phi(W_mX_m+b_m) \\]
+
+Each modality therefore creates its own feature-activation vector.
+
+### **Step 8. Retrieve modality-specific features**
+
+The activated spoke populations retrieve previously learned information.
+
+For a visual representation:
+
+\\[ S_V = [ \text{redness}, \text{roundness}, \text{size}, \text{surface} ] \\]
+
+For a functional representation:
+
+\\[ S_M = [ \text{grasp}, \text{hold}, \text{bite}, \text{chew} ] \\]
+
+These values are examples of computational features, not fixed biological neurons or universally localized feature lists.
+
+### **Step 9. Exchange information between spokes and the ATL**
+
+The spokes do not operate independently.
+
+Their activity interacts with the ATL, which can influence subsequent spoke activation.
+
+A simplified recurrent mechanism is:
+
+\\[ S_m^{(t+1)} = \phi \left( W\_{Xm}X_m+ W\_{Hm}H^{(t)} -\theta_m \right) \\]
+
+This means:
+
+1. A modality activates its own features.
+2. The ATL receives the resulting information.
+3. The ATL generates an integrated conceptual state.
+4. That state influences which additional features become activated.
+5. The spokes provide additional information back to the ATL.
+
+This is a recurrent process rather than a one-way transfer.
+
+### **Step 10. Weight the reliability of each modality**
+
+Not all sensory information is equally reliable.
+
+When recognizing an object in poor lighting, visual evidence may be weak. Information from touch or other sources may become more influential.
+
+A possible computational operation is precision weighting:
+
+\\[ \pi_m=\frac{1}{\sigma_m^2+\epsilon} \\]
+
+Where:
+
+- \\(\sigma_m^2\\) is the estimated uncertainty of modality \\(m\\).
+- \\(\pi_m\\) is its precision.
+- \\(\epsilon\\) prevents division by zero.
+
+The integrated representation can then be calculated as:
+
+\\[ H= \frac{\sum_m \pi_m W_mS_m} {\sum_m \pi_m} \\]
+
+**Output of Part B:**
+
+A set of modality-specific feature representations, with their relative reliability, available to the ATL and distributed semantic network.
+
+## **Part C — Distributed semantic feature networks**
+
+This part concerns the way information about concepts is distributed across multiple connected cortical regions.
+
+The ATL integrates conceptual information, but the actual content of semantic knowledge is supported by a wider network of modality-related and association regions.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://www.nature.com\&sz=32)
+
+nature.com+1
+
+
+
+### **Step 11. Activate the individual semantic features**
+
+The system creates an activation vector for the features associated with the concept.
+
+For example:
+
+\\[ F\_{\text{apple}}= [ \text{fruit}, \text{red}, \text{sweet}, \text{edible}, \text{tree}, \text{food} ] \\]
+
+Each feature receives an activation strength.
+
+### **Step 12. Activate associated semantic features**
+
+Activation spreads through connections between semantically related features.
+
+For example:
+
+```
+APPLE
+  |
+  +--- FRUIT
+  |      |
+  |      +--- PEAR
+  |      +--- ORANGE
+  |
+  +--- FOOD
+  |      |
+  |      +--- EATING
+  |      +--- NUTRITION
+  |
+  +--- TREE
+         |
+         +--- BRANCH
+         +--- LEAF
+```
+
+A graph representation can model this network.
+
+Let:
+
+\\[ A\_{ij} \\]
+
+represent the association strength between semantic features \\(i\\) and \\(j\\).
+
+Then:
+
+\\[ F^{(t+1)} = \phi \left( AF^{(t)}+W_HH^{(t)}-\theta_F \right) \\]
+
+This is a possible mathematical description of recurrent semantic spreading activation.
+
+### **Step 13. Combine information from multiple semantic pathways**
+
+A concept can activate features from several networks simultaneously.
+
+For example:
+
+- Visual appearance.
+- Biological classification.
+- Functional properties.
+- Taste.
+- Personal experience.
+
+The system combines these activations into an integrated feature pattern.
+
+One possible operation:
+
+\\[ F\_{\text{integrated}} = \sum_m \alpha_m F_m \\]
+
+Where \\(\alpha_m\\) controls the contribution of each feature pathway.
+
+### **Step 14. Calculate semantic relationships and similarities**
+
+The brain must distinguish concepts that are related from concepts that are unrelated.
+
+A computational approximation is cosine similarity:
+
+\\[ \operatorname{sim}(F_i,F_j)= \frac{F_i\cdot F_j} {\\|F_i\\|\\|F_j\\|+\epsilon} \\]
+
+For example:
+
+- APPLE and PEAR share several semantic features.
+- APPLE and SCREWDRIVER share relatively few.
+- APPLE and FOOD have a strong categorical relationship.
+
+This allows the semantic system to organize knowledge into similarity structures.
+
+### **Step 15. Maintain distributed activation and competition**
+
+Activation can spread to related concepts, but it must not activate every related concept equally.
+
+The system needs competition and suppression.
+
+A simplified operation is:
+
+\\[ F_i^{(t+1)} = \phi \left( u_i+ \sum_j A\_{ij}F_j^{(t)} -\gamma\sum\_{k\in\mathcal{I}(i)}F_k^{(t)} \right) \\]
+
+Where:
+
+- \\(u_i\\) is incoming activation.
+- \\(A\_{ij}\\) is associative input.
+- \\(\mathcal I(i)\\) represents competing feature populations.
+- \\(\gamma\\) controls suppression.
+
+**Output of Part C:**
+
+A distributed semantic network containing active concepts, their features and their relationships.
+
+## **Part D — Inferior frontal semantic control**
+
+[De magie van het puberbrein - NEMO Kennislink](https://images.openai.com/static-rsc-4/LM_OGAyurTl49NITXdqeJmm5C30IlVB3-gHF9eK9gKeRP4oUsoFE3iPPnKKN3-QCrzTnOXoa3ZLVWIloD8bypSYR_frvv1vyROU880sYCSy6GaRDXLMzWWe9I-xOluQa1J_oDMWUUPQbHV3QZCvqkaUJACcIi6YXjPg9Sr7tSb0?purpose=inline)
+
+[nemokennislink.nl](https://www.nemokennislink.nl/publicaties/de-magie-van-het-puberbrein/?utm_source=chatgpt.com)
+
+The IFG has an important role in regulating semantic retrieval.
+
+However, semantic control is not confined to the IFG. The left pMTG and other frontal and temporal regions participate in the control network.
+
+A particularly important finding comes from TMS experiments: disrupting either the left IFG or posterior middle temporal cortex selectively impairs demanding semantic judgments, while strongly automatic semantic associations can remain relatively unaffected.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+### **Step 16. Receive the current task or contextual requirement**
+
+The brain needs to determine what information is relevant.
+
+Consider two questions:
+
+1. What does an apple look like?
+2. What relationship does an apple have with nutrition?
+
+The word is identical, but the required semantic features are different.
+
+Let:
+
+\\[ Q=[q_1,q_2,\ldots,q_n] \\]
+
+represent the task or goal.
+
+### **Step 17. Estimate semantic control demand**
+
+The system estimates whether the current semantic representation is sufficient.
+
+Potential indicators include:
+
+- Multiple competing meanings.
+- Weak association strength.
+- Low confidence.
+- Conflict between context and automatic activation.
+- Requirement to retrieve an unusual feature.
+
+One possible operation is Shannon entropy:
+
+\\[ \mathcal H(F) = -\sum_i p_i\log(p_i+\epsilon) \\]
+
+High entropy can indicate that several competing hypotheses remain active.
+
+However, entropy alone does not determine control demand. Task difficulty and the relevance of competing features also matter.
+
+We can define a computational control-demand score:
+
+\\[ D= \beta_1\mathcal H(F) +\beta_2C\_{\text{conflict}} +\beta_3R\_{\text{task}} \\]
+
+Where:
+
+- \\(C\_{\text{conflict}}\\) measures competition between candidates.
+- \\(R\_{\text{task}}\\) measures task-specific retrieval difficulty.
+
+### **Step 18. Identify the task-relevant features**
+
+The control system creates a bias toward the features needed by the task.
+
+For example:
+
+```
+Question: What is an apple used for?
+
+Relevant:
+    edible
+    food
+    nutrition
+    eating
+
+Less relevant:
+    color
+    surface appearance
+    exact shape
+```
+
+A possible control signal is:
+
+\\[ G=\sigma(W_QQ+W_DD) \\]
+
+The result is a set of feature-specific control weights.
+
+### **Step 19. Amplify the relevant features**
+
+The control network increases the relative influence of useful information.
+
+\\[ F_i'=F_i(1+\kappa G_i) \\]
+
+Where:
+
+- \\(F_i\\) is the current feature activation.
+- \\(G_i\\) is the control signal.
+- \\(\kappa\\) determines modulation strength.
+
+This represents selective gain modulation.
+
+### **Step 20. Suppress irrelevant or competing features**
+
+The system reduces activation of features that are not useful for the current task.
+
+\\[ F_i''=\max(0,F_i'-\lambda I_i) \\]
+
+Where \\(I_i\\) represents competing or irrelevant activation.
+
+This does not mean that irrelevant information must be completely erased. It means its influence on the current decision is reduced.
+
+### **Step 21. Send top-down control signals to semantic representations**
+
+The frontal control network influences posterior temporal and conceptual representation networks.
+
+This allows the system to retrieve information that was not initially dominant.
+
+For example, given:
+
+```
+APPLE + SLIP
+```
+
+The most obvious associations might be eating or nutrition.
+
+However, a question about slipping on food requires retrieving less dominant information concerning the physical properties of discarded fruit.
+
+The control network must make the relevant association accessible.
+
+This is one reason semantic control cannot be reduced to simple retrieval of the most strongly activated association.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+PMC+2
+
+
+
+### **Step 22. Repeat semantic activation under control**
+
+The updated activations propagate back into the ATL and distributed feature networks.
+
+\\[ F^{(t+1)}= \phi \left( AF^{(t)}+W_HH+W_GG-\theta \right) \\]
+
+The process continues until the interpretation is sufficiently stable or another interpretation becomes preferable.
+
+**Output of Part D:**
+
+A task-constrained semantic activation pattern:
+
+\\[ F\_{\text{controlled}} \\]
+
+## **Part E — Semantic retrieval and concept selection**
+
+This part converts the activated semantic representations into a selected conceptual interpretation.
+
+We must distinguish two processes:
+
+- Retrieval: making stored knowledge available.
+- Selection: deciding which retrieved interpretation is appropriate.
+
+### **Step 23. Generate candidate concepts**
+
+The system retrieves concepts associated with the input.
+
+For APPLE, candidates could include:
+
+```
+APPLE
+FRUIT
+FOOD
+TREE
+JUICE
+NUTRITION
+```
+
+These candidates may be activated through different routes:
+
+- Direct lexical associations.
+- ATL conceptual representations.
+- Modality-specific features.
+- Contextual information.
+- Episodic memory.
+
+### **Step 24. Calculate the evidence supporting each candidate**
+
+For candidate \\(c\\), calculate a combined evidence score:
+
+\\[ S(c)= w_hS_H(c) +w_fS_F(c) +w_gS_G(c) +w_eS_E(c) +w_qS_Q(c) \\]
+
+Where:
+
+- \\(S_H\\): ATL conceptual match.
+- \\(S_F\\): distributed feature match.
+- \\(S_G\\): semantic-control compatibility.
+- \\(S_E\\): episodic-memory support.
+- \\(S_Q\\): task and contextual compatibility.
+
+The weights describe the relative contribution of each information source in the computational model.
+
+### **Step 25. Calculate the probability of each candidate**
+
+A softmax can transform the scores into normalized probabilities:
+
+\\[ P(c_i\mid X,Q) = \frac{e^{S(c_i)/T}} {\sum_j e^{S(c_j)/T}} \\]
+
+Where \\(T\\) represents the computational temperature.
+
+A low temperature produces stronger competition between candidates. A higher temperature preserves more alternatives.
+
+This is a useful computational approximation, not proof that the brain explicitly calculates a softmax probability distribution.
+
+### **Step 26. Resolve ambiguous meanings**
+
+Consider the word BANK.
+
+Possible meanings include:
+
+- Financial institution.
+- Riverbank.
+
+The input word alone may activate both interpretations.
+
+Context changes their relative activation:
+
+```
+He deposited money in the BANK.
+```
+
+The financial interpretation receives stronger contextual support.
+
+```
+He sat beside the BANK of the river.
+```
+
+The geographical interpretation receives stronger contextual support.
+
+The computational operation can be:
+
+\\[ P(c\mid X,Q) \propto P(X\mid c)P(c\mid Q) \\]
+
+The task and context priors can change the most likely interpretation.
+
+### **Step 27. Select the most appropriate concept**
+
+A winner-selection operation can be performed:
+
+\\[ c^\*=\arg\max_c P(c\mid X,Q) \\]
+
+However, a strong cognitive architecture should also check confidence.
+
+For example:
+
+\\[ P(c^\*)>\tau \\]
+
+Where \\(\tau\\) is a confidence threshold.
+
+If confidence is insufficient, the algorithm should preserve competing interpretations and request additional semantic retrieval rather than force a decision.
+
+### **Step 28. Construct the final semantic representation**
+
+The selected concept is represented together with its relevant features and contextual relationships.
+
+For example:
+
+```
+Concept: APPLE
+
+Category: Fruit
+Properties: Edible, sweet, contains seeds
+Functions: Food
+Relations:
+    APPLE -> FRUIT
+    APPLE -> FOOD
+    APPLE -> TREE
+Context: Nutrition
+Confidence: 0.94
+```
+
+The numerical confidence is illustrative.
+
+**Output of Part E:**
+
+\\[ Y\_{\text{semantic}} \\]
+
+A selected conceptual interpretation with its associated semantic features.
+
+## **Part F — Episodic word-form memories**
+
+[How a key memory center in the brain responds to the unexpected](https://images.openai.com/static-rsc-4/p5_fkAXk2oOHJHVY9SwHk1kzDyWEY9kCDK6C4eyeGQoMdIm5SkK0r-QzcTEYtb0O8-KSBvJlZzP30M0ZEjmIM9XWTv2_Y5VkULrcf3DQPRFJv7gxs2Fyxh_t_6Iv8bt6Ozb0xXv3uOw2Xw8cLWCnOE2WrTo72VSuCn4p4Cu2vTg?purpose=inline)
+
+[medicalxpress.com](https://medicalxpress.com/news/2026-04-key-memory-center-brain-unexpected.html?utm_source=chatgpt.com)
+
+This section adds an important memory mechanism.
+
+The brain does not only learn a single abstract representation of a word. Experiences can leave traces containing information about individual encounters with that word.
+
+For example, the word APPLE may be experienced:
+
+- In a book.
+- In a conversation.
+- In a classroom.
+- In a particular voice.
+- In a specific font.
+- Together with a particular object or event.
+
+The episodic account of word recognition proposes that detailed experiences can contribute to later recognition. Research on spoken-word recognition supports the importance of both specific episodic information and more abstract lexical representations.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov+2
+
+
+
+The hippocampus and medial temporal lobe are important for rapid formation of new episodic associations, while cortical systems participate in longer-term lexical and semantic representations.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Step 29. Capture the current word-form episode**
+
+The system constructs a representation of the current encounter.
+
+For example:
+
+```
+Word: APPLE
+
+Orthographic form: APPLE
+Phonological form: /ˈæpəl/
+Font: Arial
+Visual appearance: Red letters on white background
+Context: Biology lesson
+Associated concept: Fruit
+Time: Current encounter
+```
+
+The episode can be represented as:
+
+\\[ E_t= (O_t,P_t,S_t,C_t,T_t) \\]
+
+Where:
+
+- \\(O_t\\): orthographic form.
+- \\(P_t\\): phonological form.
+- \\(S_t\\): semantic associations.
+- \\(C_t\\): context.
+- \\(T_t\\): temporal information.
+
+Not every field must be present for an episode to be stored.
+
+### **Step 30. Encode the episode into a memory representation**
+
+The system converts the experience into a pattern suitable for storage.
+
+One possible mathematical representation is:
+
+\\[ E_t=\phi(W_E X_t) \\]
+
+Here, \\(W_E\\) is a learned encoding transformation.
+
+A biologically inspired implementation could use sparse distributed population activity.
+
+### **Step 31. Separate similar episodes**
+
+Suppose the brain encounters:
+
+```
+APPLE in a book
+APPLE in a classroom
+APPLE in a conversation
+```
+
+These experiences share information but differ in context.
+
+A useful computational requirement is to distinguish the episodes without losing their common identity.
+
+This is called pattern separation.
+
+One conceptual transformation is:
+
+\\[ E_i'=\operatorname{Sparse} \left( W\_{\text{sep}}E_i \right) \\]
+
+The goal is to reduce interference between highly similar episodes.
+
+Pattern separation is an important computational concept associated with hippocampal memory processing, although this particular matrix equation is an engineering abstraction.
+
+### **Step 32. Bind the episode's different components**
+
+The system must associate the word form with the experience in which it occurred.
+
+A possible binding representation is:
+
+\\[ B_t= O_t\otimes P_t\otimes S_t\otimes C_t \\]
+
+Where \\(\otimes\\) denotes a binding operation.
+
+In a computational implementation, this could be implemented through:
+
+- Concatenated vectors.
+- Tensor products.
+- Sparse conjunctive codes.
+- Learned association matrices.
+
+The exact biological representation need not be a literal tensor product.
+
+### **Step 33. Store an episodic memory trace**
+
+A memory trace can be indexed by the hippocampal system and connected with neocortical representations.
+
+The important distinction is that the episode retains information about a particular experience.
+
+This is different from merely knowing the general meaning of APPLE.
+
+### **Step 34. Retrieve matching episodic traces**
+
+When the same word is encountered again, the current input can activate similar traces.
+
+A possible retrieval function is:
+
+\\[ R(E_j\mid X)= \exp\left( -\frac{D(X,E_j)^2}{2\sigma^2} \right) \\]
+
+Where:
+
+- \\(D\\) measures similarity.
+- \\(\sigma\\) controls the range of retrieval.
+
+The most similar episodes receive higher activation.
+
+### **Step 35. Perform pattern completion**
+
+Suppose the current input contains only part of a previously encountered word or its associated context.
+
+The memory system can use the partial cue to reactivate the remaining information.
+
+Conceptually:
+
+\\[ \hat E= \operatorname{Complete}(X\_{\text{partial}},E) \\]
+
+For example, recognizing a word in the same familiar book may reactivate information about its previous occurrence.
+
+### **Step 36. Send retrieved episodic information back into semantic processing**
+
+The retrieved trace can supply additional information to:
+
+- The ATL.
+- Modality-specific spokes.
+- Distributed semantic features.
+- Phonological representations.
+- Semantic control.
+
+The updated conceptual representation can be expressed as:
+
+\\[ H\_{\text{new}}= H\_{\text{current}}+\lambda_E R(E) \\]
+
+Where \\(\lambda_E\\) controls the contribution of episodic information.
+
+**Output of Part F:**
+
+A collection of retrievable word-form and contextual episodes:
+
+\\[ E\_{\text{memory}}=\\{E_1,E_2,\ldots,E_n\\} \\]
+
+## **Part G — Abstract lexical prototypes**
+
+[Frontiers | How learning to read Braille in visual and tactile domains reorganizes the sighted brain](https://images.openai.com/static-rsc-4/oHOpmdEp7Jr8l4hmJZ3ANvSqdu8JK_SNs0mJjilH6bR2EsRl_sWa2b38WuKmv45Yox6tIDfni9hzbr0OpqdXWVs78TC64zmkEzeADWnbZZoJT-eRrLDnop-fVch5JqW-ujkF9ar7fU4uEs1epaCVrMDPVqstCNsxgU-thAz4p38?purpose=inline)
+
+[frontiersin.org](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2024.1297344/full?utm_source=chatgpt.com)
+
+This final component explains how the brain can recognize the same word across different experiences.
+
+For example:
+
+```
+apple
+APPLE
+Apple
+aPpLe
+```
+
+Although their visual appearances differ, they can be recognized as the same lexical item.
+
+The left ventral occipitotemporal cortex, including the visual word form area (VWFA), is strongly associated with high-level orthographic representations.
+
+Studies also show that these representations have graded invariance: familiar words can be recognized across different visual formats, but the neural representations retain some sensitivity to visual experience and familiar formatting.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Step 37. Collect multiple word-form experiences**
+
+The system has accumulated different episodes of the same word.
+
+For example:
+
+\\[ E\_{\text{apple}}= \\{ E_1,E_2,E_3,\ldots,E_n \\} \\]
+
+Each episode contains a particular experience of the word.
+
+### **Step 38. Identify common features across episodes**
+
+The system identifies information shared across different instances.
+
+For example:
+
+| Episode | Visual form    | Word identity |
+| ------- | -------------- | ------------- |
+| 1       | apple          | APPLE         |
+| 2       | APPLE          | APPLE         |
+| 3       | Apple          | APPLE         |
+| 4       | Different font | APPLE         |
+
+The system must preserve relevant letter identity and order while becoming less dependent on irrelevant visual differences.
+
+A simple abstraction operation is:
+
+\\[ P_w= \frac{1}{n}\sum\_{i=1}^{n}E_i \\]
+
+This represents a mathematical prototype.
+
+In a biological implementation, the equivalent need not involve a literal arithmetic mean. Distributed cortical plasticity can develop population patterns that represent common statistical structure across experiences.
+
+### **Step 39. Build an abstract orthographic representation**
+
+The system develops a representation that captures:
+
+- Letter identity.
+- Letter order.
+- Typical spelling patterns.
+- Familiar orthographic sequences.
+- Statistical regularities.
+
+A possible representation is:
+
+\\[ P\_{\text{ortho}}= [ p(\text{letter}\_1), p(\text{letter}\_2),\ldots, p(\text{letter}\_n) ] \\]
+
+A more sophisticated representation can encode letter-position relationships:
+
+\\[ P\_{\text{ortho}}=f(O,\text{position},\text{order}) \\]
+
+This is important because the brain must distinguish words that contain the same letters in different orders.
+
+Recent neuroimaging work describes a progression from early retinotopic visual representations to more abstract, word-centered ordinal position representations along the visual pathway.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+1
+
+
+
+### **Step 40. Build an abstract phonological representation**
+
+The brain also develops representations of spoken word forms.
+
+Different speakers may pronounce a word with differences in accent, timing and acoustic realization.
+
+The system must recognize their shared linguistic identity while retaining information about specific experiences.
+
+A possible representation is:
+
+\\[ P\_{\text{phon}}= f(\text{phoneme identity},\text{sequence},\text{variation}) \\]
+
+This is not necessarily independent of episodic memory. Evidence supports hybrid accounts combining detailed episodic traces with more abstract lexical representations.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pubmed.ncbi.nlm.nih.gov\&sz=32)
+
+pubmed.ncbi.nlm.nih.gov+1
+
+
+
+### **Step 41. Construct the abstract lexical identity**
+
+The orthographic and phonological prototypes become associated with the relevant lexical entry.
+
+For example:
+
+**LEXICAL IDENTITY: APPLE**
+
+Orthographic prototype
+
+**APPLE**
+
+Letter identity and order
+
+Phonological prototype
+
+**/ˈæpəl/**
+
+Sound sequence
+
+Associated semantic prototype
+
+**FRUIT · FOOD · EDIBLE · TREE**
+
+Episodic memory connections
+
+Individual encounters, voices, written formats and contexts.
+
+The important distinction is that an abstract lexical entry is not identical to a semantic concept. It links word-form information with its linguistic and conceptual associations.
+
+### **Step 42. Strengthen the prototype through experience**
+
+Repeated exposure and successful use can strengthen relevant connections.
+
+A simple incremental learning approximation is:
+
+\\[ P_w^{(t+1)} = P_w^{(t)} + \eta \left( E_t-P_w^{(t)} \right) \\]
+
+Where:
+
+- \\(P_w^{(t)}\\) is the existing prototype.
+- \\(E_t\\) is the new experience.
+- \\(\eta\\) is the learning rate.
+
+This is an incremental averaging rule.
+
+A separate association update could use a Hebbian-style expression:
+
+\\[ \Delta W\_{ij} = \eta a_i a_j -\lambda W\_{ij} \\]
+
+Where:
+
+- \\(a_i,a_j\\) are neuronal population activations.
+- \\(\eta\\) represents learning strength.
+- \\(\lambda\\) represents connection decay or regularization.
+
+This represents a possible mathematical approximation to experience-dependent plasticity, not an assertion that all lexical learning follows this exact equation.
+
+### **Step 43. Consolidate the abstract representation**
+
+New word forms can initially depend strongly on episodic memory mechanisms.
+
+With learning and consolidation, neocortical representations become increasingly integrated with existing linguistic and semantic knowledge.
+
+Complementary learning systems accounts describe rapid hippocampal-dependent acquisition followed by slower neocortical consolidation and integration. Sleep can contribute to these processes, although learning conditions and the type of information matter.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://pmc.ncbi.nlm.nih.gov\&sz=32)
+
+pmc.ncbi.nlm.nih.gov+2
+
+
+
+The computational model can represent this using two learning rates:
+
+\\[ \eta\_{\text{fast}}>\eta\_{\text{slow}} \\]
+
+The fast system updates the new episodic trace, while the slow system gradually adjusts long-term cortical representations.
+
+For example:
+
+\\[ P_w^{(t+1)} = P_w^{(t)} + \eta\_{\text{slow}} \Delta P_w \\]
+
+This allows the abstract representation to change gradually without being completely rewritten after every encounter.
+
+### **Step 44. Generalize across new experiences**
+
+The ultimate objective is to recognize a familiar word under conditions not previously encountered.
+
+For example:
+
+- Different fonts.
+- Different letter sizes.
+- Different visual positions.
+- Different contexts.
+- Different speakers.
+- Different acoustic conditions.
+
+The system should preserve essential identity while accommodating irrelevant variation.
+
+This is a generalization operation:
+
+\\[ \hat W= \arg\max_W \operatorname{Similarity}(X\_{\text{new}},P_W) \\]
+
+The prototype should not be so rigid that it rejects legitimate variations, or so broad that it confuses different words.
+
+**Output of Part G:**
+
+A set of increasingly stable abstract lexical representations:
+
+\\[ P\_{\text{lexicon}}= \\{ P\_{w_1},P\_{w_2},\ldots,P\_{w_n} \\} \\]
+
+These representations feed back into lexical recognition, ATL semantic processing and future episodic learning.
+
+# **4. Integrating all seven components into one algorithm**
+
+We can now connect the parts into one overall architecture.
+
+**ISR-RLM — Integrated processing architecture**
+
+**Incoming word or conceptual cue**
+
+Orthographic / phonological / nonverbal
+
+**1. ATL semantic hub**
+
+Initial conceptual activation and multimodal integration
+
+**2. Modality-specific spokes**
+
+Visual · Auditory · Motor · Tactile · Other modalities
+
+**3. Distributed semantic feature networks**
+
+Feature activation · Association · Similarity · Competition
+
+**4. Inferior frontal semantic control**
+
+Task goals · Gain modulation · Inhibition · Controlled retrieval
+
+**5. Semantic retrieval and concept selection**
+
+Candidate generation · Evidence integration · Disambiguation · Selection
+
+**6. Episodic word-form memories**
+
+Experience encoding · Binding · Separation · Retrieval
+
+**7. Abstract lexical prototypes**
+
+Statistical abstraction · Generalization · Consolidation
+
+**Updated lexical and semantic memory**
+
+Feeds subsequent recognition and conceptual processing
+
+Conceptual organization of the algorithm. Memory retrieval and top-down feedback occur throughout processing rather than only at the bottom of the sequence.
+
+## **5. The recurrent mathematical model**
+
+The most important aspect of the complete architecture is that it must be recurrent.
+
+The ATL, spokes, distributed semantic features and IFG control cannot be treated as completely independent processing stages.
+
+A simplified iterative model is:
+
+\\[ H^{(t+1)} = \phi(W\_{SH}S^{(t)}+W\_{HH}H^{(t)}+B_H) \\]
+
+\\[ S^{(t+1)} = \phi(W\_{XS}X+W\_{HS}H^{(t+1)}+B_S) \\]
+
+\\[ F^{(t+1)} = \phi(W\_{HF}H^{(t+1)}+W\_{FF}F^{(t)}+B_F) \\]
+
+\\[ F_c^{(t+1)} = \phi(F^{(t+1)}+W_GG^{(t)}) \\]
+
+\\[ G^{(t+1)} = \phi(W_QQ+W_DD^{(t)}) \\]
+
+These equations represent five interacting operations:
+
+1. ATL conceptual integration.
+2. Modality-specific activation.
+3. Distributed semantic propagation.
+4. Controlled feature modulation.
+5. Updating semantic control based on task and uncertainty.
+
+The retrieval system then calculates:
+
+\\[ P(c_i\mid X,Q,E,P) = \operatorname{softmax} \left( \frac{S(c_i)}{T} \right) \\]
+
+The system repeats the process until:
+
+\\[ \\|H^{(t+1)}-H^{(t)}\\|<\epsilon \\]
+
+Or until a predefined iteration limit is reached.
+
+This is an engineering description of recurrent semantic computation, not a claim that the brain uses this exact numerical algorithm.
+
+# **6. Important distinctions for the ORE implementation**
+
+There are three kinds of representations that must remain separate in the Python architecture.
+
+| Representation                                            | Primary role                               | Main neural systems                                                        |
+| --------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- |
+| Episodic word-form trace                                  | Remembers a particular encounter           | Hippocampal/medial temporal memory and associated cortical representations |
+| Abstract orthographic/phonological lexical representation | Recognizes word identity across encounters | Ventral occipitotemporal and language-related cortical networks            |
+| Semantic concept representation                           | Represents what a word means               | ATL hub and distributed modality-specific semantic networks                |
+
+There is an especially important distinction between the last two:
+
+**APPLE as a lexical word form** is not the same as **APPLE as a concept**.
+
+The first helps recognize the word. The second provides knowledge about the fruit, its properties, its functions and its relationships with other concepts.
+
+The ATL should not simply be implemented as another orthographic dictionary. Its purpose in this architecture is to support integrated conceptual knowledge.
+
+Similarly, the IFG should not be implemented as the permanent storage location for semantic knowledge. It is part of the machinery that controls access to that knowledge.
+
+## **7. Recommended implementation boundaries**
+
+For the existing ORE architecture, I would separate the new algorithm into these Python packages:
+
+| Proposed module                      | Responsibility                                          |
+| ------------------------------------ | ------------------------------------------------------- |
+| `ore_semantic/atl_hub.py`            | ATL integration and conceptual attractor dynamics       |
+| `ore_semantic/spokes.py`             | Modality-specific feature populations                   |
+| `ore_semantic/feature_network.py`    | Distributed semantic associations and propagation       |
+| `ore_semantic/semantic_control.py`   | IFG/pMTG-inspired task control and feature selection    |
+| `ore_semantic/retrieval.py`          | Semantic retrieval, Bayesian competition and abstention |
+| `ore_semantic/episodic_memory.py`    | Episodic word-form encoding and retrieval               |
+| `ore_semantic/lexical_prototypes.py` | Abstract word-form representations and consolidation    |
+| `ore_semantic/pipeline.py`           | Complete recurrent orchestration                        |
+| `tests/test_semantic.py`             | Computational and integration tests                     |
+
+These are proposed software boundaries, not one-to-one anatomical divisions. Each module should expose its internal activations and mathematical operations so that the system can be inspected and independently tested.
+
+## **8. Scientific verification references**
+
+The main literature supporting this architecture includes:
+
+1. The neural and computational bases of semantic cognition — Lambon Ralph and colleagues. [Read review](https://www.nature.com/articles/nrn.2016.150?utm_source=chatgpt.com).
+2. Graded specialization within and between the anterior temporal lobes — Rice and colleagues. [Read review](https://pmc.ncbi.nlm.nih.gov/articles/PMC4982095/?utm_source=chatgpt.com).
+3. The neural correlates of semantic control revisited — Jackson. [Read paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC7779562/?utm_source=chatgpt.com).
+4. The Neural Organization of Semantic Control — Whitney and colleagues. [Read paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC3077429/?utm_source=chatgpt.com).
+5. A complementary systems account of word learning — Davis and Gaskell. [Read review](https://pmc.ncbi.nlm.nih.gov/articles/PMC2846311?utm_source=chatgpt.com).
+6. Visual Experience Shapes Orthographic Representations in the Visual Word Form Area — Wimmer and colleagues. [Read paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC5017316/?utm_source=chatgpt.com).
+
+**The central design principle:** semantic knowledge should be represented through distributed, interconnected populations, while episodic memories preserve individual experiences and abstract lexical prototypes capture regularities across those experiences. Semantic control then determines which parts of this knowledge become relevant to the current task.

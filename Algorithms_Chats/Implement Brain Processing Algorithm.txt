@@ -1,0 +1,2130 @@
+Title: Implement Brain Processing Algorithm
+Conversation ID: 6afa514c-7330-83ea-9e06-e5114f137528
+
+---
+
+[USER]
+from "Integrated Brain Sensory and Perceptual Processing Algorithm.txt" file in the library , Auto implement the 6 stage and their steps both functionally and biologically in python and consider the mathematical operations involved. You can use github through github plugin for the implementation. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin. Create the annotations for every function and classes to be stored in logger's the sqlite database
+
+---
+
+[ASSISTANT]
+<badge color="success">Implemented · CI passed</badge>
+
+Implemented the six stages from **Integrated Brain Sensory and Perceptual Processing Algorithm.txt** in your `ORE-Neurocomputational` repository.
+
+### 1. All six stages implemented
+
+The implementation preserves all **39 operations** in the original specification:
+
+| Stage | Implementation | Operations |
+|---|---|---:|
+| 1. Text-region detection | `TextRegionDetector` | 6 |
+| 2. Character segmentation | `CharacterSegmentationProcessor` | 6 |
+| 3. Auditory signal processing | `AuditorySignalProcessor` | 6 |
+| 4. Acoustic feature extraction | `AcousticFeatureExtractor` | 6 |
+| 5. Phonetic feature detection | `PhoneticFeatureDetector` | 7 |
+| 6. Phoneme identification | `PhonemeIdentifier` | 8 |
+| **Total** | | **39** |
+
+Every operation has a stable identifier, from `ISP-001` through `ISP-039`.
+
+### 2. Biological and mathematical implementation
+
+Implemented two complementary processing tracks:
+
+- **Functional track:** visual and auditory processing, mathematical feature extraction, probability distributions, Bayesian inference, recurrent interpretation and uncertainty estimation.
+- **Biological-reference track:** a recurrent 16-population LIF network, with modeled membrane potentials, currents, firing rates, spikes and connections.
+
+The biological model is a computational approximation, not a claim of reproducing actual human neuronal activity.
+
+### 3. SQLite annotations
+
+<badge color="success">Integrated with existing ORE logger</badge>
+
+Every class, function and method has descriptive docstrings covering its purpose and relevant biological interpretation.
+
+The new registration module uses the existing ORE logger:
+
+`ore_logger.annotations` → `ore_logs/ore_logger.sqlite3`
+
+It also records source locations, signatures and source hashes through the existing annotation catalogue. No separate logging database was introduced.
+
+### 4. Repository changes and validation
+
+Created 16 file additions or updates, including the new package, architecture documentation, tests and project configuration.
+
+<row align="center" gap={2}>
+  <icon name="github" size="lg"/>
+  **[Open Pull Request #17](https://github.com/wizekin/ORE-Neurocomputational/pull/17)**
+</row>
+
+<row align="center" gap={2}>
+  <badge color="success">Passed</badge>
+  [GitHub Actions — tests](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43783524693)
+</row>
+<row align="center" gap={2}>
+  <badge color="success">Passed</badge>
+  [GitHub Actions — Python tests](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43783524779)
+</row>
+
+The changes are on the feature branch `feature/sensory-perception-six-stage-39-ops`. **I have not merged them into `main`.**
+
+The detailed mathematical explanations and biological qualifications are in:
+
+`docs/SENSORY_PERCEPTUAL_6_STAGE_ARCHITECTURE.md`
+
+Would you like a daily check for new CI failures or review updates on PR #17?
+
+<SuggestAutomation label="Monitor PR #17" emoji="🔔"/>
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Phonological and orthographic processing:
+Phoneme identification
+Phoneme sequence representation
+Grapheme-to-phoneme conversion
+Phonological working memory
+Speech-sound prediction
+
+---
+
+[ASSISTANT]
+# Integrated Phonological and Orthographic Processing Algorithm
+
+The five processes can be organized into one large neurocomputational algorithm that transforms identified speech sounds and written symbols into structured phonological representations, maintains those representations temporarily, and predicts upcoming speech sounds.
+
+The algorithm has two interacting pathways:
+
+1. **Phonological pathway:** Identified phonemes → phoneme sequence → phonological working memory → speech-sound prediction.
+2. **Orthographic-to-phonological pathway:** Written letters and graphemes → grapheme-to-phoneme conversion → phonological representations.
+
+The pathways converge on shared phonological representations, which can support reading aloud, silent reading, speech perception, verbal rehearsal, and language comprehension.
+
+## 1. Overall architecture
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Input representations**
+
+    Auditory phonetic evidence and visual orthographic evidence
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box border radius="md" padding={2} align="center">
+        **Auditory pathway**
+
+        Phoneme identification
+
+        <icon name="arrow-down" color="secondary" size="lg"/>
+        Phoneme sequence representation
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} align="center">
+        **Visual pathway**
+
+        Grapheme identification
+
+        <icon name="arrow-down" color="secondary" size="lg"/>
+        Grapheme-to-phoneme conversion
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **Integrated phonological representation**
+
+    Phoneme identity + sequence + timing + stress + syllabic structure
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box border radius="md" padding={3} align="center">
+    **Phonological working memory**
+
+    Temporary activation, maintenance, ordering and rehearsal
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(245,158,11,0.09)" radius="md" padding={3} align="center">
+    **Speech-sound prediction**
+
+    Predict upcoming phonemes, compare predictions with incoming evidence and update representations
+  </box>
+  <text color="secondary" size="xs" textAlign="center">Recurrent feedback operates throughout the architecture, not only at the final stage.</text>
+</box>
+
+**Important biological distinction:** The human brain does not wait for each process to finish before starting the next. Phoneme identification, sequence construction, working-memory maintenance and prediction can overlap. The algorithm below describes their functional organization, while feedback connections allow later information to modify earlier interpretations.
+
+The equations are computational models of plausible neural operations. They do not mean that neurons literally execute software instructions or calculate each equation symbolically.
+
+---
+
+# Part I — Phonological processing
+
+## Stage 1 — Phoneme identification
+
+<badge color="info">Auditory-to-phonological transformation</badge>
+
+**Input:** A time-varying representation of speech sounds, containing acoustic and phonetic evidence.
+
+**Objective:** Determine which language-specific phoneme categories are most likely represented by the incoming speech signal.
+
+For example, the brain receives an acoustic pattern and must determine whether it corresponds to /b/, /p/, /m/, or another phoneme.
+
+The distinction is important:
+
+- Acoustic representation: frequencies, energy, formants and temporal transitions.
+- Phonetic representation: voicing, manner and place of articulation.
+- Phonological representation: an abstract, language-specific phoneme category.
+
+The superior temporal gyrus (STG) plays an important role in transforming acoustic-phonetic information into phonological representations. Its activity is distributed across populations rather than restricted to one neuron per phoneme. [Speech Computations of the Human STG](https://pmc.ncbi.nlm.nih.gov/articles/PMC9447996/). <Cite refs={["turn251371search2","turn251371search8"]}/>
+
+### Step 1.1 — Receive the phonetic feature representation
+
+The auditory system receives feature representations generated by earlier auditory processing.
+
+These can include:
+
+- Voicing probability.
+- Manner of articulation.
+- Place of articulation.
+- Vowel characteristics.
+- Formant transitions.
+- Voice onset time.
+- Temporal and coarticulatory information.
+
+Represent the incoming information at time \(t\) as:
+
+\[
+\mathbf r_t =
+[r_1(t),r_2(t),...,r_n(t)]
+\]
+
+Each component represents the activation of a modeled phonetic feature or neural population.
+
+For example:
+
+\[
+\mathbf r_t =
+[0.85,0.12,0.76,0.23,0.91]
+\]
+
+These values could represent strong voicing evidence, weak frication evidence, strong bilabial evidence, and other features.
+
+**Possible mathematical operations**
+
+1. Vector construction: concatenate available phonetic features.
+2. Normalization: ensure comparable feature scales.
+3. Temporal alignment: associate the vector with its corresponding acoustic time.
+4. Missing-evidence handling: preserve unavailable measurements rather than treating them as zero evidence.
+
+For feature normalization:
+
+\[
+r_i' =
+\frac{r_i-\mu_i}{\sigma_i+\epsilon}
+\]
+
+Here, \(\mu_i\) and \(\sigma_i\) represent the estimated mean and variability of feature \(i\).
+
+**Biological interpretation:** Auditory cortical populations receive continuously changing patterns of activity originating from earlier auditory processing. These patterns contain information about speech properties but do not necessarily represent fully identified phonemes.
+
+### Step 1.2 — Activate candidate phoneme populations
+
+The brain activates several possible phoneme categories simultaneously.
+
+For instance, an ambiguous acoustic pattern might activate:
+
+\[
+\Phi=\{/b/,/p/,/m/\}
+\]
+
+Each candidate has a different learned sensitivity to phonetic features.
+
+Let the activation score of candidate \(k\) be:
+
+\[
+z_k(t)=
+\mathbf w_k^T\mathbf r_t+b_k
+\]
+
+Where:
+
+- \(\mathbf w_k\): candidate-specific feature weights.
+- \(\mathbf r_t\): incoming phonetic evidence.
+- \(b_k\): activation bias.
+- \(z_k\): candidate activation.
+
+The model can turn these competing activations into normalized probabilities:
+
+\[
+P(\phi_k|\mathbf r_t)=
+\frac{\exp(z_k)}
+{\sum_j\exp(z_j)}
+\]
+
+This is a softmax population-decoding model.
+
+For example:
+
+| Candidate | Activation probability |
+|---|---:|
+| /b/ | 0.67 |
+| /p/ | 0.25 |
+| /m/ | 0.08 |
+
+The system does not need to immediately eliminate the less probable candidates.
+
+**Biological interpretation:** Different neuronal populations respond to different combinations of acoustic-phonetic characteristics. Their simultaneous activities provide evidence for competing phonological interpretations.
+
+### Step 1.3 — Compare phonetic evidence with learned phoneme representations
+
+Phoneme categories are learned through exposure to a language.
+
+The brain develops sensitivity to the acoustic variations that distinguish one phoneme from another.
+
+However, phonemes do not have one fixed acoustic realization.
+
+For example, /b/ can sound different depending on:
+
+- The speaker.
+- Speaking speed.
+- Surrounding vowels.
+- Adjacent consonants.
+- Word position.
+- Vocal effort.
+
+The system therefore needs to compare the incoming representation against a distribution of possible realizations.
+
+One mathematical approach is a Gaussian population model:
+
+\[
+P(\mathbf r_t|\phi_k)
+\propto
+\exp\left(
+-\frac{1}{2}
+(\mathbf r_t-\boldsymbol\mu_k)^T
+\Sigma_k^{-1}
+(\mathbf r_t-\boldsymbol\mu_k)
+\right)
+\]
+
+Where:
+
+- \(\boldsymbol\mu_k\): representative feature pattern of phoneme \(k\).
+- \(\Sigma_k\): variability of that pattern.
+- \(\Sigma_k^{-1}\): inverse covariance matrix.
+
+The system calculates how compatible the current feature pattern is with each category.
+
+It then combines this evidence with learned expectations:
+
+\[
+P(\phi_k|\mathbf r_t,C)
+\propto
+P(\mathbf r_t|\phi_k,C)
+P(\phi_k|C)
+\]
+
+Here, \(C\) represents phonetic and linguistic context.
+
+**Biological interpretation:** The brain uses experience-dependent phonological categories while remaining sensitive to acoustic variation. The categories are distributed and context-sensitive rather than rigid templates.
+
+### Step 1.4 — Integrate phonetic evidence across time
+
+A phoneme cannot always be identified from a single moment.
+
+The evidence may develop gradually.
+
+For example:
+
+1. An initial consonant release suggests /p/.
+2. The appearance of vocal-fold vibration suggests a competing interpretation.
+3. Formant transitions provide additional evidence.
+4. The following vowel helps clarify the interpretation.
+
+The system must accumulate information without discarding the earlier evidence.
+
+A mathematical model is:
+
+\[
+L_k(t)=
+\lambda L_k(t-\Delta t)
++
+\log P(\mathbf r_t|\phi_k)
+\]
+
+Where:
+
+- \(L_k(t)\): accumulated evidence.
+- \(\lambda\): memory or integration factor.
+- \(\Delta t\): time interval.
+- \(P(\mathbf r_t|\phi_k)\): current evidence.
+
+The parameter \(\lambda\) determines how strongly earlier evidence is retained.
+
+A candidate distribution can then be calculated:
+
+\[
+P(\phi_k,t)=
+\operatorname{softmax}(L_k(t))
+\]
+
+This permits several possible phonemes to remain active while the sound unfolds.
+
+**Biological interpretation:** Auditory processing is dynamic. Neural populations integrate acoustic information over time and interact with contextual information instead of treating every acoustic frame independently. <Cite refs={["turn251371search0","turn251371search2"]}/>
+
+### Step 1.5 — Apply categorical perception
+
+Speech acoustics often vary continuously, but many speech distinctions are perceived categorically.
+
+For example, consider a series of sounds gradually changing between two consonant categories.
+
+The auditory system may initially interpret the sounds as /b/, then increasingly as /p/ when the acoustic evidence crosses a learned category boundary.
+
+A simplified model is:
+
+\[
+P(\phi_1|x)=
+\frac{1}{1+\exp[-k(x-b)]}
+\]
+
+Where:
+
+- \(x\): continuous acoustic dimension.
+- \(b\): category boundary.
+- \(k\): boundary sharpness.
+
+The second category probability is:
+
+\[
+P(\phi_2|x)=1-P(\phi_1|x)
+\]
+
+Category boundaries depend on language experience, phonetic context and listening conditions.
+
+**Biological interpretation:** Learned auditory populations develop sensitivity to distinctions that matter in the listener's language.
+
+### Step 1.6 — Update the interpretation using recurrent feedback
+
+The selected interpretation can influence subsequent processing.
+
+For example, identifying an acoustic pattern as a likely consonant can influence how the brain interprets its neighboring sounds.
+
+Represent the recurrent update as:
+
+\[
+\mathbf h_t^{(n+1)}
+=
+f(
+W_a\mathbf a_t+
+W_c\mathbf c_t^{(n)}+
+W_r\mathbf h_t^{(n)}
+)
+\]
+
+Where:
+
+- \(\mathbf a_t\): current acoustic information.
+- \(\mathbf c_t\): phonetic and contextual predictions.
+- \(\mathbf h_t\): current phoneme representation.
+- \(W_a,W_c,W_r\): connection-weight matrices.
+- \(n\): processing iteration.
+
+The system repeats this update until the representation becomes sufficiently stable or the available evidence is exhausted.
+
+### Step 1.7 — Produce a phoneme estimate while retaining uncertainty
+
+After sufficient evidence has accumulated, the system produces a phoneme estimate.
+
+\[
+\hat{\phi}_t=
+\arg\max_k P(\phi_k|\mathbf r_t,C)
+\]
+
+However, it should also calculate uncertainty:
+
+\[
+H_t=-\sum_kP(\phi_k)\log P(\phi_k)
+\]
+
+Interpretation:
+
+- Low entropy: one candidate dominates.
+- High entropy: several candidates remain plausible.
+
+**Stage 1 output:**
+
+\[
+O_1=
+\{
+\text{phoneme candidates},
+\text{phoneme probabilities},
+\text{confidence},
+\text{uncertainty}
+\}
+\]
+
+---
+
+## Stage 2 — Phoneme sequence representation
+
+<badge color="info">Temporal and sequential coding</badge>
+
+**Input:** Identified phoneme candidates, their probability distributions and temporal acoustic information.
+
+**Objective:** Organize phonemes into an ordered, time-dependent representation that preserves their identity, relative positions, duration and relationships.
+
+Identifying phonemes is not sufficient.
+
+Consider:
+
+- CAT
+- ACT
+- TAC
+
+They contain the same letters and related phonemic elements, but their order differs.
+
+The brain must therefore represent both phoneme identity and sequence order.
+
+Research using MEG has found that neural activity can represent multiple recently heard speech sounds simultaneously, preserving information about phonetic content and relative order. <Cite refs={["turn251371search10","turn251371search0"]}/>
+
+### Step 2.1 — Receive phoneme activation patterns
+
+The system receives phoneme probability distributions from Stage 1.
+
+For example:
+
+\[
+P_t=
+[
+P(/k/),P(/æ/),P(/t/)
+]
+\]
+
+Each time interval can contain evidence for more than one phoneme.
+
+The system should preserve those probabilities instead of replacing each frame immediately with a single symbol.
+
+**Possible mathematical operations**
+
+- Probability-vector storage.
+- Temporal alignment.
+- Confidence weighting.
+- Feature normalization.
+
+### Step 2.2 — Detect phoneme onset and offset information
+
+The brain must estimate when individual phonetic events begin and how long they continue.
+
+Let:
+
+\[
+t_i^{start}
+\]
+
+represent the estimated beginning of phoneme \(i\), and:
+
+\[
+t_i^{end}
+\]
+
+represent its estimated ending.
+
+Its duration is:
+
+\[
+d_i=t_i^{end}-t_i^{start}
+\]
+
+In continuous speech, boundaries may be uncertain or overlapping.
+
+A more realistic representation includes a boundary probability:
+
+\[
+P(B_i|A_t)
+\]
+
+where \(B_i\) indicates a possible phonetic boundary and \(A_t\) represents acoustic evidence.
+
+**Possible mathematical operations**
+
+- Change-point detection.
+- Derivative estimation.
+- Local energy variation.
+- Temporal probability estimation.
+- Duration estimation.
+
+**Biological interpretation:** Auditory populations represent temporal landmarks and evolving acoustic patterns. Phonemes are not necessarily separated by perfectly discrete neural boundaries.
+
+### Step 2.3 — Encode phoneme identity independently of exact timing
+
+The same phoneme can be spoken at different speeds.
+
+For example, a vowel might last 80 milliseconds in one utterance and 200 milliseconds in another.
+
+The system must maintain its phonological identity while retaining the timing information.
+
+Represent phoneme \(i\) as:
+
+\[
+\mathbf q_i=
+[
+\mathbf p_i,
+d_i,
+s_i
+]
+\]
+
+Where:
+
+- \(\mathbf p_i\): phoneme identity representation.
+- \(d_i\): duration.
+- \(s_i\): stress or prominence information.
+
+A useful similarity measure between two phoneme representations is cosine similarity:
+
+\[
+\operatorname{sim}(\mathbf a,\mathbf b)=
+\frac{\mathbf a^T\mathbf b}
+{\|\mathbf a\|\|\mathbf b\|+\epsilon}
+\]
+
+This lets the system compare phonological identities without requiring identical durations.
+
+### Step 2.4 — Encode relative phoneme order
+
+The system must distinguish the first, second, third and subsequent phoneme positions.
+
+One possible mathematical model uses position-sensitive activity:
+
+\[
+r_{ki}=
+\exp\left(
+-\frac{(i-\mu_k)^2}{2\sigma_k^2}
+\right)
+\]
+
+Where:
+
+- \(i\): phoneme position.
+- \(\mu_k\): preferred sequence position of population \(k\).
+- \(\sigma_k\): positional tolerance.
+
+Another representation combines identity with position:
+
+\[
+\mathbf S=
+\sum_{i=1}^{N}g(i)\mathbf p_i
+\]
+
+Here, \(g(i)\) is a position code.
+
+The position code ensures that rearranging the phonemes changes the sequence representation.
+
+A practical model can use a population of position-sensitive responses rather than assigning an absolute location to every phoneme.
+
+### Step 2.5 — Construct temporal relationships between neighboring phonemes
+
+Phonemes are not independent.
+
+Their acoustic and phonological characteristics are influenced by neighboring phonemes.
+
+For phoneme \(i\), construct:
+
+\[
+\mathbf z_i=
+[
+\mathbf p_{i-1},
+\mathbf p_i,
+\mathbf p_{i+1}
+]
+\]
+
+This gives information about preceding, current and following phonemes.
+
+The system can calculate a transition score:
+
+\[
+T_{ij}=P(\phi_j|\phi_i)
+\]
+
+A sequence probability can be approximated using:
+
+\[
+P(\Phi)=
+P(\phi_1)
+\prod_{i=2}^{N}
+P(\phi_i|\phi_{i-1})
+\]
+
+This is a first-order Markov approximation.
+
+More sophisticated models can incorporate multiple preceding phonemes and syllabic context.
+
+**Biological interpretation:** Auditory cortical populations integrate adjacent speech sounds and preserve information about their order. <Cite refs={["turn251371search10","turn251371search2"]}/>
+
+### Step 2.6 — Organize phonemes into syllabic and prosodic structures
+
+The system can organize the sequence into larger phonological units.
+
+These include:
+
+- Onset: consonants preceding a vowel nucleus.
+- Nucleus: the central vowel or syllabic element.
+- Coda: consonants following the nucleus.
+- Stress.
+- Duration.
+- Pitch contour.
+- Syllable boundaries.
+
+For example:
+
+\[
+/k/\quad /\ae/\quad /t/
+\]
+
+can be organized as one syllable:
+
+\[
+\text{Onset}=/k/
+\]
+
+\[
+\text{Nucleus}=/\ae/
+\]
+
+\[
+\text{Coda}=/t/
+\]
+
+A simple structural score could be:
+
+\[
+S_{\text{syllable}}=
+w_oO+w_nN+w_cC+w_sS
+\]
+
+Where \(O,N,C,S\) represent onset, nucleus, coda and prosodic evidence.
+
+These weights are model parameters, not universal neural constants.
+
+### Step 2.7 — Construct the final phoneme sequence representation
+
+Combine all the information into one structured representation.
+
+\[
+\mathcal P=
+\{
+(\phi_i,\mathbf p_i,t_i,d_i,q_i,\rho_i)
+\}_{i=1}^{N}
+\]
+
+Where:
+
+- \(\phi_i\): phoneme identity or candidate.
+- \(\mathbf p_i\): distributed phonological representation.
+- \(t_i\): temporal position.
+- \(d_i\): duration.
+- \(q_i\): confidence.
+- \(\rho_i\): syllabic and prosodic relationships.
+
+**Stage 2 output:**
+
+\[
+O_2=
+\{
+\text{ordered phonemes},
+\text{temporal positions},
+\text{syllabic organization},
+\text{prosodic information},
+\text{uncertainty}
+\}
+\]
+
+---
+
+# Part II — Orthographic-to-phonological processing
+
+## Stage 3 — Grapheme-to-phoneme conversion
+
+<badge color="info">Visual-to-phonological transformation</badge>
+
+**Input:** An ordered sequence of identified graphemes from visual word-form processing.
+
+**Objective:** Convert written linguistic symbols into corresponding phonological representations.
+
+A grapheme is a written unit representing a linguistic sound or combination of sounds.
+
+Importantly, a grapheme can consist of multiple letters.
+
+For example, in English:
+
+- `c` can represent /k/ or /s/.
+- `sh` can represent /ʃ/.
+- `ch` can represent /tʃ/ or other pronunciations depending on the word.
+- `ough` can have several pronunciations.
+
+Thus, grapheme-to-phoneme conversion cannot always use a simple one-letter-to-one-sound lookup.
+
+Reading research distinguishes sublexical grapheme-to-phoneme conversion from direct lexical-semantic access to familiar written words. Both can contribute to reading aloud. <Cite refs={["turn251371search5","turn963608search7","turn963608search6"]}/>
+
+### Step 3.1 — Receive the orthographic sequence
+
+The visual pathway provides an ordered sequence of grapheme candidates.
+
+For example:
+
+\[
+G=[g_1,g_2,g_3]
+\]
+
+A written word such as `ship` might be represented as:
+
+\[
+G=[sh,i,p]
+\]
+
+rather than necessarily treating every letter as an independent sound-mapping unit.
+
+The system also receives:
+
+- Grapheme confidence.
+- Character order.
+- Word boundaries.
+- Possible morphological boundaries.
+- Visual ambiguity.
+
+**Possible mathematical operations**
+
+- Vector retrieval.
+- Position coding.
+- Grapheme probability normalization.
+- Character-sequence processing.
+
+### Step 3.2 — Identify grapheme groups
+
+The system searches for groups of letters that jointly represent a phonological unit.
+
+Possible group sizes include:
+
+\[
+G_i=(c_i,c_{i+1},...,c_{i+n})
+\]
+
+For example:
+
+- `s`
+- `sh`
+- `igh`
+- `tion`
+
+The brain must decide which letters belong together.
+
+This can be modeled through a grouping score:
+
+\[
+S(G_i)=
+w_1C_i+w_2F_i+w_3P_i
+\]
+
+Where:
+
+- \(C_i\): contextual compatibility.
+- \(F_i\): learned grapheme frequency.
+- \(P_i\): positional evidence.
+
+A candidate grapheme grouping receives a probability:
+
+\[
+P(G_i|O)
+\propto P(O|G_i)P(G_i)
+\]
+
+Where \(O\) represents the observed orthographic information.
+
+**Biological interpretation:** Visual and reading-language populations combine letter identity, position and familiar letter combinations to construct orthographic units.
+
+### Step 3.3 — Retrieve learned grapheme-to-phoneme correspondences
+
+The system activates learned associations between graphemes and phonemes.
+
+A correspondence can be represented as:
+
+\[
+R(g_i,\phi_j)
+\]
+
+This represents the learned compatibility between grapheme \(g_i\) and phoneme \(\phi_j\).
+
+For example:
+
+| Grapheme | Candidate phoneme | Example |
+|---|---|---|
+| sh | /ʃ/ | ship |
+| th | /θ/ | thin |
+| th | /ð/ | this |
+| c | /k/ | cat |
+| c | /s/ | city |
+
+These correspondences are language-specific and can depend on position and neighboring letters.
+
+A probability model is:
+
+\[
+P(\phi_j|g_i,C)
+\]
+
+Where \(C\) includes orthographic context.
+
+The brain can activate multiple mappings until more information is available.
+
+### Step 3.4 — Apply contextual grapheme-to-phoneme rules
+
+The same grapheme can have different pronunciations depending on the surrounding letters.
+
+For example, `c` is often associated with /k/ before `a`, `o` and `u`, but with /s/ before `e`, `i` and `y` in common English spelling patterns.
+
+The mapping therefore depends on context:
+
+\[
+P(\phi_i|g_i,g_{i-1},g_{i+1},C)
+\]
+
+The system can use a conditional rule score:
+
+\[
+z_j=
+w_gE_g+
+w_lE_{\text{left}}+
+w_rE_{\text{right}}+
+w_wE_{\text{word}}
+\]
+
+Where:
+
+- \(E_g\): grapheme identity evidence.
+- \(E_{\text{left}}\): preceding-letter evidence.
+- \(E_{\text{right}}\): following-letter evidence.
+- \(E_{\text{word}}\): word-level contextual evidence.
+
+These scores generate candidate phonemes through softmax or another normalized probability model.
+
+**Important:** This is not necessarily a serial rule-based procedure in the brain. Several potential pronunciations may be activated in parallel.
+
+### Step 3.5 — Activate whole-word phonological representations
+
+The system should also check whether the written form corresponds to a familiar word.
+
+For familiar words, the brain can access an established word-level pronunciation.
+
+For example, the spelling of `one` does not allow its pronunciation to be derived reliably by applying simple letter-to-sound correspondences.
+
+A whole-word pathway can provide phonological information directly.
+
+Represent lexical retrieval as:
+
+\[
+P(\Phi|W)
+\]
+
+Where:
+
+- \(W\): identified written word.
+- \(\Phi\): its candidate pronunciation.
+
+The whole-word representation can be combined with sublexical conversion:
+
+\[
+P(\Phi|G,W,C)
+\propto
+P(\Phi|G,C)^\alpha
+P(\Phi|W)^\beta
+\]
+
+Here, \(\alpha\) and \(\beta\) regulate the contribution of grapheme-level and lexical evidence.
+
+This is a conceptual integration equation, not a claim that the brain literally raises probabilities to powers.
+
+### Step 3.6 — Align grapheme groups with phoneme representations
+
+The system must associate written units with their corresponding sound units.
+
+The mapping is not necessarily one-to-one.
+
+Possible relationships include:
+
+- One grapheme to one phoneme.
+- Multiple graphemes to one phoneme.
+- One grapheme to multiple phonological components.
+- Silent graphemes.
+- Context-dependent correspondences.
+
+For example:
+
+\[
+\text{SH}\rightarrow /ʃ/
+\]
+
+A sequence-alignment model can represent these relationships as a weighted graph.
+
+Let:
+
+\[
+A_{ij}=P(\phi_j|G_i,C)
+\]
+
+represent the probability that grapheme group \(G_i\) contributes to phonological unit \(\phi_j\).
+
+The system searches for a sequence of mappings that best explains the complete written word.
+
+A possible objective is:
+
+\[
+\hat{\Phi}=
+\arg\max_{\Phi}
+\left[
+\sum_i\log P(\phi_i|G_i,C)
++
+\lambda\log P(\Phi)
+\right]
+\]
+
+The second term encourages compatible phoneme sequences.
+
+### Step 3.7 — Apply phonological and lexical feedback
+
+The generated pronunciation can be compared with known word forms and language-specific phonological constraints.
+
+For example, the system may generate an unusual consonant cluster through sublexical conversion.
+
+The phonological system can evaluate whether that sequence is compatible with learned language patterns.
+
+A compatibility score can be:
+
+\[
+C(\Phi)=
+\sum_i\log P(\phi_i|\phi_{i-1})
+\]
+
+The system can combine this with the orthographic mapping score.
+
+Feedback can then revise ambiguous grapheme interpretations.
+
+### Step 3.8 — Produce the phonological representation of the written input
+
+The conversion produces a phonological sequence with graded confidence.
+
+\[
+O_3=
+\{
+\text{phoneme sequence},
+\text{grapheme-phoneme alignment},
+\text{pronunciation alternatives},
+\text{confidence}
+\}
+\]
+
+**Biological interpretation:** The mapping involves a distributed reading-language network. The dorsal temporoparietal pathway, including regions around the posterior STG and supramarginal gyrus, is particularly relevant to phonological conversion, while ventral reading-language pathways can contribute word-level access. These are interacting systems, not isolated modules. <Cite refs={["turn963608search6","turn963608search7","turn963608search12"]}/>
+
+---
+
+# Part III — Phonological working memory
+
+## Stage 4 — Phonological working memory
+
+<badge color="info">Temporary representation and maintenance</badge>
+
+**Input:** Phonological sequences generated by speech perception, grapheme-to-phoneme conversion or other linguistic processes.
+
+**Objective:** Keep phonological information available temporarily so that the brain can manipulate, compare, rehearse and use it.
+
+For example, consider hearing:
+
+`4 – 7 – 2 – 9 – 5`
+
+You need to retain the sequence while processing later information.
+
+The brain must maintain both:
+
+- What the individual sounds are.
+- The order in which they occurred.
+
+Phonological working memory is often discussed in terms of a temporary phonological store and articulatory rehearsal mechanisms. Neuroscientific findings associate these functions with interacting temporal, parietal and frontal systems, including the supramarginal gyrus and inferior frontal regions. <Cite refs={["turn963608search3","turn963608search2","turn963608search1"]}/>
+
+### Step 4.1 — Receive and encode the phonological sequence
+
+The working-memory system receives the structured sequence from Stage 2 or Stage 3.
+
+For example:
+
+\[
+\Phi=[/k/,/\ae/,/t/]
+\]
+
+Each phoneme is converted into a temporary activation pattern.
+
+Represent the encoded sequence as:
+
+\[
+\mathbf M(0)=
+[
+\mathbf p_1,\mathbf p_2,\ldots,\mathbf p_N
+]
+\]
+
+Where each \(\mathbf p_i\) represents one phonological item.
+
+**Possible mathematical operations**
+
+- Vector copying or transformation.
+- Feature compression.
+- Phoneme identity binding.
+- Ordinal-position encoding.
+- Confidence-weighted activation.
+
+A simplified item representation is:
+
+\[
+\mathbf m_i=
+W_p\mathbf p_i+
+W_o\mathbf o_i
+\]
+
+Where:
+
+- \(\mathbf p_i\): phoneme representation.
+- \(\mathbf o_i\): position representation.
+- \(W_p,W_o\): transformation matrices.
+
+This combines sound identity and sequence order.
+
+### Step 4.2 — Activate temporary phonological storage
+
+The system must keep recently received phonological information active.
+
+One computational model uses a decaying activation state:
+
+\[
+a_i(t)=
+a_i(0)e^{-t/\tau_i}
+\]
+
+Where:
+
+- \(a_i(0)\): initial activation.
+- \(t\): elapsed time.
+- \(\tau_i\): effective persistence timescale.
+
+This represents a gradual reduction in activation.
+
+However, the brain does not rely on passive decay alone. Recurrent neural activity, attention and rehearsal can maintain information.
+
+**Biological interpretation:** Temporary phonological representations involve recurrent interactions across auditory and temporoparietal regions. The left supramarginal gyrus is frequently implicated in phonological short-term storage. <Cite refs={["turn963608search3","turn963608search13"]}/>
+
+### Step 4.3 — Maintain the order of phonological elements
+
+The brain must prevent the sequence from becoming an unordered collection.
+
+For example:
+
+\[
+[/k/,/\ae/,/t/]
+\]
+
+must remain distinguishable from:
+
+\[
+[/t/,/\ae/,/k/]
+\]
+
+The working-memory system can preserve order through positional binding.
+
+A mathematical representation is:
+
+\[
+\mathbf M(t)=
+\sum_{i=1}^{N}
+a_i(t)
+\mathbf p_i\otimes\mathbf q_i
+\]
+
+Where:
+
+- \(\mathbf p_i\): phoneme identity vector.
+- \(\mathbf q_i\): positional code.
+- \(\otimes\): outer product.
+- \(a_i(t)\): current activation.
+
+This creates a representation linking each phoneme to its position.
+
+A more flexible neural population model can maintain position through changing activity over time instead of fixed positional labels.
+
+### Step 4.4 — Prevent interference between similar phonological representations
+
+Two phonemes can have similar characteristics.
+
+For example, /b/ and /p/ differ in important phonetic features but share several others.
+
+When a sequence contains many similar sounds, distinguishing their identities and positions becomes difficult.
+
+The system must therefore preserve differences between activated representations.
+
+A similarity measure is:
+
+\[
+S_{ij}=
+\frac{\mathbf p_i^T\mathbf p_j}
+{\|\mathbf p_i\|\|\mathbf p_j\|+\epsilon}
+\]
+
+An interference model can be:
+
+\[
+I_i=
+\sum_{j\ne i}
+S_{ij}a_j
+\]
+
+Where:
+
+- \(I_i\): interference affecting item \(i\).
+- \(S_{ij}\): similarity between items.
+- \(a_j\): activity of competing items.
+
+The net activation could be:
+
+\[
+a_i'(t)=a_i(t)-\gamma I_i
+\]
+
+Here, \(\gamma\) controls interference strength.
+
+**Biological interpretation:** Competition and similarity-dependent interference can affect the ability to maintain ordered phonological information.
+
+### Step 4.5 — Refresh phonological representations through rehearsal
+
+The brain can reactivate phonological items to keep them available.
+
+This is commonly described as subvocal or articulatory rehearsal.
+
+For example, when remembering a new telephone number, you may internally repeat its digits.
+
+A simple mathematical refresh rule is:
+
+\[
+a_i(t+\Delta t)=
+\min(1,a_i(t)+\eta r_i)
+\]
+
+Where:
+
+- \(\eta\): rehearsal gain.
+- \(r_i\): rehearsal activation.
+
+A more dynamic implementation uses a recurrent state:
+
+\[
+\mathbf h_t=
+f(
+W_x\mathbf x_t+
+W_h\mathbf h_{t-1}+
+W_r\mathbf r_t
+)
+\]
+
+Here:
+
+- \(\mathbf x_t\): incoming phonological information.
+- \(\mathbf h_{t-1}\): previous memory state.
+- \(\mathbf r_t\): rehearsal-related activity.
+
+The rehearsal process can refresh a sequence repeatedly.
+
+**Biological interpretation:** The frontal speech-motor and articulatory planning networks interact with auditory and parietal phonological representations. This does not require actual audible speech. <Cite refs={["turn963608search3","turn963608search2"]}/>
+
+### Step 4.6 — Allocate attention to relevant phonological items
+
+Not every stored item must receive equal attention.
+
+The system may prioritize:
+
+- The most recent phoneme.
+- A phoneme needed for an upcoming word.
+- An uncertain phoneme.
+- A sequence that needs to be repeated.
+- A phoneme relevant to the current task.
+
+Represent attentional selection using:
+
+\[
+w_i=
+\frac{e^{z_i}}
+{\sum_j e^{z_j}}
+\]
+
+The attended memory representation becomes:
+
+\[
+\mathbf M_{\text{attended}}=
+\sum_iw_i a_i\mathbf p_i
+\]
+
+This is a mathematical abstraction of attentional competition.
+
+### Step 4.7 — Retrieve and manipulate stored phonological sequences
+
+The system should be able to access a temporary sequence and perform operations on it.
+
+Examples include:
+
+- Repeating the sequence.
+- Reversing its order.
+- Comparing it with a new sequence.
+- Detecting a missing sound.
+- Combining it with newly received phonemes.
+- Preparing it for speech production.
+
+A simple retrieval operation is:
+
+\[
+\hat{\mathbf p}_i=
+\arg\max_{\mathbf p_j}
+\operatorname{sim}(
+\mathbf q_i,\mathbf p_j
+)
+\]
+
+The system selects the most compatible active representation for each required position.
+
+### Step 4.8 — Monitor memory stability and determine when refreshing or replacement is needed
+
+Working memory is limited.
+
+The system can estimate the strength of stored representations through activity, uncertainty and interference.
+
+A conceptual stability score is:
+
+\[
+Stability=
+w_1A+w_2O-w_3I-w_4H
+\]
+
+Where:
+
+- \(A\): average activation.
+- \(O\): order consistency.
+- \(I\): interference.
+- \(H\): uncertainty.
+
+When stability becomes low, the system can increase rehearsal or request additional information.
+
+When new information arrives, it can update the memory state.
+
+**Stage 4 output:**
+
+\[
+O_4=
+\{
+\text{temporarily stored phonemes},
+\text{sequence order},
+\text{activation strengths},
+\text{rehearsal state},
+\text{attention state},
+\text{memory uncertainty}
+\}
+\]
+
+---
+
+# Part IV — Predictive phonological processing
+
+## Stage 5 — Speech-sound prediction
+
+<badge color="info">Top-down predictive processing</badge>
+
+**Input:** The active phonological sequence, stored phonological knowledge, linguistic context, and recently heard or generated speech sounds.
+
+**Objective:** Predict which speech sounds are likely to occur next, when they are likely to occur, and how incoming acoustic information should be interpreted.
+
+This process is important because speech unfolds over time.
+
+The brain cannot wait until every phoneme of a word has arrived before beginning to interpret it.
+
+Instead, it can use:
+
+- Previously identified phonemes.
+- Phonological sequence patterns.
+- Syllable structure.
+- Word-level expectations.
+- Sentence context.
+- Language experience.
+- Speech rhythm and timing.
+
+Research has identified distinct predictive mechanisms in human auditory cortex: some are associated with predicting the timing of acoustic events, while others are associated with speech-content predictions. <Cite refs={["turn251371search1","turn251371search47"]}/>
+
+### Step 5.1 — Receive the current phonological context
+
+The predictive system receives the currently active phonological sequence.
+
+For example, suppose the system has received:
+
+`/k/ /æ/`
+
+It must determine which sounds are likely to follow.
+
+The current state can be represented as:
+
+\[
+C_t=
+[\phi_{t-n},...,\phi_{t-2},\phi_{t-1},\phi_t]
+\]
+
+Where \(C_t\) represents the recent phonological context.
+
+It can also include:
+
+\[
+C_t=
+\{
+\text{phoneme history},
+\text{syllable},
+\text{word candidates},
+\text{sentence context},
+\text{timing}
+\}
+\]
+
+**Possible mathematical operations**
+
+- Context-vector construction.
+- Temporal integration.
+- Recurrent state retrieval.
+- Feature normalization.
+- Sequence-history updating.
+
+### Step 5.2 — Retrieve learned phonological sequence patterns
+
+The brain has learned that some phoneme combinations are more common than others.
+
+For example, certain consonant combinations are common in a language, while others are highly unusual.
+
+The system retrieves learned phonotactic patterns.
+
+A simple representation is:
+
+\[
+P(\phi_{t+1}|\phi_t)
+\]
+
+For more contextual information:
+
+\[
+P(\phi_{t+1}|
+\phi_{t-n},...,\phi_t)
+\]
+
+This represents the probability of the next phoneme given preceding phonemes.
+
+A statistical sequence model can calculate:
+
+\[
+P(\Phi)=
+\prod_{i=1}^{N}
+P(\phi_i|\phi_1,...,\phi_{i-1})
+\]
+
+A real neural implementation would rely on distributed learned representations rather than necessarily maintaining an explicit probability table.
+
+**Biological interpretation:** Temporal cortical networks encode learned speech patterns and sequential relationships, allowing the brain to anticipate likely continuations.
+
+### Step 5.3 — Generate candidate upcoming phonemes
+
+The system activates several possible upcoming phonemes.
+
+Suppose the current context is `/k/ /æ/`.
+
+Potential next phonemes might include:
+
+\[
+\Phi_{\text{next}}=
+\{/t/,/n/,/p/,/s/,...\}
+\]
+
+Each candidate receives a prediction score:
+
+\[
+z_k=
+W_k^T C_t+b_k
+\]
+
+Convert these scores into probabilities:
+
+\[
+P_{\text{pred}}(\phi_k)=
+\frac{e^{z_k}}
+{\sum_j e^{z_j}}
+\]
+
+An example:
+
+| Predicted phoneme | Probability |
+|---|---:|
+| /t/ | 0.55 |
+| /n/ | 0.20 |
+| /p/ | 0.15 |
+| /s/ | 0.10 |
+
+The system retains several alternatives.
+
+It should not automatically interpret the most likely prediction as an already observed phoneme.
+
+### Step 5.4 — Predict upcoming phonological structures
+
+Prediction does not have to operate only at the level of individual phonemes.
+
+It can also occur at different linguistic scales:
+
+**Phoneme-level prediction**
+
+\[
+P(\phi_{t+1}|C_t)
+\]
+
+**Syllable-level prediction**
+
+\[
+P(S_{t+1}|C_t)
+\]
+
+**Word-level phonological prediction**
+
+\[
+P(W_{t+1}|C_t)
+\]
+
+These levels interact.
+
+For example, predicting a likely word can activate its expected phoneme sequence.
+
+Conversely, incoming phonetic information can modify the predicted word.
+
+A combined prediction model could be:
+
+\[
+P(\phi_{\text{next}}|C_t)=
+\sum_W
+P(\phi_{\text{next}}|W,C_t)
+P(W|C_t)
+\]
+
+This marginalizes across candidate words.
+
+### Step 5.5 — Predict the timing of upcoming speech sounds
+
+The brain does not only predict which sound might occur. It also uses temporal expectations.
+
+Consider listening to someone speaking rhythmically.
+
+The timing of previous syllables can help anticipate when the next sound will begin.
+
+Let the expected onset time be:
+
+\[
+\hat t_{i+1}=t_i+\Delta t_i
+\]
+
+Where:
+
+- \(t_i\): preceding sound onset.
+- \(\Delta t_i\): estimated interval to the next sound.
+
+The expected timing can be refined using a running estimate:
+
+\[
+\hat{\Delta t}_{new}
+=
+(1-\alpha)\hat{\Delta t}_{old}
++
+\alpha\Delta t_{observed}
+\]
+
+Here, \(\alpha\) controls how quickly the timing estimate adapts.
+
+The brain can also use rhythmic phase information.
+
+A conceptual oscillatory model is:
+
+\[
+\theta(t)=2\pi ft+\theta_0
+\]
+
+Where:
+
+- \(f\): estimated rhythm frequency.
+- \(\theta_0\): initial phase.
+- \(\theta(t)\): predicted phase at time \(t\).
+
+Particular phases may correspond to greater readiness for expected acoustic events.
+
+This is a simplified model of temporal prediction, not a universal equation for auditory cortical oscillations.
+
+**Biological interpretation:** Research using intracranial recordings has identified timing-related predictive activity in Heschl's gyrus and speech-content-related predictive activity in language-dominant auditory regions. <Cite refs={["turn251371search1"]}/>
+
+### Step 5.6 — Generate top-down phonological predictions
+
+The system sends predictions toward earlier auditory and phonological processing populations.
+
+Let:
+
+\[
+\hat{\mathbf r}_t=
+W_p\mathbf h_t
+\]
+
+Where:
+
+- \(\mathbf h_t\): higher-level phonological context.
+- \(W_p\): predictive connection weights.
+- \(\hat{\mathbf r}_t\): predicted lower-level phonetic representation.
+
+For example, if the brain expects a particular consonant, its prediction can activate neural populations sensitive to the corresponding acoustic properties.
+
+This prediction can influence the processing of incoming information.
+
+A recurrent network can be described as:
+
+\[
+\mathbf h_t^{(n+1)}
+=
+f(
+W_b\mathbf r_t+
+W_p\hat{\mathbf r}_t^{(n)}
++
+W_r\mathbf h_{t-1}^{(n+1)}
+)
+\]
+
+Where:
+
+- \(W_b\): bottom-up sensory connections.
+- \(W_p\): top-down prediction connections.
+- \(W_r\): recurrent connections.
+
+**Biological interpretation:** Speech perception involves interaction between auditory and higher-level language representations rather than an exclusively bottom-up process.
+
+### Step 5.7 — Compare predicted sounds with actual incoming sounds
+
+As new acoustic evidence arrives, the system compares it against its predictions.
+
+For example:
+
+- Expected phoneme: /t/.
+- Actual evidence: /t/.
+- Result: prediction supported.
+
+Alternatively:
+
+- Expected phoneme: /t/.
+- Actual evidence: /n/.
+- Result: prediction error.
+
+A simplified prediction error is:
+
+\[
+\mathbf e_t=
+\mathbf r_t-\hat{\mathbf r}_t
+\]
+
+Where:
+
+- \(\mathbf r_t\): actual sensory representation.
+- \(\hat{\mathbf r}_t\): predicted sensory representation.
+- \(\mathbf e_t\): prediction error.
+
+The brain may use the magnitude of the mismatch to determine how much the current prediction should be revised.
+
+For example:
+
+\[
+E_t=\|\mathbf e_t\|^2
+\]
+
+A large value means the current sensory evidence differs substantially from the prediction.
+
+### Step 5.8 — Weight prediction errors according to uncertainty
+
+Not all predictions should be trusted equally.
+
+A prediction generated from a highly reliable context should potentially have more influence than one generated from weak or uncertain context.
+
+Similarly, a clear acoustic signal should carry more weight than a heavily degraded signal.
+
+A precision-weighted integration model is:
+
+\[
+\mathbf h_{new}=
+\frac{
+\Pi_s\mathbf r_t+
+\Pi_p\hat{\mathbf r}_t
+}{
+\Pi_s+\Pi_p
+}
+\]
+
+Where:
+
+- \(\Pi_s\): precision of sensory information.
+- \(\Pi_p\): precision of prediction.
+- \(\Pi=1/(\sigma^2+\epsilon)\).
+
+This is a simplified predictive-inference model.
+
+It illustrates how sensory evidence and predictions can contribute differently according to their estimated reliability.
+
+### Step 5.9 — Update phonological and sequence representations
+
+After comparing predictions with actual evidence, the system updates:
+
+1. Phoneme identity.
+2. Phoneme sequence.
+3. Syllable structure.
+4. Working-memory contents.
+5. Future phoneme predictions.
+
+The update can be expressed as:
+
+\[
+\mathbf h_{new}=
+\mathbf h_{old}+\eta W_e\mathbf e_t
+\]
+
+Where:
+
+- \(\mathbf h_{old}\): previous state.
+- \(\mathbf e_t\): prediction error.
+- \(W_e\): error-to-state transformation.
+- \(\eta\): update rate.
+
+The revised state is sent back through the phonological network.
+
+This creates a recurrent process:
+
+\[
+\text{Predict}
+\rightarrow
+\text{Receive}
+\rightarrow
+\text{Compare}
+\rightarrow
+\text{Update}
+\rightarrow
+\text{Predict again}
+\]
+
+### Step 5.10 — Calculate phonological surprisal
+
+The brain can also represent how unexpected an incoming phoneme is.
+
+A useful mathematical measure is surprisal:
+
+\[
+S(\phi_i)=
+-\log P(\phi_i|\phi_1,...,\phi_{i-1})
+\]
+
+Examples:
+
+- Highly predictable phoneme: low surprisal.
+- Unusual phoneme: high surprisal.
+
+Surprisal can be useful for modeling the processing demands associated with unexpected speech events.
+
+It is important to distinguish this mathematical quantity from a direct measurement of neural activity.
+
+### Step 5.11 — Maintain and revise predictions until sufficient evidence is available
+
+The system should not necessarily make an irreversible prediction.
+
+It can maintain competing future possibilities until sufficient sensory evidence arrives.
+
+A convergence condition might be:
+
+\[
+\|\mathbf h^{(n+1)}-\mathbf h^{(n)}\|<\epsilon
+\]
+
+Alternatively, the system can stop revising a particular representation when:
+
+\[
+\max_k P(\phi_k|E,C)>\theta
+\]
+
+Where:
+
+- \(E\): incoming evidence.
+- \(C\): context.
+- \(\theta\): confidence threshold.
+
+If neither condition is satisfied, the representation remains uncertain and can be revised later.
+
+**Stage 5 output:**
+
+\[
+O_5=
+\{
+\text{predicted phonemes},
+\text{predicted syllables},
+\text{predicted timing},
+\text{prediction probabilities},
+\text{prediction errors},
+\text{updated phonological state}
+\}
+\]
+
+---
+
+# Part V — Integrating all five stages into one algorithm
+
+The five processes can now be combined into a single architecture.
+
+## 1. Integrated information flow
+
+<CodeBlock language="mermaid" editable>
+flowchart TD
+    A["Auditory phonetic evidence"] --> B["1. Phoneme identification"]
+    B --> C["2. Phoneme sequence representation"]
+
+    D["Visual grapheme representations"] --> E["3. Grapheme-to-phoneme conversion"]
+    E --> F["Phonological sequence"]
+
+    C --> G["4. Phonological working memory"]
+    F --> G
+
+    G --> H["5. Speech-sound prediction"]
+    H --> I["Predicted phoneme representations"]
+    I --> J["Compare with incoming auditory evidence"]
+
+    J --> B
+    J --> C
+    J --> G
+    J --> H
+
+    G --> K["Updated phonological representation"]
+    K --> L["Subsequent lexical and language processing"]
+</CodeBlock>
+
+The architecture maintains two important properties:
+
+**Bottom-up processing:** Acoustic and visual evidence produces phonological representations.
+
+**Top-down processing:** Existing phonological knowledge, working memory and predictions influence how new evidence is interpreted.
+
+## 2. Combined mathematical operations
+
+The following table summarizes the principal mathematical operations used throughout the five stages.
+
+| Mathematical operation | Computational purpose |
+|---|---|
+| Vector encoding | Represent phonemes and features |
+| Matrix multiplication | Transform neural population activity |
+| Bayesian inference | Combine sensory evidence and expectations |
+| Gaussian similarity | Compare phoneme representations |
+| Softmax | Model competition between phoneme candidates |
+| Autocorrelation | Estimate temporal relationships |
+| Temporal integration | Accumulate phonetic evidence |
+| Positional encoding | Preserve phoneme order |
+| Sequence probability | Estimate phoneme transitions |
+| Graph alignment | Associate graphemes with phonemes |
+| Conditional probability | Model context-dependent pronunciation |
+| Exponential decay | Model temporary activation reduction |
+| Recurrent activation | Maintain phonological representations |
+| Similarity-based interference | Model competing memory items |
+| Attentional normalization | Prioritize relevant phonological information |
+| Logistic functions | Model categorical boundaries |
+| Prediction error | Measure mismatch between expected and actual input |
+| Precision weighting | Balance prediction and sensory evidence |
+| Entropy | Represent uncertainty |
+| Surprisal | Quantify unexpected phonological events |
+
+These operations are useful computational approximations. Some describe well-established signal-processing or probabilistic models, while others represent hypotheses about possible population-level neural computations.
+
+## 3. Biological network responsible for the architecture
+
+The following is a functional approximation of the distributed neural systems involved, rather than a strict anatomical division.
+
+| Brain region or pathway | Relevant contribution |
+|---|---|
+| Primary auditory cortex / Heschl's gyrus | Initial cortical processing of auditory information and timing predictions |
+| Superior temporal gyrus (STG) | Acoustic-phonetic and phonological representation |
+| Superior temporal sulcus (STS) | Higher-order speech and contextual processing |
+| Supramarginal gyrus (SMG) | Phonological maintenance, sequencing and temporary storage |
+| Angular gyrus | Language-related integration and orthographic/phonological processing |
+| Inferior frontal gyrus (IFG) | Phonological selection, sequencing, rehearsal and linguistic control |
+| Ventral premotor cortex | Articulatory-related phonological rehearsal and speech planning |
+| Ventral occipitotemporal cortex / VWFA | Orthographic representations that provide input to phonological processing |
+| Arcuate fasciculus / superior longitudinal fasciculus | Connectivity between temporal, parietal and frontal language regions |
+
+The working-memory system and reading network are not anatomically independent. Their activity depends on the task and on interactions among multiple regions. <Cite refs={["turn963608search2","turn963608search3","turn963608search5","turn963608search7"]}/>
+
+## 4. High-level integrated pseudocode
+
+The following pseudocode describes the complete algorithm without claiming that the brain executes these exact software instructions.
+
+## 5. Important implementation boundaries
+
+There are several principles worth preserving when translating this architecture into Python.
+
+**First: phoneme identity and phoneme order must be separate representations.**
+
+A system that recognizes /k/, /æ/ and /t/ but does not preserve their relative positions cannot distinguish different phonological sequences.
+
+**Second: grapheme-to-phoneme conversion must be language-dependent.**
+
+English spelling-to-sound relationships are different from those in Arabic and other writing systems. The mapping rules, positional constraints, diacritics and pronunciation alternatives must be supplied for the target language.
+
+**Third: phonological working memory must be dynamic.**
+
+It should not simply store a list of symbols. It needs temporary activation, temporal relationships, rehearsal, attentional selection and interference.
+
+**Fourth: prediction must not be confused with sensory identification.**
+
+An expected phoneme is not necessarily an observed phoneme. The architecture must preserve this distinction and use incoming evidence to revise predictions.
+
+**Fifth: lexical and sublexical reading routes should interact.**
+
+Familiar written words can activate known pronunciations, while unfamiliar words and nonwords rely more heavily on grapheme-to-phoneme conversion. These processes need not be strictly sequential. <Cite refs={["turn963608search6","turn963608search7","turn251371search5"]}/>
+
+---
+
+## 6. Research references
+
+The following research provides useful foundations for building and validating this architecture.
+
+1. **[Speech Computations of the Human Superior Temporal Gyrus](https://pmc.ncbi.nlm.nih.gov/articles/PMC9447996/)** — Speech-sound representations, phonological categorization, temporal processing and population coding.
+2. **[Neural Dynamics of Phoneme Sequences Reveal Position-Invariant Code for Content and Order](https://pmc.ncbi.nlm.nih.gov/articles/PMC9633780/)** — Neural representation of multiple recent speech sounds and their sequential ordering.
+3. **[Mapping the Brain Network of the Phonological Loop](https://pmc.ncbi.nlm.nih.gov/articles/PMC6866778/)** — Neural systems supporting phonological short-term storage and rehearsal.
+4. **[A Spatiotemporal Map of Reading Aloud](https://pmc.ncbi.nlm.nih.gov/articles/PMC9270918/)** — Neural organization of lexical and sublexical pathways during reading aloud.
+5. **[Language Prediction Mechanisms in Human Auditory Cortex](https://pubmed.ncbi.nlm.nih.gov/33067457/)** — Neural mechanisms involved in predicting speech timing and acoustic content.
+6. **[Computational Architecture of Speech Comprehension in the Human Brain](https://doi.org/10.1146/annurev-linguistics-031120-111245)** — A 2025 review of linguistic representations, operations, information flow and their neural substrates.
+
+---
+
+## 7. Final algorithm summary
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Five-stage processing sequence</title>
+  <list connector="solid" marker="number" gap={3}>
+    <list-item>
+      **Phoneme identification**
+
+      <text color="secondary" size="sm">Transform phonetic evidence into candidate phoneme identities and probabilities.</text>
+    </list-item>
+    <list-item>
+      **Phoneme sequence representation**
+
+      <text color="secondary" size="sm">Organize phonemes into temporally ordered, position-sensitive and syllabically structured representations.</text>
+    </list-item>
+    <list-item>
+      **Grapheme-to-phoneme conversion**
+
+      <text color="secondary" size="sm">Transform visual grapheme sequences into candidate phonological sequences using learned language-specific mappings.</text>
+    </list-item>
+    <list-item>
+      **Phonological working memory**
+
+      <text color="secondary" size="sm">Maintain, order, rehearse and manipulate temporary phonological representations.</text>
+    </list-item>
+    <list-item>
+      **Speech-sound prediction**
+
+      <text color="secondary" size="sm">Predict upcoming sounds and timing, compare them with sensory evidence, and update the entire phonological state.</text>
+    </list-item>
+  </list>
+  <divider color="subtle"/>
+  **Final result**
+
+  <text weight="medium" color="success">An integrated, continuously updated phonological representation connecting written language, speech perception, temporary memory and prediction.</text>
+</box>
+
+**A particularly important architectural insight:** These five processes provide a bridge between the brain's sensory processing systems and its higher-level language systems. They transform individual speech sounds and written symbols into ordered linguistic representations that can be maintained and predicted.
+
+For a future ORE implementation, I would keep these five processes as separate but interconnected computational modules, with a shared phonological representation, recurrent connections, explicit mathematical operations and a separate biological simulation track. This would also allow the system to reuse the phoneme-identification outputs of your existing sensory-perception architecture rather than implementing that computation twice.
+
+---
+
+[ASSISTANT]
+# Part V — Integrating all five stages into one algorithm
+
+The five processes can now be combined into a single architecture.
+
+## 1. Integrated information flow
+
+<CodeBlock language="mermaid" editable>
+flowchart TD
+    A["Auditory phonetic evidence"] --> B["1. Phoneme identification"]
+    B --> C["2. Phoneme sequence representation"]
+
+    D["Visual grapheme representations"] --> E["3. Grapheme-to-phoneme conversion"]
+    E --> F["Phonological sequence"]
+
+    C --> G["4. Phonological working memory"]
+    F --> G
+
+    G --> H["5. Speech-sound prediction"]
+    H --> I["Predicted phoneme representations"]
+    I --> J["Compare with incoming auditory evidence"]
+
+    J --> B
+    J --> C
+    J --> G
+    J --> H
+
+    G --> K["Updated phonological representation"]
+    K --> L["Subsequent lexical and language processing"]
+</CodeBlock>
+
+The architecture maintains two important properties:
+
+**Bottom-up processing:** Acoustic and visual evidence produces phonological representations.
+
+**Top-down processing:** Existing phonological knowledge, working memory and predictions influence how new evidence is interpreted.
+
+## 2. Combined mathematical operations
+
+The following table summarizes the principal mathematical operations used throughout the five stages.
+
+| Mathematical operation | Computational purpose |
+|---|---|
+| Vector encoding | Represent phonemes and features |
+| Matrix multiplication | Transform neural population activity |
+| Bayesian inference | Combine sensory evidence and expectations |
+| Gaussian similarity | Compare phoneme representations |
+| Softmax | Model competition between phoneme candidates |
+| Autocorrelation | Estimate temporal relationships |
+| Temporal integration | Accumulate phonetic evidence |
+| Positional encoding | Preserve phoneme order |
+| Sequence probability | Estimate phoneme transitions |
+| Graph alignment | Associate graphemes with phonemes |
+| Conditional probability | Model context-dependent pronunciation |
+| Exponential decay | Model temporary activation reduction |
+| Recurrent activation | Maintain phonological representations |
+| Similarity-based interference | Model competing memory items |
+| Attentional normalization | Prioritize relevant phonological information |
+| Logistic functions | Model categorical boundaries |
+| Prediction error | Measure mismatch between expected and actual input |
+| Precision weighting | Balance prediction and sensory evidence |
+| Entropy | Represent uncertainty |
+| Surprisal | Quantify unexpected phonological events |
+
+These operations are useful computational approximations. Some describe well-established signal-processing or probabilistic models, while others represent hypotheses about possible population-level neural computations.
+
+## 3. Biological network responsible for the architecture
+
+The following is a functional approximation of the distributed neural systems involved, rather than a strict anatomical division.
+
+| Brain region or pathway | Relevant contribution |
+|---|---|
+| Primary auditory cortex / Heschl's gyrus | Initial cortical processing of auditory information and timing predictions |
+| Superior temporal gyrus (STG) | Acoustic-phonetic and phonological representation |
+| Superior temporal sulcus (STS) | Higher-order speech and contextual processing |
+| Supramarginal gyrus (SMG) | Phonological maintenance, sequencing and temporary storage |
+| Angular gyrus | Language-related integration and orthographic/phonological processing |
+| Inferior frontal gyrus (IFG) | Phonological selection, sequencing, rehearsal and linguistic control |
+| Ventral premotor cortex | Articulatory-related phonological rehearsal and speech planning |
+| Ventral occipitotemporal cortex / VWFA | Orthographic representations that provide input to phonological processing |
+| Arcuate fasciculus / superior longitudinal fasciculus | Connectivity between temporal, parietal and frontal language regions |
+
+The working-memory system and reading network are not anatomically independent. Their activity depends on the task and on interactions among multiple regions. <Cite refs={["turn963608search2","turn963608search3","turn963608search5","turn963608search7"]}/>
+
+## 4. High-level integrated pseudocode
+
+The following pseudocode describes the complete algorithm without claiming that the brain executes these exact software instructions.
+
+## 5. Important implementation boundaries
+
+There are several principles worth preserving when translating this architecture into Python.
+
+**First: phoneme identity and phoneme order must be separate representations.**
+
+A system that recognizes /k/, /æ/ and /t/ but does not preserve their relative positions cannot distinguish different phonological sequences.
+
+**Second: grapheme-to-phoneme conversion must be language-dependent.**
+
+English spelling-to-sound relationships are different from those in Arabic and other writing systems. The mapping rules, positional constraints, diacritics and pronunciation alternatives must be supplied for the target language.
+
+**Third: phonological working memory must be dynamic.**
+
+It should not simply store a list of symbols. It needs temporary activation, temporal relationships, rehearsal, attentional selection and interference.
+
+**Fourth: prediction must not be confused with sensory identification.**
+
+An expected phoneme is not necessarily an observed phoneme. The architecture must preserve this distinction and use incoming evidence to revise predictions.
+
+**Fifth: lexical and sublexical reading routes should interact.**
+
+Familiar written words can activate known pronunciations, while unfamiliar words and nonwords rely more heavily on grapheme-to-phoneme conversion. These processes need not be strictly sequential. <Cite refs={["turn963608search6","turn963608search7","turn251371search5"]}/>
+
+---
+
+## 6. Research references
+
+The following research provides useful foundations for building and validating this architecture.
+
+1. **[Speech Computations of the Human Superior Temporal Gyrus](https://pmc.ncbi.nlm.nih.gov/articles/PMC9447996/)** — Speech-sound representations, phonological categorization, temporal processing and population coding.
+2. **[Neural Dynamics of Phoneme Sequences Reveal Position-Invariant Code for Content and Order](https://pmc.ncbi.nlm.nih.gov/articles/PMC9633780/)** — Neural representation of multiple recent speech sounds and their sequential ordering.
+3. **[Mapping the Brain Network of the Phonological Loop](https://pmc.ncbi.nlm.nih.gov/articles/PMC6866778/)** — Neural systems supporting phonological short-term storage and rehearsal.
+4. **[A Spatiotemporal Map of Reading Aloud](https://pmc.ncbi.nlm.nih.gov/articles/PMC9270918/)** — Neural organization of lexical and sublexical pathways during reading aloud.
+5. **[Language Prediction Mechanisms in Human Auditory Cortex](https://pubmed.ncbi.nlm.nih.gov/33067457/)** — Neural mechanisms involved in predicting speech timing and acoustic content.
+6. **[Computational Architecture of Speech Comprehension in the Human Brain](https://doi.org/10.1146/annurev-linguistics-031120-111245)** — A 2025 review of linguistic representations, operations, information flow and their neural substrates.
+
+---
+
+## 7. Final algorithm summary
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Five-stage processing sequence</title>
+  <list connector="solid" marker="number" gap={3}>
+    <list-item>
+      **Phoneme identification**
+
+      <text color="secondary" size="sm">Transform phonetic evidence into candidate phoneme identities and probabilities.</text>
+    </list-item>
+    <list-item>
+      **Phoneme sequence representation**
+
+      <text color="secondary" size="sm">Organize phonemes into temporally ordered, position-sensitive and syllabically structured representations.</text>
+    </list-item>
+    <list-item>
+      **Grapheme-to-phoneme conversion**
+
+      <text color="secondary" size="sm">Transform visual grapheme sequences into candidate phonological sequences using learned language-specific mappings.</text>
+    </list-item>
+    <list-item>
+      **Phonological working memory**
+
+      <text color="secondary" size="sm">Maintain, order, rehearse and manipulate temporary phonological representations.</text>
+    </list-item>
+    <list-item>
+      **Speech-sound prediction**
+
+      <text color="secondary" size="sm">Predict upcoming sounds and timing, compare them with sensory evidence, and update the entire phonological state.</text>
+    </list-item>
+  </list>
+  <divider color="subtle"/>
+  **Final result**
+
+  <text weight="medium" color="success">An integrated, continuously updated phonological representation connecting written language, speech perception, temporary memory and prediction.</text>
+</box>
+
+**A particularly important architectural insight:** These five processes provide a bridge between the brain's sensory processing systems and its higher-level language systems. They transform individual speech sounds and written symbols into ordered linguistic representations that can be maintained and predicted.
+
+For a future ORE implementation, I would keep these five processes as separate but interconnected computational modules, with a shared phonological representation, recurrent connections, explicit mathematical operations and a separate biological simulation track. This would also allow the system to reuse the phoneme-identification outputs of your existing sensory-perception architecture rather than implementing that computation twice.

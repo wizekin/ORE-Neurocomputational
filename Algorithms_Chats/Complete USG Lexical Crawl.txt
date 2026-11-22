@@ -1,0 +1,599 @@
+Title: Complete USG Lexical Crawl
+Conversation ID: 6afffb52-7bac-83e9-acd1-7b46287613d8
+
+---
+
+[USER]
+how can I complete the USG External Lexical Incremental Crawl manually
+
+---
+
+[ASSISTANT]
+You can complete the **USG External Lexical Incremental Crawl** manually through GitHub Actions in your `wizekin/USG-Workbench` repository. You don't need to run Python locally.
+
+The workflow is designed to be incremental, meaning it resumes from the previously saved checkpoint rather than starting from scratch. Previously, the checkpoint had reached entry 402.
+
+## Step 1 — Open the GitHub repository
+
+Go to:
+
+<text weight="medium">https://github.com/wizekin/USG-Workbench</text>
+
+Then:
+
+1. Open the repository.
+2. Click **Actions** in the top navigation.
+3. Find the workflow named **USG External Lexical Incremental Crawl** in the workflows list.
+
+## Step 2 — Start the workflow manually
+
+<AsyncImageGroup query="GitHub Actions workflow Run workflow dropdown manual dispatch" layout="bento" aspectRatio="5:4"/>
+
+1. Select **USG External Lexical Incremental Crawl**.
+2. Click **Run workflow** (usually near the upper-right of the workflow page).
+3. Select the branch:
+
+   `main`
+
+4. Set the parameters as follows:
+
+| Setting | Value |
+|---|---|
+| `max_headwords` | `200` |
+| `max_runtime_minutes` | `15` |
+| `validation_only` | <text color="success" weight="medium">Unchecked</text> |
+
+<text color="success" weight="medium">Leave validation_only unchecked.</text> If you check it, the workflow performs validation-only operations instead of a real crawl.
+
+5. Click the green **Run workflow** button.
+
+## Step 3 — Monitor the crawl
+
+1. Open the newly created workflow run.
+2. Click the running job (usually `crawl`).
+3. Expand the individual steps to inspect progress.
+4. Wait for the workflow to finish.
+
+<AsyncImageGroup query="GitHub Actions workflow job running steps green success" layout="bento" aspectRatio="5:4"/>
+
+- <text color="success" weight="medium">Green checkmark:</text> the run completed successfully.
+- <text color="warning" weight="medium">Red X:</text> a step failed; inspect its logs before retrying.
+- Cancelled or timed-out runs: the crawler may still have saved progress, so the next run should resume from its checkpoint.
+
+## Step 4 — Verify that the crawl progressed
+
+The crawl's data and state are stored in the `usg-external-lexical-data` repository.
+
+<text weight="medium">https://github.com/wizekin/usg-external-lexical-data</text>
+
+Inspect these files:
+
+| File | Purpose |
+|---|---|
+| `state/checkpoint.json` | Shows where the incremental crawler currently resumes. |
+| `state/manifest.json` | Tracks crawled data shards and their metadata. |
+| `shards/` | Contains compressed crawl data. |
+
+Compare the checkpoint before and after the run to determine whether new headwords were processed.
+
+## Step 5 — Repeat the crawl
+
+Each manual run processes another batch, subject to the configured limits and the remaining crawl queue.
+
+You can repeat Steps 1–3 whenever you want to advance the crawl. The checkpoint should allow it to resume instead of restarting.
+
+<text color="warning" weight="medium">Important:</text> Keep crawled lexical material in the candidate-data stage. Crawling alone should not automatically promote external lexical entries into accepted USG knowledge.
+
+If you'd like, I can also walk you through **how to inspect the checkpoint, manifest, audit logs and evaluations after each crawl, so you can determine whether the external lexical data is actually improving USG**. <MemoryCite />
+
+---
+
+[USER]
+I mean I want to process all the remaining 1,396,111 headwords in one time, yourr last Monitor and advance USG system-wide growth report states that 660,602 headwords are already processed so I want to finish processing the remaining 735,509 headwords in one time
+
+---
+
+[ASSISTANT]
+Ah, I understand now. You don't want to advance the crawl in small batches of 200. You want a **single manual workflow run that processes all 735,509 remaining headwords**, starting from the existing checkpoint of 660,602 and aiming to finish at 1,396,111.
+
+<text color="success" weight="medium">Target: 735,509 additional headwords in one run.</text>
+
+The settings I gave you earlier (`200` headwords and `15` minutes) are not suitable for that goal.
+
+## What you need to change
+
+You need to check whether the workflow accepts a sufficiently large `max_headwords` value and `max_runtime_minutes` value. The manual workflow form may restrict the numbers, or the Python crawler may impose its own limits.
+
+For your goal, the intended parameters would be:
+
+| Parameter | Target |
+|---|---:|
+| Previously processed | 660,602 |
+| Remaining | <text weight="medium" color="success">735,509</text> |
+| Target cumulative count | 1,396,111 |
+| `max_headwords` | `735509` |
+| `max_runtime_minutes` | <text color="warning" weight="medium">Must be determined from the crawler's actual runtime and limits</text> |
+| `validation_only` | `false` |
+
+### Why simply entering 735509 might not work
+
+The crawler might be limited by any of these:
+
+- A maximum batch-size limit hardcoded in Python.
+- A maximum runtime limit in the GitHub Actions workflow.
+- GitHub Actions execution time limits.
+- External lexical-source rate limits, API quotas or throttling.
+- Checkpoint or shard-writing limitations.
+- Storage or artifact limits.
+
+<text color="warning" weight="medium">735,509 headwords is a large workload.</text> Even if a single manual dispatch accepts the number, the process might not finish in one GitHub Actions session.
+
+### The approach I recommend
+
+Instead of repeatedly triggering batches manually, modify the workflow and crawler so that one manual dispatch:
+
+1. Reads the existing checkpoint (660,602).
+2. Automatically processes the remaining queue until exhausted.
+3. Saves progress continuously, not only at the end.
+4. Handles rate limiting and retries.
+5. Resumes automatically after recoverable failures where possible.
+6. Verifies the final checkpoint against the total target of 1,396,111.
+7. Generates a final crawl report.
+
+This could be a single manual initiation, even if internally it needs multiple jobs or resumable execution segments to overcome execution-time limits.
+
+I can inspect the actual `USG-Workbench` workflow and crawler code and give you the precise modifications needed to make one manual launch process the remaining 735,509 headwords, rather than guessing at workflow parameters.
+
+---
+
+[USER]
+create a python script which implements the 7 steps of your approach
+
+---
+
+[ASSISTANT]
+I'll design this as a standalone Python orchestrator for the USG External Lexical Incremental Crawl. Its purpose is to launch the crawl once, then manage the remaining workload through checkpoint-aware resumable execution.
+
+The script will implement all seven requirements:
+
+1. Read the existing checkpoint.
+2. Process the queue until it is exhausted.
+3. Persist progress continuously.
+4. Handle rate limits and retries.
+5. Resume after recoverable failures.
+6. Verify completion against the target of 1,396,111 headwords.
+7. Produce a final crawl report.
+
+<text color="warning" weight="medium">Important:</text> The script needs to be compatible with the actual USG-Workbench crawler and its data-source APIs. Since I haven't verified the repository's current internal interface, I'll make the script a reusable orchestration layer with a clearly isolated crawler-adapter interface, rather than inventing calls to the existing crawler.
+
+## 1. Download the Python scripts
+
+<box gap={3}>
+  <row align=center>
+    <icon name="file-code" size="2xl" color="success"/>
+    <col gap=1>
+      **USG Crawl Orchestrator**
+      <caption>349 lines — batching, retries, checkpoints, verification, logging and reporting.</caption>
+      [Download the orchestrator](sandbox:/mnt/data/usg_crawl_orchestrator.py)
+    </col>
+  </row>
+  <divider color=subtle/>
+  <row align=center>
+    <icon name="file-code" size="2xl"/>
+    <col gap=1>
+      **USG Adapter Template**
+      <caption>Interface to connect the orchestrator to the actual USG crawler.</caption>
+      [Download the adapter template](sandbox:/mnt/data/usg_adapter_template.py)
+    </col>
+  </row>
+</box>
+
+## 2. What the orchestrator implements
+
+| Requirement | Implementation |
+|---|---|
+| <text color="success">1. Read checkpoint</text> | Reads progress from the adapter's authoritative checkpoint. |
+| <text color="success">2. Process remaining queue</text> | Repeatedly requests batches until the target is reached or the source reports completion. |
+| <text color="success">3. Save progress</text> | Writes orchestration state atomically after each batch and attempt. The adapter is expected to persist the lexical crawl's actual data and checkpoint. |
+| <text color="success">4. Retry</text> | Exponential backoff, jitter, and optional server-provided retry delays. |
+| <text color="success">5. Resume</text> | Re-reads the authoritative crawler checkpoint on startup; interrupted runs can be restarted. |
+| <text color="success">6. Verify completion</text> | Compares final processed progress against the configured target. |
+| <text color="success">7. Report</text> | Produces a JSON report, execution log and orchestration state file. |
+
+## 3. How to run it
+
+Place both files in the same directory on your computer.
+
+Open PowerShell in that directory.
+
+### Install nothing extra
+
+The orchestrator uses Python's standard library, so it requires no additional pip packages.
+
+### Run the script
+
+Once the adapter has been connected to the real USG crawler, run:
+
+<text color="warning" weight="medium">The template adapter is not yet connected.</text> The command above will not perform the crawl until `usg_adapter_template.py` is replaced or adapted to call the actual USG-Workbench crawler and checkpoint system.
+
+## 4. Files generated during execution
+
+| File | Purpose |
+|---|---|
+| `usg_orchestrator_state.json` | Persistent orchestration state and attempt history. |
+| `usg_crawl_report.json` | Final completion verification, progress, duration and error summary. |
+| `usg_crawl_orchestrator.log` | Detailed timestamped execution log. |
+| <text color="success" weight="medium">Existing USG checkpoint</text> | The adapter must continue using the actual checkpoint and lexical data storage from USG. |
+
+## 5. How I would connect this to USG-Workbench
+
+The next essential step is to connect the orchestrator to the actual functions inside `USG-Workbench` rather than create a second crawler.
+
+I would map the adapter to:
+
+- The existing lexical queue.
+- The checkpoint reader.
+- The crawl batch processor.
+- The shard writer.
+- The manifest updater.
+- The existing validation and quality-control logic.
+
+<text color="success" weight="medium">The orchestrator is created.</text> It is a framework for managing a large crawl, not yet a verified integration with the actual USG code.
+
+I can next implement the actual adapter directly against your `USG-Workbench` GitHub repository, so this becomes a functional crawl launcher instead of a template.
+
+---
+
+[USER]
+implement the actual adapter directly against `USG-Workbench` GitHub repository
+
+---
+
+[ASSISTANT]
+I inspected the actual `USG-Workbench` crawler implementation rather than relying on the earlier adapter template.
+
+<text color="success" weight="medium">The repository already contains the underlying resumable crawler.</text>
+
+The actual implementation is `tools/usg_external_lexical_v0_1_0/crawl.py`, specifically `LexicalCrawler.run_batch()`. It already supports:
+
+- <text color="success" inline>Resumable checkpoints</text> on the `usg-external-lexical-data` branch.
+- Pinned source snapshots.
+- Processing up to 100,000 headwords per internal batch (the scheduled workflow limits batches to 30,000).
+- Compressed, append-only shards.
+- Failed-headword recovery.
+- Storage-budget protection.
+- Checkpoint and manifest publication.
+
+The actual limitation is the workflow's manual dispatch: it launches one bounded batch, not a loop that keeps launching batches until the cumulative target is reached.
+
+## What I intended to add
+
+A new module inside the repository:
+
+`tools/usg_external_lexical_v0_1_0/manual_crawl_until_target.py`
+
+It would act as an **actual adapter to the existing `LexicalCrawler`**, not a mock adapter, with this execution flow:
+
+The new launcher would:
+
+1. Read the real checkpoint from GitHub.
+2. Calculate the remaining headwords.
+3. Invoke the actual crawler repeatedly.
+4. Publish each batch through the existing GitHub data publisher.
+5. Re-read the checkpoint after every batch.
+6. Continue until the target is reached, a safety limit is hit, or the crawl is blocked.
+7. Produce a cumulative progress report.
+8. Resume automatically if the process is interrupted and launched again.
+
+## Why I haven't committed it yet
+
+I successfully inspected the repository's crawler, workflow and documentation, but the file-generation operation was unavailable because the current data analysis usage limit was reached. I have **not** created the adapter in GitHub, committed it, or tested it.
+
+Data analysis may become available again in approximately 23 hours and 56 minutes, although that is an estimate.
+
+The repository I inspected is [USG-Workbench](https://github.com/wizekin/USG-Workbench), and the real crawler source is [crawl.py](https://github.com/wizekin/USG-Workbench/blob/main/tools/usg_external_lexical_v0_1_0/crawl.py).
+
+<text weight="medium">One important safety consideration:</text> the existing data branch has a 700 MiB storage limit. An uninterrupted launcher must respect that guard; it cannot guarantee completion of 735,509 remaining headwords if the storage limit is reached first.
+
+I would implement this as a separate launcher module, preserving the existing crawler and its checkpoint protocol rather than altering the crawler's core behavior.
+
+---
+
+[USER]
+set the storage limit of your new launcher as 700 MiB and stop the existing crawler then implement the actual adapter directly against `USG-Workbench` GitHub repository
+
+---
+
+[ASSISTANT]
+Implemented the launcher against the real `USG-Workbench` crawler and opened **PR #238**.
+
+<box border radius="lg" padding={3} gap={2}>
+  <row align="center" justify="between">
+    **Storage ceiling**
+    <badge color="success">Fixed at 700 MiB</badge>
+  </row>
+  <title size="2xl" tabularNums>734,003,200 bytes</title>
+  The launcher cannot increase this limit through workflow inputs.
+  <divider color="subtle"/>
+  **Durable checkpoint at inspection**
+
+  <title size="xl" tabularNums>870,602 / 1,396,111</title>
+  <text color="secondary" size="sm">525,509 remaining at that checkpoint; the currently running legacy job may have uncommitted work.</text>
+  <text color="secondary" size="sm">Stored shards: 220,412,348 bytes, approximately 30% of the storage ceiling.</text>
+</box>
+
+### What was implemented
+
+- `manual_crawl.py` calls the existing `LexicalCrawler.run_batch()` rather than duplicating its parsing or checkpoint logic.
+- Internal batches are capped at 30,000 headwords.
+- A single manual launch can chain multiple GitHub Actions runs until completion.
+- Every continuation reloads the durable checkpoint.
+- Storage exhaustion, source errors and lack of progress stop the chain safely.
+- Added offline tests and operational documentation.
+
+### Stopping the old crawler
+
+<badge color="success">Future executions paused</badge>
+
+I committed the pause to `main`: the legacy six-hour schedule is removed and its crawl job is disabled.
+
+However, the already-running job has **not yet been cancelled**:
+
+[View active legacy run #44697278758](https://github.com/wizekin/USG-Workbench/actions/runs/44697278758)
+
+The new workflow shares its concurrency group. Its first manual launch will cancel that legacy run automatically and resume from the last published checkpoint. Any unfinished batch will be retried from that checkpoint.
+
+### Implementation and validation
+
+<row align="center" justify="between">
+  **PR #238**
+  <badge color="success">Validation passed</badge>
+</row>
+
+[Open pull request #238](https://github.com/wizekin/USG-Workbench/pull/238)
+
+[Launcher source](https://github.com/wizekin/USG-Workbench/blob/feat/manual-external-lexical-completion/tools/usg_external_lexical_v0_1_0/manual_crawl.py)
+
+[New Actions workflow](https://github.com/wizekin/USG-Workbench/blob/feat/manual-external-lexical-completion/.github/workflows/usg-external-lexical-complete.yml)
+
+The new workflow passed compilation, crawler tests, launcher tests, retrieval tests, both state-audit suites, and the offline structural benchmark.
+
+**Next step:** merge PR #238, then open Actions → **USG External Lexical Completion Launcher** → **Run workflow**. Keep the default target, 30,000 batch size and automatic continuation enabled. The launcher will take over the existing checkpoint and continue without requiring you to start each subsequent batch manually.
+
+---
+
+[USER]
+give me the direct URL of  the **USG External Lexical Completion Launcher** to run it
+
+---
+
+[ASSISTANT]
+[**Open USG External Lexical Completion Launcher — Run workflow**](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-complete.yml)
+
+**Note:** Merge [PR #238](https://github.com/wizekin/USG-Workbench/pull/238) first so the new workflow is available on `main`.
+
+---
+
+[USER]
+Tell me what the following means in Run resumable completion controller:
+
+    set -euo pipefail
+  args=()
+  if [[ "$CONTINUE_UNTIL_TARGET" == "true" ]]; then
+    args+=(--continue-chain)
+  fi
+  python -m tools.usg_external_lexical_v0_1_0.manual_crawl \
+    --target-total "$TARGET_TOTAL" \
+    --batch-headwords "$BATCH_HEADWORDS" \
+    --max-session-runtime-seconds 18000 \
+    --reserve-seconds 300 \
+    --run-id "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+    "${args[@]}"
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    GITHUB_TOKEN: ***
+    USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
+    pythonLocation: /opt/hostedtoolcache/Python/3.11.18/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib
+    TARGET_TOTAL: 1396111
+    BATCH_HEADWORDS: 30000
+    CONTINUE_UNTIL_TARGET: true
+
+---
+
+[ASSISTANT]
+This is the **Run resumable completion controller** step in your GitHub Actions workflow. Its job is to start the USG lexical crawler, tell it how much work to perform, and determine whether it should continue automatically until the target is reached.
+
+Let's examine it line by line.
+
+## 1. Enable strict Bash error handling
+
+This enables three Bash safety options:
+
+| Option | Meaning |
+|---|---|
+| `-e` | Stop the script if a command fails. |
+| `-u` | Treat an undefined variable as an error. |
+| `-o pipefail` | If a command in a pipeline fails, the pipeline is considered to have failed. |
+
+**Why this matters:** If the crawler encounters an unexpected error, the workflow should not silently continue as though everything succeeded.
+
+## 2. Prepare an empty argument list
+
+This creates an empty Bash array called `args`.
+
+The script will add optional command-line arguments to this array depending on the workflow settings.
+
+## 3. Decide whether to enable automatic continuation
+
+This checks the GitHub Actions variable:
+
+Because your workflow has this set to `true`, the condition succeeds and adds:
+
+to the argument array.
+
+This tells the Python controller to continue the crawling process through subsequent GitHub Actions runs when necessary, rather than stopping after one session.
+
+In other words:
+
+- If `true`: try to reach the overall target through successive sessions.
+- If `false`: perform the current session and don't automatically schedule another one.
+
+## 4. Start the Python controller
+
+This executes the Python module:
+
+The `-m` option tells Python to execute a module using its package path.
+
+The next lines provide its configuration.
+
+## 5. Explain each parameter
+
+The target number of headwords to process.
+
+Your current value is:
+
+This is the overall completion target, not the number processed in one session.
+
+The maximum number of headwords to process in one internal batch.
+
+Your current value is:
+
+For example, the controller might process 30,000 headwords, save its progress, and then process another batch.
+
+**Important:** 30,000 is a maximum batch size, not a guarantee that every batch will contain exactly 30,000 headwords.
+
+Sets the maximum runtime for one controller session.
+
+18,000 seconds = 300 minutes = 5 hours.
+
+Reserves the final 300 seconds (5 minutes) of the session.
+
+The controller should stop starting new batches before its maximum runtime is exhausted, leaving time to save progress and finish safely.
+
+Assigns a unique identifier to this execution.
+
+For example:
+
+Here:
+
+- `GITHUB_RUN_ID` identifies the GitHub Actions workflow run.
+- `GITHUB_RUN_ATTEMPT` identifies which attempt of that run this is.
+
+This helps distinguish separate executions in logs and tracking records.
+
+Passes all optional arguments stored in the `args` array to Python.
+
+Since `CONTINUE_UNTIL_TARGET=true`, the resulting command effectively includes:
+
+## 6. Understand the environment variables
+
+These values are provided by GitHub Actions to the running process.
+
+| Variable | Current value | Purpose |
+|---|---|---|
+| `GITHUB_TOKEN` | Hidden | Authenticates GitHub API operations. |
+| `USG_LEXICAL_DATA_BRANCH` | `usg-external-lexical-data` | Branch used for lexical data publication. |
+| `TARGET_TOTAL` | `1396111` | Overall processing target. |
+| `BATCH_HEADWORDS` | `30000` | Maximum internal batch size. |
+| `CONTINUE_UNTIL_TARGET` | `true` | Enables automatic continuation. |
+| `pythonLocation` | Python 3.11 installation path | Identifies the Python installation. |
+
+The remaining variables, such as `PKG_CONFIG_PATH` and `LD_LIBRARY_PATH`, are environment configuration used by Python and native libraries. They are not specific to USG crawling.
+
+---
+
+## 7. What happens in your USG project?
+
+Your current configuration can be summarized as follows:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">USG lexical completion configuration</title>
+  <grid columns={2} gap={3}>
+    <grid-item>
+      <text color="secondary" size="xs">OVERALL TARGET</text>
+      <title size="2xl" tabularNums>1,396,111</title>
+      <text color="secondary" size="xs">Headwords</text>
+    </grid-item>
+    <grid-item>
+      <text color="secondary" size="xs">BATCH LIMIT</text>
+      <title size="2xl" tabularNums>30,000</title>
+      <text color="secondary" size="xs">Headwords per batch</text>
+    </grid-item>
+    <grid-item>
+      <text color="secondary" size="xs">SESSION LIMIT</text>
+      <title size="2xl" tabularNums>5 hours</title>
+    </grid-item>
+    <grid-item>
+      <text color="secondary" size="xs">SAFETY RESERVE</text>
+      <title size="2xl" tabularNums>5 minutes</title>
+    </grid-item>
+  </grid>
+  <divider color="subtle"/>
+  <row align="center" justify="between">
+    **Automatic continuation**
+    <badge color="success">Enabled</badge>
+  </row>
+  <row align="center" justify="between">
+    **Data branch**
+    <text weight="medium" size="sm">usg-external-lexical-data</text>
+  </row>
+</box>
+
+The intended sequence is:
+
+<box border radius="lg" padding={3} gap={2} align="center">
+  <box background="rgba(46,125,50,0.10)" radius="md" padding={3} width="100%" align="center">
+    **Start GitHub Actions run**
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(46,125,50,0.10)" radius="md" padding={3} width="100%" align="center">
+    **Load the saved lexical checkpoint**
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(46,125,50,0.10)" radius="md" padding={3} width="100%" align="center">
+    **Process batches of up to 30,000 headwords**
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(46,125,50,0.10)" radius="md" padding={3} width="100%" align="center">
+    **Save progress and check safety limits**
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box border radius="md" padding={3} width="100%" align="center">
+    **Has the target been reached?**
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(46,125,50,0.10)" radius="md" padding={2} align="center">
+        <badge color="success">Yes</badge>
+        **Finish**
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(217,119,6,0.10)" radius="md" padding={2} align="center">
+        <badge color="warning">No</badge>
+        **Schedule continuation**
+      </box>
+    </grid-item>
+  </grid>
+</box>
+
+## 8. One important distinction: automatic continuation does not mean unlimited crawling
+
+Your controller has safety constraints, including:
+
+- The 700 MiB storage ceiling.
+- The five-hour session limit.
+- The five-minute reserve.
+- Source availability and rate limits.
+- Checkpoint and progress validation.
+
+Therefore, even with `CONTINUE_UNTIL_TARGET=true`, the crawler must stop if it reaches a safety limit or encounters a condition that makes further processing unsafe.
+
+**My recommendation:** Keep these settings as they are for the first run. In particular, the 700 MiB storage ceiling should remain enforced across continuation runs, not reset for each new GitHub Actions execution. That is important because otherwise successive runs could collectively exceed your intended storage budget.
+
+The most useful next step is to inspect the actual `manual_crawl.py` continuation logic and verify that it checks the cumulative storage usage and durable checkpoint correctly before scheduling another run.

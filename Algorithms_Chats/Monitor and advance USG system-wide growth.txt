@@ -1,0 +1,4129 @@
+Title: Monitor and advance USG system-wide growth
+Conversation ID: 6af76918-a160-83e9-a4ee-8ab5eddefa23
+
+---
+
+[ASSISTANT]
+# USG System-Wide Growth Report
+<text color="secondary" size="sm">13 November 2026 · Evidence review and development supervision</text>
+
+<badge color="success">Evidence review completed</badge> <badge color="warning">SYS-08 remains open</badge>
+
+**Overall conclusion:** USG's evaluation and governance infrastructure continues to mature, but its latest evidence exposes three important problems: the growth planner is behind the latest campaign, the naturalistic evaluation has not yet completed its first full campaign, and cross-implementation documentation contains stale capability statuses.
+
+I reviewed the repository directly through the GitHub plugin. No Composio operations were used.
+
+## 1. GitHub Actions monitoring
+
+**Monitoring window:** 12 November, 20:00 Cairo, through 13 November, 21:33 Cairo.
+
+<row align="center" gap={2}>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" color="success" tabularNums>12</title>
+    <text color="secondary" size="xs">Completed successfully</text>
+  </box>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" color="warning" tabularNums>1</title>
+    <text color="secondary" size="xs">Still running</text>
+  </box>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" tabularNums>13</title>
+    <text color="secondary" size="xs">Total runs checked</text>
+  </box>
+</row>
+
+All 13 runs were inspected, including their job statuses. The relevant runs are:
+
+| Workflow | Run | Result |
+|---|---|---|
+| Open-World continuous exploration | [43355525263](https://github.com/wizekin/USG-Workbench/actions/runs/43355525263) | Success; campaign partial |
+| Growth controller | [43373246201](https://github.com/wizekin/USG-Workbench/actions/runs/43373246201) | Success; plan generated |
+| System evidence collection | [43378257188](https://github.com/wizekin/USG-Workbench/actions/runs/43378257188) | Success |
+| Phase 6 continuation tracker | [43378780590](https://github.com/wizekin/USG-Workbench/actions/runs/43378780590) | Success |
+| External lexical crawls | [432895](https://github.com/wizekin/USG-Workbench/actions/runs/43289535111), [433461](https://github.com/wizekin/USG-Workbench/actions/runs/43346117071), [433879](https://github.com/wizekin/USG-Workbench/actions/runs/43387960680), [434352](https://github.com/wizekin/USG-Workbench/actions/runs/43435270691) | Success |
+| External lexical crawl | [43491750033](https://github.com/wizekin/USG-Workbench/actions/runs/43491750033) | In progress |
+| External lexical PUD evaluations | [433299](https://github.com/wizekin/USG-Workbench/actions/runs/43329989478), [433705](https://github.com/wizekin/USG-Workbench/actions/runs/43370556429), [434216](https://github.com/wizekin/USG-Workbench/actions/runs/43421602364), [434762](https://github.com/wizekin/USG-Workbench/actions/runs/43476296653) | Success |
+
+No new dedicated runs occurred during this window for the cross-implementation conformance workflow, full replay corpus, Phase 4/5 frozen benchmarks, or full naturalistic PUD campaign.
+
+The latest main-branch commit used by these runs was:
+
+`4fa85a3206659d1389d8650e83ed23c7610a861a`
+
+## 2. Latest Open-World campaign
+
+<badge color="warning">PARTIAL — not a semantic acceptance</badge>
+
+Campaign: `OWC-OW7-43355525263-1`
+
+[Open-World run and campaign artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43355525263)
+
+The campaign ran against the latest main commit identified above.
+
+### Population accounting
+
+| Population | Cases | Completed | Partial | Unsupported | Other |
+|---|---:|---:|---:|---:|---:|
+| Controlled diagnostic | 106 | 48 | 42 | 16 | 0 |
+| Unconstrained random | 220 | 1 | 166 | 25 | 28 |
+| Naturalistic | 0 | 0 | 0 | 0 | 0 |
+
+The random population's 28 other outcomes comprise 8 ambiguous and 20 not executed.
+
+Campaign-wide accounting:
+
+| Metric | Count |
+|---|---:|
+| Result records | 326 |
+| Actual executions | 306 |
+| Not executed | 20 |
+| Completed | 49 |
+| Partial | 208 |
+| Unsupported | 41 |
+| Ambiguous | 8 |
+| Crashes, timeouts, infrastructure errors, invalid output | 0 |
+
+The 20 not-executed records belong to `workbench-to-canonical-adapter`.
+
+Importantly, 106 records received structural-oracle scoring. The remaining 220 were not scored because they lacked an independent oracle. The structural oracle is not independent semantic gold.
+
+### First-blocking-stage analysis
+
+<Chart content={{"chartType":"bar","meta":{"title":"First blockers in OWC-OW7","description":"Stage-attribution counts across 306 actual attempts; parallel blockers are retained."},"xKey":"stage","series":[{"dataKey":"count","label":"First-blocking records"}],"data":[{"stage":"Lexical","count":61},{"stage":"Syntax","count":16},{"stage":"Discourse","count":1}]}}/>
+
+The principal diagnostic codes were:
+
+- Lexical: `LEXICAL_UNRESOLVED_TOKEN` (61) and `LEXICAL_AMBIGUOUS_TOKEN` (4).
+- Syntax: `SYNTAX_UNSUPPORTED` (11), `UNSUPPORTED_INTERROGATIVE_FORCE` (3), and `INCOMPLETE` (2).
+- Discourse: `DISCOURSE_ANTECEDENT_UNRESOLVED` (1).
+
+There was one record with multiple parallel first blockers.
+
+Downstream diagnostic co-occurrences:
+
+| Stage | Records |
+|---|---:|
+| Semantic composition | 73 |
+| Syntax | 59 |
+| Discourse | 16 |
+| Operators | 9 |
+
+The semantic-composition diagnostic `SEMANTIC_CLAUSE_UNRESOLVED` occurred 70 times in downstream diagnostic accounting.
+
+These are dependency-related co-occurrences, not proof of causal responsibility.
+
+Other important observations:
+
+- 229 attempts had no observed blocking diagnostic.
+- 6 attempts lacked target-result payloads.
+- Language hints: English 209, Arabic 73, mixed English/Arabic 44.
+- Phase 4 used resource fingerprint `c0dc48196f0e...`.
+- Phase 5 used manifest fingerprint `76e83880e793...`.
+
+### Target-specific findings
+
+| Target | Cases | Outcome summary |
+|---|---:|---|
+| Phase 4 interpreter | 26 | 2 completed, 2 partial, 22 unsupported |
+| Phase 5 interpreter | 120 | 46 completed, 53 partial, 13 unsupported, 8 ambiguous |
+| JS Semantic Workbench | 20 | 1 completed, 13 partial, 6 unsupported |
+| Phase 3 SQLite store | 20 | All partial |
+| Workbench-to-canonical adapter | 20 | All not executed |
+
+The remaining native models, reference kernel, document adapters, Phase 2, Phase 6 and Kernel Lab targets each recorded 20 partial outcomes.
+
+The JS target ran through Chromium and its deterministic local rule fallback. This is evidence of browser execution and structured output, not semantic correctness.
+
+## 3. SYS-08: PUD structural-frequency investigation
+
+This is the most useful new development from this review.
+
+The existing PUD generator extracts sentences and creates naturalistic cases, but it does not calculate structural-frequency diagnostics.
+
+I therefore performed a read-only structural analysis against the exact pinned English and Arabic CoNLL-U files using their Git blob identities.
+
+**English source:** [UD_English-PUD pinned commit](https://github.com/UniversalDependencies/UD_English-PUD/tree/a697bab43d4111073356de0df5802488bca3de7e)
+
+**Arabic source:** [UD_Arabic-PUD pinned commit](https://github.com/UniversalDependencies/UD_Arabic-PUD/tree/c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87)
+
+Each source contains 1,000 sentences.
+
+### Measured structural frequencies
+
+The following are sentence-level syntactic proxies, not semantic interpretations.
+
+| Construction proxy | English / 1,000 | Arabic / 1,000 |
+|---|---:|---:|
+| Relative clause (`acl:relcl`) | 193 | 265 |
+| Active transitive root | 293 | 205 |
+| Copular predicate | 186 | 54 |
+| Clause complement (`ccomp`/`xcomp`) | 245 | 189 |
+| Passive verb root | 140 | 72 |
+| Adverbial clause | 156 | 167 |
+| Coordination | 155 | 144 |
+
+The active-transitive surface-order distribution was:
+
+- English: SVO 292, VOS 1.
+- Arabic: VSO 157, SVO 34, VOS 14.
+
+<text color="secondary" size="xs">These figures are derived from dependency and POS annotations in the pinned PUD files. They do not represent USG semantic roles or independent semantic gold.</text>
+
+### Selected construction candidate
+
+<badge color="info">Candidate only</badge>
+
+**Relative-clause attachment (`acl:relcl`) should be the next construction investigated.**
+
+Reasons:
+
+1. It occurs in both languages at meaningful frequencies: 19.3% of English sentences and 26.5% of Arabic sentences.
+2. It is outside the accepted Phase 5 simple-transitive SVO/VSO baseline.
+3. It directly aligns with Phase 6 continuation item P6-CONT-02, which identifies broader relative-clause and argument-gap attachment as an outstanding capability.
+4. It gives us a concrete, bounded target for positive, negative, ambiguous and attachment-boundary fixtures.
+
+This is a frequency-based candidate selection, not evidence that USG can already interpret relative clauses correctly.
+
+**SYS-08 remains incomplete:** the measurements have not yet been implemented as a reproducible repository diagnostic, regression-tested and attached to the PUD campaign artifacts.
+
+The next acceptance work should freeze those fixtures before any runtime syntax changes.
+
+## 4. Naturalistic bilingual PUD pilot
+
+The existing source-validation workflow succeeded previously:
+
+[Validation run 43165368675](https://github.com/wizekin/USG-Workbench/actions/runs/43165368675)
+
+It generated a validation artifact containing:
+
+- 5 English and 5 Arabic sentences.
+- 10 scenario records.
+- `source-manifest.json`.
+- `LICENSE.txt`.
+- `ATTRIBUTION.md`.
+- Generation manifest.
+
+All four existing PUD pilot unit tests passed.
+
+The source manifest confirms:
+
+- English commit: `a697bab43d4111073356de0df5802488bca3de7e`.
+- Arabic commit: `c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87`.
+- Both use CC BY-SA 3.0.
+- Attribution and share-alike files are included.
+- The corpus is evaluation-only.
+- UD annotations are not USG semantic gold.
+
+Privacy limitations are explicitly documented: the pilot screens email and URL patterns, but retains public proper names and does not provide comprehensive personal-data detection.
+
+The translation caveat is important:
+
+- English PUD contains 750 originally English sentences and 250 translations.
+- All Arabic PUD sentences are translated: 750 originate in English and 250 originate in German, French, Italian or Spanish via English.
+
+Therefore, Arabic PUD is not a representative native-MSA distribution.
+
+### First full campaign status
+
+<badge color="warning">Not yet executed</badge>
+
+The weekly workflow is configured for 50 sentences per language across three targets: JS Workbench, Phase 4 and Phase 5.
+
+That produces 300 target records.
+
+Its first scheduled weekly execution is Monday, **16 November 2026 at 06:00 Cairo time**.
+
+The 10-case validation artifact is not a full campaign and does not establish naturalistic interpreter performance.
+
+### Important automation blocker
+
+I inspected the campaign publication workflow and repository settings.
+
+Two conditions currently prevent reliable automatic publication:
+
+1. GitHub Actions is not permitted to create or approve pull requests. This was directly confirmed by the OW-7 log:
+   `GitHub Actions is not permitted to create or approve pull requests.`
+2. Repository metadata reports `allow_auto_merge=false`.
+
+The PUD workflow also has a publication step that does not use `continue-on-error`. Consequently, the first campaign could successfully upload its artifact and then fail during PR creation. Its subsequent auto-merge step would not run.
+
+The safe resolution is to enable Actions PR creation and repository auto-merge, then verify required checks before relying on automatic publication.
+
+Until the first full campaign is completed and its report/publication behavior is verified, the naturalistic population remains **not established**.
+
+## 5. External lexical and morphology evidence
+
+The latest durable external lexical-data commit is:
+
+[f3a7cec584e9ac11c92499d83e6d622d4e3d42e8](https://github.com/wizekin/USG-Workbench/commit/f3a7cec584e9ac11c92499d83e6d622d4e3d42e8)
+
+<text color="secondary" size="xs">Data branch: `usg-external-lexical-data` · Source snapshot: `enwiktionary-2026-10-01-raw-244dcdc56868`</text>
+
+### Latest durable inventory
+
+| Metric | Value |
+|---|---:|
+| Processed headwords | 210,602 |
+| Expected headwords | 1,396,111 |
+| Processed entries | 226,179 |
+| Processed senses | 274,576 |
+| Logical batches | 11 |
+| Physical shard files | 12 |
+| Stored compressed bytes | 53,753,656 |
+| Storage budget | 734,003,200 bytes |
+
+The inventory audit identified one duplicate physical copy: batch 000002. Its two files have identical content hashes and count as one logical batch.
+
+Retry accounting:
+
+- 198 historical failed headwords were recovered.
+- Pending retries: 0.
+- Dead-lettered retries: 0.
+- Failed pages: 0.
+
+The latest in-progress crawl is [run 43491750033](https://github.com/wizekin/USG-Workbench/actions/runs/43491750033). Its durable results have not yet been published, so the numbers above remain the latest verified committed snapshot.
+
+### Latest independent English PUD lexical evaluation
+
+[Evaluation run 43476296653](https://github.com/wizekin/USG-Workbench/actions/runs/43476296653)
+
+<text color="secondary" size="xs">The evaluator used 11 logical shards and deduplicated the duplicate physical copy.</text>
+
+| Metric | Result |
+|---|---:|
+| Mapped dictionary entries | 202,598 |
+| Lexical forms | 224,985 |
+| Lemmas | 193,923 |
+| Observed forms | 107,008 |
+| Exact token coverage | 17.12% |
+| OOV rate | 82.88% |
+| Gold UPOS candidate recall | 10.50% |
+| Gold UPOS hit when seen | 61.33% |
+| Ambiguity rate when seen | 55.43% |
+| Content-token coverage | 12.09% |
+| Gold lemma coverage | 14.74% |
+| Lemma + UPOS candidate recall | 9.65% |
+
+Morphology evaluation, restricted to the explicitly mapped source tags:
+
+| Metric | Result |
+|---|---:|
+| Candidate-pool precision | 12.05% |
+| Candidate recall | 7.68% |
+
+<badge color="success">Report integrity passed</badge>
+
+This acceptance is explicitly `REPRODUCIBLE_REPORT_INTEGRITY_ONLY`. No lexical quality threshold was applied, and runtime promotion is disabled.
+
+The external crawl is still candidate-only. Its source provenance, per-entry rights and attribution metadata are preserved; raw definition and example passages are not stored.
+
+The current evidence is English-only. It does not establish Arabic lexical coverage.
+
+The earlier contextual HMM evidence also remains insufficient for integration: it slightly improved the English unigram baseline but regressed the Arabic baseline. No new independent result overturns that conclusion.
+
+## 6. Other system-wide capabilities
+
+### Phase 6 and development intelligence
+
+[Phase 6 continuation report](https://github.com/wizekin/USG-Workbench/actions/runs/43378780590)
+
+The tracker reports:
+
+- Bounded Phase 6 exit accepted for registered scopes.
+- Phase 7 is not blocked.
+- Naturalistic semantic accuracy is not established.
+- Eight continuation work items remain.
+- P6-CONT-02, broader relative/subordinate/embedded attachment, remains in the backlog.
+- P6-CONT-07, rights-cleared naturalistic evaluation for Phase 6 constructions, remains open.
+
+The system evidence collection also recorded 14/14 Phase 8 acceptance checks passing. This acceptance applies only to the bounded evidence catalogue, diagnostics, routing and development-intelligence control plane. It is not semantic acceptance.
+
+### Cross-implementation conformance
+
+[Current matrix](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md)
+
+All five CIC gates remain `not_started`:
+
+- Common frozen fixtures.
+- Independent execution across implementations.
+- Normalized output comparison.
+- Per-language and per-construction disagreement reporting.
+- Independent semantic-gold requirements.
+
+There is one stale status: the matrix still marks JavaScript Open-World browser execution as blocked because the browser adapter is missing.
+
+That is no longer correct.
+
+[PR #194](https://github.com/wizekin/USG-Workbench/pull/194) merged the English Chromium adapter, and its earlier validation run [43164257704](https://github.com/wizekin/USG-Workbench/actions/runs/43164257704) passed all seven browser-adapter tests.
+
+The correct distinction is now:
+
+- Browser execution: demonstrated.
+- English Workbench local-rule execution: demonstrated.
+- Arabic Workbench support: not established.
+- Cross-runtime semantic equivalence: not established.
+- Semantic correctness: not established by browser execution or implementation agreement.
+
+### Persistence and replay
+
+OWC-OW7 exercised the Phase 3 SQLite store, but all 20 target outcomes were partial.
+
+The Workbench-to-canonical adapter was not executed in that campaign.
+
+SYS-14 remains at initial replay implementation plus smoke testing. Full replay of the accepted-failure corpus is still open.
+
+## 7. Documentation and governance drift
+
+Three inconsistencies need attention.
+
+**First — growth planner freshness.**
+
+The newest growth-plan artifact is from [run 43373246201](https://github.com/wizekin/USG-Workbench/actions/runs/43373246201).
+
+It analyzed only OWC-OW6 and identified 68 syntax first blockers. It also recorded a pipeline-version mismatch for 1,058 Phase 5 records.
+
+It did not incorporate OWC-OW7, whose first-blocker profile is substantially different: lexical 61, syntax 16 and discourse 1.
+
+The reason is that OWC-OW7 is not yet committed to main. Its artifact is available, but the growth planner's committed-campaign input does not include it.
+
+**Second — system evidence catalogue freshness.**
+
+[System evidence collection](https://github.com/wizekin/USG-Workbench/actions/runs/43378257188) produced an accepted snapshot, but it is now outdated.
+
+It reports nine logical lexical batches, 150,602 headwords and the older OWC-6 campaign. The latest committed lexical branch and OWC-7 artifact are newer.
+
+The collector also recorded only 100 workflow definitions out of the 129 identified in the inventory. Workflow inventory completeness needs improvement.
+
+**Third — backlog sequencing.**
+
+The current [improvement backlog](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) still places SYS-16 before SYS-08/SYS-09.
+
+That conflicts with the updated dependency order specified for the supervisor. The backlog should be reconciled rather than allowing an older plan to steer future development.
+
+The capability assessment itself remains a historical snapshot, so its older lexical metrics should not be presented as current results.
+
+## 8. Repository changes and PR status
+
+<badge color="success">No runtime mutation</badge>
+
+No repository files, accepted semantic rules, canonical contracts, active lexical resources or gold labels were modified by this supervisor run.
+
+No candidate resources were promoted.
+
+No PRs were opened or merged by this supervisor.
+
+One existing evidence-only PR is relevant:
+
+[PR #229 — OW-7 daily campaign report](https://github.com/wizekin/USG-Workbench/pull/229)
+
+- Head commit: `e77e3e414a03fcb02c4622bf4a3bf1db87d3eaf6`
+- Base: `main`
+- Mergeability: true
+- Status checks: none reported
+- State: open, not merged
+
+It contains the OWC-OW7 campaign bundle, not runtime changes. I did not merge it because mergeability alone is insufficient evidence that required checks have passed.
+
+No merge commit SHA was produced by this run.
+
+## 9. Next dependency-ready work
+
+The next work remains SYS-08, following the updated sequence rather than the stale backlog ordering.
+
+<list connector="solid" marker="number" gap={2}>
+  <list-item>
+    **SYS-08 — reproducible PUD structural-frequency diagnostics**
+
+    Add the CoNLL-U structural analyzer, bilingual frequency report, regression fixtures and campaign integration. Use relative-clause attachment as the candidate for the next bounded construction investigation.
+  </list-item>
+  <list-item>
+    **SYS-09 — independent construction-level semantic gold**
+
+    Define annotation units, positive/negative/ambiguous/boundary cases, adjudication, provenance and held-out evaluation before semantic rule promotion.
+  </list-item>
+  <list-item>
+    **SYS-16 — bounded automatic repair executor**
+
+    Automate deterministic CI, reporting, packaging and test-harness repairs without autonomous semantic promotion.
+  </list-item>
+  <list-item>
+    **SYS-17 — candidate lexical and semantic growth loop**
+
+    Connect measurable failure clusters to candidate resources, independent evidence and rollback.
+  </list-item>
+  <list-item>
+    **SYS-12 — cross-runtime conformance**
+
+    Build shared frozen fixtures and test implementations separately. Agreement must not be mistaken for semantic truth.
+  </list-item>
+  <list-item>
+    **SYS-14 — full deterministic replay**
+
+    Extend replay to accepted repairs and the frozen failure corpus.
+  </list-item>
+  <list-item>
+    **SYS-10/11 — Phase 6 data and gold prerequisites**
+
+    Continue rights, independent-reference and annotation work when its prerequisites are available.
+  </list-item>
+</list>
+
+**Implementation limitation this run:** I completed the pinned-source structural investigation and selected a candidate, but did not commit a new diagnostic implementation. The repository currently prevents GitHub Actions from creating PRs, the repository's auto-merge setting is disabled, and the GitHub integration available here does not expose workflow dispatch. Given the no-PR constraint, an unvalidated repository change would not satisfy the required regression and campaign gates.
+
+The safe next implementation is therefore the SYS-08 diagnostic on an isolated branch, with its tests and campaign integration, followed by verification through an authorized CI path.
+
+---
+
+**Final assessment:** USG is not merely growing its lexical inventory. Its evaluation, diagnostics, candidate separation and evidence governance are becoming more systematic. The next meaningful improvement is to connect bilingual structural evidence to a bounded construction, establish independent semantic evidence for that construction, and only then consider changes to the reasoning runtime.
+
+The central architectural objective remains intact: a modular, reusable, evidence-grounded semantic grammar and reasoning system—not a larger dictionary or a collection of increasingly impressive but disconnected benchmark results.
+
+---
+
+[ASSISTANT]
+# USG System-Wide Growth Supervisor
+
+<row align="center" gap={2}>
+  <badge color="success">11 workflow runs successful</badge>
+  <badge color="warning">SYS-08 remains next</badge>
+</row>
+<text color="secondary" size="xs">14 November 2026 · 21:01 Cairo · Repository: wizekin/USG-Workbench</text>
+
+All GitHub operations in this review used the GitHub plugin directly, not Composio.
+
+**Overall assessment:** The system has made measurable progress in its external lexical candidate inventory and its automated evidence collection. However, its latest Open-World campaign reveals that lexical uncertainty remains the largest first-blocker category, while the growth planner and system evidence catalogue are not keeping up with the newest campaign and resources.
+
+There is still no evidence of broad naturalistic semantic correctness. No semantic runtime changes or candidate promotions are justified.
+
+## 1. GitHub Actions: complete monitoring window
+
+**Period checked:** Since the previous checkpoint, 13 November 21:33 Cairo, through 14 November 21:01 Cairo.
+
+I inspected 11 newly created workflow runs, including their job results and the relevant artifacts and logs.
+
+| Workflow | Run ID | Result |
+|---|---|---|
+| Open-World continuous exploration | [43549135187](https://github.com/wizekin/USG-Workbench/actions/runs/43549135187) | Success |
+| Evidence-driven growth controller | [43561672478](https://github.com/wizekin/USG-Workbench/actions/runs/43561672478) | Success |
+| System evidence collection | [43564991590](https://github.com/wizekin/USG-Workbench/actions/runs/43564991590) | Success |
+| Phase 6 continuation tracker | [43565696164](https://github.com/wizekin/USG-Workbench/actions/runs/43565696164) | Success |
+| External lexical crawls | [43540962616](https://github.com/wizekin/USG-Workbench/actions/runs/43540962616), [43571417962](https://github.com/wizekin/USG-Workbench/actions/runs/43571417962), [43599237612](https://github.com/wizekin/USG-Workbench/actions/runs/43599237612) | Success |
+| External lexical PUD evaluations | [43528861620](https://github.com/wizekin/USG-Workbench/actions/runs/43528861620), [43562626503](https://github.com/wizekin/USG-Workbench/actions/runs/43562626503), [43590945658](https://github.com/wizekin/USG-Workbench/actions/runs/43590945658), [43618349316](https://github.com/wizekin/USG-Workbench/actions/runs/43618349316) | Success |
+
+All 11 runs completed successfully. Some conditional jobs, including crawl validation jobs and the separate browser job in the Open-World workflow, were skipped; these are not counted as successful tests.
+
+The following areas had no new dedicated workflow runs during this window:
+
+- Full naturalistic bilingual PUD campaign.
+- Dedicated Phase 4 and Phase 5 frozen benchmark workflows.
+- Cross-implementation conformance.
+- Full persistence/replay failure-corpus evaluation.
+- Dedicated browser-adapter smoke workflow.
+
+The Open-World campaign nevertheless exercised the Phase 4, Phase 5, and JS Workbench targets.
+
+The latest tested main commit remains:
+
+`4fa85a3206659d1389d8650e83ed23c7610a861a`
+
+## 2. Latest Open-World campaign: OWC-OW7
+
+<badge color="warning">PARTIAL</badge>
+
+[Campaign run 43549135187](https://github.com/wizekin/USG-Workbench/actions/runs/43549135187)
+
+Campaign ID: `OWC-OW7-43549135187-1`
+
+The complete campaign artifact was uploaded:
+
+[Download/view OWC-OW7 campaign artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43549135187/artifacts/14095627354)
+
+### Population accounting
+
+| Population | Cases | Completed | Partial | Unsupported | Ambiguous | Not executed |
+|---|---:|---:|---:|---:|---:|---:|
+| Unconstrained random | 220 | 0 | 163 | 29 | 8 | 20 |
+| Controlled diagnostic | 106 | 48 | 42 | 16 | 0 | 0 |
+| Naturalistic | 0 | 0 | 0 | 0 | 0 | 0 |
+| **Total** | **326** | **48** | **205** | **45** | **8** | **20** |
+
+The distinction between result records and executions is important:
+
+- Result records: 326.
+- Actual executions: 306.
+- Not-executed target records: 20.
+- All 20 not-executed records belong to `workbench-to-canonical-adapter`.
+
+There were no crashes, timeouts, infrastructure errors or invalid outputs.
+
+The campaign is partial, not accepted.
+
+### First-blocking-stage analysis
+
+<Chart content={{"chartType":"bar","meta":{"title":"OWC-OW7 first-blocker distribution","description":"First-blocking records across the dependency graph; these are diagnostic attributions, not proven causal explanations."},"xKey":"stage","series":[{"dataKey":"count","label":"First blockers"}],"data":[{"stage":"Lexical","count":61},{"stage":"Syntax","count":17},{"stage":"Discourse","count":1},{"stage":"Operators","count":0},{"stage":"Semantic composition","count":0}]}}/>
+
+The primary diagnostic codes are:
+
+| Stage | Diagnostic | Count |
+|---|---|---:|
+| Lexical | `LEXICAL_UNRESOLVED_TOKEN` | 61 |
+| Lexical | `LEXICAL_AMBIGUOUS_TOKEN` | 2 |
+| Syntax | `SYNTAX_UNSUPPORTED` | 11 |
+| Syntax | `UNSUPPORTED_INTERROGATIVE_FORCE` | 3 |
+| Syntax | `INCOMPLETE` | 3 |
+| Discourse | `DISCOURSE_ANTECEDENT_UNRESOLVED` | 1 |
+
+There are also downstream diagnostic co-occurrences:
+
+| Downstream stage | Records |
+|---|---:|
+| Semantic composition | 74 |
+| Syntax | 59 |
+| Operators | 9 |
+| Discourse | 15 |
+
+These co-occurrences must not be interpreted as proof of causality.
+
+Additional observations:
+
+- 228 attempts had no observed blocking diagnostic.
+- 11 attempts lacked target-result payloads.
+- 26 failure clusters were recorded.
+- No adaptive follow-up cases were generated.
+- One previous campaign was scanned by adaptive discovery.
+
+### Language and target breakdown
+
+<text color="secondary" size="xs">Language figures are scenario language hints, not successful interpretation counts.</text>
+
+| Language hint | Cases |
+|---|---:|
+| English | 154 |
+| Arabic | 84 |
+| Mixed English/Arabic | 88 |
+
+Target outcomes:
+
+| Target | Cases | Completed | Partial | Unsupported | Ambiguous |
+|---|---:|---:|---:|---:|---:|
+| Phase 4 interpreter | 26 | 2 | 3 | 21 | 0 |
+| Phase 5 interpreter | 120 | 46 | 53 | 13 | 8 |
+| JS Workbench | 20 | 0 | 9 | 11 | 0 |
+
+The remaining 20-case targets mostly produced partial outcomes. The SQLite store produced 20 partial results, while the Workbench-to-canonical adapter was not executed for its 20 records.
+
+The resource fingerprints remain:
+
+- Phase 4: `c0dc48196f0e...`
+- Phase 5: `76e83880e793...`
+
+### Browser execution verification
+
+The 20 JS Workbench attempts used:
+
+- Playwright adapter version 0.1.0.
+- Chromium browser.
+- Workbench v0.5.4.
+- Deterministic local rule fallback.
+- Loopback-only browser networking.
+- No Ollama dependency.
+
+The inspected results reported no browser console or page errors.
+
+This establishes browser execution and structured output, not semantic correctness. The JS target remains English-only.
+
+### Publication status
+
+The workflow successfully created and pushed a campaign-report branch:
+
+`reports/ow7-43549135187-1`
+
+Branch commit:
+
+`75fe8621008de2732116c987784416848474e4eb`
+
+[Inspect campaign report branch commit](https://github.com/wizekin/USG-Workbench/commit/75fe8621008de2732116c987784416848474e4eb)
+
+However, its PR creation failed because GitHub Actions is not permitted to create or approve pull requests.
+
+The campaign exists in its artifact and pushed report branch, but it is not yet a committed campaign bundle on `main`.
+
+This matters because the growth controller currently reads committed campaign evidence.
+
+## 3. Growth planner and system evidence catalogue
+
+### Latest growth plan
+
+[Growth controller run 43561672478](https://github.com/wizekin/USG-Workbench/actions/runs/43561672478)
+
+[Growth-plan artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43561672478/artifacts/14101025313)
+
+The nine growth-controller unit tests passed.
+
+However, the generated plan analyzed only:
+
+`OWC-OW6-43015126807-1`
+
+It did not incorporate OWC-OW7 from run 43549135187.
+
+The plan consequently still recommends syntax investigation with:
+
+- 68 first-blocker records.
+- Priority score 78.
+- Phase 4 target.
+- Independent construction gold required.
+
+This is a stale prioritization artifact, not the latest system-wide diagnosis.
+
+The new OWC-OW7 campaign instead identifies lexical uncertainty as its largest first-blocker category.
+
+**Required correction:** the next growth-plan generation must consume the newest published campaign bundles and distinguish unavailable campaign evidence from zero observations.
+
+### Latest system evidence catalogue
+
+[System evidence run 43564991590](https://github.com/wizekin/USG-Workbench/actions/runs/43564991590)
+
+[System evidence artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43564991590/artifacts/14101479370)
+
+The bounded Phase 8 acceptance passed all 14 of its declared checks.
+
+<badge color="success">14/14 Phase 8 checks passed</badge>
+
+This acceptance covers the system evidence catalogue, diagnostics, resource manifests, routing and development-intelligence control plane. It does not establish semantic accuracy.
+
+I found an important completeness discrepancy:
+
+| Workflow inventory | Count |
+|---|---:|
+| Actual workflow definitions on main | 127 |
+| Catalogue workflow count | 100 |
+| Latest-run records in catalogue | 99 |
+| Catalogue entries with no runs | 1 |
+| Definitions not represented | 27 |
+
+Thus, the catalogue's workflow observability is not complete despite its bounded acceptance passing.
+
+The snapshot also predates the latest crawl and evaluation. It still contains:
+
+- 270,602 lexical headwords.
+- 290,671 entries.
+- 353,563 senses.
+- 13 logical batches.
+- Older lexical evaluation metrics.
+- OWC-OW6 as its latest campaign.
+
+It must not be presented as the current resource or campaign inventory.
+
+## 4. External lexical and morphology progress
+
+<badge color="info">Candidate-only resource growth</badge>
+
+Latest crawl:
+
+[Run 43599237612](https://github.com/wizekin/USG-Workbench/actions/runs/43599237612)
+
+Data branch:
+
+`usg-external-lexical-data`
+
+[Current lexical manifest](https://github.com/wizekin/USG-Workbench/blob/usg-external-lexical-data/state/manifest.json)
+
+### Current durable inventory
+
+| Metric | Latest verified value |
+|---|---:|
+| Processed headwords | 330,602 |
+| Expected headwords | 1,396,111 |
+| Completion | 23.68% |
+| Processed entries | 354,860 |
+| Processed senses | 429,520 |
+| Failed headwords | 198 |
+| Failed pages | 0 |
+| Recovered historical failures | 198 |
+| Pending retries | 0 |
+| Dead-lettered retries | 0 |
+| Retry failures | 0 |
+| Stored compressed bytes | 84,405,436 |
+| Storage budget | 734,003,200 bytes |
+| Storage utilization | 11.50% |
+
+The newest batch contains:
+
+- 30,000 headwords.
+- 31,826 entries.
+- 36,901 senses.
+- 7,480,897 compressed bytes.
+
+Data-branch commit:
+
+`9a96b02dae06c9b16768815c8ad0314d0d9ff298`
+
+Source snapshot:
+
+`enwiktionary-2026-10-01-raw-244dcdc56868`
+
+Source commit:
+
+`4abc6b148921005f9ede04cb5a5dfad831b7b58c`
+
+### Audit and provenance
+
+The remote audit returned `passed_with_warnings`.
+
+- 15 logical batches.
+- 16 physical shard files.
+- One duplicate physical copy, batch 000002.
+- Zero audit errors.
+- One duplicate-shard warning.
+
+The inventory is consistent with its manifest.
+
+The existing rights policy remains important: raw source definitions and example passages are not stored. Structured lexical evidence retains declared licence, entry URL, history URL and source snapshot.
+
+### Latest independent lexical evaluation
+
+[Evaluation run 43618349316](https://github.com/wizekin/USG-Workbench/actions/runs/43618349316)
+
+[Evaluation artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43618349316/artifacts/14123635413)
+
+The evaluated inventory contains:
+
+- 318,357 mapped dictionary entries.
+- 353,648 lexical forms.
+- 305,402 lemmas.
+- 15 logical shards and 16 physical files.
+
+English PUD evaluation:
+
+| Metric | Result |
+|---|---:|
+| Tokens | 21,180 |
+| Seen tokens | 4,409 |
+| OOV tokens | 16,771 |
+| Exact surface coverage | 20.82% |
+| OOV rate | 79.18% |
+| Gold UPOS candidate recall | 13.54% |
+| Gold UPOS hit when seen | 65.03% |
+| Ambiguity rate when seen | 51.21% |
+| Content-token coverage | 19.51% |
+| Gold lemma coverage | 17.97% |
+| Gold lemma + UPOS candidate recall | 12.25% |
+
+For the explicitly mapped morphological features:
+
+| Metric | Result |
+|---|---:|
+| Gold feature instances | 1,939 |
+| Candidate feature instances | 1,412 |
+| Matched feature instances | 237 |
+| Candidate-pool precision | 16.78% |
+| Candidate recall | 12.22% |
+
+The morphology evaluation covers plural, comparative and superlative mappings only. Candidate-pool precision is not contextual morphology prediction accuracy.
+
+The acceptance report passed its reproducible-report-integrity checks, but:
+
+- No lexical quality thresholds were applied.
+- No contextual POS accuracy was established.
+- No semantic correctness was established.
+- Runtime promotion remains disabled.
+
+This is useful candidate-resource progress, but not an accepted improvement to the active USG semantic interpreter.
+
+The current contextual HMM evidence still does not justify runtime integration.
+
+## 5. Naturalistic bilingual PUD and Phase 6
+
+The PUD pilot remains an important missing evaluation population.
+
+[Source and evaluation policy](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-NATURALISTIC-PUD-PILOT.md)
+
+The workflow is configured for its first full scheduled campaign on Monday, 16 November, at 06:00 Cairo.
+
+Its planned population is:
+
+- 50 English sentences.
+- 50 Arabic sentences.
+- Three targets: JS Workbench, Phase 4 and Phase 5.
+- 300 target records.
+
+No full campaign has yet been executed.
+
+### Source and licensing verification
+
+The pinned sources remain:
+
+| Source | Commit |
+|---|---|
+| UD English PUD | `a697bab43d4111073356de0df5802488bca3de7e` |
+| UD Arabic PUD | `c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87` |
+
+Both use CC BY-SA 3.0. The workflow includes the upstream licence text and attribution/share-alike files in the campaign bundle.
+
+The privacy screen:
+
+- Rejects email-address patterns.
+- Rejects URL patterns.
+- Deduplicates sentences.
+- Retains public proper names.
+- Does not provide comprehensive personal-data detection.
+
+The evaluation boundary remains strict:
+
+1. PUD is news and Wikipedia text, not conversational user requests.
+2. All Arabic PUD sentences are translations, not a representative native-MSA distribution.
+3. English PUD also contains translated sentences.
+4. UD POS and dependency annotations are not USG semantic gold.
+5. No semantic correctness score can be inferred from this population.
+
+The workflow's publication and auto-merge behavior is not yet established. Repository metadata confirms `allow_auto_merge=false`, and previous campaign logs show that Actions cannot create PRs. Therefore, successful artifact upload must not be confused with successful publication or merging.
+
+### Phase 6 continuation
+
+[Tracker run 43565696164](https://github.com/wizekin/USG-Workbench/actions/runs/43565696164)
+
+The report confirms:
+
+- Bounded Phase 6 acceptance remains valid for registered scopes.
+- Phase 7 is not blocked.
+- Naturalistic accuracy is not established.
+- Eight continuation work items remain.
+
+In particular:
+
+- P6-CONT-02: broader relative, embedded and argument-gap attachment remains open.
+- P6-CONT-07: rights-cleared naturalistic construction evaluation remains open.
+- Broader operator scope and discourse-reference expansion remain candidate-only.
+
+The synthetic reference work under SYS-10/11 is useful for its bounded synthetic domain, but does not replace independent naturalistic semantic evidence.
+
+## 6. SYS-08: next construction investigation
+
+<badge color="warning">Not implemented as a reproducible repository diagnostic</badge>
+
+The PUD pilot currently extracts text and creates cases, but it still does not compute structural-frequency diagnostics as a reproducible campaign artifact.
+
+The previous exploratory measurement suggested relative-clause attachment as the best bounded construction candidate:
+
+| UD construction proxy | English | Arabic |
+|---|---:|---:|
+| Relative clauses | 193 | 265 |
+| Active transitive roots | 293 | 205 |
+| Copular predicates | 186 | 54 |
+| Clause complements | 245 | 189 |
+| Passive roots | 140 | 72 |
+| Adverbial clauses | 156 | 167 |
+| Coordination | 155 | 144 |
+
+These are previous one-off syntactic measurements, not newly reproduced or accepted repository diagnostics. In this review, direct retrieval of the large raw CoNLL-U files through the GitHub file interface was rejected because of file-size limitations.
+
+The correct next step is to compute the frequencies inside the existing GitHub Actions environment using the pinned sources.
+
+### SYS-08 acceptance hypothesis
+
+Build a separate, reproducible diagnostic that:
+
+1. Parses the pinned English and Arabic CoNLL-U files.
+2. Counts construction proxies using explicit dependency/POS rules.
+3. Reports raw counts and per-language frequencies.
+4. Preserves source commits, file hashes, sentence denominators and provenance.
+5. Includes small regression fixtures for positive, negative and ambiguous structural patterns.
+6. Attaches the results to the naturalistic campaign evidence.
+
+Relative-clause attachment should remain a candidate for expansion, not an accepted runtime capability.
+
+<FollowUp value="Trace relative-clause attachment" query="Inspect USG's existing syntax, semantic-composition and discourse interfaces for relative-clause attachment. Define minimal bilingual positive, negative, ambiguous and argument-gap fixtures, and identify what independent semantic annotations are needed before proposing any runtime rule." source="scheduled_task_followups_v1" />
+
+## 7. System-wide alignment and drift
+
+I rechecked all four required governance documents:
+
+- [Growth Policy and Autonomy](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md)
+- [System-Wide Capability Assessment](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md)
+- [System Improvement Backlog](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md)
+- [Cross-Implementation Conformance Matrix](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md)
+
+Three discrepancies remain.
+
+**1. Backlog sequencing is stale.**
+
+The backlog still places SYS-16 before SYS-08/SYS-09. This conflicts with the current supervisor's dependency order.
+
+The current sequence remains:
+
+SYS-08 → SYS-09 → SYS-16 → SYS-17 → SYS-12 → SYS-14 → SYS-10/11.
+
+**2. Cross-implementation matrix is stale.**
+
+The matrix still describes JS browser execution as missing.
+
+However, [PR #194](https://github.com/wizekin/USG-Workbench/pull/194) was merged with merge commit:
+
+`790da191588608dbe144114af07432b4bab0b9ac`
+
+Its dedicated Chromium browser-adapter test passed.
+
+The correct capability description is:
+
+- Browser execution: demonstrated.
+- English local-rule fallback: demonstrated.
+- Arabic Workbench support: not established.
+- Cross-runtime semantic equivalence: not established.
+- Semantic correctness: not established.
+
+All five shared cross-implementation conformance gates remain `not_started`.
+
+**3. Evaluation maturity still exceeds semantic capability.**
+
+The repository continues to develop useful diagnostics, inventories, adapters and acceptance workflows. But no new evidence establishes broad improvement in semantic composition, operator scope, discourse reference or multilingual semantic correctness.
+
+The lexical crawl must not become the system's dominant measure of progress.
+
+The governing objective remains reusable semantic classes, constructions, roles, relations, operators and traceable reasoning evidence.
+
+## 8. Repository changes, PRs and execution blockers
+
+<badge color="success">No runtime mutation</badge>
+
+No changes were made by this supervisor to:
+
+- Canonical `USG-SEM/1.0`.
+- Accepted Phase 1–5 contracts.
+- Active lexical resources.
+- Syntax or semantic runtime rules.
+- Operator or discourse rules.
+- Gold labels or acceptance thresholds.
+
+The scheduled lexical workflow added candidate-only resources. No candidate was promoted.
+
+No PRs were opened or merged by this supervisor run. No supervisor merge SHA exists.
+
+The existing [PR #229](https://github.com/wizekin/USG-Workbench/pull/229) remains open:
+
+- It publishes the earlier OWC-OW7 campaign.
+- It is mergeable according to GitHub metadata.
+- It has zero reported check runs.
+- Its combined status is pending with no statuses.
+- Repository auto-merge is disabled.
+
+It was not merged.
+
+### Exact blockers to automatic implementation
+
+1. Actions PR creation is explicitly disabled, as confirmed in the campaign logs.
+2. Repository auto-merge is disabled.
+3. The GitHub plugin exposes repository reads and Git writes but does not expose workflow dispatch for running new CI campaigns.
+4. The large pinned PUD source files could not be retrieved through the current file-fetch interface for a fresh local frequency calculation.
+5. Independent naturalistic semantic annotations are not yet available.
+
+The safe next step is to implement SYS-08 in the existing workflow environment, validate its fixtures and source accounting, and preserve the result as an evidence artifact. Runtime changes must remain gated.
+
+---
+
+## 9. Final daily status
+
+| Workstream | Current status |
+|---|---|
+| SYS-01/02 accounting and attribution | Complete for registered profiles |
+| SYS-03 naturalistic pilot | Generator complete; full campaign pending |
+| SYS-04 browser adapter | Complete for English browser execution |
+| SYS-05/06 lexical candidate adapter and regressions | Complete; candidate-only |
+| SYS-07 dependency graphs | Complete for registered Phase 4/5 profiles |
+| SYS-08 structural-frequency diagnostics | Next implementation |
+| SYS-09 independent construction gold | Pending |
+| SYS-12 cross-runtime conformance | Five gates still open |
+| SYS-13 Kernel Lab explanations | Complete for bounded Phase 5 scope |
+| SYS-14 full failure-corpus replay | Open |
+| SYS-15 growth planner | Implemented; latest plan stale |
+| SYS-16 bounded repair executor | Pending |
+| SYS-17 candidate growth loop | Pending |
+
+**Changes this run:** the external lexical inventory advanced to 330,602 headwords; the latest English lexical evaluation improved to 20.82% exact surface coverage; OWC-OW7 produced a new partial campaign; and the Phase 6 tracker completed successfully.
+
+**No semantic runtime improvement was accepted. No candidate resources were promoted. No PR was merged.**
+
+**Next dependency-ready work: SYS-08 — reproducible bilingual PUD structural-frequency diagnostics, followed by independent construction-level semantic evidence under SYS-09.**
+
+The central priority remains improving USG's ability to transform language evidence into explicit, compositional and independently verifiable meaning—not simply making its dictionary, test suite or workflow catalogue larger.
+
+---
+
+[ASSISTANT]
+# USG System-Wide Growth Supervisor — Daily Report
+
+<row align="center" gap={2}>
+  <badge color="success">Monitoring completed</badge>
+  <badge color="success">SYS-08 advanced</badge>
+  <badge color="warning">CI acceptance pending</badge>
+</row>
+
+<text color="secondary" size="xs">15 November 2026 · 20:43 Cairo</text>
+
+**Overall assessment:** USG's lexical candidate inventory has expanded substantially, and a new Open-World campaign provides updated evidence about the interpretation pipeline. More importantly, I advanced SYS-08 by creating an isolated implementation of reproducible bilingual PUD structural-frequency diagnostics. I also corrected several stale documentation and reporting claims on that branch.
+
+No semantic runtime changes were made, no resources were promoted, and no PRs were opened or merged.
+
+All GitHub operations used the GitHub plugin directly. No Composio GitHub operations were used.
+
+## 1. GitHub Actions monitoring
+
+**Monitoring period:** 14 November 21:01 Cairo – 15 November 20:43 Cairo.
+
+<row align="center" gap={2}>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" color="success" tabularNums>12</title>
+    <text color="secondary" size="xs">Runs completed successfully</text>
+  </box>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" tabularNums>4</title>
+    <text color="secondary" size="xs">Lexical crawls</text>
+  </box>
+  <box flex="1" background="surface-secondary" radius="lg" padding={3}>
+    <title size="2xl" tabularNums>4</title>
+    <text color="secondary" size="xs">Lexical evaluations</text>
+  </box>
+</row>
+
+All 12 newly created runs completed successfully. Relevant job-level skips were also inspected.
+
+| Workflow | Run |
+|---|---|
+| Open-World exploration | [43670079717](https://github.com/wizekin/USG-Workbench/actions/runs/43670079717) |
+| Growth controller | [43681363552](https://github.com/wizekin/USG-Workbench/actions/runs/43681363552) |
+| System evidence collection | [43684527295](https://github.com/wizekin/USG-Workbench/actions/runs/43684527295) |
+| Phase 6 tracker | [43684965181](https://github.com/wizekin/USG-Workbench/actions/runs/43684965181) |
+| Four lexical crawls | [43630821732](https://github.com/wizekin/USG-Workbench/actions/runs/43630821732), [43663975597](https://github.com/wizekin/USG-Workbench/actions/runs/43663975597), [43690513058](https://github.com/wizekin/USG-Workbench/actions/runs/43690513058), [43718690037](https://github.com/wizekin/USG-Workbench/actions/runs/43718690037) |
+| Four lexical evaluations | [43654865894](https://github.com/wizekin/USG-Workbench/actions/runs/43654865894), [43682638322](https://github.com/wizekin/USG-Workbench/actions/runs/43682638322), [43709962994](https://github.com/wizekin/USG-Workbench/actions/runs/43709962994), [43741587688](https://github.com/wizekin/USG-Workbench/actions/runs/43741587688) |
+
+The latest tested main commit is:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+Its only change relative to the preceding main commit was adding the Apache 2.0 repository license. This does not override the independent licensing obligations of third-party PUD and lexical resources.
+
+**Not executed during this monitoring period:**
+
+- Full naturalistic bilingual PUD campaign.
+- Dedicated Phase 4/5 frozen benchmark workflows.
+- Dedicated cross-implementation conformance workflow.
+- Full accepted-failure-corpus replay.
+- Separate scheduled browser-adapter smoke workflow.
+
+The Open-World campaign did exercise the browser adapter internally, as described below.
+
+## 2. Latest Open-World campaign: OWC-OW7
+
+<badge color="warning">Partial campaign</badge>
+
+[Campaign run 43670079717](https://github.com/wizekin/USG-Workbench/actions/runs/43670079717)
+
+Campaign ID:
+
+`OWC-OW7-43670079717-1`
+
+Tested commit:
+
+`4fa85a3206659d1389d8650e83ed23c7610a861a`
+
+[Campaign artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43670079717/artifacts/14143762452)
+
+### Population accounting
+
+The three evaluation populations remain separate.
+
+| Outcome | Random (220) | Controlled (106) | Naturalistic (0) |
+|---|---:|---:|---:|
+| Completed | 2 | 48 | 0 |
+| Partial | 169 | 42 | 0 |
+| Unsupported | 25 | 16 | 0 |
+| Ambiguous | 4 | 0 | 0 |
+| Not executed | 20 | 0 | 0 |
+| Actual attempts | 200 | 106 | 0 |
+
+<text color="secondary" size="xs">The random population's 20 not-executed records belong to the Workbench-to-canonical adapter. They are not successful executions.</text>
+
+Overall accounting:
+
+- 326 result records.
+- 306 actual executions.
+- 20 not executed.
+- 50 completed.
+- 211 partial.
+- 41 unsupported.
+- 4 ambiguous.
+- Zero abstentions.
+- Zero crashes, timeouts, infrastructure errors or invalid outputs.
+
+The controlled population has structural-oracle diagnostics. This is not independent semantic gold.
+
+### Language distribution
+
+| Language hint | Cases |
+|---|---:|
+| English | 154 |
+| Arabic | 84 |
+| Mixed English/Arabic | 88 |
+
+### Target-specific results
+
+| Target | Cases | Completed | Partial | Unsupported | Ambiguous |
+|---|---:|---:|---:|---:|---:|
+| Phase 4 | 26 | 2 | 3 | 21 | 0 |
+| Phase 5 | 120 | 46 | 57 | 13 | 4 |
+| JS Workbench | 20 | 2 | 11 | 7 | 0 |
+
+Seven other targets produced 20 partial outcomes each. The Workbench-to-canonical adapter produced 20 not-executed records.
+
+### First-blocking stages
+
+<Chart content={{"chartType":"bar","meta":{"title":"OWC-OW7 first-blocking stages","description":"79 cases with attributed first blockers. Downstream co-occurrences are excluded."},"xKey":"stage","series":[{"dataKey":"cases","label":"First blockers"}],"data":[{"stage":"Lexical","cases":61},{"stage":"Syntax","cases":17},{"stage":"Discourse","cases":1}]}}/>
+
+Substantive diagnostic codes:
+
+| Stage | Diagnostic | Cases |
+|---|---|---:|
+| Lexical | `LEXICAL_UNRESOLVED_TOKEN` | 61 |
+| Lexical | `LEXICAL_AMBIGUOUS_TOKEN` | 4 |
+| Syntax | `SYNTAX_UNSUPPORTED` | 11 |
+| Syntax | `UNSUPPORTED_INTERROGATIVE_FORCE` | 3 |
+| Syntax | `INCOMPLETE` | 3 |
+| Discourse | `DISCOURSE_ANTECEDENT_UNRESOLVED` | 1 |
+
+Downstream diagnostic co-occurrences:
+
+| Stage | Cases |
+|---|---:|
+| Semantic composition | 74 |
+| Syntax | 59 |
+| Operators | 11 |
+| Discourse | 11 |
+
+These are observed co-occurrences, not proven causal relationships.
+
+Other important accounting:
+
+- 228 attempts had no observed blocking diagnostics.
+- 7 attempts lacked target-result payloads.
+- 25 failure clusters were identified.
+- No adaptive follow-up cases were generated.
+- Historical comparison covered one previous campaign.
+
+### Browser adapter verification
+
+The JS target's actual execution metadata confirms:
+
+- Playwright adapter: `playwright-js-semantic-workbench` v0.1.0.
+- Chromium: 159.0.8154.6.
+- Loopback-only networking.
+- Deterministic local rule fallback.
+- No Ollama request.
+- No recorded page or console errors in the browser-backed cases.
+
+The separate `browser` job was skipped because it is conditional on pull-request events. This does not mean the campaign's own Playwright executions were skipped.
+
+The distinction remains essential:
+
+- Browser/UI execution: demonstrated.
+- Structured output: demonstrated.
+- English Workbench interpretation: bounded local-rule execution.
+- Arabic Workbench support: not established.
+- Semantic correctness: not established.
+
+I also found that the campaign report still contained an outdated statement claiming the browser adapter was unavailable. I corrected this on the new isolated branch.
+
+## 3. External lexical and morphology evidence
+
+<badge color="info">Candidate-only resources</badge>
+
+Latest crawl:
+
+[Run 43718690037](https://github.com/wizekin/USG-Workbench/actions/runs/43718690037)
+
+Data branch commit:
+
+`5266f535f8f8d78f1939ac20f2ffc58d5458981d`
+
+### Current inventory
+
+| Metric | Value |
+|---|---:|
+| Expected headwords | 1,396,111 |
+| Processed headwords | 450,602 |
+| Completion | 32.28% |
+| Entries | 483,930 |
+| Senses | 586,024 |
+| Logical batches | 19 |
+| Physical shard files | 20 |
+| Stored compressed bytes | 115,349,630 |
+| Storage budget | 734,003,200 |
+
+The latest audit returned `passed_with_warnings`:
+
+- One duplicate physical shard copy.
+- Zero audit errors.
+- 198 historical failed headwords recovered.
+- Zero pending retries.
+- Zero dead-lettered retries.
+- Zero failed pages.
+
+Source snapshot:
+
+`enwiktionary-2026-10-01-raw-244dcdc56868`
+
+[Current candidate manifest](https://github.com/wizekin/USG-Workbench/blob/usg-external-lexical-data/state/manifest.json)
+
+### Latest English lexical evaluation
+
+[Run 43741587688](https://github.com/wizekin/USG-Workbench/actions/runs/43741587688)
+
+[Evaluation artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43741587688/artifacts/14172204321)
+
+| Metric | Latest result |
+|---|---:|
+| PUD tokens | 21,180 |
+| Seen tokens | 5,288 |
+| OOV tokens | 15,892 |
+| Exact surface coverage | 24.97% |
+| OOV rate | 75.03% |
+| Gold UPOS candidate recall | 16.79% |
+| Gold UPOS hit when seen | 67.27% |
+| Ambiguity rate when seen | 49.91% |
+| Content-token coverage | 26.84% |
+| Gold lemma coverage | 21.65% |
+| Lemma + UPOS candidate recall | 15.18% |
+
+Morphology, restricted to the mapped plural, comparative and superlative features:
+
+| Metric | Result |
+|---|---:|
+| Candidate feature instances | 1,640 |
+| Matched instances | 329 |
+| Candidate-pool precision | 20.06% |
+| Candidate recall | 16.97% |
+
+Compared with the preceding evaluation, exact surface coverage increased from approximately 22.56% to 24.97%, a gain of 2.40 percentage points.
+
+This is measurable candidate-coverage progress, not proof of contextual POS accuracy or improved semantic understanding.
+
+The evaluation's 21 report-integrity checks passed. Its acceptance type is explicitly:
+
+`REPRODUCIBLE_REPORT_INTEGRITY_ONLY`
+
+No lexical quality thresholds were applied. Runtime promotion remains disabled.
+
+The evidence is English-only; Arabic lexical coverage is not established.
+
+## 4. Growth planner and evidence catalogue
+
+### Growth plan
+
+[Run 43681363552](https://github.com/wizekin/USG-Workbench/actions/runs/43681363552)
+
+[Growth-plan artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43681363552/artifacts/14148527499)
+
+The growth planner generated successfully, but its newest plan analyzes only:
+
+`OWC-OW6-43015126807-1`
+
+It identifies 68 syntax first-blocker records and a priority score of 78. It also retains an older Phase 5 pipeline-version mismatch warning covering 1,058 records.
+
+It did not incorporate the newer OWC-OW7 campaign.
+
+The reason is that the OWC-OW7 report is not committed to main.
+
+### System evidence catalogue
+
+[Run 43684527295](https://github.com/wizekin/USG-Workbench/actions/runs/43684527295)
+
+[Evidence catalogue artifact](https://github.com/wizekin/USG-Workbench/actions/runs/43684527295/artifacts/14149738498)
+
+<badge color="success">14/14 bounded Phase 8 checks passed</badge>
+
+This acceptance is limited to the evidence catalogue, resource manifests, routing, freshness diagnostics and development-intelligence control plane.
+
+It does not establish semantic accuracy.
+
+I found a significant completeness discrepancy:
+
+| Inventory | Count |
+|---|---:|
+| Actual `.yml` workflow definitions on main | 127 |
+| Catalogue workflow records | 100 |
+| Missing catalogue entries | 27 |
+
+The Phase 8 workflow-observability check passed despite this discrepancy. It needs stronger pagination/completeness validation.
+
+The catalogue also contains an older lexical snapshot:
+
+- 390,602 headwords.
+- 419,184 entries.
+- 507,088 senses.
+- 17 logical batches.
+
+The current committed lexical branch has 450,602 headwords and 19 logical batches.
+
+Thus, the evidence catalogue is stale relative to the latest crawl and evaluation.
+
+## 5. Naturalistic PUD and Phase 6
+
+<badge color="warning">Full naturalistic campaign not yet established</badge>
+
+There was no new weekly PUD campaign run in this monitoring window.
+
+The workflow is scheduled for Monday, **16 November 2026 at 06:00 Cairo**.
+
+Its intended population is:
+
+- 50 English sentences.
+- 50 Arabic sentences.
+- Three targets: JS Workbench, Phase 4 and Phase 5.
+- 300 target records.
+
+### Pinned sources and rights
+
+The generator retains these source commits:
+
+- [English PUD](https://github.com/UniversalDependencies/UD_English-PUD/tree/a697bab43d4111073356de0df5802488bca3de7e)
+- [Arabic PUD](https://github.com/UniversalDependencies/UD_Arabic-PUD/tree/c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87)
+
+Both sources use CC BY-SA 3.0. The campaign generator provides `LICENSE.txt`, `ATTRIBUTION.md` and a source manifest.
+
+Important limitations remain:
+
+- The privacy screen rejects email and URL patterns but retains public proper names.
+- It is not comprehensive personal-data detection.
+- English PUD contains both original English and translated sentences.
+- All Arabic PUD sentences are translated, not a representative native-MSA distribution.
+- PUD is news/Wikipedia text, not conversational user requests.
+- UD dependency/POS annotations are not USG semantic gold.
+
+One additional rights-review item: the manifest records upstream README hashes, but the campaign's copy list includes the licence and generic attribution files rather than the pinned upstream README contents. The completeness of contributor attribution should be checked before treating the publication package as fully rights-verified.
+
+### Publication and auto-merge blocker
+
+The repository currently reports:
+
+`allow_auto_merge = false`
+
+The OWC campaign log also explicitly reports that GitHub Actions is not permitted to create or approve pull requests.
+
+The existing PUD workflow on main has no `continue-on-error` on its PR-creation step. Consequently, its first full campaign could upload the artifact successfully and then fail during publication, without reaching its summary step.
+
+I prepared a bounded failure-handling correction on the isolated branch. It:
+
+- Preserves successful artifact upload.
+- Allows reporting to continue when PR creation fails.
+- Records the report branch.
+- Distinguishes an accepted auto-merge request from a failed one.
+
+This correction has not reached main.
+
+### Phase 6 tracker
+
+[Run 43684965181](https://github.com/wizekin/USG-Workbench/actions/runs/43684965181)
+
+The tracker completed successfully.
+
+- Eight continuation work items remain.
+- Bounded Phase 6 acceptance remains valid for registered scopes.
+- Phase 7 is not blocked.
+- Naturalistic semantic accuracy remains unestablished.
+- P6-CONT-02, broader relative/subordinate/embedded attachment, remains open.
+- P6-CONT-07, rights-cleared naturalistic construction evaluation, remains open.
+
+No new independent semantic gold or annotation acceptance was established.
+
+## 6. SYS-08 implementation advanced
+
+<badge color="success">Isolated branch created</badge>
+
+I moved beyond the previous exploratory frequency investigation and created a reproducible diagnostic implementation.
+
+<box border radius="lg" padding={3} gap={2}>
+  **Branch**
+
+  `automation/sys-08-pud-structural-frequency`
+
+  **Head commit**
+
+  `beb97db13368256a6a9dff84fc1ba30cb53bd4d4`
+
+  <row align="center" gap={2}>
+    <badge color="success">8/8 local fixture tests passed</badge>
+    <badge color="warning">Not CI-verified</badge>
+  </row>
+  <text color="secondary" size="xs">14 commits ahead of main; isolated and unmerged.</text>
+  <text color="secondary" size="sm"><Link url="https://github.com/wizekin/USG-Workbench/tree/automation/sys-08-pud-structural-frequency" title="Inspect SYS-08 branch"/></text>
+</box>
+
+### What was added
+
+**1. Reproducible CoNLL-U structural analyzer**
+
+[New implementation](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/tools/open_world_evaluation/pud_structural_frequency.py)
+
+It measures seven construction proxies:
+
+1. Relative-clause attachment.
+2. Active transitive roots.
+3. Copular predicates.
+4. Clause complements.
+5. Passive roots.
+6. Adverbial clauses.
+7. Coordination.
+
+For each language it calculates:
+
+- Sentence count.
+- Token count.
+- Number of sentences containing each construction.
+- Number of construction instances.
+- Sentence-presence rate.
+- Frequency per 1,000 sentences.
+
+The analyzer verifies the pinned source Git blob SHA-1 and content SHA-256 against the generator's source manifest. It also verifies the sentence denominators.
+
+It does not store raw PUD source text in the campaign artifact.
+
+**2. Frozen regression fixtures**
+
+[New tests](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/tests/test_pud_structural_frequency.py)
+
+Eight tests passed in an isolated local fixture harness, with the existing PUD source constants stubbed.
+
+They cover parsing, multiword/empty-node exclusion, frequency denominators, active/passive distinction, malformed input, empty populations, source-hash reconciliation and the no-semantic-gold boundary.
+
+<text color="secondary" size="xs">These results do not constitute a full repository test run or verification against the actual pinned PUD files.</text>
+
+**3. PUD campaign integration**
+
+[Updated PUD workflow](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/.github/workflows/open-world-naturalistic-pud-pilot.yml)
+
+The workflow now:
+
+- Runs the diagnostic regression tests.
+- Computes `structural-frequency.json` from the pinned sources.
+- Adds its hash and denominators to the source manifest.
+- Copies the diagnostic report into the campaign bundle.
+- Preserves transparent publication and auto-merge outcomes.
+
+**4. Documentation and evidence corrections**
+
+Also updated on the branch:
+
+- [SYS-08 diagnostic specification](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/documentation/USG-PUD-STRUCTURAL-FREQUENCY-DIAGNOSTICS.md)
+- [Improvement backlog and dependency order](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md)
+- [Cross-implementation matrix](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md)
+- [Machine-readable conformance matrix](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/evaluations/system-wide/cross-implementation-matrix-2026-11-12.json)
+- [Campaign report generator](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/tools/open_world_evaluation/campaign_pipeline.py)
+- [Campaign report regression test](https://github.com/wizekin/USG-Workbench/blob/automation/sys-08-pud-structural-frequency/tests/test_open_world_campaign.py)
+
+The cross-implementation matrix now correctly records English Playwright execution as component-tested rather than missing.
+
+Its five cross-runtime conformance gates remain `not_started`.
+
+The backlog now follows the requested dependency order:
+
+SYS-08 → SYS-09 → SYS-16 → SYS-17 → SYS-12 → SYS-14 → SYS-10/11.
+
+**No runtime syntax, semantic, operator or discourse rules were changed.**
+
+<FollowUp value="Review SYS-08 parser edge cases" query="Review the SYS-08 PUD structural-frequency implementation on branch automation/sys-08-pud-structural-frequency for additional UD parsing edge cases, source-integrity risks, and bilingual regression fixtures. Do not open a PR or merge anything." source="scheduled_task_followups_v1" />
+
+## 7. PRs, merges and blockers
+
+<badge color="success">No PR opened or merged by this supervisor</badge>
+
+The main branch remains at:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+The new SYS-08 branch is not merged.
+
+Existing [PR #229](https://github.com/wizekin/USG-Workbench/pull/229) remains open and is reported as not mergeable. It contains the previous OWC-OW7 campaign, not the newest campaign.
+
+The newer campaign report exists on:
+
+`reports/ow7-43670079717-1`
+
+Branch commit:
+
+`86a7af6ae66c1c3281dd4788accfa9e6bfb311f1`
+
+Its PR creation failed due to GitHub Actions permissions. It is not committed to main.
+
+### Outstanding blockers
+
+| Blocker | Consequence | Safe next step |
+|---|---|---|
+| Actions cannot create PRs | Campaign reports remain on branches | Resolve repository Actions PR permission |
+| Auto-merge disabled | Automatic report merging unavailable | Review repository auto-merge policy |
+| SYS-08 branch not on main | Next scheduled PUD run cannot use the new diagnostic | Review and integrate through an authorized path |
+| No full PUD semantic gold | Cannot accept new semantic construction rules | Complete SYS-09 annotation/adjudication design |
+| Incomplete workflow inventory | Evidence catalogue misses 27 definitions | Improve pagination and completeness checks |
+| No full replay corpus | Accepted-failure regressions remain incomplete | Continue SYS-14 after prerequisites |
+
+## 8. Final system assessment
+
+| Area | Assessment |
+|---|---|
+| Lexical candidate growth | Improving coverage; still high OOV |
+| Morphology/POS | Candidate evidence improving; contextual accuracy unproven |
+| Syntax/constructions | Material unresolved and unsupported cases |
+| Semantic composition | Significant downstream unresolved diagnostics |
+| Operators/scope | No new independent correctness evidence |
+| Discourse/reference | Conservative resolution remains limited |
+| Persistence/replay | Smoke capability only; full corpus open |
+| Browser adapter | English component execution demonstrated |
+| Cross-runtime conformance | Not established |
+| Naturalistic bilingual evaluation | First full campaign pending |
+| Independent semantic gold | Insufficient for new construction acceptance |
+
+**Next dependency-ready work: SYS-08.**
+
+The new diagnostic implementation is on an isolated branch, but its actual bilingual frequency report has not yet been generated. I am deliberately not selecting a construction based solely on the previous exploratory counts.
+
+Once reproducible English and Arabic frequencies are available, the next step is to select one bounded construction, freeze its positive/negative/ambiguous/boundary cases, and establish the independent semantic annotation pathway under SYS-09.
+
+The system's main objective remains unchanged: develop a modular, reusable, evidence-grounded semantic grammar that can compose and reason about meaning. Increasing dictionary size, passing more workflow checks, or producing more structured browser outputs must never be mistaken for that objective being achieved.
+
+---
+
+[ASSISTANT]
+There was a problem with your scheduled task.
+
+---
+
+[ASSISTANT]
+# USG System-Wide Growth Supervisor — Daily Report
+
+<row align="center" gap={2}>
+  <badge color="success">SYS-16 merged</badge>
+  <badge color="success">SYS-08 / SYS-09 foundations merged</badge>
+  <badge color="warning">First automatic repair pending</badge>
+</row>
+
+**17 November 2026**
+
+**Repository:** [wizekin/USG-Workbench](https://github.com/wizekin/USG-Workbench)
+
+**Current main commit:** `41a429ea3d389cf4548d49796221674edc43ed2f`
+
+All GitHub operations in this run used the GitHub plugin directly. No Composio GitHub operations were used.
+
+## 1. Actions monitoring
+
+<text color="secondary" size="xs">Monitoring interval: 15 November 20:43 – 17 November 21:24, Cairo time.</text>
+
+<grid columns={4} gap={2}>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={2}>
+      <title size="2xl" tabularNums>103</title>
+      <caption>Runs checked</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={2}>
+      <title size="2xl" color="success" tabularNums>93</title>
+      <caption>Successful</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={2}>
+      <title size="2xl" color="danger" tabularNums>8</title>
+      <caption>Failed</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={2}>
+      <title size="2xl" tabularNums>2</title>
+      <caption>Other statuses</caption>
+    </box>
+  </grid-item>
+</grid>
+
+The 103 runs were retrieved across two pages and covered 20 workflow names.
+
+The remaining two statuses were one skipped run and one in-progress run.
+
+### Failure accounting
+
+| Failure category | Runs | Finding |
+|---|---:|---|
+| Long-Term Roadmap Synchronization | 5 | GitHub Actions cannot create/approve PRs |
+| Cross-Implementation Matrix | 1 | Evidence-path test-harness defect |
+| External Lexical Crawl | 1 | Generic checkpoint provider error |
+| Naturalistic PUD Pilot | 1 | Campaign publication failed |
+
+Important details:
+
+- Roadmap synchronization failures: [43835412877](https://github.com/wizekin/USG-Workbench/actions/runs/43835412877), [44153711424](https://github.com/wizekin/USG-Workbench/actions/runs/44153711424), [44153983588](https://github.com/wizekin/USG-Workbench/actions/runs/44153983588), [44157698446](https://github.com/wizekin/USG-Workbench/actions/runs/44157698446), [44158190752](https://github.com/wizekin/USG-Workbench/actions/runs/44158190752).
+- Cross-matrix failure [44153016924](https://github.com/wizekin/USG-Workbench/actions/runs/44153016924) incorrectly treated external GitHub evidence URLs as local filesystem paths. Subsequent matrix validations succeeded, including [44153711470](https://github.com/wizekin/USG-Workbench/actions/runs/44153711470).
+- Crawl failure [44095035893](https://github.com/wizekin/USG-Workbench/actions/runs/44095035893) reported `ProviderError: data-branch checkpoint is invalid or unavailable`. The durable branch checkpoint still exists and is valid; the underlying provider cause remains unknown.
+- PUD run [43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720) completed execution and uploaded its artifact, but report PR creation failed. Its summary step was consequently skipped under the older workflow version.
+
+The skipped lexical evaluation [44095096997](https://github.com/wizekin/USG-Workbench/actions/runs/44095096997) was dependent on the failed crawl.
+
+<badge color="warning">Still running</badge> [Open-World First Pilot — run 44153711435](https://github.com/wizekin/USG-Workbench/actions/runs/44153711435)
+
+Its Python/browser execution step is still running. The subsequent scoring, coverage-ledger, campaign-bundle and publication steps have not completed. Its population must not yet be counted as a completed campaign.
+
+## 2. Latest Open-World campaign
+
+<text weight="medium">Campaign OWC-OW7-44006690109-1</text>
+
+[Run 44006690109](https://github.com/wizekin/USG-Workbench/actions/runs/44006690109) · [Campaign artifact](https://github.com/wizekin/USG-Workbench/actions/runs/44006690109/artifacts/14294054781)
+
+Tested commit:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+This is the latest completed Open-World campaign I verified. It is not the latest main commit.
+
+### Population accounting
+
+| Outcome | Randomized (220) | Controlled (106) | Naturalistic |
+|---|---:|---:|---:|
+| Completed | 1 | 48 | 0 |
+| Partial | 166 | 42 | 0 |
+| Unsupported | 25 | 16 | 0 |
+| Ambiguous | 8 | 0 | 0 |
+| Not executed | 20 | 0 | 0 |
+| **Total** | **220** | **106** | **0** |
+
+There were 306 actual attempts and 20 not-executed records.
+
+The controlled population received structural-oracle scoring. This is not independent semantic gold. The randomized population had no independent oracle.
+
+### First-blocking stages
+
+<Chart content={{"chartType":"bar","meta":{"title":"OWC-OW7 first-blocking stages","description":"Counts across the 326 campaign records."},"xKey":"stage","series":[{"dataKey":"cases","label":"Records"}],"data":[{"stage":"Lexical","cases":61},{"stage":"Syntax","cases":16},{"stage":"Discourse","cases":1}]}}/>
+
+Primary diagnostic codes:
+
+| Stage | Codes |
+|---|---|
+| Lexical | `LEXICAL_UNRESOLVED_TOKEN`, `LEXICAL_AMBIGUOUS_TOKEN` |
+| Syntax | `SYNTAX_UNSUPPORTED`, `UNSUPPORTED_INTERROGATIVE_FORCE`, `INCOMPLETE` |
+| Discourse | `DISCOURSE_ANTECEDENT_UNRESOLVED` |
+
+Later-stage co-occurrences included semantic composition (73), syntax (59), operators (7) and discourse (18). These are diagnostic correlations, not proven causal effects.
+
+### Language and target evidence
+
+Language distribution:
+
+- English: 209
+- Arabic: 62
+- Mixed English/Arabic: 55
+
+Important target outcomes:
+
+| Target | Cases | Results |
+|---|---:|---|
+| JS Semantic Workbench | 20 | 1 completed, 13 partial, 6 unsupported |
+| Phase 4 | 26 | 2 completed, 2 partial, 22 unsupported |
+| Phase 5 | 120 | 46 completed, 53 partial, 13 unsupported, 8 ambiguous |
+| Seven other targets | 20 each | Partial |
+| Workbench-to-canonical adapter | 20 | Not executed |
+
+The JS target's 14 English cases produced one completed and 13 partial outcomes. Its six Arabic/mixed cases were unsupported.
+
+There were no abstentions, crashes, timeouts or infrastructure errors.
+
+**Interpretation:** the main measured weaknesses remain lexical resolution, ambiguity and syntax support. Controlled diagnostic performance must not be generalized to unrestricted language understanding.
+
+## 3. Naturalistic bilingual PUD evidence
+
+<badge color="warning">Executed, not committed to main</badge>
+
+[First full PUD campaign — run 43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)
+
+Campaign ID:
+
+`OWC-NAT-PUD-43810018720-1`
+
+Tested commit:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+[Campaign report branch](https://github.com/wizekin/USG-Workbench/tree/reports/naturalistic-pud-43810018720-1)
+
+Branch commit:
+
+`e6841e98d5512c19b98b58e15da0ec956d3d60af`
+
+### Outcome accounting
+
+| Metric | Result |
+|---|---:|
+| Naturalistic cases | 300 |
+| Actual attempts | 300 |
+| English | 150 |
+| Arabic | 150 |
+| Completed | 4 |
+| Partial | 245 |
+| Unsupported | 51 |
+| Ambiguous | 0 |
+| Abstained | 0 |
+| Semantic-scored attempts | 0 |
+
+The three targets each received 100 cases.
+
+First blockers:
+
+- Lexical: 100
+- Syntax: 99
+
+Primary diagnostics:
+
+- `LEXICAL_UNRESOLVED_TOKEN`: 100
+- `INCOMPLETE`: 99
+
+The Phase 4 target had syntax first blockers in 50 English and 49 Arabic cases. Phase 5 had lexical first blockers in 50 English and 50 Arabic cases.
+
+The JS target produced:
+
+- English: 4 completed, 46 partial.
+- Arabic: 50 unsupported.
+
+The campaign had 50 records without target-result payloads, and `complete_population_coverage` was false. Thus, all attempts were accounted for, but the campaign did not establish complete usable output coverage.
+
+### PUD source and licensing review
+
+[Source manifest](https://github.com/wizekin/USG-Workbench/blob/reports/naturalistic-pud-43810018720-1/evaluations/open-world/campaigns/OWC-NAT-PUD-43810018720-1/source-manifest.json)
+
+| Source | Pinned commit |
+|---|---|
+| English PUD | `a697bab43d4111073356de0df5802488bca3de7e` |
+| Arabic PUD | `c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87` |
+
+Both sources use CC BY-SA 3.0. The campaign contains a licence file and attribution file.
+
+Important limitations:
+
+- PUD consists of news/Wikipedia text, not conversational user requests.
+- Arabic PUD is translated: 750 sentences originate in English and 250 originate in German, French, Italian or Spanish via English.
+- It is not representative of native MSA.
+- Public names are retained.
+- Email and URL patterns are screened, but the screen is not comprehensive personal-data detection.
+- No private user conversations are included.
+- UD annotations are not USG semantic gold.
+
+The attribution file refers to pinned upstream READMEs for complete contributor attribution. The complete attribution packaging still needs review before external redistribution.
+
+**Publication result:** the first campaign's artifact and report branch exist, but no report PR was created and no auto-merge occurred. The repository has `allow_auto_merge=false`, and GitHub Actions PR-creation permissions remain unavailable.
+
+The current PUD workflow has since been improved: it computes structural-frequency diagnostics, includes them in the campaign bundle and always produces a summary even if publication fails. That updated workflow has not yet completed another full weekly campaign.
+
+### SYS-08 structural-frequency diagnostics
+
+<badge color="success">Implementation merged and validation passed</badge>
+
+[Validation run 44153475418](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418) · [Artifact 14360695759](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418/artifacts/14360695759)
+
+Nine structural-frequency regression tests passed.
+
+The full pinned 1,000-sentence treebanks produced:
+
+| Construction proxy | English | Arabic |
+|---|---:|---:|
+| Combined ccomp/xcomp sentence presence | 348 | 349 |
+| ccomp sentence presence | 156 | 242 |
+| xcomp sentence presence | 243 | 140 |
+
+The subtype counts can overlap; they must not be summed as independent sentences.
+
+The bounded construction selected for further investigation is the clause-complement family (`ccomp/xcomp`).
+
+These are UD syntactic proxies, not semantic gold.
+
+### SYS-09 independent semantic-gold pathway
+
+[SYS-09 protocol](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYS-09-CONSTRUCTION-LEVEL-SEMANTIC-GOLD-PROTOCOL.md)
+
+PR #231 has merged. The protocol establishes:
+
+- Two independent qualified annotators.
+- A separate adjudicator.
+- Frozen semantic labels and annotation guidance.
+- Document-disjoint training/held-out separation.
+- Negative, ambiguous and abstention cases.
+- Per-language acceptance thresholds.
+
+The existing 50-sentence sample contains only 18 English and 16 Arabic construction positives, below the proposed minimum of 20 per language.
+
+<badge color="warning">Annotation blocked</badge>
+
+No independent annotation campaign or semantic gold exists yet. Independent annotators and the remaining attribution review are still required.
+
+## 4. External lexical and morphology evidence
+
+<badge color="info">Candidate-only</badge>
+
+Latest successful crawl: [44041196756](https://github.com/wizekin/USG-Workbench/actions/runs/44041196756)
+
+Current data-branch commit:
+
+`e771653b4b903372a262a6b6f3808948cd551d2f`
+
+### Inventory
+
+| Metric | Current value |
+|---|---:|
+| Expected headwords | 1,396,111 |
+| Processed headwords | 660,602 |
+| Completion | 47.32% |
+| Entries | 708,508 |
+| Senses | 854,085 |
+| Logical batches | 26 |
+| Physical shard files | 27 |
+| Stored bytes | 168,245,746 |
+| Storage budget | 734,003,200 |
+
+Storage utilization is approximately 22.92%.
+
+The shard audit reports:
+
+- Manifest consistency matched.
+- One duplicate physical shard copy.
+- Zero conflicting batch numbers.
+- Zero unrecognized paths.
+- Zero failed pages.
+
+Historical failed headwords: 198, all recovered.
+
+Pending retries, retry failures and dead-letter entries: zero.
+
+Source snapshot:
+
+`enwiktionary-2026-10-01-raw-244dcdc56868`
+
+Source commit:
+
+`4abc6b148921005f9ede04cb5a5dfad831b7b58c`
+
+The rights policy retains per-entry declared licensing and source/history URLs without storing source definitions or example passages.
+
+### Latest independent English PUD lexical evaluation
+
+[Run 44077073023](https://github.com/wizekin/USG-Workbench/actions/runs/44077073023) · [Artifact 14324528926](https://github.com/wizekin/USG-Workbench/actions/runs/44077073023/artifacts/14324528926)
+
+| Metric | Result |
+|---|---:|
+| Evaluated tokens | 21,180 |
+| Seen tokens | 7,721 |
+| OOV tokens | 13,459 |
+| Exact surface coverage | 36.45% |
+| OOV rate | 63.55% |
+| Gold UPOS candidate recall | 27.29% |
+| Gold UPOS hit when seen | 74.85% |
+| Ambiguity when seen | 56.46% |
+| Content-token coverage | 37.36% |
+| Gold lemma coverage | 32.13% |
+| Lemma + UPOS candidate recall | 23.99% |
+
+Morphology evaluation, limited to plural, comparative and superlative mappings:
+
+- Candidate-pool precision: 16.96%.
+- Candidate recall: 28.62%.
+
+These are candidate-pool measurements, not contextual prediction accuracy.
+
+The acceptance result is `REPRODUCIBLE_REPORT_INTEGRITY_ONLY`. Quality thresholds were not applied. Runtime promotion is disabled.
+
+No new Arabic lexical evaluation or independent contextual POS acceptance was established.
+
+## 5. Growth plan and system-wide alignment
+
+### Growth planner
+
+[Daily controller run 44025451603](https://github.com/wizekin/USG-Workbench/actions/runs/44025451603) · [Artifact 14302817524](https://github.com/wizekin/USG-Workbench/actions/runs/44025451603/artifacts/14302817524)
+
+The newer embedded growth plan in [system evidence run 44153983637](https://github.com/wizekin/USG-Workbench/actions/runs/44153983637) was generated at 19:02 UTC.
+
+It still analyzes only:
+
+`OWC-OW6-43015126807-1`
+
+It ranks syntax first, with 68 first-blocker records and priority score 78.
+
+It retains a warning for 1,058 Phase 5 pipeline-version mismatch records.
+
+This plan is stale against the newer OWC-OW7 and PUD campaigns. Neither report is committed to main, so the planner cannot use them as committed campaign evidence.
+
+### System evidence catalogue
+
+[Latest evidence artifact 14359059259](https://github.com/wizekin/USG-Workbench/actions/runs/44153983637/artifacts/14359059259)
+
+<badge color="warning">Inventory completeness defect identified</badge>
+
+The collector recorded 100 workflow definitions, while the actual main workflow directory contains 127.
+
+It also recorded only 100 latest workflow runs.
+
+The new SYS-16 repair plan targets this pagination defect with a two-page regression fixture.
+
+### Cross-implementation conformance
+
+[Latest matrix validation](https://github.com/wizekin/USG-Workbench/actions/runs/44153711470)
+
+The matrix distinguishes component testing from cross-runtime conformance.
+
+All five gates remain `not_started`:
+
+- CIC-01: shared frozen fixtures and independent gold.
+- CIC-02: same cases across implementations.
+- CIC-03: normalized output comparison.
+- CIC-04: per-language agreement and disagreement reports.
+- CIC-05: independent semantic-gold acceptance.
+
+The matrix still cites an older OWC browser run rather than the latest OWC-OW7 run 44006690109. Its evidence references should be refreshed.
+
+### Other system areas
+
+| Area | Current status |
+|---|---|
+| Browser adapter | English Playwright execution; local rule fallback; no semantic correctness claim |
+| Phase 4/5 | Bounded campaign coverage; no new dedicated full benchmark run |
+| Phase 6 | Latest tracker 44031531661; eight continuation items |
+| Phase 6 open work | P6-CONT-02 and P6-CONT-07 remain open |
+| Persistence/replay | Smoke implementation only; full accepted-failure-corpus replay open |
+| SYS-17 | Candidate growth loop not yet implemented |
+| SYS-12 | Cross-runtime gates remain open |
+| SYS-14 | Full replay remains open |
+
+The browser adapter was exercised using Playwright 1.65.2 and Chromium 159.0.8154.6, with loopback-only networking. It establishes UI execution and structured output only. The JavaScript target remains English-only.
+
+No semantic runtime correctness improvement was established by these campaigns.
+
+## 6. Changes, PRs and merges
+
+<badge color="success">Four verified merges during this monitoring interval</badge>
+
+| PR | Change | Merge commit |
+|---|---|---|
+| [#230](https://github.com/wizekin/USG-Workbench/pull/230) | SYS-08 bilingual structural diagnostics | `6cb4bf14ed1b24e6937a7bad5c3d99a92d198667` |
+| [#231](https://github.com/wizekin/USG-Workbench/pull/231) | SYS-09 semantic-gold protocol | `4a5b0a8164b22a9b178790d2d275c2411fb71fbf` |
+| [#232](https://github.com/wizekin/USG-Workbench/pull/232) | SYS-16 bounded repair executor | `7bda856ff2cc21b7bc3d6cfcfcdc84cd0d1b4b00` |
+| [#233](https://github.com/wizekin/USG-Workbench/pull/233) | Documentation status reconciliation | `41a429ea3d389cf4548d49796221674edc43ed2f` |
+
+### SYS-16 verification
+
+I found and corrected a reporting weakness in the executor workflow: failed repair validation or failed PR publication could otherwise be swallowed by `continue-on-error`.
+
+The correction now:
+
+- Preserves the result artifact and summary.
+- Fails the workflow after recording a failed repair or PR publication.
+- Adds a regression test for failure visibility.
+
+[Executor validation run 44157371093](https://github.com/wizekin/USG-Workbench/actions/runs/44157371093)
+
+<badge color="success">14/14 tests passed</badge>
+
+The Phase 1 and Phase 3 integrated acceptance checks also passed. The executor's apply job was intentionally skipped on the PR event.
+
+### First queued repair
+
+Plan:
+
+`sys16-001-workflow-inventory-pagination`
+
+It is committed on main with status `ready`.
+
+It targets only:
+
+- `tools/system_evidence/github_actions.py`
+- `tests/test_system_evidence_github_actions.py`
+
+The plan uses fixed validation commands, exact text matches, blob pinning, path/symlink/secret/gold protection, bounded size/runtime and rollback.
+
+The expected collector blob still matches main. The plan base commit is an ancestor of the current main commit.
+
+<badge color="warning">Not yet executed</badge>
+
+No repair application or resulting repair PR has yet been verified. The executor never merges automatically.
+
+### Remaining PR
+
+[PR #229](https://github.com/wizekin/USG-Workbench/pull/229) remains open for an older OWC-OW7 report. Its mergeability is not established.
+
+The latest OWC campaign and first PUD campaign still lack committed campaign bundles on main.
+
+## 7. Final assessment and next dependency
+
+**No semantic runtime rules, candidate lexical resources, morphology hypotheses, gold labels, canonical `USG-SEM/1.0`, or accepted Phase 1–5 contracts were changed or promoted in this run.**
+
+The most important current bottlenecks are:
+
+1. Lexical resolution and ambiguity.
+2. Syntax and construction coverage.
+3. Independent construction-level semantic gold.
+4. Campaign report publication and evidence freshness.
+5. Workflow inventory completeness.
+6. Cross-runtime conformance and full replay.
+
+The next dependency-ready task is **SYS-16-001: execute the workflow-inventory pagination repair**. Its expected outcome is a reproducible inventory of all 127 workflow definitions, validated by the two-page regression, followed by a reviewable repair PR.
+
+After that:
+
+- Continue SYS-17 only within its candidate-only boundary and independent-gold requirements.
+- Obtain the independent annotators and adjudication required by SYS-09.
+- Progress SYS-12 and SYS-14 without claiming semantic equivalence or full replay prematurely.
+- Verify the next full bilingual PUD campaign includes structural-frequency diagnostics and a truthful publication summary before treating the naturalistic population as established in committed evidence.
+
+**Architectural alignment:** the work remains focused on improving evidence, diagnostics, provenance, reproducibility and modular system supervision—not merely increasing lexical volume or benchmark scores.
+
+---
+
+[ASSISTANT]
+# USG System-Wide Growth Supervisor — Daily Report
+
+<row align="center" gap={2}>
+  <badge color="success">Lexical crawl advanced</badge>
+  <badge color="success">PUD diagnostics validated</badge>
+  <badge color="warning">Repair publication blocked</badge>
+  <badge color="warning">Growth plan stale</badge>
+</row>
+
+**18 November 2026 · 20:51 Cairo time**
+
+Repository: [wizekin/USG-Workbench](https://github.com/wizekin/USG-Workbench)
+
+GitHub operations were performed directly through the GitHub plugin. No Composio GitHub operations were used.
+
+**Main branch remains at:**
+
+`41a429ea3d389cf4548d49796221674edc43ed2f`
+
+No new main-branch merge occurred during this monitoring interval. The external lexical data branch advanced independently.
+
+---
+
+## 1. GitHub Actions monitoring
+
+<text color="secondary" size="xs">17 November 21:24 – 18 November 20:09, Cairo time</text>
+
+<grid columns={4} gap={2}>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={3}>
+      <title size="2xl" tabularNums>17</title>
+      <caption>Runs checked</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={3}>
+      <title size="2xl" color="success" tabularNums>13</title>
+      <caption>Successful</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={3}>
+      <title size="2xl" color="danger" tabularNums>3</title>
+      <caption>Failed</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface-secondary" radius="lg" padding={3}>
+      <title size="2xl" tabularNums>1</title>
+      <caption>Skipped</caption>
+    </box>
+  </grid-item>
+</grid>
+
+### Workflow breakdown
+
+| Workflow | Runs | Result |
+|---|---:|---|
+| Daily Growth Controller | 1 | Success |
+| Open-World Continuous Exploration | 1 | Success |
+| External Lexical Incremental Crawl | 4 | 3 success, 1 failure |
+| External Lexical PUD Evaluation | 4 | 3 success, 1 skipped |
+| Bounded Repair Executor | 3 | 2 success, 1 failure |
+| System Evidence Collection | 2 | Success |
+| Phase 6 Continuation Tracker | 1 | Success |
+| Long-Term Roadmap Synchronization | 1 | Failure |
+
+### Failures requiring attention
+
+1. [Repair Executor — run 44215735296](https://github.com/wizekin/USG-Workbench/actions/runs/44215735296)
+
+   The repair itself was applied and its seven targeted tests passed. Publication failed because GitHub Actions returned:
+
+   `GitHub Actions is not permitted to create or approve pull requests.`
+
+   The branch and result artifact were preserved.
+
+2. [External Lexical Crawl — run 44261221664](https://github.com/wizekin/USG-Workbench/actions/runs/44261221664)
+
+   Error:
+
+   `ProviderError: The data-branch checkpoint is invalid or unavailable`
+
+   The subsequent crawl succeeded, so progress was recovered.
+
+3. [Roadmap Synchronization — run 44158190752](https://github.com/wizekin/USG-Workbench/actions/runs/44158190752)
+
+   The same GitHub Actions PR-creation permission prevented publication.
+
+4. [PUD Evaluation — run 44261256296](https://github.com/wizekin/USG-Workbench/actions/runs/44261256296)
+
+   Skipped following the failed crawl. A subsequent evaluation succeeded.
+
+The later executor runs [44258944821](https://github.com/wizekin/USG-Workbench/actions/runs/44258944821) and [44313157415](https://github.com/wizekin/USG-Workbench/actions/runs/44313157415) detected the already-processed repair branch. Their success does not mean that the repair was merged.
+
+No new dedicated Phase 4/5 benchmark, cross-implementation conformance, full naturalistic PUD campaign, or accepted-failure-corpus replay workflow ran in this interval.
+
+---
+
+## 2. Latest Open-World campaign
+
+<badge color="warning">Campaign status: PARTIAL</badge>
+
+[OWC-OW7-44227219060-1](https://github.com/wizekin/USG-Workbench/actions/runs/44227219060)
+
+[Download campaign artifact 14393830433](https://github.com/wizekin/USG-Workbench/actions/runs/44227219060/artifacts/14393830433)
+
+Tested commit:
+
+`41a429ea3d389cf4548d49796221674edc43ed2f`
+
+### Population accounting
+
+| Outcome | Randomized (220) | Controlled (106) | Naturalistic |
+|---|---:|---:|---:|
+| Completed | 1 | 48 | 0 |
+| Partial | 165 | 42 | 0 |
+| Unsupported | 26 | 16 | 0 |
+| Ambiguous | 8 | 0 | 0 |
+| Not executed | 20 | 0 | 0 |
+| **Total** | **220** | **106** | **0** |
+
+There were 326 target records and 306 actual execution attempts.
+
+Naturalistic results remain separate. This campaign contained no naturalistic population.
+
+### First-blocking stages
+
+The campaign's stage-dependency attribution produced:
+
+<Chart content={{"chartType":"bar","meta":{"title":"First-blocking stage attribution","description":"77 records with observed first-blocking stages; not a semantic correctness score."},"xKey":"stage","series":[{"dataKey":"records","label":"Records"}],"data":[{"stage":"Lexical","records":61},{"stage":"Syntax","records":15},{"stage":"Discourse","records":1}]}}/>
+
+Primary diagnostics:
+
+- Lexical: `LEXICAL_UNRESOLVED_TOKEN`, `LEXICAL_AMBIGUOUS_TOKEN`.
+- Syntax: `SYNTAX_UNSUPPORTED`, `UNSUPPORTED_INTERROGATIVE_FORCE`, incomplete-stage diagnostics.
+- Discourse: `DISCOURSE_ANTECEDENT_UNRESOLVED`.
+
+Downstream co-occurring symptoms:
+
+| Stage | Records |
+|---|---:|
+| Semantic composition | 72 |
+| Syntax | 59 |
+| Discourse | 16 |
+| Operators | 9 |
+
+These are dependency-related co-occurrences, not proof that the first failure caused every later failure.
+
+Important accounting limitations:
+
+- 230 records had no observed blocking diagnostic.
+- 6 records had no target-result payload.
+- 20 target records were not executed.
+- One record had multiple parallel first blockers.
+- No semantic-scored attempts were available.
+
+Missing diagnostics must not be interpreted as successful semantic processing.
+
+### Language breakdown
+
+| Population | English | Arabic | Mixed |
+|---|---:|---:|---:|
+| Randomized | 164 | 11 | 45 |
+| Controlled | 55 | 51 | 0 |
+| **Total** | **219** | **62** | **45** |
+
+### Target breakdown
+
+- Phase 4: 26 records; 2 completed, 1 partial, 23 unsupported.
+- Phase 5: 120 records; 46 completed, 53 partial, 13 unsupported, 8 ambiguous.
+- JS Semantic Workbench: 20 records; 1 completed, 13 partial, 6 unsupported.
+- Seven other registered targets: 20 records each, predominantly partial.
+- Workbench-to-canonical adapter: 20 not-executed records.
+
+The Phase 5 cases used resource manifest fingerprint:
+
+`76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f`
+
+The Phase 4 cases used their registered stage-resource references.
+
+### Browser execution
+
+The campaign's JS target recorded 14 actual English Playwright executions using Chromium 159.0.8154.6, with loopback-only networking and the deterministic local rule fallback.
+
+Results:
+
+- 1 completed.
+- 13 partial.
+- 6 Arabic/mixed cases unsupported before browser execution.
+
+The separate browser workflow job was skipped.
+
+This establishes browser execution and structured output, not semantic correctness. The JS Workbench remains English-only.
+
+---
+
+## 3. Growth planner and evidence collector
+
+### Growth plan
+
+[Controller run 44245867485](https://github.com/wizekin/USG-Workbench/actions/runs/44245867485)
+
+[Growth-plan artifact 14401986414](https://github.com/wizekin/USG-Workbench/actions/runs/44245867485/artifacts/14401986414)
+
+<badge color="warning">Stale against latest campaign</badge>
+
+The plan was generated at `2026-11-18T05:40:34Z`.
+
+It analyzed only:
+
+`OWC-OW6-43015126807-1`
+
+Its recommendation remains:
+
+- Workstream: syntax.
+- First-blocking records: 68.
+- Priority score: 78.
+- Acceptance gate: independent construction gold.
+
+The 78 is a planning heuristic, not an intelligence score.
+
+The newer OWC-OW7 campaign reports 61 lexical, 15 syntax and 1 discourse first blockers. The planner has not incorporated this campaign because its report is not committed to main.
+
+The old 1,058-record Phase 5 pipeline-version mismatch warning also remains in the growth plan. It must not be presented as a current failure count for the new campaign.
+
+### Evidence collector defect
+
+[System Evidence Collection run 44251189983](https://github.com/wizekin/USG-Workbench/actions/runs/44251189983)
+
+[Artifact 14403313794](https://github.com/wizekin/USG-Workbench/actions/runs/44251189983/artifacts/14403313794)
+
+The collector reported:
+
+- Workflow definitions: 100.
+- Latest workflow runs collected: 100.
+- 99 successful and 1 failed in its collected workflow snapshot.
+
+I independently counted the current main-branch workflow files:
+
+<badge color="warning">128 actual workflow files</badge>
+
+The evidence collector therefore omitted 28 workflow definitions.
+
+The repair branch described below addresses this pagination problem.
+
+### Additional evidence-quality defect discovered
+
+The same evidence snapshot flagged a high-severity lexical shard-count contradiction:
+
+- Manifest logical batches: 28.
+- Physical shard files: 29.
+- Duplicate physical copies: 1.
+
+The inventory's logical batch count actually reconciled correctly. The collector compared physical file count directly against logical batch count.
+
+I inspected:
+
+- [`collector.py`](https://github.com/wizekin/USG-Workbench/blob/main/tools/system_evidence/collector.py)
+- [`freshness.py`](https://github.com/wizekin/USG-Workbench/blob/main/tools/system_evidence/freshness.py)
+- [Freshness regression tests](https://github.com/wizekin/USG-Workbench/blob/main/tests/test_system_evidence_freshness.py)
+
+Both reporting paths need duplicate-aware reconciliation.
+
+**Bounded repair hypothesis:** compare the manifest against logical batches, report duplicate physical copies separately, and retain failure detection for genuinely missing or conflicting batches.
+
+This is important because false high-severity diagnostics can misdirect the growth planner.
+
+---
+
+## 4. External lexical acquisition and evaluation
+
+<badge color="info">Candidate-only resources</badge>
+
+Latest successful crawl:
+
+[Run 44316396553](https://github.com/wizekin/USG-Workbench/actions/runs/44316396553)
+
+Latest data branch:
+
+[usg-external-lexical-data](https://github.com/wizekin/USG-Workbench/tree/usg-external-lexical-data)
+
+Branch commit:
+
+`ff935561a40ac31976891363aed8672f17923ea9`
+
+### Crawl inventory
+
+| Metric | Latest value |
+|---|---:|
+| Expected headwords | 1,396,111 |
+| Processed headwords | 750,602 |
+| Completion | 53.76% |
+| Entries | 804,476 |
+| Senses | 969,124 |
+| Logical batches | 29 |
+| Physical shards | 30 |
+| Duplicate physical copies | 1 |
+| Stored bytes | 190,772,307 |
+| Storage budget | 734,003,200 |
+
+<text color="secondary" size="xs">Storage utilization: 25.99%.</text>
+
+The latest batch, 000029:
+
+- 30,000 headwords.
+- 31,626 entries.
+- 36,750 senses.
+- 7,223,406 compressed bytes.
+- Zero failed pages.
+- Zero pending retries.
+
+Historical failure accounting:
+
+- Failed headwords: 198.
+- Recovered headwords: 198.
+- Retry failures: 0.
+- Dead-letter entries: 0.
+
+The source remains pinned to:
+
+- Snapshot: `enwiktionary-2026-10-01-raw-244dcdc56868`
+- Source commit: `4abc6b148921005f9ede04cb5a5dfad831b7b58c`
+
+[Latest checkpoint](https://github.com/wizekin/USG-Workbench/blob/usg-external-lexical-data/state/checkpoint.json)
+
+[Latest manifest](https://github.com/wizekin/USG-Workbench/blob/usg-external-lexical-data/state/manifest.json)
+
+### Provenance and licensing
+
+I reviewed the source snapshot and upstream licensing files.
+
+The English Wiktionary-derived base material is licensed under CC BY-SA 4.0. Supplemental material has additional source-specific licensing requirements.
+
+The external data branch:
+
+- Does not store full source definitions or example passages.
+- Preserves source entry URLs, history URLs, snapshot identity, declared licences and attribution metadata.
+- Keeps lexical evidence separate from the active USG runtime.
+
+No automatic promotion is allowed.
+
+The latest crawl's separate validation job was skipped. The subsequent lexical PUD evaluation reports 29 logical and 30 physical shards, with one duplicate, but a fresh full shard audit after batch 29 remains desirable.
+
+### Latest independent English PUD lexical evaluation
+
+[Evaluation run 44366649891](https://github.com/wizekin/USG-Workbench/actions/runs/44366649891)
+
+[Artifact 14456659711](https://github.com/wizekin/USG-Workbench/actions/runs/44366649891/artifacts/14456659711)
+
+<text color="secondary" size="xs">English PUD: 21,180 tokens.</text>
+
+| Metric | Latest |
+|---|---:|
+| Exact surface coverage | 39.46% |
+| OOV rate | 60.54% |
+| Gold UPOS candidate recall | 29.68% |
+| Gold tag hit when seen | 75.21% |
+| Ambiguity among seen tokens | 56.40% |
+| Content-token coverage | 43.07% |
+| Gold lemma coverage | 35.10% |
+| Lemma + UPOS candidate recall | 26.25% |
+
+Morphology evaluation, limited to mapped plural, comparative and superlative features:
+
+- Candidate-pool precision: 17.77%.
+- Candidate recall: 31.82%.
+
+Compared with the preceding evaluation, exact surface coverage improved by 0.61 percentage points and content-token coverage by 1.03 points.
+
+However, ambiguity remains high.
+
+<badge color="success">Report-integrity acceptance passed</badge>
+
+The acceptance type is `REPRODUCIBLE_REPORT_INTEGRITY_ONLY`.
+
+Quality thresholds were not applied. This does not establish contextual POS accuracy, morphological prediction accuracy, sense accuracy or semantic correctness.
+
+No Arabic lexical evaluation or runtime lexical promotion was established.
+
+---
+
+## 5. Naturalistic bilingual PUD and SYS-08
+
+### First full naturalistic campaign
+
+[Original PUD run 43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)
+
+[Campaign report branch](https://github.com/wizekin/USG-Workbench/tree/reports/naturalistic-pud-43810018720-1)
+
+Campaign ID:
+
+`OWC-NAT-PUD-43810018720-1`
+
+Tested commit:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+| Outcome | Cases |
+|---|---:|
+| Completed | 4 |
+| Partial | 245 |
+| Unsupported | 51 |
+| Ambiguous | 0 |
+| Abstained | 0 |
+| Actual attempts | 300 |
+| Semantic-scored attempts | 0 |
+
+First blockers:
+
+- Lexical: 100.
+- Syntax: 99.
+
+The campaign had 50 English and 50 Arabic source sentences across three targets, producing 300 target records.
+
+Fifty records had no target-result payload. Complete usable output coverage was not established.
+
+The report branch was pushed, but PR creation failed. No report PR or auto-merge was verified.
+
+### Source and privacy review
+
+[Source manifest](https://github.com/wizekin/USG-Workbench/blob/reports/naturalistic-pud-43810018720-1/evaluations/open-world/campaigns/OWC-NAT-PUD-43810018720-1/source-manifest.json)
+
+[Attribution](https://github.com/wizekin/USG-Workbench/blob/reports/naturalistic-pud-43810018720-1/evaluations/open-world/campaigns/OWC-NAT-PUD-43810018720-1/ATTRIBUTION.md)
+
+[License](https://github.com/wizekin/USG-Workbench/blob/reports/naturalistic-pud-43810018720-1/evaluations/open-world/campaigns/OWC-NAT-PUD-43810018720-1/LICENSE.txt)
+
+Pinned sources:
+
+- English PUD: `a697bab43d4111073356de0df5802488bca3de7e`
+- Arabic PUD: `c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87`
+
+Both declare CC BY-SA 3.0. The campaign includes the licence and attribution files.
+
+Important boundaries remain:
+
+- PUD is news/Wikipedia text, not conversational user requests.
+- Arabic PUD is translated: 750 sentences originate in English and 250 originate in other European languages through English.
+- It is not representative of native MSA.
+- Public proper names are retained.
+- Email and URL pattern screening is not comprehensive personal-data detection.
+- No private user conversations are included.
+- UD POS and dependency annotations are not USG semantic gold.
+
+Full contributor attribution still needs packaging review before external redistribution.
+
+### SYS-08 structural-frequency diagnostics
+
+[SYS-08 validation run 44153475418](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418)
+
+[Structural-frequency artifact 14360695759](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418/artifacts/14360695759)
+
+<badge color="success">9 structural-frequency tests passed</badge>
+
+The full pinned English and Arabic treebanks were evaluated, 1,000 sentences each.
+
+| UD structural proxy | English | Arabic |
+|---|---:|---:|
+| Relative clause attachment | 193 | 265 |
+| Active transitive root | 295 | 241 |
+| Copular predicate | 286 | 93 |
+| Clause complement | 348 | 349 |
+| Passive root | 141 | 85 |
+| Adverbial clause | 241 | 274 |
+| Coordination | 428 | 440 |
+
+The selected candidate construction is:
+
+`clause_complement.ccomp_xcomp`
+
+Its subtype sentence counts are:
+
+| Subtype | English | Arabic |
+|---|---:|---:|
+| ccomp | 156 | 242 |
+| xcomp | 243 | 140 |
+
+These are syntactic UD proxy counts, not semantic-role or semantic-frame evidence.
+
+The current weekly PUD workflow has now been updated to include `structural-frequency.json` in the campaign bundle and to generate a summary even if PR publication fails.
+
+However, **the updated weekly workflow has not yet completed a full campaign**. The first PUD campaign predates the structural-frequency integration.
+
+Therefore SYS-03's naturalistic campaign publication requirement remains open.
+
+---
+
+## 6. SYS-09 independent semantic gold
+
+[Protocol: SYS-09 construction-level semantic gold](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYS-09-CONSTRUCTION-LEVEL-SEMANTIC-GOLD-PROTOCOL.md)
+
+PR #231 remains merged.
+
+The protocol defines:
+
+- Two independent qualified annotators.
+- A separate adjudicator.
+- Frozen construction-level semantic labels.
+- Document-disjoint training and held-out splits.
+- Negative, ambiguous and abstention examples.
+- Per-language acceptance thresholds.
+
+The current sample contains only 18 English and 16 Arabic clause-complement positives, below the proposed minimum of 20 per language.
+
+No independent annotation campaign or adjudicated semantic gold exists.
+
+**SYS-09 protocol: implemented. Semantic-gold acceptance: blocked.**
+
+No runtime construction rule may be promoted.
+
+---
+
+## 7. System-wide capability and backlog alignment
+
+I reviewed the current:
+
+- [Growth Policy and Autonomy](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md)
+- [System-Wide Capability Assessment](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md)
+- [System Improvement Backlog](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md)
+- [Cross-Implementation Matrix](https://github.com/wizekin/USG-Workbench/blob/main/evaluations/system-wide/cross-implementation-matrix-2026-11-12.json)
+
+### Current capability map
+
+| System area | Verified status |
+|---|---|
+| Lexical and morphology | Growing candidate inventory; incomplete coverage and high ambiguity |
+| Syntax and constructions | Bounded interpreter support; bilingual structural diagnostics available |
+| Semantic composition | Implemented within restricted constructions; independent naturalistic correctness not established |
+| Roles and relations | Versioned components; broader construction acceptance open |
+| Operators and scope | Bounded implementation; unresolved cases remain |
+| Discourse/reference | Implemented in bounded stages; unresolved antecedents remain |
+| Persistence/replay | Initial replay and smoke test; full failure-corpus replay open |
+| Browser adapter | English-only deterministic local fallback |
+| Cross-runtime interoperability | Component tests exist; shared semantic conformance not established |
+| Diagnostics | First-blocker attribution available; evidence collector has remaining defects |
+| Independent evaluation | Major outstanding bottleneck |
+
+### Cross-implementation conformance
+
+All five gates remain `not_started`:
+
+- CIC-01: shared frozen fixtures and independent gold.
+- CIC-02: identical cases across implementations.
+- CIC-03: normalized output comparison.
+- CIC-04: per-language and per-construction agreement reporting.
+- CIC-05: independent semantic-gold acceptance.
+
+The matrix still cites older browser and PUD runs. It needs an evidence refresh against OWC-OW7 run 442272.
+
+### Phase 6
+
+[Latest tracker run 44251968213](https://github.com/wizekin/USG-Workbench/actions/runs/44251968213)
+
+[Tracker artifact 14404775622](https://github.com/wizekin/USG-Workbench/actions/runs/44251968213/artifacts/14404775622)
+
+The tracker reports eight continuation items.
+
+- P6-CONT-02: broader embedded, subordinate, relative and argument-gap attachment — backlog.
+- P6-CONT-07: rights-cleared naturalistic evaluation — backlog.
+- P6-CONT-04/05/08: candidate-only.
+
+Bounded Phase 6 acceptance remains valid for registered scopes. Naturalistic accuracy is not established.
+
+The current contextual HMM evidence still does not justify runtime integration.
+
+### Documentation drift discovered
+
+Two statuses need correction:
+
+1. The backlog still describes SYS-16's first repair as awaiting application. It has actually been applied and validated on a branch, but publication is blocked.
+2. The backlog describes the workflow inventory as 127 files. The current main branch contains 128.
+
+The capability assessment is explicitly a historical 12 November snapshot. Its old campaign and lexical metrics should not be treated as current measurements.
+
+---
+
+## 8. PRs, branches and changes
+
+### Previously merged PRs
+
+These were merged before this monitoring interval:
+
+| PR | Merge commit |
+|---|---|
+| #230 — SYS-08 | `6cb4bf14ed1b24e6937a7bad5c3d99a92d198667` |
+| #231 — SYS-09 | `4a5b0a8164b22a9b178790d2d275c2411fb71fbf` |
+| #232 — SYS-16 | `7bda856ff2cc21b7bc3d6cfcfcdc84cd0d1b4b00` |
+| #233 — Documentation | `41a429ea3d389cf4548d49796221674edc43ed2f` |
+
+No new PR was opened or merged during this run.
+
+### SYS-16 first repair
+
+[Repair branch](https://github.com/wizekin/USG-Workbench/tree/automation/repairs/sys16-001-workflow-inventory-pagination)
+
+[Repair commit d454d8e](https://github.com/wizekin/USG-Workbench/commit/d454d8eed92b8ef0d1dd567af88b945d8625a124)
+
+Repair ID:
+
+`sys16-001-workflow-inventory-pagination`
+
+The branch is one commit ahead of main and contains:
+
+- Pagination for workflow inventory collection.
+- Verification against GitHub's reported `total_count`.
+- Duplicate workflow-ID rejection.
+- Fail-closed handling of incomplete pagination.
+- Regression tests.
+
+<badge color="success">7/7 targeted tests passed</badge>
+
+The repair result is `applied_validated`.
+
+It changes only the evidence collector and its tests, plus the repair-result record. No runtime semantic changes, gold changes or candidate promotions occurred.
+
+The executor attempted PR publication, but GitHub Actions lacked permission. I have preserved the branch and have not opened a PR in this run.
+
+### Existing open PR
+
+[PR #229](https://github.com/wizekin/USG-Workbench/pull/229) remains open.
+
+It contains an older OWC report from 13 November. Although GitHub currently reports it as mergeable, its base is stale relative to current main. It should not be merged as evidence for the latest campaign.
+
+---
+
+## 9. Next dependency-ready work
+
+The evidence changes the immediate priorities slightly.
+
+1. **SYS-16-001 — workflow inventory pagination:** the repair is already applied and validated. Its publication remains blocked. The live acceptance count must now be 128, not 127.
+
+2. **Evidence-quality repair — duplicate-aware shard reconciliation:** correct `collector.py` and `freshness.py` so logical batch counts are compared with logical inventory counts, while duplicate physical copies remain separately visible. Add positive and negative regression fixtures.
+
+3. **SYS-03/SYS-08 — next full bilingual PUD campaign:** verify that the structural-frequency artifact is included, population accounting is complete, and report publication and auto-merge behavior are explicitly recorded.
+
+4. **SYS-09 — independent semantic annotation:** obtain qualified annotators and adjudication. Do not promote ccomp/xcomp semantic rules before this gate.
+
+5. **SYS-17 — candidate growth loop:** proceed only within the candidate boundary, using measured failures, source licensing, ambiguity tests, independent gold and held-out evaluation.
+
+6. **SYS-12 — shared cross-runtime fixtures:** progress toward real comparison, without treating implementation agreement as semantic correctness.
+
+7. **SYS-14 — complete deterministic replay:** extend replay to accepted repairs and the frozen failure corpus.
+
+## 10. Final assessment
+
+**What improved**
+
+- The external lexical acquisition reached 750,602 processed headwords.
+- The latest English lexical evaluation shows modest candidate-coverage improvement.
+- SYS-08 now has reproducible bilingual structural-frequency diagnostics.
+- SYS-09 has an explicit independent annotation and adjudication protocol.
+- SYS-16 has its first applied and tested repair branch.
+- The latest Open-World campaign provides updated stage-level evidence.
+
+**What remains unproven**
+
+- General semantic correctness.
+- Independent bilingual semantic gold.
+- Naturalistic conversational understanding.
+- Cross-runtime semantic equivalence.
+- Full accepted-failure-corpus replay.
+- Reliable automatic campaign publication and evidence freshness.
+
+**No active USG semantic rules, canonical USG-SEM/1.0 contracts, accepted Phase 1–5 contracts, gold labels, or candidate lexical resources were changed or promoted.**
+
+The most important architectural risk is now not simply insufficient lexical coverage. It is the combination of unresolved lexical/syntactic failures and incomplete independent evidence, compounded by stale or incorrect evidence aggregation.
+
+The next improvement should therefore prioritize **evidence integrity and reproducibility before expanding runtime semantic behavior**.
+
+---
+
+[ASSISTANT]
+# USG system-wide growth report
+
+<row align="center" gap={2}>
+  <badge color="success">Evidence review completed</badge>
+  <badge color="warning">Acceptance gaps remain</badge>
+</row>
+
+**Date:** 19 November 2026  
+**Repository:** [wizekin/USG-Workbench](https://github.com/wizekin/USG-Workbench)  
+**Current main commit:** `02b223ddba941f68df8a5ac2fd9a58a7ab77062e`
+
+The repository has made substantial progress in evidence collection, construction diagnostics, autonomous repair infrastructure, and campaign accounting. However, I found an important defect in the system-wide evidence collector that currently misclassifies a valid lexical dataset as inconsistent. There are also two incomplete automation capabilities that need attention.
+
+No semantic runtime changes or candidate-resource promotions were made during this review.
+
+## 1. GitHub Actions sweep
+
+<badge color="success">411 runs inspected</badge>
+
+Time range: 12 November 14:18 UTC – 19 November 19:07 UTC.
+
+| Result | Runs |
+|---|---:|
+| Successful | 378 |
+| Failed | 29 |
+| Skipped | 4 |
+| Total | **411** |
+
+These covered 39 workflow names, including growth planning, Open-World evaluation, PUD, lexical crawling, Phase 4/5, Phase 6, browser execution, repair execution, and cross-implementation validation.
+
+Important findings:
+
+- [Latest growth controller run #44466559310](https://github.com/wizekin/USG-Workbench/actions/runs/44466559310) succeeded, but its plan was generated before OWC-OW7 was committed.
+- [Latest system evidence snapshot #44594089511](https://github.com/wizekin/USG-Workbench/actions/runs/44594089511) successfully collected evidence and generated a newer plan covering two campaigns.
+- [System evidence collection #44594605300](https://github.com/wizekin/USG-Workbench/actions/runs/44594605300) passed validation, but its collection job was skipped. It did not produce a newer snapshot.
+- The latest bounded repair executor run [#44595089068](https://github.com/wizekin/USG-Workbench/actions/runs/44595089068) succeeded, but performed no repair because its selected repair branch already existed.
+
+### Failure classification
+
+The 29 failed runs are not all USG capability failures.
+
+| Failure cluster | Count | Interpretation |
+|---|---:|---|
+| Roadmap synchronization | 19 | GitHub Actions cannot create or approve PRs |
+| Lexical crawl | 4 | Temporary checkpoint/provider availability failures |
+| Open-World reporting | 2 | Historical diagnostic-accounting test regression |
+| Bounded repair executor | 1 | PR publication permission |
+| Cross-implementation matrix | 1 | Assertions against unsuccessful historical workflow runs |
+| PUD naturalistic pilot | 1 | PR creation permission |
+| External lexical PUD evaluation | 1 | Invalid JSONL test fixture |
+
+The latest roadmap synchronization log is particularly clear: its eight unit tests passed, but publication failed with:
+
+`GitHub Actions is not permitted to create or approve pull requests.`
+
+This is an automation permission problem, not evidence of semantic failure.
+
+## 2. Open-World campaigns and growth plan
+
+The latest committed evidence contains two campaigns. They must remain separate from naturalistic PUD evidence.
+
+### OWC-OW6
+
+[Campaign report](https://github.com/wizekin/USG-Workbench/tree/main/evaluations/open-world/campaigns/OWC-OW6-43015126807-1)
+
+- Campaign: `OWC-OW6-43015126807-1`
+- Tested commit: `a04806d1480e692913943693b5251535c6a520f0`
+- Scenario records: 3,106
+- Randomized population: 3,000
+- Controlled-diagnostic population: 106
+- Naturalistic population: 0
+
+Outcomes:
+
+| Outcome | Count |
+|---|---:|
+| Completed | 44 |
+| Partial | 1,013 |
+| Unsupported | 946 |
+| Ambiguous | 103 |
+| Not executed | 1,000 |
+
+The randomized population accounts for 2,000 actual attempts and 1,000 not-executed records. The controlled-diagnostic population contains 106 actual attempts.
+
+Language distribution:
+
+- English: 2,023
+- Arabic: 285
+- Mixed English-Arabic: 798
+
+Target records:
+
+- JavaScript Workbench: 1,000
+- Phase 4: 1,006
+- Phase 5: 1,100
+
+**Important accounting warning:** 1,058 Phase 5 records have a historical pipeline-version mismatch involving `phase5-interpretation-integration/0.1.0`. These must not be attributed to a semantic capability failure using an incompatible dependency graph.
+
+### OWC-OW7
+
+[Campaign report](https://github.com/wizekin/USG-Workbench/blob/main/evaluations/open-world/campaigns/OWC-OW7-44448277481-1/campaign-report.json)
+
+- Campaign: `OWC-OW7-44448277481-1`
+- Tested commit: `41a429ea3d389cf4548d49796221674edc43ed2f`
+- Scenario records: 326
+- Randomized population: 220
+- Controlled-diagnostic population: 106
+- Naturalistic population: 0
+
+<text color="success" weight="medium" size="sm">Execution accounting reconciles</text>
+
+There were 306 actual attempts and 20 not-executed records.
+
+| Outcome | Count |
+|---|---:|
+| Completed | 49 |
+| Partial | 209 |
+| Unsupported | 38 |
+| Ambiguous | 10 |
+| Not executed | 20 |
+
+The randomized population produced 1 completed, 167 partial, 22 unsupported, 10 ambiguous, and 20 not-executed records.
+
+The controlled-diagnostic population produced 48 completed, 42 partial, and 16 unsupported records.
+
+Language distribution:
+
+- English: 220
+- Arabic: 62
+- Mixed English-Arabic: 44
+
+First-blocking stages:
+
+<Chart content={{"chartType":"bar","meta":{"title":"OWC-OW7 first-blocking stages","description":"Observed first blockers across registered Phase 4/5 profiles; not a causal or semantic-accuracy score."},"xKey":"stage","series":[{"dataKey":"count","label":"Records"}],"data":[{"stage":"Lexical","count":61},{"stage":"Syntax","count":18},{"stage":"Discourse","count":1}]}}/>
+
+Important diagnostics:
+
+- Lexical: 61 `LEXICAL_UNRESOLVED_TOKEN`, 9 `LEXICAL_AMBIGUOUS_TOKEN`.
+- Syntax: 4 `INCOMPLETE`, 11 `SYNTAX_UNSUPPORTED`, including 3 `UNSUPPORTED_INTERROGATIVE_FORCE`.
+- Discourse: 1 `DISCOURSE_ANTECEDENT_UNRESOLVED`.
+
+Downstream symptoms include semantic-composition, syntax, operator, and discourse failures. They are not proof that the first blocker caused every downstream failure.
+
+Resource identities were preserved:
+
+- Phase 4: `stage-refs:c0dc4819...`
+- Phase 5: `manifest:76e83880...`
+
+The newer accounting correctly identifies the 20 unexecuted cases as belonging to the Workbench-to-canonical adapter, rather than treating them as successful executions.
+
+### Latest growth plan
+
+[Growth plan JSON](https://github.com/wizekin/USG-Workbench/blob/main/evaluations/system-wide/evidence-catalogue/44594089511-1/usg-growth-plan.json)
+
+Generated: 19 November, 19:03 UTC.
+
+<badge color="success">Two campaigns analyzed</badge>
+
+| Priority | Workstream | Planner score |
+|---|---|---:|
+| 1 | Syntax and construction failures | 100 |
+| 2 | Lexical evidence | 71 |
+| 3 | Discourse/reference | 7 |
+
+The syntax recommendation has 86 first-blocker records across the two campaigns.
+
+These scores are prioritization signals, not intelligence scores or semantic correctness measurements.
+
+All three recommendations require independent acceptance evidence. Runtime changes are explicitly disallowed by the plan.
+
+## 3. SYS-08: PUD structural-frequency diagnostics
+
+This work has progressed substantially.
+
+[PR #230 — SYS-08](https://github.com/wizekin/USG-Workbench/pull/230) was merged with commit:
+
+`6cb4bf14ed1b24e6937a7bad5c3d99a92d198667`
+
+The validation run [#44153521266](https://github.com/wizekin/USG-Workbench/actions/runs/44153521266) passed:
+
+- Four naturalistic-generator tests.
+- Nine structural-frequency tests.
+- Full pinned-treebank structural-frequency generation.
+- Source-hash verification.
+
+The artifact is available [here](https://github.com/wizekin/USG-Workbench/actions/runs/44153521266/artifacts/14359537911).
+
+### Measured bilingual construction evidence
+
+The full diagnostic covers 1,000 English and 1,000 Arabic PUD sentences.
+
+The selected candidate is:
+
+`clause_complement.ccomp_xcomp`
+
+| Measure | English | Arabic |
+|---|---:|---:|
+| Sentences containing ccomp/xcomp | 348 | 349 |
+| Total dependency instances | 453 | 437 |
+| ccomp sentences | 156 | 242 |
+| xcomp sentences | 243 | 140 |
+| ccomp instances | 172 | 286 |
+| xcomp instances | 281 | 151 |
+
+The ccomp and xcomp sentence counts overlap, so they must not be added as independent sentence populations.
+
+This is useful evidence for selecting a construction to investigate. It is not semantic-role evidence.
+
+The language differences are also important: the two syntactic subtypes have substantially different distributions.
+
+### A stale documentation status
+
+`documentation/USG-PUD-STRUCTURAL-FREQUENCY-DIAGNOSTICS.md` still describes the implementation as an untested implementation branch.
+
+That status is outdated: PR #230 merged and the validation run passed.
+
+However, the document is correct about one important remaining limitation: the first full PUD campaign did not contain the new structural-frequency artifact.
+
+**SYS-08 is therefore not complete.** Its diagnostic implementation is validated, but its first full post-merge campaign remains outstanding.
+
+## 4. Naturalistic PUD pilot: first campaign and publication status
+
+[First full PUD campaign run #43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)
+
+Campaign ID:
+
+`OWC-NAT-PUD-43810018720-1`
+
+Tested commit:
+
+`8e3f1308882b2e8ce581350746d9ee76fca31216`
+
+Results:
+
+- 50 English source sentences.
+- 50 Arabic source sentences.
+- 300 target records.
+- 300 actual attempts.
+- 4 completed.
+- 245 partial.
+- 51 unsupported.
+- 100 lexical first blockers.
+- 99 syntax first blockers.
+- Zero semantic-scored attempts.
+
+The target-specific results were:
+
+- Phase 4: 99 partial, 1 unsupported.
+- Phase 5: 100 partial.
+- JS Workbench: 4 completed, 46 partial for English; 50 unsupported for Arabic.
+
+The campaign report was uploaded and its report branch was pushed:
+
+`reports/naturalistic-pud-43810018720-1`
+
+Branch commit:
+
+`e6841e98d5512c19b98b58e15da0ec956d3d60af`
+
+But PR creation failed because GitHub Actions lacked permission to create PRs.
+
+Consequently:
+
+- The campaign is not committed to main.
+- Auto-merge was not attempted.
+- Its naturalistic population is not established in committed campaign history.
+- Its results must not be silently incorporated into the randomized or controlled-diagnostic population.
+
+The updated weekly workflow now includes structural-frequency generation, artifact packaging, a publication-failure reporting path, and an auto-merge request when a PR exists. However, no full campaign has tested this updated workflow after SYS-08 merged.
+
+The next scheduled weekly run is 23 November at 04:00 UTC. I could not manually dispatch it through the available GitHub integration.
+
+### PUD rights and limitations
+
+The source manifest pins:
+
+- English: `UD_English-PUD@a697bab43d4111073356de0df5802488bca3de7e`
+- Arabic: `UD_Arabic-PUD@c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87`
+
+Both declare CC BY-SA 3.0.
+
+The campaign includes `LICENSE.txt`, `ATTRIBUTION.md`, and `source-manifest.json`.
+
+Important restrictions remain:
+
+- PUD is news/Wikipedia text, not conversational user requests.
+- Arabic PUD is translated, not a representative native-MSA population.
+- English PUD also contains translated sentences.
+- The privacy screen excludes direct email and URL patterns but is not comprehensive personal-data detection.
+- Public proper names remain in the source text.
+- The short attribution file points to upstream READMEs rather than embedding the full contributor lists.
+
+The attribution packaging must be completed before external redistribution.
+
+## 5. SYS-09: independent semantic gold
+
+[SYS-09 protocol](https://github.com/wizekin/USG-Workbench/blob/main/documentation/USG-SYS-09-CONSTRUCTION-LEVEL-SEMANTIC-GOLD-PROTOCOL.md)
+
+[PR #231](https://github.com/wizekin/USG-Workbench/pull/231) merged at:
+
+`4a5b0a8164b22a9b178790d2d275c2411fb71fbf`
+
+The protocol defines a sound separation between:
+
+1. Naturalistic source text.
+2. UD syntactic proxy labels.
+3. Independently authored semantic annotations.
+4. USG candidate predictions.
+
+The minimum held-out bilingual pilot requires, per language:
+
+- 20 positive cases.
+- 20 negative/adversarial cases.
+- 10 ambiguous or attachment-boundary cases.
+
+The existing 50-sentence sample provides only 18 English and 16 Arabic syntactic-proxy positives for the selected construction. It is insufficient by itself.
+
+The protocol also requires two independent annotators and a separate adjudicator.
+
+<badge color="warning">Blocked: independent annotation unavailable</badge>
+
+No annotation campaign has started. No semantic gold has been created. No new clause-complement semantic rule may be promoted.
+
+This remains the correct boundary.
+
+## 6. External lexical crawl and independent evaluation
+
+[Latest crawl run #44536390794](https://github.com/wizekin/USG-Workbench/actions/runs/44536390794)
+
+The latest successful scheduled batch added:
+
+- 30,000 headwords.
+- 32,016 entries.
+- 37,156 senses.
+
+Cumulative inventory:
+
+| Metric | Current value |
+|---|---:|
+| Processed headwords | 810,602 |
+| Expected headwords | 1,396,111 |
+| Processed entries | 868,980 |
+| Processed senses | 1,044,920 |
+| Recovered historical failures | 198 |
+| Pending retries | 0 |
+| Retry failures | 0 |
+| Dead-letter entries | 0 |
+| Failed pages | 0 |
+
+<text color="secondary" size="xs">Snapshot: enwiktionary-2026-10-01-raw-244dcdc56868</text>
+
+Storage is 205,724,478 bytes out of a 734,003,200-byte budget.
+
+The source commit is `4abc6b148921005f9ede04cb5a5dfad831b7b58c`. The latest durable data-branch commit is `4bba08d9daed912f42bcd1b14229e860ec3e76de`.
+
+### Crawl audit
+
+The remote audit reported:
+
+<badge color="success">Passed with warnings</badge>
+
+- 31 logical batches.
+- 32 physical shard files.
+- One identical duplicate physical copy.
+- Zero conflicting batch numbers.
+- Zero audit errors.
+- Zero pending retries.
+
+The duplicate is batch 000002. It is retained in append-only storage but deduplicated for evaluation.
+
+The audit correctly treats the logical inventory as consistent.
+
+### Independent English PUD lexical evaluation
+
+[Latest evaluation run #44587417135](https://github.com/wizekin/USG-Workbench/actions/runs/44587417135)
+
+The report-integrity acceptance passed. It did not apply quality thresholds or authorize runtime promotion.
+
+| Metric | Result |
+|---|---:|
+| PUD tokens | 21,180 |
+| Tokens with candidate matches | 8,714 |
+| Exact surface coverage | 41.14% |
+| OOV rate | 58.86% |
+| Gold UPOS candidate recall, all tokens | 30.77% |
+| Gold-tag hit rate when seen | 74.80% |
+| Ambiguity among seen tokens | 55.88% |
+| Gold lemma coverage | 36.88% |
+| Gold lemma + UPOS candidate recall | 27.34% |
+
+Morphology:
+
+- Candidate feature instances: 3,532.
+- Gold feature instances: 1,939.
+- Matched feature instances: 647.
+- Candidate-pool precision: 18.32%.
+- Candidate recall: 33.37%.
+
+These are candidate-pool metrics for explicitly mapped features, not contextual morphology prediction accuracy.
+
+The evaluation is English-only. A corresponding Arabic lexical/morphology evaluation is not present in the latest evidence.
+
+All external lexical records remain candidate-only. The source metadata preserves declared per-entry licensing, entry URLs, history URLs, and snapshot provenance. No definitions or example passages are stored. The metadata audit does not itself establish the legal correctness of every source declaration.
+
+No runtime promotion or contextual HMM integration is justified.
+
+## 7. Newly discovered system-wide evidence defect
+
+This is the most important new finding from today's review.
+
+The latest system evidence catalogue reports:
+
+- External lexical shard status: `count_mismatch`.
+- PUD evaluation status: `stale_shard_count_mismatch`.
+- High-priority proposals to investigate missing or inconsistent lexical shards.
+
+But the actual remote audit and shard inventory show that the data is consistent.
+
+The problem is in:
+
+- [`tools/system_evidence/collector.py`](https://github.com/wizekin/USG-Workbench/blob/main/tools/system_evidence/collector.py)
+- [`tools/system_evidence/freshness.py`](https://github.com/wizekin/USG-Workbench/blob/main/tools/system_evidence/freshness.py)
+
+The collector compares physical file count (32) with logical batch count (31). It fails to account for the one verified identical duplicate copy.
+
+The inventory explicitly reports:
+
+- `logical_batch_count = 31`
+- `physical_file_count = 32`
+- `duplicate_physical_copy_count = 1`
+- `matches_manifest = true`
+- `consistency_status = matched`
+
+The PUD evaluation also covers 31 logical shards, with the duplicate separately recorded.
+
+**Conclusion:** the latest catalogue's shard-mismatch and stale-evaluation warnings are false positives. The lexical evaluation is current for the 31 logical batches, even though the catalogue currently rejects it.
+
+The current tests encode the physical-count-equals-logical-count assumption, so this requires a regression correction rather than simply changing the report.
+
+<FollowUp value="Prepare shard-audit regression tests" query="Prepare the duplicate-aware shard-reconciliation repair hypothesis, regression fixtures, and measurable acceptance criteria for tools/system_evidence/collector.py and freshness.py. Do not open a PR or change repository files." source="scheduled_task_followups_v1" />
+
+## 8. Remaining system-wide gates
+
+| Area | Latest evidence | Actual status |
+|---|---|---|
+| Browser/Workbench | OWC-OW7 Playwright records | Component execution verified; semantic correctness not established |
+| Phase 4/5 benchmarks | Latest dedicated acceptance runs 12 Nov | Passed registered scopes; no newer dedicated benchmark |
+| Phase 6 | Tracker run #44472247029 | Six tests passed; no annotation progress |
+| Persistence | Phase 3 integrated acceptance #44157699471 | Accepted registered scope |
+| Replay | Initial SYS-14 smoke implementation | Full accepted-failure-corpus replay open |
+| Cross-implementation | Matrix run #44153711470 | Matrix integrity passed; five conformance gates remain unaccepted |
+
+### Browser adapter
+
+The latest OWC-OW7 artifact contains 20 actual JS Workbench attempts:
+
+- 15 English.
+- 4 mixed English-Arabic.
+- 1 Arabic.
+
+Outcomes: 1 completed, 14 partial, 5 unsupported.
+
+The recorded execution used Chromium 159.0.8154.6, Playwright, loopback-only networking, and the local rule fallback. There were no recorded page or console errors and no Ollama use.
+
+This confirms UI execution and structured output. It does not establish semantic correctness. The English-only language boundary remains.
+
+### Cross-implementation conformance
+
+The [current matrix](https://github.com/wizekin/USG-Workbench/blob/main/evaluations/system-wide/cross-implementation-matrix-2026-11-12.json) still distinguishes component tests from cross-runtime equivalence.
+
+All five CIC gates remain unaccepted.
+
+Its evidence references are also stale: it does not yet incorporate the latest OWC-OW7 browser records from 19 November.
+
+### Phase 6
+
+[Latest tracker run #44472247029](https://github.com/wizekin/USG-Workbench/actions/runs/44472247029) passed six tracker tests.
+
+The tracker itself was last reviewed on 12 November. Its continuation items remain backlog or candidate-only. A successful tracker validation is not evidence that semantic annotation or naturalistic accuracy has progressed.
+
+### SYS-16: bounded repair executor
+
+[PR #232](https://github.com/wizekin/USG-Workbench/pull/232) introduced the executor.
+
+[PR #234](https://github.com/wizekin/USG-Workbench/pull/234) merged the workflow-inventory pagination repair.
+
+The latest executor run #445950 succeeded, but detected the already-published repair branch and did not apply anything.
+
+There is an additional design risk: the first repair plan remains `ready`, and scheduled selection chooses the first ready plan before checking whether its branch already exists. Consequently, subsequent repair plans could be starved by repeated selection of this no-op plan.
+
+The executor needs a branch-aware selection regression before its autonomous multi-repair behavior can be considered verified.
+
+## 9. PR and change accounting
+
+The following PRs were merged during the review window:
+
+| PR | Work | Merge commit |
+|---|---|---|
+| [#230](https://github.com/wizekin/USG-Workbench/pull/230) | SYS-08 diagnostics | `6cb4bf14` |
+| [#231](https://github.com/wizekin/USG-Workbench/pull/231) | SYS-09 gold protocol | `4a5b0a81` |
+| [#232](https://github.com/wizekin/USG-Workbench/pull/232) | SYS-16 executor | `7bda856f` |
+| [#233](https://github.com/wizekin/USG-Workbench/pull/233) | Status documentation | `41a429ea` |
+| [#234](https://github.com/wizekin/USG-Workbench/pull/234) | Workflow pagination repair | `3bdf4fd2` |
+| [#235](https://github.com/wizekin/USG-Workbench/pull/235) | Evidence snapshot | `9a6b457d` |
+| [#236](https://github.com/wizekin/USG-Workbench/pull/236) | OWC-OW7 campaign publication | `0ec06473` |
+| [#237](https://github.com/wizekin/USG-Workbench/pull/237) | Latest evidence snapshot | `02b223dd` |
+
+PR #229 remains open; it is an older OWC-OW7 report.
+
+No PR was opened or merged by this review run. No repository files were modified. No local tests were run; the reported test results above come from inspected GitHub Actions logs and artifacts.
+
+## 10. Updated priorities
+
+The evidence suggests the following order.
+
+| Priority | Work | Next requirement |
+|---:|---|---|
+| 1 | Evidence-catalogue shard reconciliation | Correct logical/physical duplicate handling and add regression tests |
+| 2 | SYS-08 | Complete the first post-merge bilingual PUD campaign and verify structural artifact publication |
+| 3 | SYS-09 | Obtain two independent bilingual annotators and a separate adjudicator |
+| 4 | SYS-16 | Fix processed-plan selection and verify an actual new repair application |
+| 5 | SYS-17 | Build candidate-only lexical/semantic growth with independent evaluation and rollback |
+| 6 | SYS-12 | Create shared frozen fixtures and real cross-runtime conformance |
+| 7 | SYS-14 | Extend replay to accepted repairs and the frozen failure corpus |
+| 8 | SYS-10/11 | Continue Phase 6 rights and independent-gold prerequisites |
+
+The evidence-catalogue defect is placed ahead of semantic expansion because it currently misrepresents whether the lexical evidence is usable. Correcting evaluation truth is more valuable than allowing a false warning to redirect development.
+
+**Overall alignment:** USG is progressing toward a modular, evidence-grounded architecture, and the recent work has not promoted unvalidated semantic rules or modified accepted contracts. The principal risks are now evidence-quality misclassification, incomplete naturalistic publication, missing independent semantic annotation, and incomplete autonomous repair execution.
+
+The next meaningful milestone is not another increase in lexical volume. It is a trustworthy system-wide evidence pipeline that can identify genuine semantic bottlenecks, preserve uncertainty, and safely support independently evaluated improvements.
+
+---
+
+[ASSISTANT]
+# USG system-wide growth report — 20 November 2026
+
+<text color="success" weight="semibold">Evidence review completed</text>
+
+<text color="secondary">Repository: wizekin/USG-Workbench · Main commit: 8c5f0a733c516a80d1b33c73d589984b8c7d571c</text>
+
+I reviewed the GitHub Actions evidence, committed campaign data, growth-plan artifacts, system-wide policy and backlog, cross-implementation matrix, lexical acquisition state, PUD pilot artifacts, and the bounded repair executor. All GitHub operations were performed directly through the GitHub integration, not Composio.
+
+<box gap={1}>
+  <row align=center justify=between>
+    <text weight=medium>Actions runs reviewed</text>
+    <title size=xl>74</title>
+  </row>
+  <row align=center justify=between>
+    <text color=success>Successful</text>
+    <text weight=medium>66</text>
+  </row>
+  <row align=center justify=between>
+    <text color=warning>Failed</text>
+    <text weight=medium>5</text>
+  </row>
+  <row align=center justify=between>
+    <text>Cancelled</text>
+    <text weight=medium>1</text>
+  </row>
+  <row align=center justify=between>
+    <text>Skipped</text>
+    <text weight=medium>1</text>
+  </row>
+  <row align=center justify=between>
+    <text>In progress</text>
+    <text weight=medium>1</text>
+  </row>
+</box>
+
+<caption>Review window: 19 November 2026, 18:24 UTC through 20 November 2026, 18:10 UTC. The 100 most recent run records were inspected; 74 fell within the review window.</caption>
+
+The five failures were all in the USG Long-Term Roadmap Synchronization workflow. Their logs confirm the same publication blocker: GitHub Actions is not permitted to create or approve pull requests.
+
+---
+
+## 1. System-wide growth plan
+
+### Latest verified growth-plan evidence
+
+- [Daily Growth Controller — run 44682503339](https://github.com/wizekin/USG-Workbench/actions/runs/44682503339) — successful, 20 November, 05:39 UTC.
+- [Growth-plan artifact — 14605221521](https://github.com/wizekin/USG-Workbench/actions/runs/44682503339/artifacts/14605221521).
+- [System Evidence and Resource Collection — run 44708433680](https://github.com/wizekin/USG-Workbench/actions/runs/44708433680) — successful, 20 November, 09:11 UTC.
+- [Latest evidence catalogue artifact — 14616645384](https://github.com/wizekin/USG-Workbench/actions/runs/44708433680/artifacts/14616645384).
+
+<text color="success" weight="medium">14/14 Phase 8 control-plane acceptance checks passed.</text>
+
+The latest evidence collector recorded **131 GitHub workflow definitions**, reconciled the current evidence sources, and generated a more recent growth plan than the daily controller.
+
+The 05:39 growth controller analyzed two campaigns. The 09:11 evidence catalogue's growth plan analyzed three campaigns, so the earlier daily-controller plan is not the newest available planning evidence.
+
+### Latest ranked investigations
+
+The 09:11 evidence-derived plan ranks:
+
+| Priority | Workstream | Score | Observed first-blocker records |
+|---|---|---:|---:|
+| 1 | Lexical evidence | 135 | 122 |
+| 2 | Syntax / constructions | 119 | 102 |
+| 3 | Discourse / reference | 11 | 2 |
+
+The lexical and syntax investigations both require independent evaluation before runtime changes. The discourse investigation concerns unresolved antecedents and requires independent discourse evidence.
+
+<text color="warning" weight="medium">The latest plan still does not include the naturalistic PUD campaign as an established population.</text>
+
+That omission is correct at present: the PUD campaign report remains on an unmerged report branch.
+
+---
+
+## 2. Latest committed Open-World campaign
+
+<text color="success" weight="medium">Campaign report verified on main</text>
+
+[OWC-OW7-44448277481-1](https://github.com/wizekin/USG-Workbench/blob/main/evaluations/open-world/campaigns/OWC-OW7-44448277481-1/campaign-report.md)
+
+- <text color="secondary">Campaign run:</text> [44448277481](https://github.com/wizekin/USG-Workbench/actions/runs/44448277481)
+- <text color="secondary">Tested commit:</text> `41a429ea3d389cf4548d49796221674edc43ed2f`
+- <text color="secondary">Population:</text> randomized and controlled-diagnostic
+- <text color="secondary">Naturalistic cases:</text> 0
+
+### Outcome accounting
+
+| Outcome | Count |
+|---|---:|
+| Completed | 49 |
+| Partial | 209 |
+| Unsupported | 38 |
+| Ambiguous | 10 |
+| Not executed | 20 |
+| Crashed | 0 |
+| Timeout | 0 |
+| Invalid output | 0 |
+| Infrastructure error | 0 |
+| Abstained | 0 |
+| <text weight="medium">Total records</text> | <text weight="medium">326</text> |
+
+<text color="success" weight="medium">Actual attempts: 306. Not-executed records: 20.</text>
+
+### Population and language breakdown
+
+| Population | Cases |
+|---|---:|
+| Unconstrained randomized | 220 |
+| Controlled diagnostic | 106 |
+| Naturalistic | 0 |
+
+| Language hint | Cases |
+|---|---:|
+| English | 220 |
+| Arabic | 62 |
+| Mixed English-Arabic | 44 |
+
+### First blocking stages
+
+| Stage | Records |
+|---|---:|
+| Lexical | 61 |
+| Syntax | 18 |
+| Discourse | 1 |
+
+Important diagnostics include:
+
+- `LEXICAL_UNRESOLVED_TOKEN`
+- `LEXICAL_AMBIGUOUS_TOKEN`
+- `INCOMPLETE`
+- `SYNTAX_UNSUPPORTED`
+- `UNSUPPORTED_INTERROGATIVE_FORCE`
+- `DISCOURSE_ANTECEDENT_UNRESOLVED`
+
+The target accounting includes 120 Phase 5 records, 26 Phase 4 records, and 20 records each for several other registered implementations. The Workbench-to-canonical adapter has 20 not-executed records. This campaign is not complete population coverage.
+
+<text color="warning" weight="medium">The 49 completed outcomes are execution outcomes, not 49 semantically correct interpretations.</text>
+
+---
+
+## 3. Naturalistic bilingual PUD pilot
+
+### Full campaign evidence
+
+[USG Naturalistic Bilingual PUD Pilot — run 43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)
+
+<text color="warning" weight="medium">The campaign ran successfully as an evaluation, but its report-publication job failed.</text>
+
+The full campaign artifact is available:
+
+- [Campaign artifact — OWC-NAT-PUD-43810018720-1](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720/artifacts/14199489944)
+- [Report branch commit e6841e98](https://github.com/wizekin/USG-Workbench/commit/e6841e98d5512c19b98b58e15da0ec956d3d60af)
+
+| Outcome | Count |
+|---|---:|
+| Completed | 4 |
+| Partial | 245 |
+| Unsupported | 51 |
+| Ambiguous | 0 |
+| Crashed | 0 |
+| Timeout | 0 |
+| Invalid output | 0 |
+| Infrastructure error | 0 |
+| Abstained | 0 |
+| <text weight="medium">Actual attempts</text> | <text weight="medium">300</text> |
+
+This population contains 150 English and 150 Arabic target records across the three sampled targets. The report's population is explicitly `naturalistic`, and it remains separate from randomized and controlled-diagnostic campaigns.
+
+### First-blocker findings
+
+| Target / language | First blocker |
+|---|---|
+| Phase 4 English | Syntax: 50 |
+| Phase 4 Arabic | Syntax: 49 |
+| Phase 5 English | Lexical: 50 |
+| Phase 5 Arabic | Lexical: 50 |
+
+Overall:
+
+- Lexical first blockers: 100
+- Syntax first blockers: 99
+- Semantic-scored attempts: 0
+
+The downstream dependency-related diagnostics include unresolved semantic clauses, incomplete syntax, operators and discourse references. They are symptoms recorded in the dependency graph, not proof of causation.
+
+### PUD provenance, rights and privacy
+
+The campaign source manifest was inspected.
+
+| Source | Pinned commit |
+|---|---|
+| UD English-PUD | `a697bab43d4111073356de0df5802488bca3de7e` |
+| UD Arabic-PUD | `c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87` |
+
+The campaign includes:
+
+- CC BY-SA 3.0 license and attribution files.
+- Source URLs, commits, content hashes and pinned upstream README references.
+- Deduplication.
+- Screening for direct-contact patterns such as email and URL.
+- A privacy limitation stating that the screen is not a comprehensive personal-data detector.
+- No private or user-submitted data.
+
+<text color="warning" weight="medium">Full contributor attribution packaging review remains open.</text>
+
+The bundle points to the pinned upstream READMEs for complete contributor attribution rather than embedding all contributor names.
+
+PUD is news/Wikipedia text, not conversational user requests. Arabic PUD is translated: 750 sentences originate in English and 250 originate in other European languages translated via English. It is not representative native-MSA conversational input.
+
+Its UD annotations are syntactic annotations, not USG semantic gold.
+
+---
+
+## 4. SYS-08 — structural-frequency diagnostics
+
+<text color="success" weight="medium">Diagnostic implementation and full-treebank validation verified.</text>
+
+[USG Naturalistic PUD Pilot Validation — run 44153475418](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418)
+
+- Workflow conclusion: success.
+- Pinned English and Arabic source validation: passed.
+- Full-treebank structural-frequency validation: passed.
+- Artifact: [14360695759](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418/artifacts/14360695759).
+
+### Measured clause-complement frequency
+
+| UD proxy | English | Arabic |
+|---|---:|---:|
+| Sentences containing `ccomp` or `xcomp` | 348 / 1,000 | 349 / 1,000 |
+| `ccomp` sentence count | 156 | 242 |
+| `xcomp` sentence count | 243 | 140 |
+
+The combined clause-complement family is a reasonable candidate for a bounded construction investigation. The subtype counts remain distinct and may overlap.
+
+Other measured structures include active transitive roots, adverbial clauses, coordination, copular predicates, passive roots and relative-clause attachments.
+
+<text color="warning" weight="medium">These are UD syntactic proxy counts, not semantic roles, frames or correctness evidence.</text>
+
+The full weekly naturalistic campaign still needs to publish and verify its structural-frequency bundle and report behavior. The current validation workflow is not a substitute for that full campaign.
+
+---
+
+## 5. SYS-09 — independent semantic gold
+
+<text color="warning" weight="medium">Protocol complete; annotation campaign blocked.</text>
+
+The independent construction-level semantic-gold protocol has been merged. It requires:
+
+- Two independent qualified annotators.
+- Separate adjudication.
+- Frozen semantic labels.
+- Document-disjoint splits.
+- Positive, negative, ambiguous and abstention cases.
+- Held-out evaluation thresholds.
+
+The current 50-sentence sample contains 18 English and 16 Arabic syntactic-proxy positives, below the proposed minimum of 20 per language.
+
+<text color="warning" weight="medium">Independent annotators are not available, so semantic-rule promotion remains blocked.</text>
+
+---
+
+## 6. External lexical acquisition
+
+### Latest verified completed continuation
+
+[External Lexical Completion Launcher — run 44742715557](https://github.com/wizekin/USG-Workbench/actions/runs/44742715557)
+
+The latest completed launcher reported:
+
+| Metric | Value |
+|---|---:|
+| Processed headwords | 939,271 |
+| Expected headwords | 1,396,111 |
+| Remaining | 456,840 |
+| Completion | <text weight="medium">67.27%</text> |
+| Logical batches | 37 |
+| Physical shard files | 38 |
+| Stored bytes | 237,552,571 |
+| Retry queue | 0 |
+
+The session processed 34,169 headwords. Its two shard outputs were one 30,000-headword batch and one partial 4,169-headword batch.
+
+The remote audit passed with warnings:
+
+- One identical physical duplicate for batch 000002.
+- No conflicting batch numbers.
+- Retry queue empty.
+- No unresolved retry failures recorded.
+
+<text color="warning" weight="medium">The next completion launcher is still running.</text>
+
+[Run 44790299467](https://github.com/wizekin/USG-Workbench/actions/runs/44790299467) is currently in progress. No newer completed checkpoint or final result was verified.
+
+### Latest candidate evaluation
+
+The latest evidence-catalogue snapshot at 09:11 UTC evaluated the 33-logical-batch lexical inventory:
+
+| Metric | Value |
+|---|---:|
+| Exact surface coverage | 46.62% |
+| OOV rate | 53.38% |
+| Gold UPOS in candidate recall | 35.52% |
+| Gold lemma coverage | 42.41% |
+| Gold lemma + UPOS candidate recall | 32.03% |
+| Ambiguity among seen tokens | 59.69% |
+| Morphology candidate-pool precision | 18.67% |
+| Morphology candidate-pool recall | 34.55% |
+
+<text color="warning" weight="medium">Evaluation status: stale shard-count mismatch.</text>
+
+The evaluation covers 33 logical batches, while the inventory records 34 physical shard files because of the duplicate batch. The evidence collector marked the evaluation stale. The metrics are useful candidate evidence but should not be treated as the latest validated crawl evaluation.
+
+Candidate sets are unordered. Candidate precision for lexical token selection is not measured, and no contextual lexical candidate is automatically promoted.
+
+All external lexical and morphology resources remain candidate-only.
+
+---
+
+## 7. SYS-16 — bounded repair executor
+
+[USG Bounded Repair Executor — run 44743635691](https://github.com/wizekin/USG-Workbench/actions/runs/44743635691)
+
+<text color="success" weight="medium">Executor validation passed; repair application was skipped.</text>
+
+The executor's validation job passed. The execution job completed successfully but skipped application because the repair branch already existed.
+
+[Repair-result artifact — 14631179459](https://github.com/wizekin/USG-Workbench/actions/runs/44743635691/artifacts/14631179459) records:
+
+- `status`: `already_processed_branch`
+- Runtime semantics changed: false
+- Candidate resources promoted: false
+- Gold labels changed: false
+
+### Branch reconciliation finding
+
+The existing branch:
+
+`automation/repairs/sys16-001-workflow-inventory-pagination`
+
+points to commit `d454d8eed92b8ef0d1dd567af88b945d8625a124`, which is an ancestor of current main. The comparison showed no unique branch commits relative to main.
+
+The original plan targeted the workflow-inventory pagination gap. The latest evidence collector now inventories 131 workflows and passes its workflow-evidence validation, so the gap appears resolved in main. However, the executor's skip artifact does not prove that this repair plan itself was applied.
+
+<text color="warning" weight="medium">The SYS-16-001 plan needs reconciliation rather than another execution.</text>
+
+A useful executor regression would verify that branch existence alone is not treated as proof of a completed repair unless the branch has a verified repair commit or the plan has been explicitly retired with evidence.
+
+---
+
+## 8. Cross-implementation conformance — SYS-12
+
+<text color="warning" weight="medium">No new cross-runtime conformance evidence.</text>
+
+The current matrix snapshot remains dated 16 November 2026.
+
+All five CIC gates remain `not_started`:
+
+1. CIC-01 — shared frozen source fixtures and independent gold.
+2. CIC-02 — separate execution of each implementation on the same cases.
+3. CIC-03 — normalized structural and semantic comparison.
+4. CIC-04 — per-language and per-construction disagreement reporting.
+5. CIC-05 — independent semantic gold for correctness claims.
+
+### JavaScript Semantic Workbench
+
+The JS Semantic Workbench target remains English-only and uses its deterministic local rule fallback.
+
+The browser-backed campaigns establish UI execution and structured output, not semantic correctness or cross-runtime equivalence.
+
+In the naturalistic PUD run, its 100 records were:
+
+- 4 completed
+- 46 partial
+- 50 unsupported
+
+Arabic remains unsupported in that target.
+
+No dedicated cross-runtime conformance workflow ran in the review window.
+
+---
+
+## 9. SYS-14 — persistence and replay
+
+<text color="warning" weight="medium">Pinned replay smoke evidence exists; full accepted-failure-corpus replay remains open.</text>
+
+The existing replay implementation is still bounded to its initial smoke and accepted-repair comparison scope. No new full corpus replay was verified during this run.
+
+The next replay expansion should include accepted repairs and the frozen failure corpus, with exact resource-version comparison and minimized regressions.
+
+---
+
+## 10. Phase 6 and wider system alignment
+
+The latest registered Phase 6 integration workflows were successful within their bounded scopes.
+
+The system-wide catalogue explicitly preserves these limits:
+
+- Phase 6 synthetic reference acceptance does not generalize to naturalistic semantic accuracy.
+- Semantic assertion projection remains unaccepted.
+- Construction expansion remains candidate-only.
+- The 43 unresolved cross-language mappings in Phase 7 remain open.
+- No candidate lexical, morphology or semantic resource was promoted.
+- No canonical USG-SEM/1.0 or accepted Phase 1–5 contract changed.
+
+The contextual HMM evidence still does not justify runtime integration.
+
+### Alignment with the original USG objective
+
+The current growth plan is not purely lexical. It includes lexical, syntax/construction and discourse/reference investigations. The full-treebank PUD structural-frequency work is also an important step toward construction evidence rather than word accumulation.
+
+However, the system still lacks independent semantic gold for construction-level composition, operator scope and discourse-reference correctness. Those are real bottlenecks, but downstream diagnostic counts cannot substitute for independent semantic validation.
+
+The latest evidence collection improves the control-plane observability and evidence accounting. It does not establish a general-purpose semantic-understanding capability.
+
+---
+
+## 11. PRs, changes and blockers
+
+| Item | Status |
+|---|---|
+| Repository changes made by this run | <text weight="medium">None</text> |
+| PRs opened by this run | 0 |
+| PRs merged by this run | 0 |
+| Open PRs at review time | 0 |
+| Candidate resources promoted | 0 |
+| Gold labels changed | 0 |
+| Runtime semantic changes | 0 |
+
+The roadmap-sync failures all attempted to publish the existing branch `automation/long-term-roadmap-status` but failed at PR creation.
+
+The latest failure is [run 44708433660](https://github.com/wizekin/USG-Workbench/actions/runs/44708433660). The branch contains commit `12e7bef32278d66524920fc1b80c50b24cccdb25`, adding the roadmap status files, but no PR exists.
+
+The verified error is:
+
+> GitHub Actions is not permitted to create or approve pull requests.
+
+No PR was opened manually during this run.
+
+---
+
+## 12. Next dependency-ready work
+
+1. **SYS-08 — Verify the next full naturalistic bilingual PUD campaign.** The diagnostic implementation and validation are complete, but the full campaign must publish its structural-frequency bundle and report behavior. I could not dispatch the workflow through the exposed GitHub actions in this run; the next scheduled campaign is required.
+2. **SYS-09 — Independent semantic gold.** The protocol is merged. Annotation and adjudication remain unavailable.
+3. **SYS-16 — Reconcile the stale SYS-16-001 repair plan.** Verify the main-branch workflow inventory fix, retire the old plan with evidence, and prevent the executor from treating a no-op branch as a completed repair.
+4. **SYS-17 — Candidate-only lexical/semantic growth loop.** Build from measured failure clusters, provenance and licensing, ambiguity regressions, held-out candidate evaluation and rollback. No runtime promotion.
+5. **SYS-12 — Shared frozen fixtures and cross-runtime conformance.**
+6. **SYS-14 — Extend deterministic replay to accepted repairs and the frozen failure corpus.**
+7. **SYS-10/11 — Continue Phase 6 rights, gold and annotation prerequisites where available.**
+
+<text color="success" weight="medium">No unsafe changes were made. The evidence loop remains aligned with the original USG objective, but the next meaningful capability improvements require the full naturalistic campaign, independent semantic evidence and repair-plan reconciliation rather than additional lexical volume alone.</text>
+
+---
+
+[ASSISTANT]
+# USG system-wide growth report — 21 November 2026
+
+<text color="secondary" size="sm">Checkpoint window: 20 Nov 2026, 18:52 Cairo → 21 Nov 2026, 20:29 Cairo</text>
+
+<text color="success" weight="medium">Main branch unchanged. External lexical data branch advanced. Several evidence reports remain unmerged.</text>
+
+All GitHub operations in this review were performed through the GitHub plugin directly. Composio was not used for GitHub.
+
+## 1. GitHub Actions reviewed
+
+<text color="secondary" size="sm">10 workflow runs checked within the checkpoint window.</text>
+
+| Workflow | Run | Result |
+|---|---|---|
+| Growth planner | [44871508805](https://github.com/wizekin/USG-Workbench/actions/runs/44871508805) | <text color="success">Success</text> — 3 campaigns analyzed |
+| System evidence collection | [44874905983](https://github.com/wizekin/USG-Workbench/actions/runs/44874905983) | <text color="success">Success</text> — Phase 8 control-plane acceptance, 14/14 |
+| Open-World campaign | [44858520501](https://github.com/wizekin/USG-Workbench/actions/runs/44858520501) | <text color="success">Success</text> — campaign executed; report branch pushed, PR creation denied |
+| Phase 6 continuation tracker | [44875402191](https://github.com/wizekin/USG-Workbench/actions/runs/44875402191) | <text color="success">Success</text> — tracker complete |
+| Bounded repair executor | [44840647736](https://github.com/wizekin/USG-Workbench/actions/runs/44840647736) | <text color="success">Success</text> — already-processed branch |
+| Bounded repair executor | [44878434147](https://github.com/wizekin/USG-Workbench/actions/runs/44878434147) | <text color="success">Success</text> — already-processed branch |
+| Lexical completion launcher #4 | [44790299467](https://github.com/wizekin/USG-Workbench/actions/runs/44790299467) | <text color="success">Success</text> — 34,771 headwords processed |
+| Lexical completion launcher #5 | [44834241587](https://github.com/wizekin/USG-Workbench/actions/runs/44834241587) | <text color="success">Success</text> — 34,760 headwords processed |
+| Lexical completion launcher #6 | [44864006299](https://github.com/wizekin/USG-Workbench/actions/runs/44864006299) | <text color="success">Success</text> — 32,443 headwords processed |
+| Lexical completion launcher #7 | [44887220048](https://github.com/wizekin/USG-Workbench/actions/runs/44887220048) | <text color="warning" weight="medium">Failure</text> — 30,000 headwords processed before checkpoint-provider error |
+
+No separate weekly PUD campaign, dedicated Phase 4/5 benchmark, independent Phase 6 gold/annotation campaign, full replay campaign, or cross-runtime conformance workflow ran in this interval. The Open-World campaign did exercise several component targets, including the browser adapter and Phase 4/5.
+
+---
+
+## 2. Latest Open-World evidence
+
+### Latest committed campaign
+
+[OWC-OW7-44448277481-1](https://github.com/wizekin/USG-Workbench/tree/main/evaluations/open-world/campaigns/OWC-OW7-44448277481-1)
+
+- <text color="secondary" size="sm">Tested commit:</text> `41a429ea3d389cf4548d49796221674edc43ed2f`
+- <text color="secondary" size="sm">Status:</text> PARTIAL
+- <text color="secondary" size="sm">Target records:</text> 326
+
+| Outcome | Records |
+|---|---:|
+| Completed | 49 |
+| Partial | 209 |
+| Unsupported | 38 |
+| Ambiguous | 10 |
+| Not executed | 20 |
+| <text color="secondary" size="sm">Actual attempts</text> | <text color="secondary" size="sm">306</text> |
+
+<text color="secondary" size="sm">First blockers: 61 lexical, 18 syntax, 1 discourse. No naturalistic population.</text>
+
+### Latest executed campaign
+
+[OWC-OW7-44858520501-1](https://github.com/wizekin/USG-Workbench/actions/runs/44858520501)
+
+- <text color="secondary" size="sm">Tested commit:</text> `8c5f0a733c516a80d1b33c73d589984b8c7d571c`
+- <text color="secondary" size="sm">Report branch commit:</text> [`c143a08e30904344073811c7aa2eda0f03ea9d5f`](https://github.com/wizekin/USG-Workbench/commit/c143a08e30904344073811c7aa2eda0f03ea9d5f)
+- <text color="secondary" size="sm">Campaign status:</text> PARTIAL
+- <text color="secondary" size="sm">Target records:</text> 326
+- <text color="secondary" size="sm">Actual attempts:</text> 306
+
+| Outcome | Records |
+|---|---:|
+| Completed | 50 |
+| Partial | 205 |
+| Unsupported | 43 |
+| Ambiguous | 8 |
+| Not executed | 20 |
+
+<text color="secondary" size="sm">No naturalistic population. The report branch is not merged.</text>
+
+### Population accounting — latest execution
+
+<text color="secondary" size="sm">Randomized and controlled-diagnostic populations remain separate.</text>
+
+| Population | Target records | Actual attempts | Not executed |
+|---|---:|---:|---:|
+| Unconstrained random | 220 | 200 | 20 |
+| Controlled diagnostic | 106 | 106 | 0 |
+| Naturalistic | 0 | 0 | 0 |
+
+The randomized population had 2 completed, 163 partial, 27 unsupported and 8 ambiguous outcomes among actual attempts, with 20 not-executed records. The controlled-diagnostic population had 48 completed, 42 partial and 16 unsupported.
+
+<text color="secondary" size="sm">The 20 not-executed randomized records correspond to the unimplemented Workbench-to-canonical adapter target.</text>
+
+### First-blocker attribution
+
+| Population | Lexical | Syntax | Discourse |
+|---|---:|---:|---:|
+| Controlled diagnostic | 41 | 15 | 1 |
+| Unconstrained random | 20 | 1 | 0 |
+| <text color="secondary" size="sm">Total</text> | <text color="secondary" size="sm">61</text> | <text color="secondary" size="sm">16</text> | <text color="secondary" size="sm">1</text> |
+
+The latest campaign's first blockers remain concentrated in lexical and syntax stages.
+
+Dependency-related later-stage co-occurrences include semantic composition (73), syntax (59), discourse (14) and operators (10). These are downstream co-occurrences, not proof that a particular first blocker caused every later failure.
+
+The difference between the latest executed campaign and the latest committed campaign is not a validated performance improvement: their tested commits differ, and neither has independent semantic gold.
+
+### Growth plan
+
+The latest growth-plan artifact was generated at `2026-11-21T05:34:27Z`, analyzing three committed campaigns. Its recommendations remain:
+
+1. Lexical — investigate unresolved and ambiguous lexical evidence.
+2. Syntax — cluster construction failures and add positive, negative, ambiguous and boundary fixtures.
+3. Discourse — investigate reference-resolution failures.
+
+The planner remains read-only. It does not promote semantic rules.
+
+<text color="warning" weight="medium">The growth-plan artifact does not incorporate the newer OWC-OW7 run #81 report because that campaign is still on an unmerged report branch.</text>
+
+---
+
+## 3. External lexical crawl
+
+### Latest durable progress
+
+<text color="success" weight="medium">The data branch has advanced to batch 44.</text>
+
+| Metric | Current verified state |
+|---|---:|
+| Expected headwords | 1,396,111 |
+| Processed headwords | 1,071,245 |
+| <text color="secondary" size="sm">Progress</text> | <text color="secondary" size="sm">76.73%</text> |
+| Remaining headwords | 324,866 |
+| Processed entries | 1,148,411 |
+| Processed senses | 1,374,993 |
+| Logical batches | 44 |
+| Physical shards | 45 |
+| Storage used | 271,173,601 bytes |
+| <text color="secondary" size="sm">Storage usage</text> | <text color="secondary" size="sm">36.94% of 700 MiB</text> |
+
+<text color="secondary" size="sm">Current shard listing: 45 physical files, 44 logical batch numbers, with one duplicate physical batch-000002.</text>
+
+### Retry and audit accounting
+
+- <text color="success" weight="medium">198 previously failed headwords recovered.</text>
+- <text color="secondary" size="sm">Pending retries:</text> 0
+- <text color="secondary" size="sm">Retry failures:</text> 0
+- <text color="secondary" size="sm">Dead-letter headwords:</text> 0
+- <text color="secondary" size="sm">Failed pages:</text> 0
+
+The formal remote audit from run #6 was `passed_with_warnings`:
+
+- 44 physical shards / 43 logical batches.
+- 263,341,152 bytes stored.
+- No pending retry queue.
+- Duplicate batch 2 detected.
+
+<text color="warning" weight="medium">Run #7 added batch 44 but did not complete a formal remote audit after its progress was published.</text>
+
+### Run #7 failure
+
+Run [44887220048](https://github.com/wizekin/USG-Workbench/actions/runs/44887220048) processed 30,000 headwords, advancing the checkpoint from 1,041,245 to 1,071,245, but then failed with:
+
+`The data-branch checkpoint is invalid or unavailable`
+
+This message is emitted by the checkpoint loader, which wraps underlying provider or decoding errors.
+
+I verified the current durable checkpoint and manifest directly on the data branch. They are valid and consistent:
+
+- Checkpoint batch number: 44.
+- Processed headwords: 1,071,245.
+- Entries: 1,148,411.
+- Senses: 1,374,993.
+- Page index: 1,079; entry index: 815.
+- Retry queue: 0.
+- Storage: 271,173,601 bytes.
+- Status: `in_progress`.
+
+<text color="warning" weight="medium">The exact underlying provider failure was not reproduced. The error is currently insufficiently diagnostic; the durable checkpoint is not demonstrably corrupt.</text>
+
+The first blocking stage here is infrastructure/checkpoint retrieval, not a USG semantic-capability failure.
+
+The safe next repair hypothesis is to preserve sanitized underlying provider diagnostics and add a bounded checkpoint-read regression/retry path, without changing semantic runtime behavior.
+
+<FollowUp value="Diagnose checkpoint failure" query="Investigate the checkpoint-loader failure in run 44887220048 with a bounded regression fixture and safe telemetry, preserving the candidate/runtime boundary." source="scheduled_task_followups_v1" />
+
+### External lexical evaluation
+
+The latest recorded independent English PUD lexical/morphology evaluation is stale:
+
+- Evaluated 41 logical shards.
+- Physical inventory at that snapshot: 42 shards.
+- Status: `stale_shard_count_mismatch`.
+
+Historical metrics from that 41-shard evaluation:
+
+| Metric | Recorded result |
+|---|---:|
+| Exact surface coverage | 49.74% |
+| OOV rate | 50.26% |
+| Gold lemma coverage | 45.42% |
+| Gold UPOS candidate recall | 38.32% |
+| Gold lemma UPOS candidate recall | 34.63% |
+| Morphology candidate-pool precision | 19.82% |
+| Morphology candidate recall | 38.37% |
+| Lexicon forms | 1,077,248 |
+| Lexicon lemmas | 931,868 |
+| Mapped dictionary entries | 970,993 |
+
+<text color="warning" weight="medium">These metrics are stale and must not be used as current crawl-quality evidence. The crawl has progressed to 44 logical batches.</text>
+
+The external lexical data remains candidate-only. The source is `figueirego/english-dictionary`, snapshot `enwiktionary-2026-10-01-raw-244dcdc56868`, source commit `4abc6b148921005f9ede04cb5a5dfad831b7b58c`.
+
+The data branch stores no source definition or example passages; source URLs, history, snapshot and declared licensing metadata are retained. No runtime lexical promotion occurred. The contextual HMM evidence still does not justify runtime integration.
+
+---
+
+## 4. SYS-08 and SYS-09 — PUD structural diagnostics and semantic gold
+
+### SYS-08
+
+[PR #230](https://github.com/wizekin/USG-Workbench/pull/230) is merged, with merge commit `6cb4bf14ed1b24e6937a7bad5c3d99a92d198667`.
+
+The validation run [44153475418](https://github.com/wizekin/USG-Workbench/actions/runs/44153475418) passed the PUD generator and structural-frequency tests and validated full pinned-treebank diagnostic output.
+
+The manual full-treebank reproduction from 16 November selects `clause_complement.ccomp_xcomp` as a bounded candidate for annotation design:
+
+| UD proxy | English | Arabic |
+|---|---:|---:|
+| Clause-complement sentences | 348/1,000 | 349/1,000 |
+| Clause-complement instances | 453 | 437 |
+| `ccomp` sentences / instances | 156 / 172 | 242 / 286 |
+| `xcomp` sentences / instances | 243 / 281 | 140 / 151 |
+
+These are syntactic UD proxies. They are not semantic roles, frames, relations or semantic gold. The selected construction remains annotation-only.
+
+<text color="warning" weight="medium">The diagnostic implementation is merged, but campaign-level integration has not yet been verified in a full weekly PUD campaign.</text>
+
+The next campaign must contain the hashed `structural-frequency.json` report and demonstrate the publication workflow. The current SYS-08 document still says “implementation branch”; that status is stale.
+
+### SYS-09
+
+[PR #231](https://github.com/wizekin/USG-Workbench/pull/231) is merged, merge commit `4a5b0a8164b22a9b178790d2d275c2411fb71fbf`.
+
+The independent construction-level semantic-gold protocol is defined, but no annotation campaign has begun. The blockers are:
+
+- Two independent qualified bilingual annotators are unavailable.
+- A separate adjudicator is unavailable.
+- The existing 50-sentence sample contains 18 English and 16 Arabic syntactic-proxy positives, below the protocol's proposed 20-per-language positive minimum.
+- The PUD attribution package is not fully self-contained for external redistribution.
+
+<text color="warning" weight="medium">No semantic gold was created, and no semantic rule may be promoted.</text>
+
+### Latest PUD campaign
+
+The latest naturalistic campaign remains the 16 November run [43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720), which is outside the checkpoint interval.
+
+- Tested commit: `8e3f1308882b2e8ce581350746d9ee76fca31216`.
+- 300 actual attempts.
+- 4 completed, 245 partial, 51 unsupported.
+- 0 semantic-scored attempts.
+- Report branch: [`e6841e98d5512c19b98b58e15da0ec956d3d60af`](https://github.com/wizekin/USG-Workbench/commit/e6841e98d5512c19b98b58e15da0ec956d3d60af).
+
+The report branch is unmerged. Its campaign artifact predates SYS-08 integration and does not contain `structural-frequency.json`.
+
+### Source and privacy review
+
+The PUD sources are pinned:
+
+- English: `UD_English-PUD@a697bab43d4111073356de0df5802488bca3de7e`
+- Arabic: `UD_Arabic-PUD@c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87`
+
+Both declare CC BY-SA 3.0. The campaign includes the license text and attribution file, but the attribution file points to upstream READMEs rather than embedding their complete contributor/acknowledgement content. This must be resolved before external redistribution.
+
+The privacy screen rejects email and URL patterns and deduplicates within language. It retains public proper names and is not comprehensive personal-data detection. The scope is bounded internal evaluation; no private user data is used.
+
+PUD is news/Wikipedia text, not conversational user requests. English PUD includes translated sentences; Arabic PUD is translated and not a representative native-MSA distribution. The UD annotations are syntactic proxies, not USG semantic gold.
+
+---
+
+## 5. Browser Workbench and cross-implementation conformance
+
+The latest Open-World run #81 exercised the JavaScript Semantic Workbench target:
+
+- 20 target records.
+- 2 completed, 10 partial, 8 unsupported.
+- Playwright adapter v0.1.0.
+- Playwright 1.65.2.
+- Chromium 159.0.8154.6.
+
+The target is still English-only and uses the deterministic local rule fallback. Browser execution proves UI execution and structured output, not semantic correctness.
+
+The cross-implementation matrix remains the 16 November snapshot. It covers four implementation lines:
+
+- JavaScript Semantic Workbench v0.5.4.
+- Python kernel v0.7.0.
+- Python Phase 5 interpreter USG-INTERPRET/0.2.0.
+- External lexical candidate adapter.
+
+<text color="warning" weight="medium">All five CIC gates remain not_started.</text>
+
+No common frozen fixtures or actual cross-runtime semantic equivalence have been demonstrated. The latest Open-World run is component execution, not cross-runtime conformance.
+
+The matrix is stale with respect to the newer OWC #81 evidence, although its open-gate status remains accurate.
+
+---
+
+## 6. Phase 6, replay and system-wide backlog
+
+The Phase 6 continuation tracker [run 44875402191](https://github.com/wizekin/USG-Workbench/actions/runs/44875402191) completed successfully:
+
+- 8 continuation items tracked.
+- Bounded Phase 6 exit remains accepted for registered scopes.
+- Naturalistic accuracy remains `not_established`.
+- No Phase 7 blocking.
+- No new independent gold or annotation work.
+
+The tracker keeps broader coordination, attachment, operator scope, discourse, assertion projection, naturalistic evaluation and candidate-promotion work separate from accepted registered profiles.
+
+SYS-14 full accepted-failure-corpus replay remains open. No replay campaign ran in this interval.
+
+---
+
+## 7. SYS-16, evidence collection and PR status
+
+The bounded repair executor PR [#232](https://github.com/wizekin/USG-Workbench/pull/232) is merged, merge commit `7bda856ff2cc21b7bc3d6cfcfcdc84cd0d1b4b00`.
+
+The first queued repair, SYS-16-001 workflow-inventory pagination, was applied and validated in PR [#234](https://github.com/wizekin/USG-Workbench/pull/234), merge commit `3bdf4fd25590dc0bb7cf2f81d1250c3e99c1fb1b`.
+
+Its focused tests recorded 7 passing tests. The later system-evidence run #104 verified the collector now reports 132 workflow definitions. The SYS-16 backlog status is stale: it still says the first target files are unchanged pending application.
+
+### Phase 8 evidence collection
+
+Run [44874905983](https://github.com/wizekin/USG-Workbench/actions/runs/44874905983) accepted the bounded Phase 8 control-plane snapshot:
+
+- 14/14 checks passed.
+- Exact-head validation of commit `8c5f0a733c516a80d1b33c73d589984b8c7d571c`.
+- 132 workflow definitions collected.
+- Snapshot status counts: 127 success, 2 failure, 2 in progress, 1 skipped.
+
+This acceptance is limited to the evidence/development-intelligence control plane. It does not establish semantic accuracy, alter runtime semantics, promote candidates or change accepted contracts.
+
+The snapshot is stale after the later crawl runs #6 and #7.
+
+The evidence snapshot branch [`23cc0cf6d9c065453a9e9908ec9f679e80e78e5a`](https://github.com/wizekin/USG-Workbench/commit/23cc0cf6d9c065453a9e9908ec9f679e80e78e5a) is unmerged.
+
+### PRs and merges
+
+<text color="secondary" size="sm">No PRs were opened or merged during this checkpoint interval.</text>
+
+Recent relevant merges, all before this checkpoint:
+
+| PR | Merge commit |
+|---|---|
+| #230 SYS-08 structural diagnostics | `6cb4bf14ed1b24e6937a7bad5c3d99a92d198667` |
+| #231 SYS-09 gold protocol | `4a5b0a8164b22a9b178790d2d275c2411fb71fbf` |
+| #232 SYS-16 executor | `7bda856ff2cc21b7bc3d6cfcfcdc84cd0d1b4b00` |
+| #234 SYS-16 pagination repair | `3bdf4fd25590dc0bb7cf2f81d1250c3e99c1fb1b` |
+| #229 OWC report | `8c5f0a733c516a80d1b33c73d589984b8c7d571c` |
+
+The current main branch remains at `8c5f0a733c516a80d1b33c73d589984b8c7d571c`.
+
+Report branches for OWC #81, the system evidence snapshot and the earlier PUD campaign were pushed, but automatic PR creation was denied by repository Actions permissions. I did not open manual PRs.
+
+---
+
+## 8. Alignment, drift and next priorities
+
+The growth policy's loop remains `observe → diagnose → prioritize → propose → sandbox → evaluate → accept → replay → monitor`.
+
+No runtime changes, candidate promotion, gold-label changes, threshold changes, contract changes or phase-status mutations occurred in this run.
+
+### Stale or incomplete statuses
+
+- **SYS-16 backlog:** the first repair is already merged and verified; the status still says pending.
+- **SYS-08 documentation:** implementation status says “implementation branch”; it is merged, but campaign-level integration verification remains pending.
+- **Cross-implementation matrix:** 16 November snapshot; needs the newer OWC evidence.
+- **Growth plan:** does not include the newer unmerged OWC #81 report.
+- **System evidence catalogue:** stale after crawl runs #6/#7.
+- **Independent lexical/morphology evaluation:** stale and not refreshed against the current crawl inventory.
+
+### Next dependency-ready work
+
+1. **SYS-08 — verify the next full PUD campaign.** Confirm `structural-frequency.json`, hashes, bilingual counts and report-publication behavior.
+2. **SYS-09 — independent semantic gold.** Remains blocked by independent annotators and adjudicator.
+3. **SYS-16 — bounded repair executor.** The first repair is complete; update backlog status rather than duplicate the repair.
+4. **SYS-17 — candidate lexical/semantic growth.** Remains constrained by stale independent lexical evaluation, source licensing and independent gold.
+5. **SYS-12 — shared cross-runtime fixtures.** CIC-01 remains unstarted. Component conformance must remain separate from semantic correctness.
+6. **SYS-14 — deterministic replay.** Extend replay to the accepted-failure corpus.
+7. **SYS-10/11 — Phase 6 prerequisites.** Continue rights and annotation prerequisites when available.
+
+<text color="secondary" size="sm">No changes were made in this monitoring run. The main actionable failure is the checkpoint-provider diagnostic gap; the next full PUD campaign is not yet available; independent semantic annotation remains unavailable; and cross-runtime conformance is still unestablished.</text>
+
+The system remains a modular, bounded semantic-processing architecture with traceable stages and evidence, but the current evidence does not support broad naturalistic semantic understanding. Growth should continue prioritizing evaluation truth, diagnostics, replay, provenance and language balance rather than lexical volume or feature count.
+
+<MemoryCite />

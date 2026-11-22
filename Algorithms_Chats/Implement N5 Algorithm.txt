@@ -1,0 +1,2351 @@
+Title: Implement N5 Algorithm
+Conversation ID: 6af7dfd6-6d18-83e9-b150-c938c1b710e8
+
+---
+
+[USER]
+related to our previous chat "Implement N4 Algorithm", Auto implement the steps of the N5 algorithm in python and ignore the previous n0-n7 implementation. you can use github through github plugin to implement N5 — Complete 52 algorithmic operations. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin
+
+---
+
+[ASSISTANT]
+I’ve created the isolated GitHub branch `n5-complete-52-operations` from the current `main` branch. The new N5 will use verified, consent-authorized learning, preserve the original model, and return a separately versioned child model; optional N4 attention and precision signals will modulate learning.
+
+<badge color="success">38 tests passed</badge> The corrected implementation now passes the full repository test suite on GitHub Actions, including the N3 export test. The N5 code is committed to the feature branch; `main` has not been changed.
+
+## N5 implementation completed
+
+<badge color="success">CI passed — 39 tests</badge>
+
+**Pull request:** [#2 — Implement N5: 52-operation experience-dependent plasticity](https://github.com/wizekin/ORE-Neurocomputational/pull/2)
+
+<text color="success" weight="medium" size="sm">Open · Mergeable · Not yet merged</text>
+
+### What was implemented
+
+The new `ore_n5` package contains:
+
+| Component | Implementation |
+|---|---|
+| Algorithm | 52 explicitly named and traced operations |
+| Learning | Fast and slow Oja-style prototype updates |
+| Memory | Eligibility traces and experience replay |
+| Adaptation | Homeostatic class-gain control |
+| Anti-forgetting | Parent-relative prototype drift limits |
+| Context | Fast and slow unigram and transition memories |
+| N4 integration | Attention, sensory precision and class-selective gates |
+| Model integrity | Fingerprints, provenance and parent immutability |
+| N3 integration | Export learned child models into a new N3 processor |
+
+### Important safeguards
+
+- Learning requires explicit authorization and independent label verification.
+- Each experience must include its verification provenance.
+- N5 creates a separate child model instead of modifying N3.
+- Recognition and learning remain separate processes.
+- All previous N1–N4 packages remain intact.
+
+**Files to inspect:**
+
+- [Complete 52-operation specification](https://github.com/wizekin/ORE-Neurocomputational/blob/n5-complete-52-operations/docs/N5_ARCHITECTURE.md)
+- [N5 Python pipeline](https://github.com/wizekin/ORE-Neurocomputational/blob/n5-complete-52-operations/ore_n5/pipeline.py)
+- [N5 tests](https://github.com/wizekin/ORE-Neurocomputational/blob/n5-complete-52-operations/tests/test_n5.py)
+- [GitHub Actions test results](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43556255408)
+
+One scientific distinction: N5 is implemented as an expanded experience-dependent plasticity stage following N4. Its learning equations are computational approximations, not experimentally validated biological synaptic mechanisms.
+
+`main` remains unchanged until the pull request is merged.
+
+Would you like a daily check of PR #2, with notifications only when its review, merge or CI status changes?
+
+<SuggestAutomation label="Monitor N5 pull request" emoji="🔬"/>
+
+---
+
+[USER]
+related to our previous chat "Request Stage A Output", I want you to turn the sequence of "ORE Neurocomputational Development Roadmap: Phase N6 — Biological learning and memory" into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step
+
+---
+
+[ASSISTANT]
+# ORE Neurocomputational Development Roadmap
+## Phase N6 — Biological Learning and Memory
+
+The purpose of N6 is to develop a more biologically informed learning and memory system for ORE, building on the visual representation, prediction, attention and plasticity mechanisms established in N1–N5.
+
+**Its central objective is to make ORE learn from experience, retain useful information, distinguish new experiences from familiar ones, consolidate stable knowledge, and control forgetting and interference.**
+
+### 1. Relationship with N1–N5
+
+The intended processing sequence is:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2}>
+    **N1 — Early visual processing**
+
+    Extract visual features from the input.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2}>
+    **N2 — Distributed orthographic population code**
+
+    Maintain distributions of possible grapheme identities.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2}>
+    **N3 — Recurrent prediction and error**
+
+    Exchange contextual predictions and calculate mismatches.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2}>
+    **N4 — Attention and precision gating**
+
+    Allocate processing resources according to relevance and reliability.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2}>
+    **N5 — Experience-dependent plasticity**
+
+    Update representations through verified experience and bounded learning.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.10)" border={{size:1,color:"#16A34A"}} radius="md" padding={3}>
+    **N6 — Biological learning and memory**
+
+    Store, strengthen, retrieve, reorganize, consolidate and selectively weaken learned information.
+  </box>
+</box>
+
+One clarification about the documentation: the saved Roadmap v1.0 currently labels N6 as *Mechanism Instrumentation, Ablations and Reproducibility*. Its N5 section explicitly identifies continual-learning replay, synaptic consolidation, homeostatic plasticity, interference control, sleep-like consolidation and multi-timescale plasticity as unfinished. I will treat your requested N6 title as an expanded next-phase specification addressing those biological learning and memory mechanisms, rather than silently changing the meaning of the existing N6. 
+
+### 2. What N6 should accomplish
+
+N5 already introduces a basic form of experience-dependent plasticity. N6 should go substantially further.
+
+The distinction is:
+
+- N5 changes the strengths of learned representations following verified experience.
+- N6 manages the complete lifecycle of learned information: encoding, stabilization, storage, retrieval, consolidation, integration, interference management and forgetting.
+
+The central biological systems to use as computational inspiration are:
+
+| Biological system | Computational responsibility in N6 |
+|---|---|
+| Synaptic plasticity | Change connection strengths |
+| Hippocampal formation | Rapidly bind individual experiences |
+| Neocortical memory | Preserve distributed, gradually acquired knowledge |
+| Dopaminergic modulation | Regulate learning according to novelty and outcome |
+| Synaptic eligibility traces | Retain temporary records of recent activity |
+| Replay mechanisms | Reactivate previous experiences |
+| Systems consolidation | Gradually integrate memories into distributed networks |
+| Homeostatic plasticity | Maintain stable activity |
+| Interference and forgetting | Manage competing or outdated representations |
+
+These are functional correspondences, not claims that each computational module corresponds to one isolated brain structure.
+
+# Part I — Mathematical and biological foundation
+
+## 3. Memory architecture proposed for ORE N6
+
+N6 should maintain multiple kinds of memory instead of storing all learning in one collection of prototype weights.
+
+<AsyncImage query="human brain hippocampus neocortex prefrontal cortex amygdala anatomical neuroscience educational illustration labeled" aspectRatio="16:9" width="100%" maxHeight={220} fit="contain"/>
+
+I propose five interacting memory systems:
+
+<box border radius="lg" gap={3} padding={3}>
+  <box gap={1}>
+    **1. Episodic memory — experience-specific storage**
+
+    <badge color="info">Hippocampal-inspired</badge>
+    Stores individual visual experiences: which graphemes appeared, their order, visual properties, uncertainty and surrounding context.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **2. Orthographic long-term memory — stable representations**
+
+    <badge color="info">Cortical-inspired</badge>
+    Stores stable grapheme representations, positional relationships and frequently learned patterns.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **3. Associative memory — relationships between representations**
+
+    Stores relationships between graphemes, positions, neighboring units and recurring sequences.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **4. Working and short-term memory — currently active information**
+
+    Keeps current visual hypotheses and temporary activity available for ongoing processing and updating.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **5. Consolidated memory — stabilized knowledge**
+
+    Stores information strengthened through repeated experience, replay and integration into existing representations.
+  </box>
+</box>
+
+This architecture draws on the distinction between hippocampal experience binding and distributed cortical long-term representation. The transformation between them is not necessarily a literal transfer of a complete file: consolidation can reorganize a memory into more abstract and generalized representations. <Cite refs={["turn825383search0","turn825383search6"]}/>
+
+## 4. Main mathematical variables
+
+Before defining the operations, we need a shared mathematical vocabulary.
+
+Let:
+
+| Variable | Meaning |
+|---|---|
+| \(x_t\) | Visual feature vector at time \(t\) |
+| \(q_t(c)\) | Visual probability of grapheme class \(c\) |
+| \(b_t(c)\) | Final N3/N4 belief about grapheme identity |
+| \(p_t(c)\) | Predicted probability derived from previous memory |
+| \(a_t\) | Attention allocated to the current patch |
+| \(r_t\) | Reliability of the observation |
+| \(w_{ij}\) | Strength of an associative connection |
+| \(e_{ij}\) | Temporary eligibility trace |
+| \(m_t\) | Neuromodulatory learning signal proxy |
+| \(M_i\) | Stored memory record |
+| \(\nu_t\) | Novelty of the current experience |
+| \(\delta_t\) | Prediction error or mismatch |
+| \(u_i\) | Importance or utility of a memory |
+
+The overall memory state will contain:
+
+\[
+\mathcal M_t =
+\left(
+M_{\text{working}},
+M_{\text{episodic}},
+M_{\text{fast}},
+M_{\text{slow}},
+M_{\text{associative}},
+M_{\text{consolidated}}
+\right)
+\]
+
+The systems share information, but their representations must remain distinguishable.
+
+**An important scientific distinction:** The human brain does not literally calculate these equations as a conventional computer would. The equations are mathematical models of candidate mechanisms. Some have substantial experimental grounding, while others are proposed engineering approximations for ORE.
+
+---
+
+# Part II — N6 complete algorithm
+
+I propose a **60-operation architecture**, organized into ten interconnected computational subsystems.
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="xl">N6 — 60 algorithmic operations</title>
+  <text color="secondary" size="xs">PROPOSED ARCHITECTURE</text>
+  {#each [
+    ["A","01–06","Memory initialization and input validation"],
+    ["B","07–14","Experience encoding and pattern separation"],
+    ["C","15–26","Synaptic plasticity and neuromodulatory learning"],
+    ["D","27–34","Short-term and episodic memory formation"],
+    ["E","35–41","Associative retrieval and pattern completion"],
+    ["F","42–47","Memory reactivation and reconsolidation"],
+    ["G","48–54","Replay and systems consolidation"],
+    ["H","55–57","Knowledge abstraction and generalization"],
+    ["I","58–60","Forgetting, homeostasis and integrity"]
+  ] as item}
+    <row align="center" gap={2}>
+      <box background="surface-secondary" radius="md" size="32px" align="center" justify="center">
+        **{item[0]}**
+      </box>
+      <box flex="1" gap={0}>
+        **{item[1]} — {item[2]}**
+      </box>
+    </row>
+  {/each}
+</box>
+
+## A. Memory initialization and input validation — operations 1–6
+
+### Operation 1 — Receive the new experience
+
+N6 receives an experience generated by the existing N1–N5 pipeline.
+
+An experience can contain:
+- N1 visual features.
+- N2 candidate grapheme distributions.
+- N3 contextual predictions and errors.
+- N4 attention and precision signals.
+- N5 learned representations and memory fingerprints.
+
+The input is an experience record, not simply an image.
+
+Mathematically:
+
+\[
+E_t =
+\{x_t,q_t,b_t,p_t,a_t,r_t,\delta_t\}
+\]
+
+**Output:** A unified experience object.
+
+### Operation 2 — Validate the experience
+
+Check whether:
+- The feature vector contains finite numbers.
+- The candidate probability distribution is valid.
+- The grapheme vocabulary matches the active model.
+- The patch and sequence identifiers are valid.
+- All source information and labels have acceptable provenance.
+
+Probability normalization:
+
+\[
+\sum_{c=1}^{C}q_t(c)=1
+\]
+
+If there is a small floating-point deviation, normalize it:
+
+\[
+q'_t(c)=
+\frac{q_t(c)}
+{\sum_jq_t(j)+\epsilon}
+\]
+
+Invalid data must not enter permanent memory.
+
+### Operation 3 — Standardize the visual experience
+
+Use the existing N5 parent model's feature normalization parameters.
+
+\[
+z_t=\frac{x_t-\mu}{\sigma+\epsilon}
+\]
+
+Here:
+- \(\mu\) is the learned feature mean.
+- \(\sigma\) is the learned feature scale.
+
+Normalize the vector:
+
+\[
+\hat z_t=
+\frac{z_t}{\max(\|z_t\|_2,\epsilon)}
+\]
+
+This allows similarity measurements to be made in a consistent feature space.
+
+### Operation 4 — Preserve the previous memory state
+
+Create a frozen snapshot of the current memory system.
+
+\[
+\mathcal M^{parent}
+=
+\operatorname{Copy}(\mathcal M_t)
+\]
+
+Calculate its fingerprint:
+
+\[
+H_{parent}
+=
+SHA256(\operatorname{Serialize}(\mathcal M^{parent}))
+\]
+
+This establishes an integrity boundary. Every learning operation creates a new state rather than silently modifying the previous version.
+
+### Operation 5 — Establish the pre-learning baseline
+
+Before incorporating the experience, measure how the existing system would interpret it.
+
+Calculate:
+
+\[
+B_{\text{before}}
+=
+\operatorname{Recognize}(E_t,\mathcal M^{parent})
+\]
+
+Record:
+- Candidate identity distributions.
+- Top candidate and uncertainty.
+- Prediction error.
+- Similarity to stored representations.
+- Retrieval results.
+
+This is important because we need to determine whether learning genuinely improves subsequent recognition.
+
+### Operation 6 — Initialize the memory subsystems
+
+Create or retrieve the following independent memory components:
+
+\[
+\mathcal M =
+(M_W,M_E,M_F,M_S,M_A,M_C)
+\]
+
+Where:
+- \(M_W\): working memory.
+- \(M_E\): episodic memory.
+- \(M_F\): fast plasticity memory.
+- \(M_S\): slow plasticity memory.
+- \(M_A\): associative memory.
+- \(M_C\): consolidated memory.
+
+Initialize their metadata, capacity limits, timestamps, activity statistics and version identifiers.
+
+**Output of subsystem A:** A validated experience and a reproducible memory state.
+
+---
+
+## B. Experience encoding and pattern separation — operations 7–14
+
+<AsyncImage query="hippocampus dentate gyrus CA3 CA1 entorhinal cortex pattern separation pattern completion neuroscience educational diagram" aspectRatio="16:9" width="100%" maxHeight={210} fit="contain"/>
+
+This subsystem draws especially on hippocampal memory mechanisms.
+
+The hippocampus is associated with two complementary computational processes:
+
+- Pattern separation: distinguishing similar experiences.
+- Pattern completion: retrieving a complete representation from partial information.
+
+Dentate gyrus and CA3 circuitry are prominent in models of these complementary functions, although the precise division of labor is more complex than a simple one-region-per-function model. <Cite refs={["turn919130search5"]}/>
+
+### Operation 7 — Extract the identity representation
+
+Receive the complete distribution of possible graphemes.
+
+For patch \(i\):
+
+\[
+Q_i=[q_i(c_1),q_i(c_2),\ldots,q_i(c_C)]
+\]
+
+Do not immediately convert it into a single character.
+
+For example:
+
+\[
+Q_i=[0.55,0.35,0.10]
+\]
+
+The experience is compatible with three different interpretations.
+
+N6 must preserve this uncertainty.
+
+### Operation 8 — Encode the spatial and positional structure
+
+Represent where each grapheme occurred.
+
+For a sequence of \(n\) patches:
+
+\[
+P=[p_1,p_2,\ldots,p_n]
+\]
+
+Retain:
+- Absolute position.
+- Relative position.
+- Neighbor relationships.
+- Sequence order.
+- Segmentation uncertainty.
+
+For relative distance:
+
+\[
+d_{ij}=p_j-p_i
+\]
+
+For normalized sequence location:
+
+\[
+\tilde p_i=\frac{i-1}{n-1}
+\]
+
+for \(n>1\).
+
+This information becomes part of the memory representation, not merely temporary visual metadata.
+
+### Operation 9 — Bind different components of the same experience
+
+The system must associate identity, position, visual characteristics and sequence context.
+
+Construct a combined experience representation:
+
+\[
+v_i=
+\left[
+\hat z_i,
+Q_i,
+P_i,
+R_i
+\right]
+\]
+
+where \(R_i\) contains the reliability and relevant contextual signals.
+
+A learned binding transformation could be:
+
+\[
+h_i=
+\operatorname{Normalize}
+\left(
+W_bv_i+b_b
+\right)
+\]
+
+Here \(W_b\) is a learnable binding matrix.
+
+This is a computational analogy of binding distributed information into an episode.
+
+### Operation 10 — Measure similarity to existing experiences
+
+Compare the new representation against stored memories.
+
+Using cosine similarity:
+
+\[
+s_{ij}=
+\frac{h_i^\top M_j}
+{\|h_i\|_2\|M_j\|_2+\epsilon}
+\]
+
+Calculate the maximum similarity:
+
+\[
+s_{\max}=\max_j(s_{ij})
+\]
+
+This determines whether the experience resembles an existing memory or is substantially different.
+
+### Operation 11 — Calculate experience novelty
+
+Derive novelty from the distance between the current experience and the closest existing representation.
+
+\[
+d_{\min}=1-s_{\max}
+\]
+
+A bounded novelty estimate can be:
+
+\[
+\nu_i=
+\frac{d_{\min}}
+{d_{\min}+\kappa}
+\]
+
+where \(\kappa\) controls sensitivity.
+
+High novelty suggests that the current experience is not adequately represented by existing memories.
+
+### Operation 12 — Measure prediction surprise
+
+Compare the observation with the current system's prediction.
+
+One mathematical choice is KL divergence:
+
+\[
+\delta_i=
+D_{KL}(q_i\|p_i)
+\]
+
+\[
+D_{KL}(q\|p)=
+\sum_cq(c)\log\frac{q(c)+\epsilon}{p(c)+\epsilon}
+\]
+
+This distinguishes two different situations:
+
+- A familiar but visually degraded character.
+- A visually clear character that violates the learned expectation.
+
+Those situations should not automatically produce the same memory update.
+
+### Operation 13 — Separate overlapping experiences
+
+When two experiences are very similar, the system should avoid automatically collapsing them into the same memory.
+
+One computational approach is sparse competitive activation:
+
+\[
+a_j=
+\operatorname{softmax}
+\left(
+\frac{s_j-\theta}{T}
+\right)
+\]
+
+Then preserve a limited subset of the strongest candidate activations.
+
+A separation penalty can discourage redundant memory representations:
+
+\[
+L_{\text{sep}}=
+\sum_{i\ne j}
+\max(0,s_{ij}-m)^2
+\]
+
+where \(m\) is a maximum desired similarity for representations that should remain distinct.
+
+**Important:** Similarity alone cannot determine whether two memories are truly different. ORE must consider discriminative evidence such as letter order, diacritics and font-specific visual differences.
+
+### Operation 14 — Create an episodic memory record
+
+Create a new record for the complete experience:
+
+\[
+M_E^t=
+\left(
+h_t,
+Q_t,
+P_t,
+\delta_t,
+\nu_t,
+\text{sequence}_t,
+\text{provenance}_t
+\right)
+\]
+
+Assign:
+- Unique memory identifier.
+- Creation timestamp.
+- Source identifier.
+- Confidence.
+- Novelty.
+- Related memory identifiers.
+- Initial stability value.
+
+**Output of subsystem B:** A structured, uncertainty-preserving episodic representation.
+
+---
+
+## C. Synaptic plasticity and neuromodulatory learning — operations 15–26
+
+<AsyncImage query="biological synapse long term potentiation long term depression calcium NMDA AMPA receptors neuroscience educational illustration" aspectRatio="16:9" width="100%" maxHeight={210} fit="contain"/>
+
+This subsystem expands N5's simplified Oja-style learning.
+
+The biological inspiration includes:
+- Hebbian plasticity.
+- Long-term potentiation (LTP).
+- Long-term depression (LTD).
+- Spike-timing-dependent plasticity (STDP).
+- Eligibility traces.
+- Neuromodulatory gating.
+
+STDP is an experimentally supported family of plasticity rules in which changes depend on the relative timing of pre- and postsynaptic activity. The exact rule varies across circuits and experimental conditions. <Cite refs={["turn825383search7","turn825383search2"]}/>
+
+### Operation 15 — Identify active connections
+
+Identify which representations were active together.
+
+Let:
+
+\[
+x_i(t)=\text{presynaptic activity}
+\]
+
+\[
+y_j(t)=\text{postsynaptic activity}
+\]
+
+A simple local co-activity measurement is:
+
+\[
+C_{ij}=x_i(t)y_j(t)
+\]
+
+Connections with relevant co-activity become eligible for modification.
+
+### Operation 16 — Measure temporal relationships
+
+Record the temporal difference between neural activity:
+
+\[
+\Delta t=t_{\text{post}}-t_{\text{pre}}
+\]
+
+This represents the timing relationship between pre- and postsynaptic activation.
+
+The learning system should preserve event ordering rather than treating all co-activity as equivalent.
+
+### Operation 17 — Calculate a candidate STDP update
+
+A commonly used pair-based STDP model is:
+
+\[
+\Delta w=
+\begin{cases}
+A_+\exp(-\Delta t/\tau_+),
+&\Delta t>0\\
+-A_-\exp(\Delta t/\tau_-),
+&\Delta t<0
+\end{cases}
+\]
+
+Where:
+- \(A_+\) controls potentiation.
+- \(A_-\) controls depression.
+- \(\tau_+\) and \(\tau_-\) control the timing windows.
+
+This provides a candidate learning rule for ORE's associative connections.
+
+### Operation 18 — Calculate correlated activity
+
+Calculate the relationship between the activities of connected representations.
+
+One possible statistic is:
+
+\[
+C_{ij}=
+E[x_iy_j]-E[x_i]E[y_j]
+\]
+
+Positive correlation may indicate a repeated association.
+
+Negative correlation may indicate competing or mutually exclusive representations.
+
+### Operation 19 — Determine potentiation or depression
+
+Estimate whether a connection should strengthen or weaken.
+
+A simplified rule:
+
+\[
+\Delta w_{ij}=
+\eta_+ [C_{ij}]_+
+-
+\eta_-[-C_{ij}]_+
+\]
+
+where:
+
+\[
+[x]_+=\max(0,x)
+\]
+
+This represents candidate strengthening and weakening processes.
+
+Real LTP and LTD involve complex biochemical mechanisms, including calcium-dependent signaling and receptor trafficking. A correlation-based equation does not reproduce those mechanisms.
+
+### Operation 20 — Calculate temporary synaptic eligibility
+
+A biological-inspired mechanism is to keep a temporary record of recently active synapses.
+
+\[
+e_{ij}(t)=
+\lambda_e e_{ij}(t-1)+C_{ij}(t)
+\]
+
+Here \(\lambda_e\) controls decay.
+
+A synapse can therefore remain temporarily eligible for later modification even after its initial activity has ended.
+
+### Operation 21 — Calculate a neuromodulatory learning signal
+
+Use novelty, prediction error and task relevance to estimate whether an experience deserves additional learning.
+
+\[
+m_t=
+\sigma(
+\beta_1\nu_t+
+\beta_2\delta_t+
+\beta_3a_t+
+\beta_4r_t
+)
+\]
+
+Here \(\sigma\) is a sigmoid function.
+
+This is an engineering approximation to modulatory influence, not a model of dopamine concentration.
+
+In particular, dopamine is not simply a universal novelty signal or a universal measure of reward prediction error. Its computational roles are diverse and depend on neural circuit and behavioral context. <Cite refs={["turn919130search4","turn919130search0"]}/>
+
+### Operation 22 — Gate synaptic plasticity
+
+Combine the local eligibility trace with the modulatory signal:
+
+\[
+\Delta w_{ij}^{mod}=
+\eta m_te_{ij}(t)
+\]
+
+This creates a two-factor learning arrangement:
+
+1. The connection must have been eligible through local activity.
+2. A modulatory event must permit the update.
+
+This resembles computational accounts of eligibility-trace-based learning.
+
+### Operation 23 — Update fast synaptic weights
+
+Apply a relatively rapid update:
+
+\[
+w_{ij}^{fast}(t+1)=
+w_{ij}^{fast}(t)+
+\Delta w_{ij}^{mod}
+\]
+
+Use a bounded update to prevent unstable growth.
+
+### Operation 24 — Update slow synaptic weights
+
+Apply a smaller, slower learning contribution:
+
+\[
+w_{ij}^{slow}(t+1)=
+w_{ij}^{slow}(t)+
+\eta_s m_te_{ij}(t)
+\]
+
+with:
+
+\[
+\eta_s<\eta_f
+\]
+
+The fast and slow systems can represent different memory timescales.
+
+### Operation 25 — Normalize synaptic strengths
+
+Control the overall connection strength.
+
+For each postsynaptic unit:
+
+\[
+w_{ij}'=
+\frac{w_{ij}}
+{\sqrt{\sum_k w_{kj}^2+\epsilon}}
+\]
+
+This prevents unbounded weight growth.
+
+### Operation 26 — Stabilize neuronal activity
+
+Use homeostatic control to regulate average activity.
+
+\[
+g_j(t+1)=
+g_j(t)\exp[
+\eta_h(r^*-\bar y_j)
+]
+\]
+
+where:
+- \(r^*\) is the target activity.
+- \(\bar y_j\) is the measured average activity.
+- \(g_j\) is the neuron's gain.
+
+This provides a model of adaptive regulation alongside experience-dependent plasticity. Biological homeostatic mechanisms can operate through changes in synapses and intrinsic excitability, among other processes. <Cite refs={["turn919130search8","turn919130search10"]}/>
+
+**Output of subsystem C:** Updated fast and slow associative strengths, temporary eligibility traces and stable activity levels.
+
+---
+
+## D. Short-term and episodic memory formation — operations 27–34
+
+<AsyncImage query="hippocampus episodic memory encoding prefrontal cortex working memory brain neuroscience diagram" aspectRatio="16:9" width="100%" maxHeight={190} fit="contain"/>
+
+The objective is to retain an experience long enough for it to be associated with other information and potentially converted into a stable memory.
+
+### Operation 27 — Activate the working-memory representation
+
+Temporarily activate the representations currently required for processing.
+
+For memory unit \(j\):
+
+\[
+u_j(t)=
+\alpha u_j(t-1)+
+\beta x_j(t)
+\]
+
+This resembles a leaky recurrent activation model.
+
+The parameter \(\alpha\) controls persistence, while \(\beta\) controls new input influence.
+
+### Operation 28 — Store the experience in the episodic buffer
+
+Insert the new experience into a temporary episodic memory store.
+
+\[
+M_E \leftarrow M_E\cup\{M_E^t\}
+\]
+
+Each record retains the identity distribution, sequence positions, visual features, contextual predictions, confidence and provenance.
+
+This is analogous to rapid episode formation, not literal hippocampal neuronal storage.
+
+### Operation 29 — Associate the experience with previous memories
+
+Search for memories that share visual, graphemic or positional properties.
+
+Create associative links:
+
+\[
+A_{ij}=
+\operatorname{sim}(M_i,M_j)
+\]
+
+The system can connect:
+- Different instances of the same grapheme.
+- Different fonts of a grapheme.
+- Repeated grapheme pairs.
+- Similar visual structures.
+- Related positional configurations.
+
+These associations allow information learned in one experience to contribute to another.
+
+### Operation 30 — Preserve temporal sequence relationships
+
+The order in which representations occurred must be preserved.
+
+For sequence:
+
+\[
+S=(c_1,c_2,\ldots,c_n)
+\]
+
+Create directed transitions:
+
+\[
+T_{ij}=P(c_j\mid c_i)
+\]
+
+N6 should maintain separate forward and reverse transition memories, together with the evidence supporting each connection.
+
+This allows it to distinguish `AB` from `BA`.
+
+### Operation 31 — Create memory retrieval indexes
+
+Construct an index for rapid retrieval.
+
+Possible indexing dimensions:
+
+\[
+I(M_i)=
+\{
+\text{feature signature},
+\text{grapheme},
+\text{position},
+\text{sequence},
+\text{context}
+\}
+\]
+
+A practical implementation could use approximate nearest-neighbor indexing or sparse inverted indexes.
+
+The purpose is to avoid searching every memory record when a partial cue arrives.
+
+### Operation 32 — Associate memory strength with reliability
+
+Calculate an initial memory-strength estimate:
+
+\[
+S_i=
+r_i\cdot a_i\cdot
+(1+\nu_i)\cdot
+(1+\delta_i)
+\]
+
+Here, reliability, attention, novelty and surprise contribute to the initial importance estimate.
+
+This formula is an ORE-specific hypothesis. It must be calibrated because high surprise does not necessarily mean that an event deserves permanent storage.
+
+### Operation 33 — Establish multiple memory timescales
+
+Assign each memory several distinct persistence values.
+
+For example:
+
+\[
+S_i^{fast}(t)=
+S_i(0)e^{-t/\tau_f}
+\]
+
+\[
+S_i^{slow}(t)=
+S_i(0)e^{-t/\tau_s}
+\]
+
+with:
+
+\[
+\tau_s>\tau_f
+\]
+
+The fast trace can represent temporary experience retention, whereas the slow trace represents more persistent learned information.
+
+These exponentials are convenient engineering approximations. Biological memory does not follow one universal exponential decay law.
+
+### Operation 34 — Establish a consolidation eligibility tag
+
+Determine whether a newly formed memory is eligible for further consolidation.
+
+A possible computational approximation is:
+
+\[
+G_i=
+r_i\cdot a_i\cdot m_i\cdot S_i
+\]
+
+Store \(G_i\) as an eligibility or consolidation tag.
+
+This is inspired by synaptic tagging and capture: locally activated synapses can temporarily mark themselves for later stabilization through broader plasticity-related processes.
+
+**Output of subsystem D:** Temporarily stored experiences, associative links, sequence relationships and consolidation eligibility records.
+
+---
+
+## E. Associative retrieval and pattern completion — operations 35–41
+
+<AsyncImage query="hippocampal CA3 autoassociative network pattern completion neural attractor memory diagram" aspectRatio="16:9" width="100%" maxHeight={190} fit="contain"/>
+
+The retrieval system must be able to recall an experience even when the new visual input is incomplete.
+
+For example, suppose ORE previously learned:
+
+`C – A – T`
+
+Later, it receives:
+
+`C – ? – T`
+
+It should be able to reactivate the stored association with the missing representation while retaining uncertainty.
+
+### Operation 35 — Receive a partial retrieval cue
+
+Construct a query from the currently available visual evidence:
+
+\[
+Q=[q_1,q_2,\ldots,q_n]
+\]
+
+Some entries may be missing or highly uncertain.
+
+The missing data must remain missing; it must not be falsely presented as observed evidence.
+
+### Operation 36 — Calculate memory similarity
+
+Compare the query with indexed memories.
+
+\[
+s_i=
+\frac{Q^\top M_i}
+{\|Q\|\|M_i\|+\epsilon}
+\]
+
+For richer retrieval, use different similarity channels:
+
+\[
+s_i=
+\lambda_v s_v+
+\lambda_p s_p+
+\lambda_o s_o+
+\lambda_a s_a
+\]
+
+Where:
+
+- \(s_v\): visual similarity.
+- \(s_p\): positional similarity.
+- \(s_o\): orthographic sequence similarity.
+- \(s_a\): associative similarity.
+
+Preserve the individual scores.
+
+### Operation 37 — Select candidate memories
+
+Rank memories by their similarity and reliability:
+
+\[
+R_i=
+s_i\cdot S_i
+\]
+
+Retrieve the strongest \(k\) candidates.
+
+Do not choose only one candidate at this stage.
+
+### Operation 38 — Complete missing representations
+
+Use the retrieved memory's associations to generate missing candidate activations.
+
+A recurrent update can be:
+
+\[
+h^{(t+1)}
+=
+\operatorname{softmax}
+\left(
+W h^{(t)}+\lambda Q
+\right)
+\]
+
+Here:
+- \(W\) contains associative connections.
+- \(h^{(t)}\) contains the current activation state.
+- \(Q\) supplies the observed cue.
+- \(\lambda\) controls the influence of the actual observation.
+
+Repeat until the change becomes sufficiently small:
+
+\[
+\|h^{(t+1)}-h^{(t)}\|<\epsilon_c
+\]
+
+This is a simplified attractor-style computational model of pattern completion, not a direct reproduction of hippocampal CA3 physiology.
+
+### Operation 39 — Reconstruct the associated sequence
+
+Reconstruct possible complete sequences using the retrieved memory and orthographic transition relationships.
+
+\[
+S^*=
+\arg\max_S
+\left[
+\sum_i\log P(c_i\mid Q)
++
+\gamma\sum_i\log P(c_i\mid c_{i-1})
+\right]
+\]
+
+This can be executed using a bounded beam search.
+
+Preserve multiple sequences when the evidence does not identify a unique answer.
+
+### Operation 40 — Compare reconstructed memory with actual visual evidence
+
+This is particularly important for ORE.
+
+The system must not allow memory to replace direct visual evidence.
+
+Calculate two separate scores:
+
+\[
+S_{\text{visual}}=
+\sum_i\log(q_i(c_i)+\epsilon)
+\]
+
+\[
+S_{\text{memory}}=
+\sum_i\log(P_{\text{memory}}(c_i)+\epsilon)
+\]
+
+An optional ranking score is:
+
+\[
+S_{\text{combined}}=
+S_{\text{visual}}+
+\lambda_m S_{\text{memory}}
+\]
+
+However, the output must preserve all three quantities.
+
+For example, memory may strongly suggest one character, while the visual evidence remains ambiguous.
+
+### Operation 41 — Calculate retrieval confidence and uncertainty
+
+Calculate entropy:
+
+\[
+H(Q)=
+-\sum_cq(c)\log(q(c)+\epsilon)
+\]
+
+Calculate the margin between the top two candidate scores:
+
+\[
+\Delta S=S_1-S_2
+\]
+
+Use entropy, margin and visual reliability to determine whether the retrieved result can be accepted or whether the system must preserve alternatives.
+
+**Output of subsystem E:** Recalled experience candidates, reconstructed sequence hypotheses, and explicit uncertainty.
+
+---
+
+## F. Memory reactivation and reconsolidation — operations 42–47
+
+<AsyncImage query="memory reconsolidation brain neuroscience diagram memory retrieval updating reconsolidation hippocampus" aspectRatio="16:9" width="100%" maxHeight={185} fit="contain"/>
+
+This subsystem deals with changing information that is already stored.
+
+A retrieved memory is not necessarily a permanently fixed record. Under certain conditions, reactivation can make a memory susceptible to modification before it is stabilized again.
+
+However, memory reactivation does not invariably cause destabilization. Prediction error and other conditions influence whether modification occurs. <Cite refs={["turn825383search11","turn919130search0"]}/>
+
+### Operation 42 — Identify a reactivated memory
+
+When the system retrieves a memory, record its identity and activation strength.
+
+\[
+R_i(t)=s_i(t)S_i(t)
+\]
+
+Determine whether the activation is sufficiently strong to qualify as a meaningful reactivation event.
+
+### Operation 43 — Compare the retrieved memory with the current experience
+
+Calculate the difference between the old memory and the newly observed evidence:
+
+\[
+D_i=
+D_{KL}(Q_{\text{current}}\|
+Q_{\text{stored}})
+\]
+
+Also compare:
+- Grapheme identity.
+- Position.
+- Sequence order.
+- Visual-feature structure.
+
+Different types of disagreement must be recorded separately.
+
+### Operation 44 — Estimate the magnitude of memory mismatch
+
+Separate mismatch into three levels:
+
+\[
+D_i=
+\begin{cases}
+D_{\text{small}} & \text{minor variation}\\
+D_{\text{moderate}} & \text{meaningful difference}\\
+D_{\text{large}} & \text{possibly different experience}
+\end{cases}
+\]
+
+Thresholds must be empirically calibrated.
+
+A font change, for example, should not automatically be interpreted as a different grapheme identity.
+
+### Operation 45 — Determine whether the memory is eligible for modification
+
+Check:
+- Whether a memory has been reactivated.
+- Whether the new evidence is reliable.
+- Whether the prediction mismatch is meaningful.
+- Whether the mismatch exceeds a stability threshold.
+- Whether the new label is independently verified.
+
+Only qualifying memories should enter reconsolidation.
+
+### Operation 46 — Update or differentiate the memory
+
+Three possible outcomes:
+
+**A. Minor discrepancy**
+
+Retain the original memory and update its nuisance-variation representation.
+
+**B. Meaningful correction**
+
+Create a new version of the memory while retaining its previous version and provenance.
+
+**C. Substantially different experience**
+
+Create an additional episodic memory rather than forcing the new information into an existing record.
+
+A simplified update:
+
+\[
+M_i'=
+(1-\eta)M_i+\eta E_{\text{new}}
+\]
+
+This equation should be applied only to compatible representations, never indiscriminately to every component.
+
+### Operation 47 — Restabilize the updated memory
+
+Recalculate its strength and eligibility tags.
+
+\[
+S_i'=
+S_i+\eta_s G_i
+\]
+
+Record:
+- Original memory identifier.
+- New version.
+- Modification reason.
+- Evidence supporting the modification.
+- Whether the correction was independently verified.
+
+**Output of subsystem F:** Updated memory versions without loss of historical provenance.
+
+---
+
+## G. Replay and systems consolidation — operations 48–54
+
+<AsyncImage query="sleep memory consolidation hippocampus neocortex replay slow oscillations sleep spindles sharp wave ripples scientific illustration" aspectRatio="16:9" width="100%" maxHeight={195} fit="contain"/>
+
+This is one of the most important additions to N6.
+
+The brain does not rely exclusively on the initial learning event. Memory reactivation and replay can contribute to stabilization and integration of information across brain networks.
+
+During non-REM sleep, hippocampal replay interacts with cortical slow oscillations, thalamocortical spindles and hippocampal sharp-wave ripples. Research supports a role for these coordinated processes in memory consolidation, although exactly how all memories are transformed and stored remains an active research question. <Cite refs={["turn825383search0","turn825383search1","turn825383search5"]}/>
+
+### Operation 48 — Determine when replay should begin
+
+Evaluate whether newly acquired memories should enter a replay session.
+
+Possible triggers include:
+- An accumulation of eligible memories.
+- A sufficiently high novelty score.
+- High prediction error.
+- A scheduled offline consolidation cycle.
+- A memory approaching its retention threshold.
+
+Define:
+
+\[
+R_{\text{trigger}}=
+\alpha N+
+\beta E+
+\gamma G+
+\delta T
+\]
+
+Where:
+- \(N\): accumulated novelty.
+- \(E\): accumulated prediction error.
+- \(G\): consolidation eligibility.
+- \(T\): elapsed time since the previous replay cycle.
+
+When:
+
+\[
+R_{\text{trigger}}>\theta_R
+\]
+
+schedule consolidation.
+
+This is an engineering scheduler, not an assertion that the brain uses this exact formula.
+
+### Operation 49 — Select experiences for replay
+
+Select memories using a priority score.
+
+\[
+P_i=
+\alpha\nu_i+
+\beta\delta_i+
+\gamma S_i+
+\mu R_i
+\]
+
+Where:
+- \(\nu_i\): novelty.
+- \(\delta_i\): prediction error.
+- \(S_i\): memory stability or importance.
+- \(R_i\): recency or retrieval relevance.
+
+Instead of always choosing the highest-scoring memory, include controlled sampling:
+
+\[
+P(i)=
+(1-\epsilon_r)
+\operatorname{softmax}(P_i/T)
++
+\epsilon_r\frac{1}{N}
+\]
+
+This creates a balance between replaying important experiences and avoiding permanent neglect of less frequent experiences.
+
+### Operation 50 — Reactivate stored experiences
+
+Reconstruct the stored neural-like activation pattern.
+
+For an experience:
+
+\[
+h_i=
+\operatorname{Reactivate}(M_i)
+\]
+
+Restore:
+- Grapheme identities and their uncertainty.
+- Sequence order.
+- Positional relationships.
+- Associative connections.
+- Relevant visual characteristics.
+
+The replay must originate from the stored memory, not from a newly generated label that is presented as historical observation.
+
+### Operation 51 — Replay sequences and temporal relationships
+
+Replay the relationships between elements.
+
+For example:
+
+\[
+A\rightarrow B\rightarrow C
+\]
+
+The system should be able to replay:
+- Forward sequences.
+- Reverse sequences.
+- Partial sequences.
+- Associated episodes.
+- Competing representations.
+
+It must retain the distinction between the original event and an artificially reconstructed or shuffled replay.
+
+### Operation 52 — Reactivate associated representations
+
+When one memory is replayed, reactivate associated representations.
+
+\[
+a_j=
+\sum_iW_{ij}h_i
+\]
+
+This creates a network of co-active units.
+
+For example, retrieving a particular grapheme may reactivate:
+- Its alternative visual forms.
+- Its positional relationships.
+- Its frequently observed neighbors.
+- Its learned sublexical combinations.
+
+The system should not automatically activate entire unrelated sequences merely because they share one letter.
+
+### Operation 53 — Consolidate information into slow memory
+
+Use the replayed experience to strengthen the slow memory representation.
+
+A computational update can be:
+
+\[
+w_s(t+1)=
+w_s(t)+
+\eta_c\,
+G_i\,
+\left(
+h_i-w_s(t)
+\right)
+\]
+
+Where:
+- \(w_s\): slow-memory representation.
+- \(h_i\): replayed representation.
+- \(\eta_c\): consolidation rate.
+- \(G_i\): eligibility and importance signal.
+
+The update should remain bounded and should not erase stable previous knowledge.
+
+This operation is inspired by the idea that repeated reactivation can gradually strengthen representations in cortical networks. <Cite refs={["turn825383search6","turn825383search9"]}/>
+
+### Operation 54 — Test the stability of consolidated memories
+
+After consolidation, test the memory against:
+- Its original experience.
+- Previously learned examples.
+- Similar but different graphemes.
+- New fonts and visual transformations.
+- Position and sequence changes.
+
+Calculate a retention measure:
+
+\[
+R_i^{test}=
+\frac{\text{successful retrievals}}
+{\text{retrieval opportunities}}
+\]
+
+This is a software evaluation metric, not a direct measurement of biological memory strength.
+
+Reject or reverse an update if it produces unacceptable interference.
+
+**Output of subsystem G:** Stabilized representations, replay records, consolidated memories and reproducible consolidation history.
+
+---
+
+## H. Knowledge abstraction and generalization — operations 55–57
+
+<AsyncImage query="neuroscience concept learning abstraction overlapping experiences common features neural representation diagram" aspectRatio="16:9" width="100%" maxHeight={180} fit="contain"/>
+
+Repeated experiences can contribute to the extraction of common information.
+
+For ORE, this means distinguishing between:
+- A particular visual instance of a grapheme.
+- Its underlying stable characteristics.
+- Features shared between multiple graphemes.
+- Repeated orthographic sequences.
+
+### Operation 55 — Identify recurring features across experiences
+
+Select memories belonging to the same candidate class or pattern.
+
+For class \(c\), calculate a weighted average:
+
+\[
+\mu_c=
+\frac{
+\sum_i\omega_i x_i
+}{
+\sum_i\omega_i+\epsilon
+}
+\]
+
+Where \(\omega_i\) represents the reliability and importance of each experience.
+
+Calculate the variance:
+
+\[
+\sigma_c^2=
+\frac{
+\sum_i\omega_i(x_i-\mu_c)^2
+}{
+\sum_i\omega_i+\epsilon
+}
+\]
+
+The mean captures common characteristics, while variance preserves the degree of variation.
+
+The mean must not replace the original experience records.
+
+### Operation 56 — Form abstract orthographic patterns
+
+Find recurring structures across multiple experiences.
+
+For example, repeated exposures to grapheme sequences may reveal:
+- Frequent pairs.
+- Frequent trigrams.
+- Common position-dependent combinations.
+- Similar visual structures.
+- Recurring relationships between characters.
+
+An abstraction candidate can be evaluated by its minimum-description-length benefit:
+
+\[
+\Delta MDL=
+L(D\mid M_0)
+-
+L(D\mid M_1)
+-
+\lambda C
+\]
+
+Where:
+- \(D\): observed experiences.
+- \(M_0\): memory system without the candidate pattern.
+- \(M_1\): memory system with the candidate pattern.
+- \(C\): additional model complexity.
+
+Promote the pattern only if it improves held-out performance sufficiently.
+
+This connects N6 memory consolidation with the pattern-learning mechanisms already established in ORE.
+
+### Operation 57 — Preserve the difference between individual and abstract memories
+
+The system must not replace every individual experience with an average representation.
+
+Maintain:
+
+\[
+M_{\text{total}}=
+M_{\text{individual}}+
+M_{\text{abstract}}
+\]
+
+For instance:
+
+- Individual memory preserves an uncommon font or unusual glyph form.
+- Abstract memory preserves the stable characteristics shared by multiple fonts.
+- Associative memory preserves the relationship between them.
+
+This is important for recognizing unfamiliar fonts while remaining sensitive to differences between similar characters.
+
+**Output of subsystem H:** More general orthographic knowledge without destroying individual visual experiences.
+
+---
+
+## I. Forgetting, interference and homeostatic memory regulation — operations 58–60
+
+### Operation 58 — Calculate memory utility and forgetting pressure
+
+Not all memories should receive the same amount of persistent storage.
+
+Calculate a utility estimate:
+
+\[
+U_i=
+\alpha F_i+
+\beta R_i+
+\gamma N_i+
+\delta C_i
+\]
+
+Where:
+- \(F_i\): frequency of relevant retrieval.
+- \(R_i\): reliability.
+- \(N_i\): distinctiveness or novelty.
+- \(C_i\): contribution to useful generalization.
+
+A temporary memory can have decaying accessibility:
+
+\[
+S_i(t)=S_i(0)e^{-t/\tau_i}
+\]
+
+But stable knowledge should not be discarded simply because it has not recently been used.
+
+N6 must distinguish:
+1. Weakening access to a temporary memory.
+2. Reducing the influence of an outdated representation.
+3. Merging redundant knowledge.
+4. Actually deleting a memory record.
+
+These are four different operations.
+
+### Operation 59 — Detect interference and selectively regulate memory
+
+Two representations may become confused because they share many characteristics.
+
+Calculate an interference matrix:
+
+\[
+I_{ij}=
+\operatorname{sim}(M_i,M_j)
+\]
+
+Identify cases where:
+- Similar characters are being confused.
+- A new experience weakens a previously stable class.
+- A common sequence dominates a rare but valid sequence.
+- Generalization removes an important distinction.
+
+One possible protection mechanism is an importance-weighted loss:
+
+\[
+L_{\text{protect}}=
+\lambda
+\sum_j
+F_j
+(w_j-w_j^*)^2
+\]
+
+Here \(F_j\) estimates the importance of preserving a learned parameter.
+
+This is inspired by computational continual-learning methods such as elastic weight consolidation. It is not a literal biological forgetting equation.
+
+Combine it with homeostatic activity regulation and bounded prototype updates.
+
+### Operation 60 — Validate, consolidate and create the new memory version
+
+Run the complete integrity and acceptance procedure.
+
+Check:
+- All stored arrays are finite.
+- Probability distributions are valid.
+- Prototype vectors satisfy normalization constraints.
+- Memory identifiers are unique.
+- Sequence transitions are valid.
+- No unverified labels have entered permanent supervised memory.
+- Previously frozen memory states are unchanged.
+- The new memory version has a valid fingerprint.
+
+Compare performance before and after learning:
+
+\[
+\Delta A=
+A_{\text{after}}-A_{\text{before}}
+\]
+
+Also measure:
+- Retrieval accuracy.
+- Top-k accuracy.
+- Memory retention.
+- Pattern-completion accuracy.
+- Confusion between similar graphemes.
+- Generalization to unseen fonts.
+- Catastrophic interference.
+
+If unacceptable deterioration is detected:
+
+\[
+\mathcal M_{\text{new}}
+\rightarrow
+\mathcal M_{\text{parent}}
+\]
+
+Otherwise:
+
+\[
+\mathcal M_{\text{parent}}
+\rightarrow
+\mathcal M_{\text{new}}
+\]
+
+Save the new version and its complete learning history.
+
+**Output of subsystem I:** A validated, versioned, reproducible N6 memory state.
+
+---
+
+# Part III — Complete N6 operating algorithm
+
+## 5. How the 60 operations interact
+
+The algorithm is not intended to execute all 60 operations once and terminate. It creates an ongoing memory lifecycle.
+
+<CodeBlock language="mermaid" editable>
+flowchart TD
+    A["N1–N5 experience"] --> B["A. Validate and initialize memory"]
+    B --> C["B. Encode and separate experience"]
+    C --> D["C. Synaptic plasticity"]
+    D --> E["D. Episodic and short-term storage"]
+    E --> F["E. Associative retrieval"]
+    F --> G{"Memory reactivated?"}
+    G -->|Yes| H["F. Reconsolidation"]
+    G -->|No| I["Continue retention"]
+    H --> J["G. Replay and consolidation"]
+    I --> J
+    J --> K["H. Abstraction and generalization"]
+    K --> L["I. Forgetting and homeostasis"]
+    L --> M{"Integrity and learning gates pass?"}
+    M -->|Yes| N["Commit new N6 memory version"]
+    M -->|No| O["Rollback to parent version"]
+    N --> P["Future N1–N5 experiences"]
+    P --> B
+    O --> P
+</CodeBlock>
+
+The essential distinction is that N6 has two operating modes:
+
+**Online experience mode:** Operations 1–47 process incoming experiences, form memories and support retrieval or updating.
+
+**Offline memory mode:** Operations 48–60 replay, consolidate, abstract, regulate and validate the accumulated memory system.
+
+These modes can interact repeatedly.
+
+## 6. Complete N6 input and output contracts
+
+### Input contract
+
+N6 should consume:
+
+| Input | Source | Purpose |
+|---|---|---|
+| Visual feature representations | N1 | Preserve visual characteristics |
+| Grapheme distributions | N2 | Maintain identity alternatives |
+| Contextual predictions and errors | N3 | Measure surprise and mismatch |
+| Attention and precision | N4 | Control learning eligibility |
+| Fast and slow learned prototypes | N5 | Initial learned representations |
+| Verified experiences | External learning records | Provide trustworthy learning targets |
+| Existing memory bundle | N5/N6 | Retrieve and extend previous knowledge |
+| Consolidation configuration | N6 | Control replay and long-term storage |
+
+### Output contract
+
+The N6 result should contain:
+
+## 7. A more detailed mathematical interpretation of the memory lifecycle
+
+There are three particularly important interactions in this architecture.
+
+### Interaction 1 — Learning depends on multiple signals
+
+A new experience does not automatically deserve permanent learning.
+
+Its learning strength should depend on the following:
+
+\[
+L_t=
+f(
+\text{reliability},
+\text{attention},
+\text{novelty},
+\text{prediction error},
+\text{verification}
+)
+\]
+
+For example, a visually uncertain experience with a high prediction error should not necessarily modify permanent grapheme identity memory.
+
+This is why the separate verification and reliability channels are important.
+
+### Interaction 2 — Fast and slow memory should interact
+
+The system needs to distinguish immediate learning from persistent learning.
+
+One possible combined representation is:
+
+\[
+W_{\text{effective}}=
+\alpha W_{\text{fast}}+
+(1-\alpha)W_{\text{slow}}
+\]
+
+Initially, fast memory may respond strongly to a new experience.
+
+As repeated replay and consolidation occur, the slow memory can progressively acquire the stable information.
+
+This is a candidate model of multiple learning timescales. The exact biological transfer rules are not established by this equation.
+
+### Interaction 3 — Retrieval should influence learning without automatically rewriting memory
+
+When ORE retrieves an existing experience, it must compare the recalled information with the new evidence.
+
+\[
+\text{New knowledge}=
+\begin{cases}
+\text{Retain existing representation}, & \text{compatible evidence}\\
+\text{Update memory}, & \text{verified correction}\\
+\text{Create distinct memory}, & \text{different experience}\\
+\text{Retain uncertainty}, & \text{insufficient evidence}
+\end{cases}
+\]
+
+This is fundamental to preventing memory-based false corrections.
+
+---
+
+# Part IV — Biological foundations versus ORE hypotheses
+
+The following table separates mechanisms with substantial biological grounding from the specific implementation choices proposed here.
+
+| Mechanism | Biological grounding | N6 implementation status |
+|---|---|---|
+| Hebbian plasticity | Established family of associative plasticity mechanisms | Computational approximation |
+| LTP/LTD | Experimentally established synaptic plasticity phenomena | Simplified update rules |
+| STDP | Experimentally observed timing-dependent plasticity | Candidate learning rule |
+| Eligibility traces | Biologically motivated temporary synaptic signals | Explicit numerical traces |
+| Dopaminergic modulation | Diverse neuromodulatory learning functions | Combined modulation proxy |
+| Pattern separation/completion | Supported hippocampal memory functions | Sparse coding and attractor approximations |
+| Synaptic homeostasis | Established activity-regulating mechanisms | Gain and normalization controls |
+| Memory replay | Observed during waking and sleep | Replay scheduler |
+| Systems consolidation | Supported by behavioral and neural evidence | Fast/slow memory integration |
+| Memory reconsolidation | Supported under specific reactivation conditions | Conditional memory-version updates |
+| Abstract knowledge formation | Supported by research on memory generalization | Prototype and chunk learning |
+
+Some particularly useful research foundations include:
+
+1. **Spike-timing-dependent plasticity:** Caporale and Dan's review explains the timing-sensitive nature of this family of learning mechanisms. <Cite refs={["turn825383search7","turn825383search2"]}/>
+
+2. **Hippocampal memory organization:** Pattern separation and pattern completion provide a foundation for differentiating experiences while retrieving memories from partial information. <Cite refs={["turn919130search5"]}/>
+
+3. **Synaptic and systems consolidation:** A 2024 PNAS paper examines how changes at an initial memory-storage site can be accumulated by plasticity at a later storage site. <Cite refs={["turn825383search6"]}/>
+
+4. **Sleep-dependent consolidation:** The 2025/2026 *Physiological Reviews* article by Lutz, Harkotte and Born discusses hippocampal replay, non-REM sleep oscillations, synaptic downselection and the transformation of memories into more abstract cortical representations. <Cite refs={["turn825383search0","turn825383search10"]}/>
+
+5. **Homeostatic regulation:** Wen and Turrigiano's 2024 review explains how neurons regulate activity and network stability alongside experience-dependent plasticity. <Cite refs={["turn919130search8"]}/>
+
+6. **Memory updating:** A 2025 review published in 2026 discusses interactions between prediction error, locus coeruleus and hippocampal mechanisms in memory updating. It is a proposed explanatory framework, rather than a universally established algorithm for memory modification. <Cite refs={["turn825383search11","turn919130search0"]}/>
+
+---
+
+# Part V — How to determine whether N6 actually works
+
+Before implementing N6 in Python, I recommend establishing a dedicated scientific and software testing framework.
+
+## 8. Required experiments
+
+<box border radius="lg" padding={3} gap={3}>
+  **Experiment N6-E1 — Single-experience memory**
+
+  Teach ORE one unfamiliar grapheme through multiple verified visual examples.
+
+  Measure immediate recognition, subsequent recall and retained visual representations.
+
+  <divider color="subtle"/>
+  **Experiment N6-E2 — Pattern separation**
+
+  Train on extremely similar graphemes.
+
+  Introduce minimally different examples and test whether memories remain distinguishable.
+
+  <divider color="subtle"/>
+  **Experiment N6-E3 — Pattern completion**
+
+  Give ORE incomplete or partially obscured sequences.
+
+  Test whether it retrieves the correct stored alternatives without claiming that reconstructed information was visually observed.
+
+  <divider color="subtle"/>
+  **Experiment N6-E4 — Synaptic plasticity**
+
+  Compare several learning mechanisms:
+
+  - Oja-style updates.
+  - Hebbian updates.
+  - STDP-inspired updates.
+  - Neuromodulated eligibility-trace updates.
+
+  Compare learning effectiveness, stability and interference.
+
+  <divider color="subtle"/>
+  **Experiment N6-E5 — Replay and consolidation**
+
+  Compare systems that receive repeated replay cycles with systems that do not.
+
+  Measure whether replay improves long-term retrieval and generalization.
+
+  <divider color="subtle"/>
+  **Experiment N6-E6 — Memory updating**
+
+  Introduce verified corrections to existing memories.
+
+  Measure successful updating, false corrections and preservation of historical versions.
+
+  <divider color="subtle"/>
+  **Experiment N6-E7 — Forgetting and interference**
+
+  Introduce new experiences that compete with previously learned representations.
+
+  Measure the effect on old knowledge, rare patterns and minimal-pair discrimination.
+
+  <divider color="subtle"/>
+  **Experiment N6-E8 — Long-term generalization**
+
+  Train on one collection of fonts and visual forms, then evaluate on previously unseen fonts and recombinations.
+
+  Determine whether consolidated knowledge generalizes beyond memorized examples.
+</box>
+
+## 9. Mathematical evaluation criteria
+
+N6 should report several independent metrics.
+
+| Metric | What it measures |
+|---|---|
+| Immediate recall accuracy | Initial memory formation |
+| Delayed recall accuracy | Memory retention |
+| Pattern separation score | Distinguishing similar experiences |
+| Pattern completion accuracy | Retrieval from partial cues |
+| Retrieval entropy | Uncertainty during recall |
+| False reconstruction rate | Incorrectly completed information |
+| Consolidation benefit | Improvement after replay |
+| Interference score | Damage to older memories |
+| Generalization accuracy | Knowledge transfer to unseen forms |
+| Memory efficiency | Storage requirements per useful learned pattern |
+
+The most important comparison is not just whether accuracy improves after learning.
+
+It is whether:
+
+\[
+\text{Learning benefit}
+>
+\text{Interference cost}
+\]
+
+while maintaining:
+
+\[
+\text{Visual discrimination}
+\quad\text{and}\quad
+\text{Memory stability}
+\]
+
+simultaneously.
+
+## 10. Recommended N6 implementation architecture
+
+I recommend a modular Python structure rather than adding all 60 operations to one large pipeline file.
+
+### 11. Important implementation rules
+
+N6 should follow several constraints:
+
+1. **Preserve N1–N5:** N6 must be an additive architecture, not a replacement.
+2. **Preserve the N5 learning safeguards:** Independently verified labels and explicit user authorization remain mandatory for supervised learning.
+3. **Separate episodic and abstract memory:** Never destroy individual experiences when creating a general representation.
+4. **Preserve uncertainty:** Recalled information must not be confused with newly observed visual evidence.
+5. **Separate fast and slow timescales:** Do not use a single learning rate for all memory mechanisms.
+6. **Make replay reproducible:** Store replay selection, ordering and resulting updates.
+7. **Protect older knowledge:** Every update must be evaluated for interference.
+8. **Preserve memory history:** Corrections create versioned memories rather than erasing their origins.
+9. **Keep biological claims conservative:** Passing software tests is not proof of biological equivalence.
+
+---
+
+# Part VI — Final N6 architecture
+
+The complete progression now becomes:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">ORE Neurocomputational architecture</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **N1 — Early visual processing**
+
+      Visual feature extraction and normalization.
+    </list-item>
+    <list-item>
+      **N2 — Distributed orthographic population code**
+
+      Multiple candidate grapheme representations.
+    </list-item>
+    <list-item>
+      **N3 — Recurrent prediction and error**
+
+      Contextual predictions and mismatches.
+    </list-item>
+    <list-item>
+      **N4 — Attention and precision gating**
+
+      Adaptive processing and sensory reliability.
+    </list-item>
+    <list-item>
+      **N5 — Experience-dependent plasticity**
+
+      Verified changes to learned representations.
+    </list-item>
+    <list-item>
+      <badge color="success">New proposed phase</badge>
+
+      **N6 — Biological learning and memory**
+
+      Episodic storage, associative learning, retrieval, reconsolidation, replay, consolidation, abstraction, forgetting and homeostasis.
+    </list-item>
+  </list>
+</box>
+
+**My architectural recommendation:** N6 should be the first phase in which ORE develops a genuine *memory lifecycle*, rather than simply changing model parameters after learning examples.
+
+N5 establishes the ability to modify learned representations. N6 should establish how those modifications become memories, how memories become stable knowledge, how the system retrieves them, and how it updates them without destroying previously acquired information.
+
+One final scope distinction: the 60 operations above are the proposed new Phase N6 specification. They are not an existing 60-operation implementation or an experimentally validated model of the brain. The distinction between software completion and scientific validation must remain explicit.
+
+The next development target should be the formal N6 architecture document and then the implementation of its subsystems in dependency order, with independent tests for each subsystem.
+
+---
+
+[ASSISTANT]
+# Part III — Complete N6 operating algorithm
+
+## 5. How the 60 operations interact
+
+The algorithm is not intended to execute all 60 operations once and terminate. It creates an ongoing memory lifecycle.
+
+<CodeBlock language="mermaid" editable>
+flowchart TD
+    A["N1–N5 experience"] --> B["A. Validate and initialize memory"]
+    B --> C["B. Encode and separate experience"]
+    C --> D["C. Synaptic plasticity"]
+    D --> E["D. Episodic and short-term storage"]
+    E --> F["E. Associative retrieval"]
+    F --> G{"Memory reactivated?"}
+    G -->|Yes| H["F. Reconsolidation"]
+    G -->|No| I["Continue retention"]
+    H --> J["G. Replay and consolidation"]
+    I --> J
+    J --> K["H. Abstraction and generalization"]
+    K --> L["I. Forgetting and homeostasis"]
+    L --> M{"Integrity and learning gates pass?"}
+    M -->|Yes| N["Commit new N6 memory version"]
+    M -->|No| O["Rollback to parent version"]
+    N --> P["Future N1–N5 experiences"]
+    P --> B
+    O --> P
+</CodeBlock>
+
+The essential distinction is that N6 has two operating modes:
+
+**Online experience mode:** Operations 1–47 process incoming experiences, form memories and support retrieval or updating.
+
+**Offline memory mode:** Operations 48–60 replay, consolidate, abstract, regulate and validate the accumulated memory system.
+
+These modes can interact repeatedly.
+
+## 6. Complete N6 input and output contracts
+
+### Input contract
+
+N6 should consume:
+
+| Input | Source | Purpose |
+|---|---|---|
+| Visual feature representations | N1 | Preserve visual characteristics |
+| Grapheme distributions | N2 | Maintain identity alternatives |
+| Contextual predictions and errors | N3 | Measure surprise and mismatch |
+| Attention and precision | N4 | Control learning eligibility |
+| Fast and slow learned prototypes | N5 | Initial learned representations |
+| Verified experiences | External learning records | Provide trustworthy learning targets |
+| Existing memory bundle | N5/N6 | Retrieve and extend previous knowledge |
+| Consolidation configuration | N6 | Control replay and long-term storage |
+
+### Output contract
+
+The N6 result should contain:
+
+## 7. A more detailed mathematical interpretation of the memory lifecycle
+
+There are three particularly important interactions in this architecture.
+
+### Interaction 1 — Learning depends on multiple signals
+
+A new experience does not automatically deserve permanent learning.
+
+Its learning strength should depend on the following:
+
+\[
+L_t=
+f(
+\text{reliability},
+\text{attention},
+\text{novelty},
+\text{prediction error},
+\text{verification}
+)
+\]
+
+For example, a visually uncertain experience with a high prediction error should not necessarily modify permanent grapheme identity memory.
+
+This is why the separate verification and reliability channels are important.
+
+### Interaction 2 — Fast and slow memory should interact
+
+The system needs to distinguish immediate learning from persistent learning.
+
+One possible combined representation is:
+
+\[
+W_{\text{effective}}=
+\alpha W_{\text{fast}}+
+(1-\alpha)W_{\text{slow}}
+\]
+
+Initially, fast memory may respond strongly to a new experience.
+
+As repeated replay and consolidation occur, the slow memory can progressively acquire the stable information.
+
+This is a candidate model of multiple learning timescales. The exact biological transfer rules are not established by this equation.
+
+### Interaction 3 — Retrieval should influence learning without automatically rewriting memory
+
+When ORE retrieves an existing experience, it must compare the recalled information with the new evidence.
+
+\[
+\text{New knowledge}=
+\begin{cases}
+\text{Retain existing representation}, & \text{compatible evidence}\\
+\text{Update memory}, & \text{verified correction}\\
+\text{Create distinct memory}, & \text{different experience}\\
+\text{Retain uncertainty}, & \text{insufficient evidence}
+\end{cases}
+\]
+
+This is fundamental to preventing memory-based false corrections.
+
+---
+
+# Part IV — Biological foundations versus ORE hypotheses
+
+The following table separates mechanisms with substantial biological grounding from the specific implementation choices proposed here.
+
+| Mechanism | Biological grounding | N6 implementation status |
+|---|---|---|
+| Hebbian plasticity | Established family of associative plasticity mechanisms | Computational approximation |
+| LTP/LTD | Experimentally established synaptic plasticity phenomena | Simplified update rules |
+| STDP | Experimentally observed timing-dependent plasticity | Candidate learning rule |
+| Eligibility traces | Biologically motivated temporary synaptic signals | Explicit numerical traces |
+| Dopaminergic modulation | Diverse neuromodulatory learning functions | Combined modulation proxy |
+| Pattern separation/completion | Supported hippocampal memory functions | Sparse coding and attractor approximations |
+| Synaptic homeostasis | Established activity-regulating mechanisms | Gain and normalization controls |
+| Memory replay | Observed during waking and sleep | Replay scheduler |
+| Systems consolidation | Supported by behavioral and neural evidence | Fast/slow memory integration |
+| Memory reconsolidation | Supported under specific reactivation conditions | Conditional memory-version updates |
+| Abstract knowledge formation | Supported by research on memory generalization | Prototype and chunk learning |
+
+Some particularly useful research foundations include:
+
+1. **Spike-timing-dependent plasticity:** Caporale and Dan's review explains the timing-sensitive nature of this family of learning mechanisms. <Cite refs={["turn825383search7","turn825383search2"]}/>
+
+2. **Hippocampal memory organization:** Pattern separation and pattern completion provide a foundation for differentiating experiences while retrieving memories from partial information. <Cite refs={["turn919130search5"]}/>
+
+3. **Synaptic and systems consolidation:** A 2024 PNAS paper examines how changes at an initial memory-storage site can be accumulated by plasticity at a later storage site. <Cite refs={["turn825383search6"]}/>
+
+4. **Sleep-dependent consolidation:** The 2025/2026 *Physiological Reviews* article by Lutz, Harkotte and Born discusses hippocampal replay, non-REM sleep oscillations, synaptic downselection and the transformation of memories into more abstract cortical representations. <Cite refs={["turn825383search0","turn825383search10"]}/>
+
+5. **Homeostatic regulation:** Wen and Turrigiano's 2024 review explains how neurons regulate activity and network stability alongside experience-dependent plasticity. <Cite refs={["turn919130search8"]}/>
+
+6. **Memory updating:** A 2025 review published in 2026 discusses interactions between prediction error, locus coeruleus and hippocampal mechanisms in memory updating. It is a proposed explanatory framework, rather than a universally established algorithm for memory modification. <Cite refs={["turn825383search11","turn919130search0"]}/>
+
+---
+
+# Part V — How to determine whether N6 actually works
+
+Before implementing N6 in Python, I recommend establishing a dedicated scientific and software testing framework.
+
+## 8. Required experiments
+
+<box border radius="lg" padding={3} gap={3}>
+  **Experiment N6-E1 — Single-experience memory**
+
+  Teach ORE one unfamiliar grapheme through multiple verified visual examples.
+
+  Measure immediate recognition, subsequent recall and retained visual representations.
+
+  <divider color="subtle"/>
+  **Experiment N6-E2 — Pattern separation**
+
+  Train on extremely similar graphemes.
+
+  Introduce minimally different examples and test whether memories remain distinguishable.
+
+  <divider color="subtle"/>
+  **Experiment N6-E3 — Pattern completion**
+
+  Give ORE incomplete or partially obscured sequences.
+
+  Test whether it retrieves the correct stored alternatives without claiming that reconstructed information was visually observed.
+
+  <divider color="subtle"/>
+  **Experiment N6-E4 — Synaptic plasticity**
+
+  Compare several learning mechanisms:
+
+  - Oja-style updates.
+  - Hebbian updates.
+  - STDP-inspired updates.
+  - Neuromodulated eligibility-trace updates.
+
+  Compare learning effectiveness, stability and interference.
+
+  <divider color="subtle"/>
+  **Experiment N6-E5 — Replay and consolidation**
+
+  Compare systems that receive repeated replay cycles with systems that do not.
+
+  Measure whether replay improves long-term retrieval and generalization.
+
+  <divider color="subtle"/>
+  **Experiment N6-E6 — Memory updating**
+
+  Introduce verified corrections to existing memories.
+
+  Measure successful updating, false corrections and preservation of historical versions.
+
+  <divider color="subtle"/>
+  **Experiment N6-E7 — Forgetting and interference**
+
+  Introduce new experiences that compete with previously learned representations.
+
+  Measure the effect on old knowledge, rare patterns and minimal-pair discrimination.
+
+  <divider color="subtle"/>
+  **Experiment N6-E8 — Long-term generalization**
+
+  Train on one collection of fonts and visual forms, then evaluate on previously unseen fonts and recombinations.
+
+  Determine whether consolidated knowledge generalizes beyond memorized examples.
+</box>
+
+## 9. Mathematical evaluation criteria
+
+N6 should report several independent metrics.
+
+| Metric | What it measures |
+|---|---|
+| Immediate recall accuracy | Initial memory formation |
+| Delayed recall accuracy | Memory retention |
+| Pattern separation score | Distinguishing similar experiences |
+| Pattern completion accuracy | Retrieval from partial cues |
+| Retrieval entropy | Uncertainty during recall |
+| False reconstruction rate | Incorrectly completed information |
+| Consolidation benefit | Improvement after replay |
+| Interference score | Damage to older memories |
+| Generalization accuracy | Knowledge transfer to unseen forms |
+| Memory efficiency | Storage requirements per useful learned pattern |
+
+The most important comparison is not just whether accuracy improves after learning.
+
+It is whether:
+
+\[
+\text{Learning benefit}
+>
+\text{Interference cost}
+\]
+
+while maintaining:
+
+\[
+\text{Visual discrimination}
+\quad\text{and}\quad
+\text{Memory stability}
+\]
+
+simultaneously.
+
+## 10. Recommended N6 implementation architecture
+
+I recommend a modular Python structure rather than adding all 60 operations to one large pipeline file.
+
+### 11. Important implementation rules
+
+N6 should follow several constraints:
+
+1. **Preserve N1–N5:** N6 must be an additive architecture, not a replacement.
+2. **Preserve the N5 learning safeguards:** Independently verified labels and explicit user authorization remain mandatory for supervised learning.
+3. **Separate episodic and abstract memory:** Never destroy individual experiences when creating a general representation.
+4. **Preserve uncertainty:** Recalled information must not be confused with newly observed visual evidence.
+5. **Separate fast and slow timescales:** Do not use a single learning rate for all memory mechanisms.
+6. **Make replay reproducible:** Store replay selection, ordering and resulting updates.
+7. **Protect older knowledge:** Every update must be evaluated for interference.
+8. **Preserve memory history:** Corrections create versioned memories rather than erasing their origins.
+9. **Keep biological claims conservative:** Passing software tests is not proof of biological equivalence.
+
+---
+
+# Part VI — Final N6 architecture
+
+The complete progression now becomes:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">ORE Neurocomputational architecture</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **N1 — Early visual processing**
+
+      Visual feature extraction and normalization.
+    </list-item>
+    <list-item>
+      **N2 — Distributed orthographic population code**
+
+      Multiple candidate grapheme representations.
+    </list-item>
+    <list-item>
+      **N3 — Recurrent prediction and error**
+
+      Contextual predictions and mismatches.
+    </list-item>
+    <list-item>
+      **N4 — Attention and precision gating**
+
+      Adaptive processing and sensory reliability.
+    </list-item>
+    <list-item>
+      **N5 — Experience-dependent plasticity**
+
+      Verified changes to learned representations.
+    </list-item>
+    <list-item>
+      <badge color="success">New proposed phase</badge>
+
+      **N6 — Biological learning and memory**
+
+      Episodic storage, associative learning, retrieval, reconsolidation, replay, consolidation, abstraction, forgetting and homeostasis.
+    </list-item>
+  </list>
+</box>
+
+**My architectural recommendation:** N6 should be the first phase in which ORE develops a genuine *memory lifecycle*, rather than simply changing model parameters after learning examples.
+
+N5 establishes the ability to modify learned representations. N6 should establish how those modifications become memories, how memories become stable knowledge, how the system retrieves them, and how it updates them without destroying previously acquired information.
+
+One final scope distinction: the 60 operations above are the proposed new Phase N6 specification. They are not an existing 60-operation implementation or an experimentally validated model of the brain. The distinction between software completion and scientific validation must remain explicit.
+
+The next development target should be the formal N6 architecture document and then the implementation of its subsystems in dependency order, with independent tests for each subsystem.

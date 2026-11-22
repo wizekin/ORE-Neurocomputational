@@ -1,0 +1,901 @@
+Title: Create Brain Algorithms File
+Conversation ID: 6afcfc07-4b00-83e9-b0f9-afd7ee2e9668
+
+---
+
+[USER]
+I want you to turn the sequence of each of the points from "Learning, Memory, and Concept Formation.txt" file in the library which are related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step. Don't display the resulted algorithms of each point but Put them into a file which I can download. Divide your answer with each point so after you finish creating algorithms of each point you wait for me to type continue before you move to the next point.
+
+---
+
+[ASSISTANT]
+I found **Learning, Memory, and Concept Formation.txt**.
+
+I’ll follow the document’s original sequence, beginning with **Point 1: Rapid encoding of novel experiences by the hippocampus and associated medial-temporal-lobe regions**. The algorithm will cover the neural processes, their computational interpretation, mathematical models, inputs, outputs, and interactions between brain regions.
+
+Only the current point will be included in the downloadable file. I’ll keep the algorithm itself out of the chat.
+
+<badge color="success">Point 01 completed</badge>
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_01_Rapid_Hippocampal_Encoding.md**
+    <text color="secondary" size="xs">Markdown · Approximately 6,800 words</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 01](sandbox:/mnt/data/Point_01_Rapid_Hippocampal_Encoding.md)
+
+The file includes 15 detailed algorithmic steps, mathematical models, biological explanations, integrated pseudocode, and scientific references.
+
+**I will stop here.** Type **continue** when you are ready for Point 02.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 02 completed</badge>
+
+**Point 02: Gradual Cortical Learning From Repeated Experiences**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_02_Gradual_Cortical_Learning_From_Repeated_Experience.md**
+    <text color="secondary" size="xs">Markdown · Approximately 5,478 words</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 02](sandbox:/mnt/data/Point_02_Gradual_Cortical_Learning_From_Repeated_Experience.md)
+
+The file includes 14 algorithmic steps, mathematical models, synaptic plasticity mechanisms, interference prevention, integrated pseudocode, validation experiments, and scientific references.
+
+The algorithm incorporates the complementary learning systems theory and recent refinements concerning cortical generalization and hippocampal learning. <Cite refs={["turn676673view0","turn945418search2","turn426630search1"]}/>
+
+**Waiting for your next instruction.** Type **continue** to proceed to Point 03.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 03 completed</badge>
+
+**Point 03: Hippocampal Replay and Sleep-Dependent Systems Consolidation**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_03_Hippocampal_Replay_and_Sleep_Dependent_Systems_Consolidation.md**
+    <text color="secondary" size="xs">Markdown · 5,882 words · 18 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 03](sandbox:/mnt/data/Point_03_Hippocampal_Replay_and_Sleep_Dependent_Systems_Consolidation.md)
+
+The file includes detailed biological mechanisms, mathematical models, hippocampal–cortical interactions, sleep oscillation coordination, synaptic plasticity, integrated pseudocode, and scientific references.
+
+The model incorporates research on coordinated slow oscillations, spindles, and hippocampal ripples. <Cite refs={["turn642444search0","turn642444search7","turn642444search11","turn642444search10"]}/>
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 04.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 04 completed</badge>
+
+**Point 04: Episodic-to-Semantic Transformation and Gist Extraction**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_04_Episodic_to_Semantic_Transformation_and_Gist_Extraction.md**
+    <text color="secondary" size="xs">Markdown · 4,807 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 04](sandbox:/mnt/data/Point_04_Episodic_to_Semantic_Transformation_and_Gist_Extraction.md)
+
+The file includes:
+
+- Detailed biological and computational explanations.
+- Mathematical models for abstraction, similarity, information gain, memory accessibility, and associative learning.
+- Separate episodic and semantic memory representations.
+- Hippocampal and cortical interactions.
+- Integrated pseudocode.
+- Testable predictions and scientific references.
+
+It also incorporates competing memory theories and recent research on semantic transformation. <Cite refs={["turn553615search9","turn553615search0","turn553615search6","turn553615search1"]}/>
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 05: Novelty after learning and its influence on hippocampal memory consolidation.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 05 completed</badge>
+
+**Point 05: Novelty After Learning and Its Influence on Hippocampal Memory Consolidation**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_05_Novelty_Modulated_Hippocampal_Consolidation.md**
+    <text color="secondary" size="xs">Markdown · 6,777 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 05](sandbox:/mnt/data/Point_05_Novelty_Modulated_Hippocampal_Consolidation.md)
+
+The file includes detailed biological explanations, mathematical models, dopamine and noradrenaline signalling, synaptic tagging and capture, integrated pseudocode, validation experiments, and scientific references.
+
+It also distinguishes experimental findings from theoretical models, particularly regarding the roles of the VTA and locus coeruleus. <Cite refs={["turn195684view0","turn745851search12","turn116287search0","turn745851search0"]}/>
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 06.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 06 completed</badge>
+
+**Point 06: Detecting Commonalities Across Experiences to Form Concepts**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_06_Commonality_Detection_and_Concept_Formation.md**
+    <text color="secondary" size="xs">Markdown · 6,610 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 06](sandbox:/mnt/data/Point_06_Commonality_Detection_and_Concept_Formation.md)
+
+The document includes detailed biological explanations, mathematical operations, hippocampal–prefrontal interactions, feature extraction, commonality detection, statistical learning, prediction errors, integrated Python pseudocode, and validation experiments.
+
+Scientific grounding includes research on hippocampal concept formation and distributed category-learning systems. <Cite refs={["turn795627search5","turn795627search4","turn795627search13","turn795627search0"]}/>
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 07: Prototype Theory versus Exemplar Theory.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 07 completed</badge>
+
+**Point 07: Prototype Theory versus Exemplar Theory**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_07_Prototype_versus_Exemplar_Representations.md**
+    <text color="secondary" size="xs">Markdown · 5,290 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 07](sandbox:/mnt/data/Point_07_Prototype_versus_Exemplar_Representations.md)
+
+The file includes detailed biological explanations, mathematical models, both representation pathways, their integration, Python-oriented pseudocode, validation experiments, failure modes, and scientific references.
+
+The algorithm accounts for evidence that prototype and exemplar representations can coexist during human category learning. <Cite refs={["turn460710search0","turn460710search8","turn460710search3"]}/>
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 08: Distributed Semantic Knowledge in Sensorimotor Cortices and Anterior Temporal Lobe Hub Networks.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 08 completed</badge>
+
+**Point 08: Distributed Semantic Representations — Sensorimotor Cortices and Anterior Temporal Lobe Integration**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_08_Distributed_Semantic_Representations_Hub_and_Spoke.md**
+    <text color="secondary" size="xs">Markdown · 5,851 words · 15 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 08](sandbox:/mnt/data/Point_08_Distributed_Semantic_Representations_Hub_and_Spoke.md)
+
+The file includes:
+
+- Distributed visual, auditory, tactile, and motor feature processing.
+- Anterior temporal lobe integration mechanisms.
+- Mathematical models for feature extraction, association, neural activation, similarity, and recurrent feedback.
+- Cross-modal concept retrieval and generalization.
+- Semantic control and context-dependent retrieval.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+The architecture is grounded in the hub-and-spoke and controlled semantic cognition frameworks, while accounting for alternative explanations of event representations. <Cite refs={["turn470678view0","turn229008search10","turn470678view2","turn229008search1"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 09: Schema Formation — Structured Concepts, Roles, Slots, and Relations.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 09 completed</badge>
+
+**Point 09: Schema Formation — Structured Concepts, Roles, Slots, and Relations**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_09_Schema_Formation_Roles_Slots_and_Relations.md**
+    <text color="secondary" size="xs">Markdown · 5,757 words · 24 sections</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 09](sandbox:/mnt/data/Point_09_Schema_Formation_Roles_Slots_and_Relations.md)
+
+The file covers:
+
+- Identifying recurring structures across experiences.
+- Extracting functional roles and variable slots.
+- Discovering relationships between slots.
+- Learning temporal sequences and event transitions.
+- Distinguishing correlations from causal relationships.
+- Building hierarchical and compositional schemas.
+- Predicting missing information and updating existing schemas.
+- Mathematical models, integrated Python-oriented pseudocode, validation experiments, and scientific references.
+
+The biological framework incorporates hippocampal–prefrontal interactions, hierarchical learning, and recent research on neural schema representations. <Cite refs={["turn149130search1","turn149130search2","turn149130search0","turn149130search5"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 10.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 10 completed</badge>
+
+**Point 10: Schema-Guided Inference and Generalization**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_10_Schema_Guided_Inference_and_Generalization.md**
+    <text color="secondary" size="xs">Markdown · 5,718 words · 17 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 10](sandbox:/mnt/data/Point_10_Schema_Guided_Inference_and_Generalization.md)
+
+The file includes detailed biological explanations, mathematical models, hippocampal–prefrontal interactions, schema-based predictions, uncertainty handling, integrated pseudocode, validation experiments, and scientific references.
+
+**Waiting for your instruction.** Type **continue** to proceed to Point 11: Analogical Transfer — Applying Relational Knowledge From One Domain to Another.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 11 completed</badge>
+
+**Point 11: Analogical Transfer — Applying Relational Knowledge Across Different Domains**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_11_Analogical_Transfer_Relational_Knowledge_Across_Domains.md**
+    <text color="secondary" size="xs">Markdown · 5,780 words · 18 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 11](sandbox:/mnt/data/Point_11_Analogical_Transfer_Relational_Knowledge_Across_Domains.md)
+
+The file includes:
+
+- Retrieving previously learned relational patterns.
+- Extracting and comparing relations rather than superficial similarities.
+- Mapping entities and roles between different domains.
+- Structural consistency and higher-order relational integration.
+- Hippocampal relational binding and prefrontal reasoning mechanisms.
+- Mathematical models for graph matching, similarity, probability, and inference.
+- Transferring knowledge while detecting disanalogies and limitations.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+The neuroscience discussion incorporates research on relational integration and the frontoparietal networks involved in analogical reasoning. <Cite refs={["turn708445search0","turn708445search1","turn708445search2"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 12.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 12 completed</badge>
+
+**Point 12: Context-Dependent Interpretation — Prior Knowledge, Goals, and Situational Context**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_12_Context_Dependent_Interpretation_Prior_Knowledge_Goals_and_Situation.md**
+    <text color="secondary" size="xs">Markdown · 5,739 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 12](sandbox:/mnt/data/Point_12_Context_Dependent_Interpretation_Prior_Knowledge_Goals_and_Situation.md)
+
+The file includes:
+
+- Detailed biological explanations of context-dependent comprehension.
+- Integration of prior discourse, long-term knowledge, cultural conventions, and physical surroundings.
+- Goal-dependent attention and contextual selection.
+- Mathematical models for Bayesian inference, probability, entropy, similarity, and prediction errors.
+- Situation-model construction and updating.
+- Ambiguity resolution and interpretation revision.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+The scientific foundation includes research on situation models, contextual effects on semantic processing, and interactions between language and broader brain networks. <Cite refs={["turn547673search1","turn547673search2","turn547673search3","turn547673search6"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 13: Emotion and Motivation — How Emotional Significance and Motivational States Modulate Attention and Learning.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 13 completed</badge>
+
+**Point 13: Emotion and Motivation — Modulating Attention, Learning, and Memory Encoding**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_13_Emotion_Motivation_Attention_and_Memory_Encoding.md**
+    <text color="secondary" size="xs">Markdown · 5,129 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 13](sandbox:/mnt/data/Point_13_Emotion_Motivation_Attention_and_Memory_Encoding.md)
+
+The file includes detailed biological explanations, mathematical models, integrated Python-oriented pseudocode, validation experiments, failure modes, and scientific references.
+
+It covers amygdala–hippocampal interactions, norepinephrine, cortisol, dopamine, attentional prioritization, reward prediction errors, cognitive effort, and elaborative learning. <Cite refs={["turn483565view1","turn960721search1","turn960721search3","turn960721search5","turn960721search13","turn960721search14"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 14: Social Interaction and Conversational Learning.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 14 completed</badge>
+
+**Point 14: Social Interaction and Conversational Learning**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_14_Social_Interaction_and_Conversational_Learning.md**
+    <text color="secondary" size="xs">Markdown · 5,772 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 14](sandbox:/mnt/data/Point_14_Social_Interaction_and_Conversational_Learning.md)
+
+The file includes:
+
+- Joint attention and shared referent detection.
+- Inferring another person's intentions and knowledge.
+- Multimodal integration of speech, gestures, and facial expressions.
+- Conversational turn-taking and prediction.
+- Learning through questions, corrections, and social feedback.
+- Explaining ideas and integrating other perspectives.
+- Storytelling and theory-of-mind processing.
+- Mathematical models, integrated pseudocode, validation experiments, and scientific references.
+
+The scientific foundation includes research on social language learning, interactive knowledge acquisition, and interpersonal neural synchrony. <Cite refs={["turn328697search2","turn328697search4","turn328697search8","turn328697search9"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 15: Specialized Language Processing Networks versus General-Purpose Reasoning and Social-Cognition Networks.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 15 completed</badge>
+
+**Point 15: Specialized Language Processing Networks versus General-Purpose Reasoning and Social-Cognition Networks**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_15_Language_Specific_Networks_and_Domain_General_Reasoning.md**
+    <text color="secondary" size="xs">Markdown · Approximately 5,350 words · 15 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 15](sandbox:/mnt/data/Point_15_Language_Specific_Networks_and_Domain_General_Reasoning.md)
+
+The file includes:
+
+- Detailed biological explanations of specialized frontotemporal language networks.
+- Language processing versus domain-general reasoning.
+- Multiple-demand networks and working-memory recruitment.
+- Interactions with conceptual memory and social-cognition networks.
+- Mathematical models for lexical retrieval, syntactic processing, semantic composition, probabilistic inference, and prediction errors.
+- An integrated algorithm with Python-oriented pseudocode.
+- Testable predictions, validation experiments, and failure modes.
+- Scientific references, including Fedorenko et al. (2024).
+
+The central computational principle is **separation with coordination**: specialized systems perform different operations while communicating to produce complete understanding. <Cite refs={["turn422302search0","turn422302search1","turn422302search11","turn422302search9"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 16: Development of Language and Conceptual Processing Across the Lifespan.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 16 completed</badge>
+
+**Point 16: Lifespan Development of Language, Concepts, Working Memory, and Executive Cognition**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_16_Lifespan_Development_of_Language_Concepts_and_Executive_Cognition.md**
+    <text color="secondary" size="xs">Markdown · 5,196 words · 17 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 16](sandbox:/mnt/data/Point_16_Lifespan_Development_of_Language_Concepts_and_Executive_Cognition.md)
+
+The file covers:
+
+- Early broad speech-perception abilities.
+- Statistical learning and phoneme development.
+- Speech segmentation and word-boundary detection.
+- Social and multisensory contributions to language learning.
+- Vocabulary acquisition and concept formation.
+- Hierarchical semantic representations and schemas.
+- Working-memory development.
+- Executive functions: inhibition, updating, and cognitive flexibility.
+- Synaptic refinement, myelination, and prefrontal development.
+- Hippocampal–prefrontal integration during adolescence.
+- Mathematical models, integrated pseudocode, and validation experiments.
+
+Scientific grounding includes developmental research on infant speech perception, vocabulary acquisition, and adolescent executive-function development. <Cite refs={["turn374233search0","turn374233search3","turn374233search10","turn224646search6","turn224646search4","turn224646search0"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 17: Adult Individual Differences in Working Memory, Processing Speed, Prior Knowledge, and Learning.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 17 completed</badge>
+
+**Point 17: Adult Individual Differences in Learning and Comprehension**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_17_Adult_Individual_Differences_in_Learning_and_Comprehension.md**
+    <text color="secondary" size="xs">Markdown · 4,968 words · 15 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 17](sandbox:/mnt/data/Point_17_Adult_Individual_Differences_in_Learning_and_Comprehension.md)
+
+The file includes:
+
+- Working-memory capacity and attentional control.
+- Processing speed and temporal coordination.
+- Prior knowledge, expertise, and schema-based chunking.
+- Bilingual experience and language-dependent predictions.
+- Cultural influences on semantic associations.
+- Aging, episodic detail, and gist-based memory.
+- Mathematical models and integrated Python pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+The scientific framework draws on research into working-memory differences, expertise-dependent memory organization, bilingual language processing, and age-related changes in episodic memory. <Cite refs={["turn823900search1","turn823900search2","turn463147search1","turn463147search7","turn463147search3","turn823900search8","turn823900search4"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 18: Common Difficulties and Misconceptions — Attention Failures, Distraction, and Missing Information.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 18 completed</badge>
+
+**Point 18: Attentional Failure — Distraction, Fatigue, and Missed Information**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_18_Attentional_Failure_Distraction_Fatigue_and_Missed_Information.md**
+    <text color="secondary" size="xs">Markdown · 6,150 words · 17 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 18](sandbox:/mnt/data/Point_18_Attentional_Failure_Distraction_Fatigue_and_Missed_Information.md)
+
+The file includes:
+
+- Detailed biological explanations of attentional mechanisms.
+- Frontoparietal, sensory, thalamic, and neuromodulatory systems.
+- Mathematical models for attention allocation, distraction, fatigue, and encoding confidence.
+- Detection and recovery of missed information.
+- Working-memory gating and attentional stability.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+The algorithm incorporates recent research on attentional lapses, distraction control, and working-memory encoding. <Cite refs={["turn542713search0","turn542713search1","turn542713search3","turn542713search7"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 19: Working-Memory Overload and Information Loss During Complex Interpretation.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 19 completed</badge>
+
+**Point 19: Working-Memory Overload and Information Loss During Complex Interpretation**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_19_Working_Memory_Overload_and_Information_Loss_During_Complex_Interpretation.md**
+    <text color="secondary" size="xs">Markdown · 6,858 words · 19 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 19](sandbox:/mnt/data/Point_19_Working_Memory_Overload_and_Information_Loss_During_Complex_Interpretation.md)
+
+The file includes:
+
+- Detailed biological mechanisms of working memory.
+- Interactions between language-processing and executive-control networks.
+- Maintenance and retrieval of earlier sentence components.
+- Mathematical models for processing load, activation, interference, retrieval competition, and information loss.
+- Meaningful chunk formation and attentional resource allocation.
+- Detection and recovery of working-memory overload.
+- Distinction between encoding failure, maintenance failure, retrieval interference, and binding failure.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+An important principle incorporated into this algorithm is that comprehension failure does not necessarily mean information has been erased: retrieval interference and failed relational binding can also explain why previously processed information becomes inaccessible. <Cite refs={["turn323474view1","turn292497search9","turn292497search4","turn292497search1"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 20.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 20 completed
+
+---
+
+[ASSISTANT]
+</badge>
+
+**Point 20: Schema-Driven Inference and Reconstructive Memory**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_20_Schema_Driven_Inference_and_Reconstructive_Memory.md**
+    <text color="secondary" size="xs">Markdown · 6,046 words · 16 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 20](sandbox:/mnt/data/Point_20_Schema_Driven_Inference_and_Reconstructive_Memory.md)
+
+The file includes:
+
+- Hippocampal pattern completion and schema activation.
+- How missing information is reconstructed.
+- Bayesian inference and probabilistic reasoning.
+- Source monitoring and distinguishing memories from inferences.
+- Gist versus episode-specific details.
+- Familiarity, confidence, and false-memory formation.
+- Bartlett's *War of the Ghosts* as a worked conceptual case.
+- Mathematical models, integrated Python pseudocode, validation experiments, and scientific references.
+
+It also incorporates an important qualification: schemas can improve memory accuracy when information is familiar, rather than necessarily producing errors. <Cite refs={["turn707184search0","turn707184search2","turn707184search3"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 21.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 21 completed</badge>
+
+**Point 21: Confirmation Bias — Belief-Consistent Attention, Interpretation, and Memory**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_21_Confirmation_Bias_and_Belief_Consistent_Memory.md**
+    <text color="secondary" size="xs">Markdown · 3,712 words · 17 algorithmic sections</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 21](sandbox:/mnt/data/Point_21_Confirmation_Bias_and_Belief_Consistent_Memory.md)
+
+The file includes:
+
+- Prior belief activation and expectation formation.
+- Selective information search and attentional allocation.
+- Evidence encoding and contextual tagging.
+- Belief-dependent interpretation of ambiguous information.
+- Source reliability and evidence evaluation.
+- Bayesian updating and mathematical models of confirmation bias.
+- Confidence regulation and belief perseverance.
+- Hippocampal memory retrieval and reconstruction.
+- Feedback loops that reinforce inaccurate beliefs.
+- Corrective control mechanisms.
+- Integrated Python-oriented pseudocode and validation experiments.
+
+An important scientific distinction incorporated into the algorithm is that contradictory evidence may actually be encoded by the brain but receive less influence during subsequent decision-making. <Cite refs={["turn426731search5","turn426731search2","turn426731search0"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 22: Cognitive Heuristics — Mental Shortcuts and Systematic Reasoning Errors.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+Point 22 covers **Cognitive Heuristics — Mental Shortcuts and Systematic Reasoning Errors**.
+
+This point examines how the brain uses simplified decision rules to interpret information quickly, how those rules can produce systematic mistakes, and how an initial judgment can influence subsequent reasoning.
+
+The algorithm will cover availability, representativeness, anchoring, familiarity, probability estimation, correlation-versus-causation errors, and mechanisms for detecting and correcting misleading judgments.
+
+<badge color="success">Point 22 completed</badge>
+
+**Point 22: Cognitive Heuristics — Mental Shortcuts and Systematic Reasoning Errors**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_22_Cognitive_Heuristics_and_Systematic_Reasoning_Errors.md**
+    <text color="secondary" size="xs">Markdown · 4,969 words · 17 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 22](sandbox:/mnt/data/Point_22_Cognitive_Heuristics_and_Systematic_Reasoning_Errors.md)
+
+The file includes:
+
+- Availability, representativeness, and anchoring heuristics.
+- Base-rate neglect and familiarity/processing fluency.
+- Sample-size neglect and statistical reasoning.
+- Correlation-versus-causation errors.
+- Emotional influences on judgment.
+- Mathematical models for probability, similarity, Bayesian inference, and prediction errors.
+- Distributed brain-network explanations.
+- Integrated Python pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+An important distinction is that heuristics are not inherently irrational. Their effectiveness depends on the environment in which they are used. <Cite refs={["turn464276search1","turn464276search5","turn464276search10"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 23: Language Comprehension Pitfalls — Garden-Path Sentences and Ambiguous Syntax.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 23 completed</badge>
+
+**Point 23: Language-Comprehension Pitfalls — Garden-Path Sentences and Ambiguous Syntax**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_23_Garden_Path_Sentences_and_Syntactic_Ambiguity.md**
+    <text color="secondary" size="xs">Markdown · 4,812 words · 17 algorithmic steps</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 23](sandbox:/mnt/data/Point_23_Garden_Path_Sentences_and_Syntactic_Ambiguity.md)
+
+The file includes:
+
+- Incremental sentence parsing and lexical-category selection.
+- Syntactic ambiguity detection and competing parse structures.
+- Prediction, surprisal, and mathematical probability models.
+- Working-memory maintenance of grammatical dependencies.
+- Conflict detection and syntactic reanalysis.
+- Thematic-role reassignment and semantic reconstruction.
+- Good-enough interpretation versus complete reanalysis.
+- Prosody, punctuation, and contextual disambiguation.
+- Integrated Python-oriented pseudocode.
+- Validation experiments, failure modes, and scientific references.
+
+An important finding incorporated into this algorithm is that rereading a garden-path sentence does not necessarily mean the brain successfully corrected its original interpretation. Recent research also supports distinguishing complete reanalysis from partial or good-enough comprehension. <Cite refs={["turn780493search0","turn780493search1","turn780493search3","turn780493search4"]}/>
+
+**Waiting for your instruction.**
+
+Type **continue** to proceed to Point 24: Feedback and Clarification — Preventing Misconceptions From Becoming Entrenched.
+
+---
+
+[USER]
+**continue**
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 24 completed — Final point</badge>
+
+**Point 24: Feedback and Clarification — Detecting, Correcting, and Preventing Entrenched Misconceptions**
+
+<row align="center" gap={2}>
+  <icon name="file-text" size="2xl" color="secondary"/>
+  <box flex="1" gap={1}>
+    **Point_24_Feedback_Clarification_and_Misconception_Correction.md**
+    <text color="secondary" size="xs">Markdown · 5,144 words · 23 sections</text>
+  </box>
+  <badge color="success">Ready</badge>
+</row>
+
+[Download Point 24](sandbox:/mnt/data/Point_24_Feedback_Clarification_and_Misconception_Correction.md)
+
+The file includes:
+
+- Error and discrepancy detection.
+- Prediction-error processing and feedback evaluation.
+- Identifying and classifying incorrect interpretations.
+- Clarification and evidence selection.
+- Hippocampal memory updating and retrieval.
+- Corrective learning and knowledge representation revision.
+- Mathematical models for Bayesian updating, entropy, learning rates, and confidence calibration.
+- Active retrieval and long-term retention.
+- Generalization to new examples.
+- Integrated algorithmic pseudocode.
+- Validation experiments, biological limitations, and scientific references.
+
+An important finding is that retrieving an incorrect answer followed by corrective feedback can improve subsequent error correction, although feedback effectiveness depends on timing and learning conditions. <Cite refs={["turn458968search1","turn458968search4","turn458968search5"]}/>
+
+Research also indicates that forgetting corrections can contribute to the return of previously corrected beliefs. <Cite refs={["turn458968search8","turn458968search9"]}/>
+
+---
+
+<badge color="success">All 24 points completed</badge>
+
+This completes the sequence of human-brain-related points in the source document.
+
+The 24 individual algorithm files are now complete.

@@ -1,0 +1,3058 @@
+Title: Implement N3 Algorithm
+Conversation ID: 6af7cf12-53bc-83ea-b64e-1e79a58c6cb5
+
+---
+
+[USER]
+related to our previous chat "Implement N2 Algorithm", Auto implement the steps of the N2 algorithm in python and ignore the previous n0-n7 implementation. you can use github through github plugin to implement N2 17 algorithmic steps. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin
+
+---
+
+[USER]
+related to our previous chat "Implement N2 Algorithm", Auto implement the steps of the N3 algorithm in python and ignore the previous n0-n7 implementation. you can use github through github plugin to implement N3 29 algorithmic steps. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin
+
+---
+
+[ASSISTANT]
+I’ll implement N3 directly in **`wizekin/ORE-Neurocomputational`**, targeting the existing `main` branch and preserving the merged N1 and N2 implementations.
+
+The implementation will follow these architectural constraints:
+
+- **29 independent algorithmic operations**, implemented as Python modules/functions rather than a shortened approximation.
+- N1 provides spatial neural activity maps, including `normalized_energy`.
+- N2 provides contours, figure–ground organization, fragments, topology, and ventral/dorsal summaries.
+- N3 must preserve spatial information and build on those N1–N2 outputs.
+- Do not use the previous N0–N7 implementation as a foundation.
+- Preserve existing interfaces, add explicit contracts, configuration, diagnostics, and automated tests.
+- Do not claim that N3 performs letter or word identification unless a later stage actually implements that capability.
+
+**Repository inspection completed.**
+
+The repository currently has:
+- `ore_n1/` — merged N1 implementation.
+- `ore_n2/` — merged 17-operation N2 implementation.
+- `N2_ARCHITECTURE.md` — N2 mathematical specification.
+- Existing pytest and GitHub Actions infrastructure.
+
+Repository: <Link url="https://github.com/wizekin/ORE-Neurocomputational" title="ORE-Neurocomputational"/>.
+
+**One important missing item:** I recovered the N3 architectural boundary, but not the complete ordered specification of its 29 operations. I don't want to invent 29 steps and accidentally implement a different architecture from the one we designed.
+
+Please provide the previous **N3 — Hierarchical Visual Architecture (29 steps)** algorithm, either by pasting it here or uploading its text.
+
+<AskUserFiles kind="file"/>
+
+Once available, I'll implement the complete architecture using the GitHub integration, including:
+
+1. All 29 operations and their mathematical mechanisms.
+2. Independent `ore_n3/` Python package.
+3. N1–N2 input contracts and preserved spatial representations.
+4. Configuration and numerical diagnostics.
+5. Unit, integration, and regression tests.
+6. Documentation with equations and operation-by-operation explanations.
+7. GitHub Actions validation.
+
+I'll keep the work isolated from N0–N7 and preserve the existing N1/N2 implementations.
+
+---
+
+[USER]
+it's available in the previous chat "Implement N2 Algorithm"
+
+---
+
+[ASSISTANT]
+<badge color="success">Implemented and committed to main</badge>
+
+The N3 implementation is now in `wizekin/ORE-Neurocomputational`.
+
+<box border radius="lg" padding={3} gap={2}>
+  **N3 — Recurrent Orthographic Prediction and Error**
+
+  <title size="2xl" color="success" tabularNums>29 operations</title>
+  <row justify="between">
+    <text color="secondary" size="sm">Learning operations</text>
+    **01–15**
+  </row>
+  <row justify="between">
+    <text color="secondary" size="sm">Recognition and inference</text>
+    **16–29**
+  </row>
+  <divider color="subtle"/>
+  **Implemented components**
+  - N2 visual-feature extraction and grapheme prototypes.
+  - Unigram and bidirectional bigram learning.
+  - Visual candidate probabilities, including unknown characters.
+  - Attention and segmentation-based sensory precision.
+  - Contextual prediction and recurrent belief updates.
+  - Prediction-error and feature-residual calculations.
+  - Convergence monitoring and structured output.
+  - Seven automated tests.
+</box>
+
+### Repository files
+
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational/tree/main/ore_n3" title="N3 Python implementation"/>
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/docs/N3_ARCHITECTURE.md" title="Complete 29-step mathematical specification"/>
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_n3.py" title="N3 automated tests"/>
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational" title="Complete repository"/>
+
+### Important implementation boundary
+
+The N2 implementation in this repository produces visual-structural representations, not grapheme probabilities. Therefore, N3 learns grapheme prototypes from labelled N2 patch outputs before applying recurrent prediction.
+
+N3 currently expects pre-segmented patches in reading order. It does not yet perform full-image character segmentation.
+
+### Validation
+
+The test suite has been committed, but I could not obtain a GitHub Actions execution result, so I cannot yet report a passing test run.
+
+Run locally:
+
+**Scientific status:** N3 is a testable computational approximation inspired by predictive processing, not a demonstrated reproduction of biological neural mechanisms.
+
+---
+
+[USER]
+related to our previous chat "Request Stage A Output", I want you to turn the sequence of "ORE Neurocomputational Development Roadmap: Phase N4 — Neural orthographic representations" into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step
+
+---
+
+[ASSISTANT]
+# ORE Neurocomputational Development Roadmap
+## Phase N4 — Neural Orthographic Representations
+<badge color="info">Algorithm specification</badge> <badge color="success">Proposed development phase</badge>
+
+The purpose of N4 is to develop a computational architecture that converts the visual and neural-like activity produced by the preceding ORE phases into **structured orthographic representations resembling the information-processing properties of the human reading system**.
+
+N4 addresses a fundamental question:
+
+> How does the brain transform visual information about letters into a neural representation that preserves letter identity, letter order, relative position, spatial relationships, and learned orthographic patterns, while becoming increasingly tolerant to changes in font, size, and physical position?
+
+This is a particularly important phase because recognizing individual visual features is not the same as representing a written sequence.
+
+For example, consider:
+
+- FORM
+- FROM
+- FRO M
+- MROF
+
+A useful orthographic system must represent the identities of the letters, their order, their relative positions, and their relationships. It must also tolerate some differences in how those letters appear without confusing one sequence with another.
+
+The result must not be a single irreversible word label. It should be a structured representation containing several interacting but distinguishable information channels.
+
+---
+
+## 1. Scientific foundation of N4
+
+Before constructing the algorithm, we need to establish what kind of neural mechanisms it should approximate.
+
+### 1.1 The transformation from retinal position to orthographic position
+
+One of the most important findings for this phase concerns the transformation between two types of position information.
+
+**Retinotopic coding**
+
+Early visual areas represent visual information according to where it falls on the retina. A letter appearing at one retinal location activates a different spatial pattern from the same letter appearing somewhere else.
+
+**Ordinal position coding**
+
+Higher-level visual representations become sensitive to the letter's position within a written sequence rather than merely its physical retinal location.
+
+This distinction is important:
+
+The letter A should remain identifiable as A even when its physical position changes, but the system must still know whether A is the first, second, or final letter.
+
+A 2025 study by Agrawal and Dehaene combined 7T fMRI and MEG to investigate this transformation. It reported stronger retinotopic coding in early visual areas and a transition toward ordinal coding in higher visual areas, including the visual word form area. Its reported MEG time windows included approximately 60–200 ms for early retinotopic signals and 220–450 ms for increasingly prominent ordinal coding. Importantly, word position remained influential throughout the measured periods. <Cite refs={["turn336934search0","turn336934search1"]}/>
+
+<AsyncImageGroup query={["human ventral visual pathway V1 V2 V4 lateral occipital visual word form area fusiform neuroscience diagram","visual word form area cortical network reading brain diagram"]} aspectRatio="5:4" layout="carousel"/>
+
+This suggests an important architectural requirement:
+
+N4 should not simply discard the physical position representation when constructing an abstract orthographic representation. It should preserve the relationship between the two.
+
+### 1.2 The visual word form processing network is distributed
+
+We should also avoid designing N4 as a single artificial module that supposedly corresponds to the complete VWFA.
+
+A 2024 study by Vin and colleagues investigated the visual word processing circuit using fMRI. It identified hierarchically organized early-vision, high-level-vision, and language-related clusters in both hemispheres. The VWFA appeared to mediate connections between early visual and language-related clusters. <Cite refs={["turn262761search3","turn262761search4"]}/>
+
+Consequently, N4 should consist of cooperating computational populations rather than one universal letter detector.
+
+### 1.3 Letter-position coding is not settled
+
+There are several competing explanations of how the brain represents letter positions.
+
+| Model | Main idea |
+|---|---|
+| Absolute/slot coding | Letters activate position-specific representations. |
+| Relative/open-bigram coding | Representations encode ordered pairs of letters independently of exact physical positions. |
+| Distributed-overlap coding | A letter activates several neighboring ordinal positions with different strengths. |
+| Hybrid coding | Multiple types of positional information contribute simultaneously. |
+| Space-bigram coding | Letters are represented partly through their ordinal distance from word boundaries. |
+
+Snell, Grainger, and Meeter's 2022 experiments showed that neither a purely absolute nor a purely relative account explained all their observed patterns. They discussed combining aspects of the two. <Cite refs={["turn262761search1","turn130946view1"]}/>
+
+A related 2024 computational study by Agrawal and Dehaene proposed space-bigram units, which encode letter identity relative to blank spaces and word boundaries. <Cite refs={["turn262761search5","turn262761search8"]}/>
+
+N4 therefore needs to implement several competing mechanisms and preserve their individual outputs.
+
+---
+
+## 2. N4 architectural overview
+
+I propose dividing N4 into six computational subsystems containing 40 major algorithmic operations.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">N4 — 40-operation architecture</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **N4-A — Neural representation initialization**
+
+      <text color="secondary" size="sm">Operations 01–05: input contracts, spatial alignment, script characteristics and uncertainty preservation.</text>
+    </list-item>
+    <list-item>
+      **N4-B — Distributed character identity representations**
+
+      <text color="secondary" size="sm">Operations 06–12: population coding, identity selectivity, feature invariance and visual identity separation.</text>
+    </list-item>
+    <list-item>
+      **N4-C — Neural letter-position representations**
+
+      <text color="secondary" size="sm">Operations 13–22: retinotopic positions, ordinal positions, absolute coding, relative coding, open bigrams, overlap coding and boundary coding.</text>
+    </list-item>
+    <list-item>
+      **N4-D — Orthographic pattern and chunk representations**
+
+      <text color="secondary" size="sm">Operations 23–28: multi-letter patterns, exposure statistics, transition relationships and chunk activation.</text>
+    </list-item>
+    <list-item>
+      **N4-E — Integrated orthographic neural representations**
+
+      <text color="secondary" size="sm">Operations 29–34: uncertainty, competition, recurrent stabilization, attentional modulation and hybrid integration.</text>
+    </list-item>
+    <list-item>
+      **N4-F — Learning, validation and output**
+
+      <text color="secondary" size="sm">Operations 35–40: representation learning, invariance, discrimination, generalization, ablation and structured output.</text>
+    </list-item>
+  </list>
+</box>
+
+### The central N4 output
+
+The formal ORE specification defines a structured representation:
+
+\[
+\boxed{R=(C,A,B,O,N,U,M)}
+\]
+
+Where:
+
+| Component | Representation |
+|---|---|
+| C | Character identity |
+| A | Absolute/slot position |
+| B | Relative/open-bigram relationships |
+| O | Distributed-overlap position |
+| N | Learned orthographic chunks |
+| U | Uncertainty and ambiguity |
+| M | Metadata and provenance |
+
+These channels must remain separately inspectable, even when their information is combined for downstream operations. <FileCite ref_id="turn52file4"/>
+
+This representation is the central output of N4.
+
+---
+
+# 3. N4-A — Neural representation initialization
+
+## Operation 01 — Initialize the orthographic representation network
+
+**Purpose:** Establish the populations, computational layers, shared state variables and representational channels that N4 will use.
+
+The brain contains distributed neuronal populations with different receptive-field properties and response preferences. N4 should approximate this through separate, interacting computational populations.
+
+Initialize:
+
+1. Character identity populations.
+2. Retinotopic position populations.
+3. Ordinal position populations.
+4. Relative-letter relationship populations.
+5. Overlapping position populations.
+6. Multi-letter pattern populations.
+7. Uncertainty populations.
+8. Integration and competition mechanisms.
+
+We should not assume every population exists as a sharply isolated anatomical region.
+
+**Possible mathematical operations**
+
+Represent a population by:
+
+\[
+\mathbf{a}^{(l)}=
+\begin{bmatrix}
+a_1^{(l)}\\
+a_2^{(l)}\\
+\vdots\\
+a_m^{(l)}
+\end{bmatrix}
+\]
+
+Where:
+
+- \(l\) identifies a computational layer.
+- \(a_j\) is the activation of population unit \(j\).
+- \(m\) is the number of units.
+
+Initialize parameters:
+
+\[
+\theta =
+\{W_{\mathrm{ff}},W_{\mathrm{lat}},
+W_{\mathrm{fb}},b,\tau,\sigma\}
+\]
+
+These represent feedforward connections, lateral connections, feedback connections, biases, time constants, and receptive-field widths.
+
+The parameters are computational hypotheses, not measured biological constants.
+
+**Output:** An initialized, modular orthographic representation network.
+
+## Operation 02 — Validate the script and grapheme system
+
+**Purpose:** Establish what constitutes a written unit for the current writing system.
+
+The algorithm must distinguish:
+
+- Unicode code points.
+- Graphemes.
+- Visually observed character regions.
+- Contextual character forms.
+- Diacritics and combining marks.
+
+This is essential for Arabic.
+
+For example, one perceived grapheme may consist of multiple Unicode code points, and the visual form of a letter can depend on its joining context.
+
+The script profile must define:
+
+\[
+S=
+(\Sigma,d,n,j,p)
+\]
+
+Where:
+
+- \(\Sigma\): grapheme inventory.
+- \(d\): reading direction.
+- \(n\): normalization rules.
+- \(j\): joining and contextual-form rules.
+- \(p\): position-coordinate policy.
+
+**Possible mathematical operations**
+
+Apply the script-specific mapping:
+
+\[
+g:\text{Unicode sequence}\rightarrow
+\text{grapheme sequence}
+\]
+
+This is a computational preprocessing operation. It does not imply that the brain literally processes Unicode or executes a formal text normalization algorithm.
+
+**Output:** A validated script-specific representation contract.
+
+## Operation 03 — Receive and preserve the visual observations
+
+**Purpose:** Connect the preceding visual processing architecture with N4.
+
+For every detected character-region hypothesis, receive:
+
+- Visual features from N1.
+- Spatial organization and boundary information from N2.
+- Candidate identity distributions and contextual predictions from N3.
+- Bounding boxes and source coordinates.
+- Segmentation confidence.
+- Any available attention information.
+
+For each region \(i\), define:
+
+\[
+P_i=
+(I_i,z_i,q_i,B_i,\rho_i)
+\]
+
+Where:
+
+- \(I_i\): image information.
+- \(z_i\): visual feature vector.
+- \(q_i\): identity probability distribution.
+- \(B_i\): bounding box.
+- \(\rho_i\): segmentation reliability.
+
+One important restriction: retain the original N3 visual distribution separately from its recurrently updated posterior.
+
+Otherwise, orthographic expectations could become confused with direct visual evidence.
+
+**Output:** An inspectable input state for every region.
+
+## Operation 04 — Preserve alternative segmentation hypotheses
+
+**Purpose:** Prevent N4 from assuming that every physical image region has already been segmented correctly.
+
+For example, a connected handwritten structure may correspond to one grapheme or multiple graphemes.
+
+Rather than immediately forcing one segmentation, N4 should retain alternatives:
+
+\[
+H_i=\{h_{i1},h_{i2},\ldots,h_{im}\}
+\]
+
+And their probabilities:
+
+\[
+\sum_{j=1}^{m}P(h_{ij})=1
+\]
+
+A candidate representation can be marginalized over different segmentation hypotheses:
+
+\[
+q_i(c)=
+\sum_h P(c\mid h)P(h\mid I)
+\]
+
+This allows uncertainty about segmentation to propagate into the orthographic representation.
+
+**Output:** Multiple possible interpretations of visual regions, with their confidence values.
+
+## Operation 05 — Establish spatial coordinate systems
+
+**Purpose:** Preserve the physical location of visual evidence before constructing more abstract position representations.
+
+A written character has several potentially relevant coordinates:
+
+1. Its physical horizontal or vertical location.
+2. Its location within the text region.
+3. Its location within the word.
+4. Its ordinal position.
+5. Its relationship to neighboring characters.
+
+For a bounding box:
+
+\[
+B_i=(x_{\min},y_{\min},x_{\max},y_{\max})
+\]
+
+Its center is:
+
+\[
+x_i=\frac{x_{\min}+x_{\max}}{2}
+\]
+
+\[
+y_i=\frac{y_{\min}+y_{\max}}{2}
+\]
+
+The physical width and height are:
+
+\[
+w_i=x_{\max}-x_{\min}
+\]
+
+\[
+h_i=y_{\max}-y_{\min}
+\]
+
+Normalize the primary reading-axis location:
+
+\[
+p_i=\frac{u_i-u_{\min}}
+{u_{\max}-u_{\min}+\epsilon}
+\]
+
+Here \(u_i\) is the coordinate after accounting for script direction.
+
+For a right-to-left script, the logical axis is reversed. For vertical writing, the relevant axis is changed.
+
+**Scientific interpretation:** This operation retains physical spatial information, which is important because early visual representations are strongly influenced by retinal location and visual geometry. <Cite refs={["turn336934search0","turn262761search3"]}/>
+
+**Output:** Spatially characterized visual regions.
+
+---
+
+# 4. N4-B — Distributed character identity representations
+
+This subsystem constructs the first central part of N4: the character identity channel \(C\).
+
+The goal is to represent a character through the activity of a population of potentially selective units rather than immediately reducing the observation to one symbol.
+
+## Operation 06 — Extract character-discriminative visual features
+
+**Purpose:** Identify which visual features contribute to character identity.
+
+Possible features include:
+
+- Stroke orientation.
+- Stroke intersection.
+- Curvature.
+- Endpoints.
+- Junctions.
+- Relative stroke thickness.
+- Closed regions.
+- Local spatial arrangements.
+- Spatial distribution of visual energy.
+
+N1 and N2 already provide useful lower-level representations. N4 should consume and reorganize those features rather than reconstructing them unnecessarily.
+
+Let:
+
+\[
+z_i=f_{\theta}(P_i)
+\]
+
+Where \(f_\theta\) is the visual feature transformation.
+
+The feature vector might contain:
+
+\[
+z_i=
+[z_{i1},z_{i2},\ldots,z_{id}]
+\]
+
+Possible computational mechanisms include:
+
+- Linear or nonlinear feature combinations.
+- Local receptive-field pooling.
+- Thresholding.
+- Nonlinear activation functions.
+- Hierarchical feature combination.
+
+An illustrative nonlinear operation is:
+
+\[
+a_j=\max(0,w_j^\top z_i+b_j)
+\]
+
+This represents a rectified feature-selective population response.
+
+**Output:** A set of visual features suitable for character identity coding.
+
+## Operation 07 — Create character-selective neuronal populations
+
+**Purpose:** Represent visual evidence using populations that respond preferentially to different grapheme identities.
+
+For example, imagine an alphabet containing:
+
+\[
+\Sigma=\{A,B,C,D\}
+\]
+
+An artificial population may contain groups of units whose activity is particularly associated with:
+
+- A-like visual structures.
+- B-like visual structures.
+- C-like visual structures.
+- D-like visual structures.
+
+These groups should not be thought of as four individual biological neurons. Each category could involve a distributed population of many units.
+
+A simple activation model is:
+
+\[
+a_c=w_c^\top z_i+b_c
+\]
+
+A nonlinear population response can be:
+
+\[
+r_c=\phi(a_c)
+\]
+
+Where \(\phi\) could be a sigmoid or rectified linear function.
+
+A more biologically motivated model could use overlapping tuning functions:
+
+\[
+r_c=
+\exp\left(
+-\frac{\|z_i-\mu_c\|^2}{2\sigma_c^2}
+\right)
+\]
+
+Here, \(\mu_c\) represents a preferred feature configuration.
+
+**Possible neural analogue:** Differential responsiveness and population-level selectivity.
+
+**Output:** A vector of candidate-sensitive population activations.
+
+## Operation 08 — Compute distributed population activity
+
+**Purpose:** Allow multiple character candidates to remain activated simultaneously.
+
+Suppose a visual patch resembles both O and Q.
+
+A forced classification would immediately select one. A distributed representation instead maintains both hypotheses.
+
+Construct:
+
+\[
+\mathbf{r}_i=
+[r_i(A),r_i(B),\ldots,r_i(Z)]
+\]
+
+Normalize into a candidate distribution:
+
+\[
+q_i(c)=
+\frac{\exp(a_{i,c}/T)}
+{\sum_{c'}\exp(a_{i,c'}/T)}
+\]
+
+Where \(T\) controls the distribution's sharpness.
+
+A higher temperature produces more distributed activity; a lower temperature produces a more concentrated distribution.
+
+This mathematical construction is an engineering representation of graded candidate activity, not evidence that neurons calculate a literal softmax.
+
+**Output:** A population-level character identity representation.
+
+## Operation 09 — Calculate population uncertainty
+
+**Purpose:** Determine how ambiguous the current character representation is.
+
+The distribution itself carries important information.
+
+For instance:
+
+\[
+q_i(O)=0.48,\qquad q_i(Q)=0.44
+\]
+
+is significantly more ambiguous than:
+
+\[
+q_i(O)=0.94,\qquad q_i(Q)=0.03
+\]
+
+Calculate categorical entropy:
+
+\[
+H(C_i)=
+-\sum_c q_i(c)\log q_i(c)
+\]
+
+Low entropy indicates concentrated activation. High entropy indicates distributed uncertainty.
+
+The result should be retained rather than automatically eliminated.
+
+**Output:** Character identity probabilities and uncertainty.
+
+## Operation 10 — Construct the identity representation C
+
+**Purpose:** Store the identity information in an accessible, structured format.
+
+Define:
+
+\[
+\boxed{C=(q_1,q_2,\ldots,q_n)}
+\]
+
+Every visual region receives:
+
+- Its candidate identities.
+- Its candidate activation strengths.
+- Its probability distribution.
+- Its uncertainty.
+- Its supporting visual features.
+
+Do not collapse \(C\) into a single string.
+
+**Output:** A complete character identity channel.
+
+## Operation 11 — Separate character identity from visual appearance
+
+**Purpose:** Develop tolerance to nuisance changes without confusing distinct letters.
+
+The same character may appear in many different fonts, sizes, thicknesses, and positions.
+
+The system should learn which properties are important for identity and which properties are incidental.
+
+Represent the input as a combination of factors:
+
+\[
+z_i=
+z_i^{identity}
++
+z_i^{style}
++
+z_i^{scale}
++
+z_i^{position}
++
+\varepsilon_i
+\]
+
+This is an illustrative factorization, not a proven additive decomposition in biological tissue.
+
+A practical system can learn this through controlled transformations and contrastive objectives.
+
+For example, two images depicting the same grapheme in different fonts should produce similar identity representations:
+
+\[
+d(z_a^{identity},z_b^{identity})\rightarrow 0
+\]
+
+Different graphemes that look similar should remain distinguishable:
+
+\[
+d(z_a^{identity},z_b^{identity})\rightarrow \text{large}
+\]
+
+**Output:** An identity representation that is increasingly independent of irrelevant visual variation.
+
+## Operation 12 — Preserve visual details that remain identity-relevant
+
+**Purpose:** Prevent the invariance process from eliminating useful distinctions.
+
+There is a danger in excessive normalization.
+
+For example, two visually similar characters might become indistinguishable if the system removes too much detail.
+
+Therefore, preserve both:
+
+\[
+z_i=
+(z_i^{invariant},z_i^{diagnostic})
+\]
+
+The first contains features useful for identifying the same grapheme across transformations.
+
+The second retains fine details that can distinguish similar graphemes.
+
+**Output:** A richer character representation that balances invariance and discrimination.
+
+---
+
+# 5. N4-C — Neural letter-position representations
+
+This is arguably the most important subsystem in N4.
+
+The objective is to develop a representation of letters that preserves their order while becoming less dependent on their exact physical location.
+
+We will implement several different computational hypotheses and combine their information without prematurely selecting one as the biological explanation.
+
+## Operation 13 — Transform retinotopic coordinates into word-relative coordinates
+
+**Purpose:** Convert the visual coordinate system into a coordinate system relative to the text or word being observed.
+
+Initially, a letter is represented according to its visual location.
+
+For example:
+
+| Letter | Physical coordinate |
+|---|---:|
+| F | 100 |
+| O | 125 |
+| R | 150 |
+| M | 175 |
+
+Now imagine moving the entire string 50 pixels to the right.
+
+The coordinates become:
+
+| Letter | New physical coordinate |
+|---|---:|
+| F | 150 |
+| O | 175 |
+| R | 200 |
+| M | 225 |
+
+The absolute coordinates change, but the internal arrangement remains the same.
+
+N4 should therefore construct a normalized coordinate representation.
+
+\[
+p_i=\frac{x_i-x_{\min}}{W+\epsilon}
+\]
+
+This produces normalized spatial coordinates approximately independent of the string's absolute screen location.
+
+However, the original coordinates must remain available.
+
+**Possible mathematical operations:**
+
+- Coordinate transformation.
+- Translation normalization.
+- Scale normalization.
+- Relative-distance computation.
+- Spatial interpolation.
+
+**Output:** Retinotopic and word-relative coordinates.
+
+## Operation 14 — Construct absolute-position neuronal populations (A)
+
+**Purpose:** Represent character identity together with its expected absolute ordinal location.
+
+A character at the beginning of a sequence should produce a different positional activation from the same character near the end.
+
+A possible mechanism is a collection of position-selective populations.
+
+For example:
+
+- Population 1: evidence for the first position.
+- Population 2: evidence for the second position.
+- Population 3: evidence for the third position.
+- Population 4: evidence for the fourth position.
+
+Use Gaussian tuning functions.
+
+\[
+G_{i,k}=
+\exp\left(
+-\frac{(p_i-\mu_k)^2}{2\sigma_k^2}
+\right)
+\]
+
+Where:
+
+- \(p_i\): normalized location of character \(i\).
+- \(\mu_k\): preferred location for position population \(k\).
+- \(\sigma_k\): positional tuning width.
+
+Combine positional activity with character identity evidence:
+
+\[
+\boxed{
+A_{k,c}=
+\sum_i q_i(c)G_{i,k}
+}
+\]
+
+This gives a population-level representation of which characters are associated with which positions.
+
+**Possible neural computations:**
+
+- Spatial receptive-field activation.
+- Gaussian-like tuning.
+- Population summation.
+- Position-selective gain.
+- Integration of identity and spatial information.
+
+**Output:** The absolute-position channel A.
+
+## Operation 15 — Construct ordinal-position representations
+
+**Purpose:** Represent a character's order within a sequence independently of its exact physical coordinate.
+
+This is different from Operation 14.
+
+Suppose the following sequence is displayed in different fonts:
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    **Physical rendering 1**
+    <title size="2xl" weight="semibold" textAlign="center">F O R M</title>
+    <caption textAlign="center">Regular spacing</caption>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Physical rendering 2**
+    <title size="2xl" weight="semibold" textAlign="center">F   O R    M</title>
+    <caption textAlign="center">Irregular spacing</caption>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Abstract ordinal representation**
+    <row justify="evenly">
+      {#each ["F","O","R","M"] as c,i}
+        <box flex="1" align="center" gap={1}>
+          **{c}**
+          <badge>{i+1}</badge>
+        </box>
+      {/each}
+    </row>
+  </box>
+</box>
+
+Both images have the same ordinal structure:
+
+\[
+[1,2,3,4]
+\]
+
+The brain may achieve this through progressively more abstract spatial representations rather than performing an explicit sorting operation.
+
+N4 can approximate this using probabilistic ordinal assignment.
+
+For a character region \(i\), calculate its probability of occupying ordinal position \(k\):
+
+\[
+\pi_{ik}=
+\frac{
+\exp\left[-(\hat{k}_i-k)^2/(2\sigma_i^2)\right]
+}{
+\sum_j
+\exp\left[-(\hat{k}_i-j)^2/(2\sigma_i^2)\right]
+}
+\]
+
+Here, \(\hat{k}_i\) is its estimated ordinal position.
+
+This is useful when segmentation is uncertain or characters overlap.
+
+**Output:** A probabilistic ordinal position distribution for each visual region.
+
+## Operation 16 — Bind character identity to ordinal position
+
+**Purpose:** Represent not just which letters are present, but which letters occupy which ordinal positions.
+
+This is essential to distinguishing:
+
+\[
+FORM\neq FROM
+\]
+
+The representation should associate:
+
+- Identity F with the first position.
+- Identity O with the second position.
+- Identity R with the third position.
+- Identity M with the fourth position.
+
+Define the identity-position activation:
+
+\[
+T_{i,k,c}=q_i(c)\pi_{ik}
+\]
+
+Then aggregate over regions:
+
+\[
+T_{k,c}=\sum_i T_{i,k,c}
+\]
+
+This produces an identity-by-position representation.
+
+A possible mathematical analogue is multiplicative binding between two population codes.
+
+\[
+\text{Identity}\times\text{Position}
+\]
+
+The multiplicative form is an engineering hypothesis. Actual neural binding can involve several different network and population mechanisms.
+
+**Output:** An identity-position representation.
+
+## Operation 17 — Construct pairwise relative-position relationships
+
+**Purpose:** Represent how each character relates to other characters.
+
+The brain does not necessarily need to encode every character's position exclusively through absolute slots.
+
+It can also encode relationships such as:
+
+- F precedes O.
+- F precedes R.
+- O precedes R.
+- R precedes M.
+
+For every pair \(i,j\), calculate:
+
+\[
+r_{ij}=
+\left(
+j-i,\;
+p_j-p_i,\;
+d_{ij}
+\right)
+\]
+
+Where:
+
+- \(j-i\): ordinal separation.
+- \(p_j-p_i\): normalized physical separation.
+- \(d_{ij}\): physical distance in the image.
+
+This representation must retain order.
+
+For example:
+
+\[
+r(F,O)\neq r(O,F)
+\]
+
+We can define separate relationship populations:
+
+\[
+R_{a\prec b,g}
+\]
+
+representing evidence that character \(a\) occurs before character \(b\), with separation category \(g\).
+
+**Possible mathematical operations:**
+
+- Pairwise coordinate subtraction.
+- Relational encoding.
+- Direction-sensitive feature detection.
+- Distance categorization.
+- Population-level relationship aggregation.
+
+**Output:** Relative-position information.
+
+## Operation 18 — Construct open-bigram neuronal populations (B)
+
+**Purpose:** Represent ordered pairs of characters that may occur near each other without necessarily being physically adjacent.
+
+Consider:
+
+\[
+FORM
+\]
+
+Its possible ordered pairs include:
+
+\[
+FO,\ FR,\ FM,\ OR,\ OM,\ RM
+\]
+
+An open-bigram population can respond to evidence for a particular pair.
+
+For candidate identities \(a,b\), a basic activation is:
+
+\[
+q_i(a)q_j(b)
+\]
+
+But it should only contribute to the ordered pair when:
+
+\[
+i<j
+\]
+
+Therefore:
+
+\[
+\boxed{
+B_{a,b}=
+\sum_{i<j}
+q_i(a)q_j(b)
+K(r_{ij})
+}
+\]
+
+Where \(K\) is a positional and distance-sensitivity function.
+
+This provides a distributed representation of ordered letter relationships.
+
+For example, the population for F-before-R can activate even when O occurs between them.
+
+However, the reversed relationship R-before-F must activate a different population.
+
+**Possible neural computations:**
+
+- Conjunctive selectivity.
+- Multiplicative neural interactions.
+- Ordered co-activation.
+- Local and distributed receptive-field integration.
+- Pairwise feature pooling.
+
+The open-bigram approach is an influential model, but the precise biological implementation remains unsettled. <Cite refs={["turn262761search1","turn130946view1"]}/>
+
+**Output:** The relative/open-bigram channel B.
+
+## Operation 19 — Modulate pair representations by visual distance and visibility
+
+**Purpose:** Account for the fact that the visibility of two letters is not necessarily independent of their spatial arrangement.
+
+Two nearby letters can be more difficult to distinguish because of crowding. Their distances from fixation and the word boundary can also affect the available visual evidence.
+
+We should therefore modulate pair activation using multiple quantities:
+
+\[
+K(r_{ij})=
+K_{\text{order}}
+K_{\text{distance}}
+K_{\text{visibility}}
+\]
+
+For example:
+
+\[
+K_{\text{distance}}=
+\exp(-\alpha |d_{ij}-d_0|)
+\]
+
+Where \(d_0\) is a preferred distance for a particular relationship population.
+
+Visibility can be approximated using a reliability function:
+
+\[
+K_{\text{visibility}}=v_i v_j
+\]
+
+Where \(v_i\) and \(v_j\) are visual reliability estimates.
+
+The important point is that we should not assume that bigram activation always increases or always decreases with distance.
+
+Experiments have shown that proximity can facilitate correct-order recognition while also increasing certain reversed-order false positives. This makes the distance function an empirical parameter that must be tested. <Cite refs={["turn130946view1"]}/>
+
+**Output:** Distance- and visibility-modulated relative-position populations.
+
+## Operation 20 — Construct distributed-overlap position representations (O)
+
+**Purpose:** Allow a character's activity to spread across several neighboring ordinal positions.
+
+This is an alternative to assigning each character to exactly one position.
+
+For example, if a visual region is believed to occupy position 2.2, its representation may contribute to:
+
+- Position 2 strongly.
+- Position 3 moderately.
+- Position 1 weakly.
+
+This can be represented using a Gaussian distribution over neighboring ordinal positions.
+
+\[
+O_{k,c}=
+\sum_i
+q_i(c)
+\mathcal{N}(k;\hat{k}_i,\sigma_i^2)
+\]
+
+Where:
+
+- \(\hat{k}_i\) is the estimated ordinal position.
+- \(\sigma_i\) controls positional uncertainty.
+
+An important feature is that this representation can preserve sensitivity to order while tolerating modest displacement.
+
+The width of the overlap function should depend on empirical results. We should not assume that all positions or scripts have identical positional uncertainty.
+
+**Possible mathematical operations:**
+
+- Gaussian population spreading.
+- Weighted summation.
+- Local interpolation.
+- Normalization.
+- Uncertainty-dependent receptive-field broadening.
+
+**Output:** The distributed-overlap channel O.
+
+## Operation 21 — Construct word-boundary and space-anchored representations
+
+**Purpose:** Encode the relationship between character identity and the beginning or end of a written sequence.
+
+This is a particularly interesting mechanism because ordinal position may be represented relative to boundaries rather than only through a numbered sequence.
+
+For example:
+
+- F is adjacent to the beginning boundary.
+- M is adjacent to the ending boundary.
+- O and R occupy internal positions.
+
+A candidate boundary-sensitive activation is:
+
+\[
+E^L_{c,k}=
+\sum_i q_i(c)
+\exp\left[
+-\frac{(k_i^L-k)^2}{2\sigma^2}
+\right]
+\]
+
+Similarly:
+
+\[
+E^R_{c,k}=
+\sum_i q_i(c)
+\exp\left[
+-\frac{(k_i^R-k)^2}{2\sigma^2}
+\right]
+\]
+
+Where:
+
+- \(k_i^L\) is the estimated distance from the left reading boundary.
+- \(k_i^R\) is the estimated distance from the right reading boundary.
+
+These are candidate boundary-anchored representations.
+
+They are motivated partly by the space-bigram mechanism proposed by Agrawal and Dehaene, but the equations above are an ORE design approximation, not a direct measurement of neurons. <Cite refs={["turn262761search5","turn336934search1"]}/>
+
+**Output:** Left-boundary and right-boundary anchored character representations.
+
+## Operation 22 — Compare and preserve competing position codes
+
+**Purpose:** Integrate positional evidence without prematurely deciding which coding theory is correct.
+
+At this point, N4 has:
+
+\[
+A=\text{absolute position}
+\]
+
+\[
+B=\text{relative/open-bigram position}
+\]
+
+\[
+O=\text{distributed overlap}
+\]
+
+\[
+E=\text{boundary-anchored position}
+\]
+
+The system should compare their activation patterns.
+
+For example, two position models may agree on a sequence under regular spacing but disagree when a character is displaced.
+
+We can compute a model-specific similarity:
+
+\[
+S_m(R_a,R_b)=
+\frac{R_a^{(m)}\cdot R_b^{(m)}}
+{\|R_a^{(m)}\|\|R_b^{(m)}\|+\epsilon}
+\]
+
+This can be applied independently to each channel.
+
+A disagreement measure is:
+
+\[
+D_{mn}=1-S_{mn}
+\]
+
+The important requirement is to preserve the individual outputs rather than collapsing them into one representation.
+
+**Output:** An inspectable multi-model positional representation.
+
+---
+
+# 6. N4-D — Orthographic pattern and chunk representations
+
+Up to this point, we have represented individual characters and their relationships.
+
+But reading involves another important property: exposure to recurring letter combinations.
+
+A reader does not encounter every possible combination equally often. Repeated exposure can change how familiar or expected certain orthographic patterns become.
+
+Experiments using artificial scripts have demonstrated that people can acquire new bigram regularities after only a few minutes of exposure, with changes in both wordlikeness judgments and transposition errors. <Cite refs={["turn336934search2","turn336934search4"]}/>
+
+N4 should therefore introduce reusable orthographic pattern populations.
+
+## Operation 23 — Generate candidate multi-character patterns
+
+**Purpose:** Identify recurring sequences that could become reusable sublexical units.
+
+For a sequence:
+
+\[
+FORM
+\]
+
+Possible candidate patterns include:
+
+- FO
+- OR
+- RM
+- FOR
+- ORM
+- FORM
+
+Not every candidate should become a stored chunk.
+
+Initially, generate candidates from the available character distributions and positional relationships.
+
+For a window of length \(m\):
+
+\[
+u=(c_i,c_{i+1},\ldots,c_{i+m-1})
+\]
+
+Generate candidate patterns for configurable values of \(m\).
+
+A reasonable initial experiment might include:
+
+\[
+m\in\{2,3,4\}
+\]
+
+The limits must be experimentally configurable.
+
+**Output:** Candidate orthographic patterns.
+
+## Operation 24 — Calculate uncertain pattern occurrence probabilities
+
+**Purpose:** Allow patterns to be detected without requiring every character to have a certain identity.
+
+Suppose:
+
+\[
+q_1(F)=0.9
+\]
+
+\[
+q_2(O)=0.8
+\]
+
+\[
+q_3(R)=0.7
+\]
+
+The system can calculate an approximate activation for the candidate pattern FOR:
+
+\[
+P(FOR)\approx
+q_1(F)q_2(O)q_3(R)
+\]
+
+Therefore:
+
+\[
+P(FOR)\approx0.9\times0.8\times0.7
+\]
+
+\[
+P(FOR)\approx0.504
+\]
+
+This multiplication assumes conditional independence between the character hypotheses. It is a convenient approximation, not a universal property of neural populations.
+
+A more sophisticated model could include correlations:
+
+\[
+P(FOR)=
+P(F)P(O\mid F)P(R\mid F,O)
+\]
+
+**Output:** Probabilistic activations for candidate chunks.
+
+## Operation 25 — Learn orthographic exposure statistics
+
+**Purpose:** Maintain information about which patterns have been encountered and how frequently they occur.
+
+For each pattern \(u\), store:
+
+- Lifetime exposure count.
+- Recent exposure count.
+- Position distribution.
+- Context diversity.
+- Co-occurring patterns.
+- Confidence in the learned pattern.
+
+A simple update is:
+
+\[
+N_u(t+1)=N_u(t)+\Delta N_u(t)
+\]
+
+Recent exposure may be tracked separately:
+
+\[
+N_u^{recent}(t+1)=
+\rho N_u^{recent}(t)+\Delta N_u(t)
+\]
+
+Where \(0<\rho<1\) controls temporal decay.
+
+The purpose is to distinguish long-term experience from recent adaptation.
+
+This type of statistical learning is motivated by artificial-script experiments, although the exact memory dynamics of biological readers are more complicated. <Cite refs={["turn336934search3","turn336934search4"]}/>
+
+**Output:** Exposure-dependent orthographic pattern memory.
+
+## Operation 26 — Estimate contextual pattern probabilities
+
+**Purpose:** Learn which character combinations are likely to follow other character combinations.
+
+For a simple transition model:
+
+\[
+P(c_t\mid c_{t-1})=
+\frac{N(c_{t-1},c_t)+\alpha}
+{N(c_{t-1})+\alpha|\Sigma|}
+\]
+
+Here:
+
+- \(N(c_{t-1},c_t)\) is the transition count.
+- \(\alpha\) is a smoothing parameter.
+- \(|\Sigma|\) is the size of the grapheme inventory.
+
+For longer contexts:
+
+\[
+P(c_t\mid c_{t-2},c_{t-1})
+\]
+
+can represent learned trigram relationships.
+
+This is not semantic understanding. It is learning the statistical organization of written forms.
+
+**Output:** Learned orthographic transition distributions.
+
+## Operation 27 — Construct chunk-selective populations
+
+**Purpose:** Make the learned patterns accessible as reusable activation units.
+
+For every promoted pattern \(u\), construct a pattern-selective population.
+
+Its activity might be:
+
+\[
+a_u=
+\sigma
+\left(
+w_u^\top f_u+b_u
+\right)
+\]
+
+Where \(f_u\) contains evidence for the pattern's character identities, order, and relative positions.
+
+Its response may also depend on learned exposure:
+
+\[
+a_u'=a_u\cdot s_u
+\]
+
+Where \(s_u\) is the learned strength of the pattern.
+
+An alternative Bayesian activation would be:
+
+\[
+a_u'=P(u\mid V)\,P(u\mid\text{experience})
+\]
+
+The system should expose these channels separately rather than hiding their combination.
+
+**Output:** Learned orthographic pattern activations.
+
+## Operation 28 — Promote useful chunks while controlling representational complexity
+
+**Purpose:** Avoid learning a separate stored chunk for every observed string.
+
+A system that stores every encountered string independently will eventually become a dictionary-memorization system rather than a reusable orthographic learning system.
+
+One possible selection rule is minimum description length.
+
+\[
+\boxed{
+\Delta MDL(u)=
+L(\mathcal D\mid M_0)
+-
+L(\mathcal D\mid M_u)
+-
+\lambda C(u)
+}
+\]
+
+Where:
+
+- \(\mathcal D\): exposure data.
+- \(M_0\): model without candidate chunk \(u\).
+- \(M_u\): model containing the chunk.
+- \(C(u)\): additional model complexity.
+- \(\lambda\): complexity penalty.
+
+Promote a chunk only when it produces a sufficient benefit, preferably measured on held-out data.
+
+This is an algorithmic learning proposal, not an established neural MDL computation.
+
+Multiple chunks must remain simultaneously active when they overlap.
+
+For example, in FORM:
+
+\[
+FO,\ OR,\ RM,\ FOR,\ ORM
+\]
+
+may all contribute evidence without forcing the sequence to be segmented into just one set of chunks.
+
+**Output:** A reusable, complexity-controlled orthographic pattern system.
+
+---
+
+# 7. N4-E — Integrated orthographic neural representations
+
+The preceding operations have created several kinds of information:
+
+- Character identity.
+- Position.
+- Relative order.
+- Character-pair relationships.
+- Learned multi-character patterns.
+
+The next problem is how these different signals can interact to produce one coherent representation without destroying their individual information.
+
+## Operation 29 — Bind visual, identity, position and pattern information
+
+**Purpose:** Connect information from different neural-like populations into a common representation.
+
+For example, the system has separately identified:
+
+- A visual structure resembling F.
+- A high probability that it is F.
+- A high probability that it occupies position 1.
+- Evidence that it precedes O.
+- Activation of a learned FO pattern.
+
+These signals must be associated with one another.
+
+A combined activation could be represented as:
+
+\[
+X_{i,k,c,u}
+=
+q_i(c)\pi_{ik}a_u
+\]
+
+Where:
+
+- \(q_i(c)\): character identity activation.
+- \(\pi_{ik}\): positional activation.
+- \(a_u\): orthographic pattern activity.
+
+The combination establishes a relationship between the character, its position, and the pattern in which it participates.
+
+The architecture should preserve the original signals, even when generating these combined activations.
+
+**Possible neural mechanisms:**
+
+- Convergent synaptic input.
+- Multiplicative interactions.
+- Population co-activation.
+- Recurrent connectivity.
+- Hierarchical feature binding.
+
+**Output:** Cross-population bindings between character identity, position and orthographic patterns.
+
+## Operation 30 — Construct explicit uncertainty representations (U)
+
+**Purpose:** Preserve uncertainty in every orthographic channel.
+
+Uncertainty is not limited to character identity.
+
+The system may be certain about a character but uncertain about its position. Alternatively, it may know its position but be uncertain about which character occupies it.
+
+We therefore need separate uncertainty measures.
+
+### A. Character uncertainty
+
+\[
+U_C=-\sum_c q_i(c)\log q_i(c)
+\]
+
+### B. Position uncertainty
+
+\[
+U_A=-\sum_k \pi_{ik}\log\pi_{ik}
+\]
+
+### C. Segmentation uncertainty
+
+For segmentation hypothesis probabilities \(\rho_h\):
+
+\[
+U_S=-\sum_h\rho_h\log\rho_h
+\]
+
+### D. Pattern uncertainty
+
+For possible chunk activations \(P(u)\):
+
+\[
+U_N=-\sum_uP(u)\log P(u)
+\]
+
+### E. Channel disagreement
+
+Suppose the absolute and relative position models produce different representations.
+
+We can estimate their disagreement through:
+
+\[
+D_{A,B}=1-\operatorname{sim}(A,B)
+\]
+
+The similarity measure must be chosen appropriately for the compared representation types.
+
+Store the uncertainty as:
+
+\[
+\boxed{
+U=(U_C,U_A,U_S,U_N,D_{A,B},\ldots)
+}
+\]
+
+**Output:** A structured uncertainty representation rather than one general confidence number.
+
+## Operation 31 — Introduce competitive population interactions
+
+**Purpose:** Allow competing character and pattern hypotheses to influence one another.
+
+Imagine a visual region where three candidate populations are active:
+
+- O.
+- Q.
+- C.
+
+Their activity may be influenced by:
+
+1. Incoming visual evidence.
+2. Excitatory activity from compatible feature populations.
+3. Inhibitory activity from competing populations.
+4. Feedback from other representation layers.
+
+A simplified population-dynamics model is:
+
+\[
+\tau_i\frac{da_i}{dt}
+=
+-a_i+
+\phi
+\left(
+I_i+
+\sum_jW_{ij}a_j
+-
+\gamma\sum_{j\neq i}a_j
+\right)
+\]
+
+Where:
+
+- \(a_i\): population activity.
+- \(\tau_i\): activity time constant.
+- \(I_i\): incoming evidence.
+- \(W_{ij}\): interaction strength.
+- \(\gamma\): inhibitory competition strength.
+- \(\phi\): nonlinear activation.
+
+This resembles computational models of interacting excitatory and inhibitory neural populations.
+
+However, the brain's actual circuitry involves much more complex excitation, inhibition, adaptation and recurrent connectivity.
+
+**Output:** Interacting candidate populations with graded activity.
+
+## Operation 32 — Stabilize the representation through recurrent interactions
+
+**Purpose:** Allow representations to be refined through repeated interactions.
+
+N4 should not assume that a single feedforward computation is sufficient.
+
+For example, the identity of a letter may influence its estimated position. Meanwhile, the sequence position may influence how strongly a character-pattern population responds.
+
+This creates a recurrent network.
+
+One possible computational approximation is:
+
+\[
+\mathbf a^{t+1}
+=
+(1-\eta)\mathbf a^t+
+\eta\phi
+\left(
+W_f\mathbf x+
+W_r\mathbf a^t+
+W_p\mathbf p-
+\mathbf b
+\right)
+\]
+
+Where:
+
+- \(\mathbf x\): bottom-up visual evidence.
+- \(\mathbf a^t\): current population activity.
+- \(\mathbf p\): positional and pattern information.
+- \(W_f\): feedforward weights.
+- \(W_r\): recurrent weights.
+- \(W_p\): positional feedback weights.
+- \(\eta\): update coefficient.
+
+At each iteration, record:
+
+\[
+\Delta_t=
+\|\mathbf a^{t+1}-\mathbf a^t\|
+\]
+
+Stop when the activity stabilizes or when a maximum iteration count is reached.
+
+**Important architectural distinction:** N3 already supplies orthographic predictions and recurrent belief updates. N4's internal recurrence refines the interactions between representational populations. It should not duplicate N3's entire prediction mechanism.
+
+**Output:** A stabilized, recurrently integrated representation.
+
+## Operation 33 — Modulate representational activity using attention and precision
+
+**Purpose:** Allow the system to prioritize relevant or reliable information.
+
+An attended region may receive stronger neural processing than an unattended region.
+
+For example:
+
+- A character with clear visual evidence may receive high sensory precision.
+- An unclear character may retain several alternatives.
+- A region with high segmentation uncertainty may require additional processing.
+
+A computational approximation is:
+
+\[
+a_i'=g_i a_i
+\]
+
+Where \(g_i\) is an adaptive gain.
+
+A precision-based formulation is:
+
+\[
+\Pi_i=\frac{1}{\sigma_i^2+\epsilon}
+\]
+
+Where \(\sigma_i^2\) represents assumed observation uncertainty.
+
+Then:
+
+\[
+\text{weighted evidence}_i=\Pi_i e_i
+\]
+
+The important distinction is that attention should alter the influence of evidence, not arbitrarily manufacture new identity information.
+
+This operation can share the precision information developed in the earlier predictive-processing phase.
+
+**Output:** Attention- and reliability-modulated orthographic activity.
+
+## Operation 34 — Construct the complete hybrid orthographic representation
+
+**Purpose:** Assemble all information into one structured object.
+
+This operation brings together the outputs of Operations 1–33.
+
+The final structure is:
+
+\[
+\boxed{
+R=(C,A,B,O,N,U,M)
+}
+\]
+
+Its contents are:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">N4 integrated representation</title>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} gap={1}>
+    **C — Character identity**
+
+    <text color="secondary" size="sm">Distributed character-selective populations and alternative grapheme hypotheses.</text>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **A — Absolute position**
+        <text color="secondary" size="xs">Position-specific activations.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **B — Relative position**
+        <text color="secondary" size="xs">Ordered character-pair activity.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **O — Overlap**
+        <text color="secondary" size="xs">Distributed ordinal activation.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **N — Orthographic chunks**
+        <text color="secondary" size="xs">Learned multi-character patterns.</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box background="rgba(245,158,11,0.09)" radius="md" padding={3} gap={1}>
+    **U — Uncertainty**
+
+    <text color="secondary" size="sm">Identity ambiguity, position uncertainty, segmentation uncertainty and model disagreement.</text>
+  </box>
+  <box background="rgba(148,163,184,0.12)" radius="md" padding={3} gap={1}>
+    **M — Metadata and provenance**
+
+    <text color="secondary" size="sm">Source coordinates, script profile, model versions, activity traces and learning history.</text>
+  </box>
+</box>
+
+The system may create a combined vector for particular experiments:
+
+\[
+R_{\mathrm{vector}}=
+[C;A;B;O;N;U]
+\]
+
+However, this vector is only an additional representation. The original channels must never be discarded.
+
+**Output:** The complete N4 neural orthographic representation.
+
+---
+
+# 8. N4-F — Learning, validation and output
+
+The previous operations define how the representations are constructed.
+
+Now we need to determine how ORE learns the parameters that allow those representations to become useful.
+
+This is where the architecture becomes more than a manually configured collection of mathematical functions.
+
+## Operation 35 — Learn character identity representations
+
+**Purpose:** Improve character-selective responses through exposure to labelled visual examples.
+
+The training data should contain visual instances of each grapheme, including different fonts, sizes, and writing conditions.
+
+For labelled character \(y_i\), define an identity objective:
+
+\[
+L_{\mathrm{id}}=
+-\sum_i\log q_i(y_i)
+\]
+
+This objective encourages the correct grapheme population to become more responsive to its corresponding visual examples.
+
+The model can update its parameters through gradient-based optimization:
+
+\[
+\theta_{t+1}
+=
+\theta_t-\eta\nabla_\theta L_{\mathrm{id}}
+\]
+
+A biological inspiration would be experience-dependent changes in synaptic efficacy and population selectivity.
+
+This equation does not assert that the brain performs conventional software backpropagation.
+
+**Output:** Improved character-selective representations.
+
+## Operation 36 — Learn positional sensitivity
+
+**Purpose:** Learn how characters behave under changes in their physical and ordinal positions.
+
+Generate controlled examples:
+
+- A character in its original position.
+- The same character shifted horizontally.
+- The same character shifted vertically.
+- The same character in different ordinal positions.
+- The same sequence with changed spacing.
+- A transposed sequence.
+
+The algorithm should learn that modest physical displacement need not change identity, but changes in character order must remain detectable.
+
+A possible order-learning objective is:
+
+\[
+L_{\mathrm{ord}}=
+-\sum_{i<j}
+\log P_\theta
+\left(
+\text{order}_{ij}
+\mid z_i,z_j,r_{ij}
+\right)
+\]
+
+At the same time, different positional models should be trained and evaluated independently.
+
+**Output:** Learned absolute, relative, and overlap position representations.
+
+## Operation 37 — Learn invariance without losing discrimination
+
+**Purpose:** Make orthographic representations stable across visual variation.
+
+Consider the following two requirements:
+
+**Requirement A:** Two images of the same grapheme should activate similar identity representations.
+
+**Requirement B:** Two different but visually similar graphemes should remain distinguishable.
+
+A contrastive learning approximation is:
+
+\[
+L_{\mathrm{inv}}
+=
+\sum_{(i,j)\in P}
+\|z_i-z_j\|^2
+\]
+
+For negative pairs:
+
+\[
+L_{\mathrm{disc}}
+=
+\sum_{(i,j)\in N}
+\max(0,m-\|z_i-z_j\|)^2
+\]
+
+Where:
+
+- \(P\): pairs representing the same grapheme.
+- \(N\): pairs representing different graphemes.
+- \(m\): separation margin.
+
+The combined objective can be:
+
+\[
+L=L_{\mathrm{inv}}+\lambda L_{\mathrm{disc}}
+\]
+
+This should be tested against:
+
+- Font changes.
+- Size changes.
+- Moderate blur.
+- Translation.
+- Contrast changes.
+- Stroke thickness changes.
+
+It must also be tested against confusing characters and minimal pairs.
+
+**Output:** Representations that balance invariance and identity discrimination.
+
+## Operation 38 — Learn orthographic regularities through exposure
+
+**Purpose:** Allow the orthographic representation system to acquire the distributional structure of written sequences.
+
+Present sequences to ORE over repeated exposure.
+
+For every encounter:
+
+1. Activate the relevant character populations.
+2. Activate their positional representations.
+3. Activate relevant open-bigram populations.
+4. Update exposure statistics.
+5. Reassess candidate orthographic chunks.
+6. Record the changes in learned pattern strength.
+7. Test whether the new information generalizes to unfamiliar strings.
+
+A simple learning rule for a transition estimate could be:
+
+\[
+N_{a,b}(t+1)=N_{a,b}(t)+\Delta N_{a,b}
+\]
+
+Then:
+
+\[
+P(b\mid a)=
+\frac{N_{a,b}+\alpha}
+{\sum_jN_{a,j}+\alpha|\Sigma|}
+\]
+
+For a more biologically inspired prototype, an optional local Hebbian-style update is:
+
+\[
+\Delta w_{ij}=\eta x_i y_j
+\]
+
+An Oja-style stabilization could be:
+
+\[
+\Delta w=
+\eta y(x-yw)
+\]
+
+These are computational learning alternatives. Their inclusion does not establish which synaptic learning mechanisms support biological orthographic learning.
+
+The long-term adaptation mechanism should ultimately be coordinated with N5, the dedicated plasticity phase, rather than creating an undocumented second learning system inside N4.
+
+**Output:** Experience-dependent orthographic pattern representations.
+
+## Operation 39 — Evaluate the neural representation hypotheses
+
+**Purpose:** Determine whether the representation architecture actually provides the intended capabilities.
+
+This is not merely a software test. It must be a controlled scientific experiment.
+
+I propose six experiment groups.
+
+### Experiment 1 — Character identity and population selectivity
+
+Test whether different graphemes produce distinguishable population activation patterns.
+
+Measure:
+
+- Classification accuracy.
+- Top-k accuracy.
+- Confusion matrices.
+- Population similarity.
+- Calibration.
+- Generalization across fonts.
+
+### Experiment 2 — Position coding
+
+Compare:
+
+- Absolute/slot coding.
+- Open-bigram coding.
+- Distributed-overlap coding.
+- Boundary-anchored coding.
+- Hybrid coding.
+
+Use character transpositions, insertions, deletions, and controlled spacing variations.
+
+### Experiment 3 — Invariance and discrimination
+
+Measure whether representations remain similar across:
+
+- Font changes.
+- Size changes.
+- Translation.
+- Moderate blur.
+- Contrast variation.
+
+At the same time, test whether letters and sequences that must remain distinct actually remain distinct.
+
+### Experiment 4 — Orthographic statistical learning
+
+Use controlled artificial scripts.
+
+Introduce recurring bigrams and trigrams, then measure changes in their activation following exposure.
+
+A critical question is whether the model acquires regularities rather than memorizing whole strings.
+
+### Experiment 5 — Novel-string generalization
+
+Train on some combinations of graphemes and test unfamiliar recombinations.
+
+For example, expose the system to:
+
+\[
+AB,\ BC,\ CD
+\]
+
+Then test its representation of:
+
+\[
+ABC,\ BCD,\ ABD
+\]
+
+This tests compositional generalization.
+
+### Experiment 6 — Ablation
+
+Disable each component independently:
+
+- Character identity populations.
+- Absolute-position representation.
+- Open-bigram representation.
+- Overlap coding.
+- Boundary coding.
+- Chunk populations.
+- Uncertainty representation.
+- Recurrent interaction.
+
+Compare every reduced configuration with the complete model.
+
+<text color="secondary" size="xs">The experimental design is consistent with the questions and controls in the ORE formal specification. <FileCite ref_id="turn52file4"/></text>
+
+**Output:** An experimental report showing which mechanisms help, which do not, and which remain unverified.
+
+## Operation 40 — Serialize and deliver the N4 representation
+
+**Purpose:** Provide a complete, reusable output for later ORE phases.
+
+The output should contain:
+
+1. Character identity distributions.
+2. Absolute-position activations.
+3. Relative-position activations.
+4. Open-bigram activations.
+5. Distributed-overlap activations.
+6. Boundary-anchored representations.
+7. Learned orthographic patterns.
+8. Character-to-position bindings.
+9. Uncertainty information.
+10. Recurrent activity traces.
+11. Script-specific metadata.
+12. Model version and provenance.
+13. Separate visual and orthographic evidence.
+
+The final representation should be machine-readable.
+
+For example:
+
+**Output:** An integrated, uncertainty-preserving orthographic representation ready for downstream ORE processing.
+
+---
+
+# 9. The complete N4 mathematical model
+
+We can summarize the main computations using the following model.
+
+<box border radius="lg" padding={3} gap={2}>
+  **Input**
+
+  \[
+  V=\{P_1,P_2,\ldots,P_n\}
+  \]
+
+  <divider color="subtle"/>
+  **Visual and identity encoding**
+
+  \[
+  z_i=f_\theta(P_i)
+  \]
+
+  \[
+  q_i(c)=\operatorname{softmax}(a_i(c))
+  \]
+
+  <divider color="subtle"/>
+  **Position encoding**
+
+  \[
+  A_{k,c}=\sum_i q_i(c)G_{i,k}
+  \]
+
+  \[
+  B_{a,b}=\sum_{i<j}q_i(a)q_j(b)K(r_{ij})
+  \]
+
+  \[
+  O_{k,c}=\sum_iq_i(c)\mathcal N(k;\hat k_i,\sigma_i^2)
+  \]
+
+  <divider color="subtle"/>
+  **Orthographic pattern learning**
+
+  \[
+  N_u\leftarrow N_u+\Delta N_u
+  \]
+
+  \[
+  \Delta MDL(u)=L_0-L_u-\lambda C(u)
+  \]
+
+  <divider color="subtle"/>
+  **Recurrent representation integration**
+
+  \[
+  \tau\dot a=-a+\phi(W_f x+W_r a+W_p p-b)
+  \]
+
+  <divider color="subtle"/>
+  **Final output**
+
+  \[
+  \boxed{R=(C,A,B,O,N,U,M)}
+  \]
+</box>
+
+This is a collection of candidate computational mechanisms. It is not a claim that biological neurons execute those exact equations.
+
+---
+
+# 10. How N4 differs from N1, N2 and N3
+
+The phases should have distinct responsibilities.
+
+| Phase | Primary responsibility | Main output |
+|---|---|---|
+| N1 | Early visual processing | Visual feature activity |
+| N2 | Visual organization and distributed feature populations | Organized visual representations |
+| N3 | Recurrent candidate prediction and prediction error | Competing grapheme hypotheses and uncertainty |
+| **N4** | **Neural orthographic representations** | **Identity, position, relative order, overlap and learned pattern representations** |
+
+An important distinction: N4 does not need to repeat N3's character prediction mechanism. It should consume the candidate distributions and preserve their uncertainty while developing a richer representation of their relationships.
+
+N4 also does not determine what a word means.
+
+Its output should remain an orthographic representation that later systems can use.
+
+---
+
+# 11. Recommended implementation structure
+
+I recommend the following Python package architecture:
+
+## 12. N4 acceptance criteria
+
+N4 should not be considered complete simply because its Python modules execute.
+
+I recommend these acceptance requirements:
+
+| Criterion | Required evidence |
+|---|---|
+| Identity preservation | Different graphemes produce distinguishable representations. |
+| Positional sensitivity | Controlled transpositions produce measurable differences. |
+| Position invariance | The same sequence remains recognizable under tested physical displacements. |
+| Multiple position models | A, B and O remain separately available. |
+| Boundary representation | Left/right anchored coding can be inspected and ablated. |
+| Pattern learning | Exposure produces measurable changes in learned patterns. |
+| Chunk generalization | Learned chunks contribute to unfamiliar combinations. |
+| Uncertainty | Ambiguous inputs retain multiple possible interpretations. |
+| Recurrent integration | Population interactions are bounded, reproducible and inspectable. |
+| Script independence | The architecture does not hard-code Latin or LTR assumptions. |
+| Experimental reproducibility | Identical configurations and inputs reproduce the same results. |
+| Scientific validation | Results are evaluated using independent held-out data and, where possible, human/neural measurements. |
+
+The invariance and discrimination tests must be evaluated together. We must not accept a model that recognizes more fonts by losing the ability to distinguish different characters.
+
+---
+
+# 13. What N4 should ultimately accomplish
+
+The important architectural transformation is:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">From visual activity to orthographic representation</title>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} align="center">
+    **N1 — Visual features**
+
+    <text color="secondary" size="sm">Oriented strokes, edges, contrast and local visual activity</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(16,185,129,0.08)" radius="md" padding={3} align="center">
+    **N2 — Visual organization**
+
+    <text color="secondary" size="sm">Spatial arrangements, visual structures and candidate-selective representations</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(139,92,246,0.08)" radius="md" padding={3} align="center">
+    **N3 — Predictive processing**
+
+    <text color="secondary" size="sm">Visual hypotheses, orthographic prediction and prediction-error information</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={3} align="center" gap={2}>
+    **N4 — Neural orthographic representations**
+
+    <grid columns={2} gap={2}>
+      {#each ["Character identity","Absolute position","Relative position","Open bigrams","Position overlap","Orthographic chunks","Uncertainty","Hybrid representation"] as item}
+        <grid-item>
+          <box background="rgba(255,255,255,0.07)" radius="sm" padding={2} align="center">
+            <text size="xs" weight="medium" textAlign="center">{item}</text>
+          </box>
+        </grid-item>
+      {/each}
+    </grid>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box border={{size:1,color:"#16A34A"}} radius="md" padding={3} align="center">
+    **Structured orthographic representation R**
+
+    <title size="xl" color="success">R = (C, A, B, O, N, U, M)</title>
+  </box>
+</box>
+
+The most important idea is that N4 should create a representation that preserves both what the letters are and how they relate to one another.
+
+That is fundamentally different from simply recognizing individual letters and putting their labels into a string.
+
+It is the creation of a reusable, learned, position-sensitive orthographic representation.
+
+**My recommendation:** Freeze this 40-operation N4 specification before implementation. Implement it as an independent package that consumes the N1–N3 contracts, retaining the competing position-code channels rather than treating any single theory as definitively correct. This will give the next ORE development phase a much clearer scientific and computational foundation.
+
+One final scientific distinction: the 2025 human neuroimaging study provides evidence for a transition toward ordinal coding, while the specific open-bigram, overlap, and boundary-anchoring equations above remain alternative computational mechanisms to test. The research supports investigating this architecture, not claiming that all 40 operations have already been established as literal brain mechanisms. <Cite refs={["turn336934search0","turn262761search1","turn262761search3","turn336934search4"]}/>
+
+---
+
+[ASSISTANT]
+# 7. N4-E — Integrated orthographic neural representations
+
+The preceding operations have created several kinds of information:
+
+- Character identity.
+- Position.
+- Relative order.
+- Character-pair relationships.
+- Learned multi-character patterns.
+
+The next problem is how these different signals can interact to produce one coherent representation without destroying their individual information.
+
+## Operation 29 — Bind visual, identity, position and pattern information
+
+**Purpose:** Connect information from different neural-like populations into a common representation.
+
+For example, the system has separately identified:
+
+- A visual structure resembling F.
+- A high probability that it is F.
+- A high probability that it occupies position 1.
+- Evidence that it precedes O.
+- Activation of a learned FO pattern.
+
+These signals must be associated with one another.
+
+A combined activation could be represented as:
+
+\[
+X_{i,k,c,u}
+=
+q_i(c)\pi_{ik}a_u
+\]
+
+Where:
+
+- \(q_i(c)\): character identity activation.
+- \(\pi_{ik}\): positional activation.
+- \(a_u\): orthographic pattern activity.
+
+The combination establishes a relationship between the character, its position, and the pattern in which it participates.
+
+The architecture should preserve the original signals, even when generating these combined activations.
+
+**Possible neural mechanisms:**
+
+- Convergent synaptic input.
+- Multiplicative interactions.
+- Population co-activation.
+- Recurrent connectivity.
+- Hierarchical feature binding.
+
+**Output:** Cross-population bindings between character identity, position and orthographic patterns.
+
+## Operation 30 — Construct explicit uncertainty representations (U)
+
+**Purpose:** Preserve uncertainty in every orthographic channel.
+
+Uncertainty is not limited to character identity.
+
+The system may be certain about a character but uncertain about its position. Alternatively, it may know its position but be uncertain about which character occupies it.
+
+We therefore need separate uncertainty measures.
+
+### A. Character uncertainty
+
+\[
+U_C=-\sum_c q_i(c)\log q_i(c)
+\]
+
+### B. Position uncertainty
+
+\[
+U_A=-\sum_k \pi_{ik}\log\pi_{ik}
+\]
+
+### C. Segmentation uncertainty
+
+For segmentation hypothesis probabilities \(\rho_h\):
+
+\[
+U_S=-\sum_h\rho_h\log\rho_h
+\]
+
+### D. Pattern uncertainty
+
+For possible chunk activations \(P(u)\):
+
+\[
+U_N=-\sum_uP(u)\log P(u)
+\]
+
+### E. Channel disagreement
+
+Suppose the absolute and relative position models produce different representations.
+
+We can estimate their disagreement through:
+
+\[
+D_{A,B}=1-\operatorname{sim}(A,B)
+\]
+
+The similarity measure must be chosen appropriately for the compared representation types.
+
+Store the uncertainty as:
+
+\[
+\boxed{
+U=(U_C,U_A,U_S,U_N,D_{A,B},\ldots)
+}
+\]
+
+**Output:** A structured uncertainty representation rather than one general confidence number.
+
+## Operation 31 — Introduce competitive population interactions
+
+**Purpose:** Allow competing character and pattern hypotheses to influence one another.
+
+Imagine a visual region where three candidate populations are active:
+
+- O.
+- Q.
+- C.
+
+Their activity may be influenced by:
+
+1. Incoming visual evidence.
+2. Excitatory activity from compatible feature populations.
+3. Inhibitory activity from competing populations.
+4. Feedback from other representation layers.
+
+A simplified population-dynamics model is:
+
+\[
+\tau_i\frac{da_i}{dt}
+=
+-a_i+
+\phi
+\left(
+I_i+
+\sum_jW_{ij}a_j
+-
+\gamma\sum_{j\neq i}a_j
+\right)
+\]
+
+Where:
+
+- \(a_i\): population activity.
+- \(\tau_i\): activity time constant.
+- \(I_i\): incoming evidence.
+- \(W_{ij}\): interaction strength.
+- \(\gamma\): inhibitory competition strength.
+- \(\phi\): nonlinear activation.
+
+This resembles computational models of interacting excitatory and inhibitory neural populations.
+
+However, the brain's actual circuitry involves much more complex excitation, inhibition, adaptation and recurrent connectivity.
+
+**Output:** Interacting candidate populations with graded activity.
+
+## Operation 32 — Stabilize the representation through recurrent interactions
+
+**Purpose:** Allow representations to be refined through repeated interactions.
+
+N4 should not assume that a single feedforward computation is sufficient.
+
+For example, the identity of a letter may influence its estimated position. Meanwhile, the sequence position may influence how strongly a character-pattern population responds.
+
+This creates a recurrent network.
+
+One possible computational approximation is:
+
+\[
+\mathbf a^{t+1}
+=
+(1-\eta)\mathbf a^t+
+\eta\phi
+\left(
+W_f\mathbf x+
+W_r\mathbf a^t+
+W_p\mathbf p-
+\mathbf b
+\right)
+\]
+
+Where:
+
+- \(\mathbf x\): bottom-up visual evidence.
+- \(\mathbf a^t\): current population activity.
+- \(\mathbf p\): positional and pattern information.
+- \(W_f\): feedforward weights.
+- \(W_r\): recurrent weights.
+- \(W_p\): positional feedback weights.
+- \(\eta\): update coefficient.
+
+At each iteration, record:
+
+\[
+\Delta_t=
+\|\mathbf a^{t+1}-\mathbf a^t\|
+\]
+
+Stop when the activity stabilizes or when a maximum iteration count is reached.
+
+**Important architectural distinction:** N3 already supplies orthographic predictions and recurrent belief updates. N4's internal recurrence refines the interactions between representational populations. It should not duplicate N3's entire prediction mechanism.
+
+**Output:** A stabilized, recurrently integrated representation.
+
+## Operation 33 — Modulate representational activity using attention and precision
+
+**Purpose:** Allow the system to prioritize relevant or reliable information.
+
+An attended region may receive stronger neural processing than an unattended region.
+
+For example:
+
+- A character with clear visual evidence may receive high sensory precision.
+- An unclear character may retain several alternatives.
+- A region with high segmentation uncertainty may require additional processing.
+
+A computational approximation is:
+
+\[
+a_i'=g_i a_i
+\]
+
+Where \(g_i\) is an adaptive gain.
+
+A precision-based formulation is:
+
+\[
+\Pi_i=\frac{1}{\sigma_i^2+\epsilon}
+\]
+
+Where \(\sigma_i^2\) represents assumed observation uncertainty.
+
+Then:
+
+\[
+\text{weighted evidence}_i=\Pi_i e_i
+\]
+
+The important distinction is that attention should alter the influence of evidence, not arbitrarily manufacture new identity information.
+
+This operation can share the precision information developed in the earlier predictive-processing phase.
+
+**Output:** Attention- and reliability-modulated orthographic activity.
+
+## Operation 34 — Construct the complete hybrid orthographic representation
+
+**Purpose:** Assemble all information into one structured object.
+
+This operation brings together the outputs of Operations 1–33.
+
+The final structure is:
+
+\[
+\boxed{
+R=(C,A,B,O,N,U,M)
+}
+\]
+
+Its contents are:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">N4 integrated representation</title>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} gap={1}>
+    **C — Character identity**
+
+    <text color="secondary" size="sm">Distributed character-selective populations and alternative grapheme hypotheses.</text>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **A — Absolute position**
+        <text color="secondary" size="xs">Position-specific activations.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **B — Relative position**
+        <text color="secondary" size="xs">Ordered character-pair activity.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **O — Overlap**
+        <text color="secondary" size="xs">Distributed ordinal activation.</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **N — Orthographic chunks**
+        <text color="secondary" size="xs">Learned multi-character patterns.</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box background="rgba(245,158,11,0.09)" radius="md" padding={3} gap={1}>
+    **U — Uncertainty**
+
+    <text color="secondary" size="sm">Identity ambiguity, position uncertainty, segmentation uncertainty and model disagreement.</text>
+  </box>
+  <box background="rgba(148,163,184,0.12)" radius="md" padding={3} gap={1}>
+    **M — Metadata and provenance**
+
+    <text color="secondary" size="sm">Source coordinates, script profile, model versions, activity traces and learning history.</text>
+  </box>
+</box>
+
+The system may create a combined vector for particular experiments:
+
+\[
+R_{\mathrm{vector}}=
+[C;A;B;O;N;U]
+\]
+
+However, this vector is only an additional representation. The original channels must never be discarded.
+
+**Output:** The complete N4 neural orthographic representation.
+
+---
+
+# 8. N4-F — Learning, validation and output
+
+The previous operations define how the representations are constructed.
+
+Now we need to determine how ORE learns the parameters that allow those representations to become useful.
+
+This is where the architecture becomes more than a manually configured collection of mathematical functions.
+
+## Operation 35 — Learn character identity representations
+
+**Purpose:** Improve character-selective responses through exposure to labelled visual examples.
+
+The training data should contain visual instances of each grapheme, including different fonts, sizes, and writing conditions.
+
+For labelled character \(y_i\), define an identity objective:
+
+\[
+L_{\mathrm{id}}=
+-\sum_i\log q_i(y_i)
+\]
+
+This objective encourages the correct grapheme population to become more responsive to its corresponding visual examples.
+
+The model can update its parameters through gradient-based optimization:
+
+\[
+\theta_{t+1}
+=
+\theta_t-\eta\nabla_\theta L_{\mathrm{id}}
+\]
+
+A biological inspiration would be experience-dependent changes in synaptic efficacy and population selectivity.
+
+This equation does not assert that the brain performs conventional software backpropagation.
+
+**Output:** Improved character-selective representations.
+
+## Operation 36 — Learn positional sensitivity
+
+**Purpose:** Learn how characters behave under changes in their physical and ordinal positions.
+
+Generate controlled examples:
+
+- A character in its original position.
+- The same character shifted horizontally.
+- The same character shifted vertically.
+- The same character in different ordinal positions.
+- The same sequence with changed spacing.
+- A transposed sequence.
+
+The algorithm should learn that modest physical displacement need not change identity, but changes in character order must remain detectable.
+
+A possible order-learning objective is:
+
+\[
+L_{\mathrm{ord}}=
+-\sum_{i<j}
+\log P_\theta
+\left(
+\text{order}_{ij}
+\mid z_i,z_j,r_{ij}
+\right)
+\]
+
+At the same time, different positional models should be trained and evaluated independently.
+
+**Output:** Learned absolute, relative, and overlap position representations.
+
+## Operation 37 — Learn invariance without losing discrimination
+
+**Purpose:** Make orthographic representations stable across visual variation.
+
+Consider the following two requirements:
+
+**Requirement A:** Two images of the same grapheme should activate similar identity representations.
+
+**Requirement B:** Two different but visually similar graphemes should remain distinguishable.
+
+A contrastive learning approximation is:
+
+\[
+L_{\mathrm{inv}}
+=
+\sum_{(i,j)\in P}
+\|z_i-z_j\|^2
+\]
+
+For negative pairs:
+
+\[
+L_{\mathrm{disc}}
+=
+\sum_{(i,j)\in N}
+\max(0,m-\|z_i-z_j\|)^2
+\]
+
+Where:
+
+- \(P\): pairs representing the same grapheme.
+- \(N\): pairs representing different graphemes.
+- \(m\): separation margin.
+
+The combined objective can be:
+
+\[
+L=L_{\mathrm{inv}}+\lambda L_{\mathrm{disc}}
+\]
+
+This should be tested against:
+
+- Font changes.
+- Size changes.
+- Moderate blur.
+- Translation.
+- Contrast changes.
+- Stroke thickness changes.
+
+It must also be tested against confusing characters and minimal pairs.
+
+**Output:** Representations that balance invariance and identity discrimination.
+
+## Operation 38 — Learn orthographic regularities through exposure
+
+**Purpose:** Allow the orthographic representation system to acquire the distributional structure of written sequences.
+
+Present sequences to ORE over repeated exposure.
+
+For every encounter:
+
+1. Activate the relevant character populations.
+2. Activate their positional representations.
+3. Activate relevant open-bigram populations.
+4. Update exposure statistics.
+5. Reassess candidate orthographic chunks.
+6. Record the changes in learned pattern strength.
+7. Test whether the new information generalizes to unfamiliar strings.
+
+A simple learning rule for a transition estimate could be:
+
+\[
+N_{a,b}(t+1)=N_{a,b}(t)+\Delta N_{a,b}
+\]
+
+Then:
+
+\[
+P(b\mid a)=
+\frac{N_{a,b}+\alpha}
+{\sum_jN_{a,j}+\alpha|\Sigma|}
+\]
+
+For a more biologically inspired prototype, an optional local Hebbian-style update is:
+
+\[
+\Delta w_{ij}=\eta x_i y_j
+\]
+
+An Oja-style stabilization could be:
+
+\[
+\Delta w=
+\eta y(x-yw)
+\]
+
+These are computational learning alternatives. Their inclusion does not establish which synaptic learning mechanisms support biological orthographic learning.
+
+The long-term adaptation mechanism should ultimately be coordinated with N5, the dedicated plasticity phase, rather than creating an undocumented second learning system inside N4.
+
+**Output:** Experience-dependent orthographic pattern representations.
+
+## Operation 39 — Evaluate the neural representation hypotheses
+
+**Purpose:** Determine whether the representation architecture actually provides the intended capabilities.
+
+This is not merely a software test. It must be a controlled scientific experiment.
+
+I propose six experiment groups.
+
+### Experiment 1 — Character identity and population selectivity
+
+Test whether different graphemes produce distinguishable population activation patterns.
+
+Measure:
+
+- Classification accuracy.
+- Top-k accuracy.
+- Confusion matrices.
+- Population similarity.
+- Calibration.
+- Generalization across fonts.
+
+### Experiment 2 — Position coding
+
+Compare:
+
+- Absolute/slot coding.
+- Open-bigram coding.
+- Distributed-overlap coding.
+- Boundary-anchored coding.
+- Hybrid coding.
+
+Use character transpositions, insertions, deletions, and controlled spacing variations.
+
+### Experiment 3 — Invariance and discrimination
+
+Measure whether representations remain similar across:
+
+- Font changes.
+- Size changes.
+- Translation.
+- Moderate blur.
+- Contrast variation.
+
+At the same time, test whether letters and sequences that must remain distinct actually remain distinct.
+
+### Experiment 4 — Orthographic statistical learning
+
+Use controlled artificial scripts.
+
+Introduce recurring bigrams and trigrams, then measure changes in their activation following exposure.
+
+A critical question is whether the model acquires regularities rather than memorizing whole strings.
+
+### Experiment 5 — Novel-string generalization
+
+Train on some combinations of graphemes and test unfamiliar recombinations.
+
+For example, expose the system to:
+
+\[
+AB,\ BC,\ CD
+\]
+
+Then test its representation of:
+
+\[
+ABC,\ BCD,\ ABD
+\]
+
+This tests compositional generalization.
+
+### Experiment 6 — Ablation
+
+Disable each component independently:
+
+- Character identity populations.
+- Absolute-position representation.
+- Open-bigram representation.
+- Overlap coding.
+- Boundary coding.
+- Chunk populations.
+- Uncertainty representation.
+- Recurrent interaction.
+
+Compare every reduced configuration with the complete model.
+
+<text color="secondary" size="xs">The experimental design is consistent with the questions and controls in the ORE formal specification. <FileCite ref_id="turn52file4"/></text>
+
+**Output:** An experimental report showing which mechanisms help, which do not, and which remain unverified.
+
+## Operation 40 — Serialize and deliver the N4 representation
+
+**Purpose:** Provide a complete, reusable output for later ORE phases.
+
+The output should contain:
+
+1. Character identity distributions.
+2. Absolute-position activations.
+3. Relative-position activations.
+4. Open-bigram activations.
+5. Distributed-overlap activations.
+6. Boundary-anchored representations.
+7. Learned orthographic patterns.
+8. Character-to-position bindings.
+9. Uncertainty information.
+10. Recurrent activity traces.
+11. Script-specific metadata.
+12. Model version and provenance.
+13. Separate visual and orthographic evidence.
+
+The final representation should be machine-readable.
+
+For example:
+
+**Output:** An integrated, uncertainty-preserving orthographic representation ready for downstream ORE processing.
+
+---
+
+# 9. The complete N4 mathematical model
+
+We can summarize the main computations using the following model.
+
+<box border radius="lg" padding={3} gap={2}>
+  **Input**
+
+  \[
+  V=\{P_1,P_2,\ldots,P_n\}
+  \]
+
+  <divider color="subtle"/>
+  **Visual and identity encoding**
+
+  \[
+  z_i=f_\theta(P_i)
+  \]
+
+  \[
+  q_i(c)=\operatorname{softmax}(a_i(c))
+  \]
+
+  <divider color="subtle"/>
+  **Position encoding**
+
+  \[
+  A_{k,c}=\sum_i q_i(c)G_{i,k}
+  \]
+
+  \[
+  B_{a,b}=\sum_{i<j}q_i(a)q_j(b)K(r_{ij})
+  \]
+
+  \[
+  O_{k,c}=\sum_iq_i(c)\mathcal N(k;\hat k_i,\sigma_i^2)
+  \]
+
+  <divider color="subtle"/>
+  **Orthographic pattern learning**
+
+  \[
+  N_u\leftarrow N_u+\Delta N_u
+  \]
+
+  \[
+  \Delta MDL(u)=L_0-L_u-\lambda C(u)
+  \]
+
+  <divider color="subtle"/>
+  **Recurrent representation integration**
+
+  \[
+  \tau\dot a=-a+\phi(W_f x+W_r a+W_p p-b)
+  \]
+
+  <divider color="subtle"/>
+  **Final output**
+
+  \[
+  \boxed{R=(C,A,B,O,N,U,M)}
+  \]
+</box>
+
+This is a collection of candidate computational mechanisms. It is not a claim that biological neurons execute those exact equations.
+
+---
+
+# 10. How N4 differs from N1, N2 and N3
+
+The phases should have distinct responsibilities.
+
+| Phase | Primary responsibility | Main output |
+|---|---|---|
+| N1 | Early visual processing | Visual feature activity |
+| N2 | Visual organization and distributed feature populations | Organized visual representations |
+| N3 | Recurrent candidate prediction and prediction error | Competing grapheme hypotheses and uncertainty |
+| **N4** | **Neural orthographic representations** | **Identity, position, relative order, overlap and learned pattern representations** |
+
+An important distinction: N4 does not need to repeat N3's character prediction mechanism. It should consume the candidate distributions and preserve their uncertainty while developing a richer representation of their relationships.
+
+N4 also does not determine what a word means.
+
+Its output should remain an orthographic representation that later systems can use.
+
+---
+
+# 11. Recommended implementation structure
+
+I recommend the following Python package architecture:
+
+## 12. N4 acceptance criteria
+
+N4 should not be considered complete simply because its Python modules execute.
+
+I recommend these acceptance requirements:
+
+| Criterion | Required evidence |
+|---|---|
+| Identity preservation | Different graphemes produce distinguishable representations. |
+| Positional sensitivity | Controlled transpositions produce measurable differences. |
+| Position invariance | The same sequence remains recognizable under tested physical displacements. |
+| Multiple position models | A, B and O remain separately available. |
+| Boundary representation | Left/right anchored coding can be inspected and ablated. |
+| Pattern learning | Exposure produces measurable changes in learned patterns. |
+| Chunk generalization | Learned chunks contribute to unfamiliar combinations. |
+| Uncertainty | Ambiguous inputs retain multiple possible interpretations. |
+| Recurrent integration | Population interactions are bounded, reproducible and inspectable. |
+| Script independence | The architecture does not hard-code Latin or LTR assumptions. |
+| Experimental reproducibility | Identical configurations and inputs reproduce the same results. |
+| Scientific validation | Results are evaluated using independent held-out data and, where possible, human/neural measurements. |
+
+The invariance and discrimination tests must be evaluated together. We must not accept a model that recognizes more fonts by losing the ability to distinguish different characters.
+
+---
+
+# 13. What N4 should ultimately accomplish
+
+The important architectural transformation is:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">From visual activity to orthographic representation</title>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} align="center">
+    **N1 — Visual features**
+
+    <text color="secondary" size="sm">Oriented strokes, edges, contrast and local visual activity</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(16,185,129,0.08)" radius="md" padding={3} align="center">
+    **N2 — Visual organization**
+
+    <text color="secondary" size="sm">Spatial arrangements, visual structures and candidate-selective representations</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(139,92,246,0.08)" radius="md" padding={3} align="center">
+    **N3 — Predictive processing**
+
+    <text color="secondary" size="sm">Visual hypotheses, orthographic prediction and prediction-error information</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={3} align="center" gap={2}>
+    **N4 — Neural orthographic representations**
+
+    <grid columns={2} gap={2}>
+      {#each ["Character identity","Absolute position","Relative position","Open bigrams","Position overlap","Orthographic chunks","Uncertainty","Hybrid representation"] as item}
+        <grid-item>
+          <box background="rgba(255,255,255,0.07)" radius="sm" padding={2} align="center">
+            <text size="xs" weight="medium" textAlign="center">{item}</text>
+          </box>
+        </grid-item>
+      {/each}
+    </grid>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box border={{size:1,color:"#16A34A"}} radius="md" padding={3} align="center">
+    **Structured orthographic representation R**
+
+    <title size="xl" color="success">R = (C, A, B, O, N, U, M)</title>
+  </box>
+</box>
+
+The most important idea is that N4 should create a representation that preserves both what the letters are and how they relate to one another.
+
+That is fundamentally different from simply recognizing individual letters and putting their labels into a string.
+
+It is the creation of a reusable, learned, position-sensitive orthographic representation.
+
+**My recommendation:** Freeze this 40-operation N4 specification before implementation. Implement it as an independent package that consumes the N1–N3 contracts, retaining the competing position-code channels rather than treating any single theory as definitively correct. This will give the next ORE development phase a much clearer scientific and computational foundation.
+
+One final scientific distinction: the 2025 human neuroimaging study provides evidence for a transition toward ordinal coding, while the specific open-bigram, overlap, and boundary-anchoring equations above remain alternative computational mechanisms to test. The research supports investigating this architecture, not claiming that all 40 operations have already been established as literal brain mechanisms. <Cite refs={["turn336934search0","turn262761search1","turn262761search3","turn336934search4"]}/>

@@ -1,0 +1,208 @@
+Title: Implement Algorithm One (1)
+Conversation ID: 6afc29db-5bd4-83ea-9a6b-2a08d1d25956
+
+---
+
+[ASSISTANT]
+The next source-ordered algorithm is **Point 7: Long-term memory storage and decision use of the proposition**. It will build on Point 6’s temporary propositional working memory, while keeping durable memory encoding, later retrieval, judgment, and response selection as distinct operations.
+
+Point 6’s latest pull-request workflow has now completed successfully: [all checks passed on PR #33](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44057976983). I’m using its branch as the base for Point 7 so the sequence remains ordered.
+
+Point 7 is implemented as a 28-step pipeline. It has separate episodic and semantic SQLite stores, provenance-aware encoding, cue-based retrieval, answer abstention, constrained action selection, and an optional ten-population LIF reference model. I’m checking the integrated tests before treating the pull request as ready.
+
+I also corrected the integration target: Points 2–6 had been merged into successive feature branches, but were not yet on `main`. PR #34 now targets `main` and carries those stages forward with Point 7, rather than leaving the completed sequence stranded on a feature branch.
+
+<badge color="success">Implemented — PR open</badge>
+
+**Point 7: Long-term Memory Storage and Decision Use**
+
+- **28 algorithmic steps** implemented, with mathematical operations and biological explanations.
+- Episodic and semantic memories stored separately in SQLite.
+- Optional persistent storage across application restarts.
+- Memory retrieval, reactivation, and source tracking.
+- Question answering with uncertainty and abstention.
+- Decision-making with constraints, evidence thresholds, and outcome feedback.
+- Optional ten-population LIF biological-reference simulation.
+- Tests, documentation, README, and shared SQLite annotation registration added.
+
+**GitHub pull request:** [PR #34 — Integrate language comprehension Points 2–7](https://github.com/wizekin/ORE-Neurocomputational/pull/34)
+
+The earlier Points 2–6 are included because they had been merged into intermediate branches rather than `main`.
+
+**Current status:** The latest CI checks are queued. Repository-level auto-merge is enabled, but GitHub has not yet allowed me to activate it for PR #34 while its checks are in an unstable/queued state. The PR has not been merged yet.
+
+I'll stop at Point 7.
+
+---
+
+[USER]
+https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44060299687/job/133960136574?pr=34
+
+run python -m pytest error
+
+---
+
+[ASSISTANT]
+I found the cause and pushed a fix to **PR #34**.
+
+### Why `python -m pytest` failed
+
+The run reported **8 failed, 383 passed**.
+
+All 8 failures were consequences of the same integration issue:
+
+- Point 7 introduced **15 functions and methods without docstrings**.
+- Earlier Points 1–4 tests scan the entire `ore_language_comprehension` package, not just their own files.
+- Those missing docstrings also caused the SQLite annotation tests to find incomplete annotation records.
+
+### Fix pushed
+
+<badge color="success">Fix committed</badge>
+
+Added descriptive docstrings to all 15 missing definitions in `point07.py`.
+
+- Commit: `eb389451202547bf5b5f9a3a48650db940f26b1d`
+- [View the commit](https://github.com/wizekin/ORE-Neurocomputational/commit/eb389451202547bf5b5f9a3a48650db940f26b1d)
+- [PR #34](https://github.com/wizekin/ORE-Neurocomputational/pull/34)
+
+### Validation status
+
+<badge color="warning">CI queued</badge>
+
+The new GitHub Actions run is queued:
+
+[Run #44063618514](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44063618514)
+
+The fix is committed, but I cannot yet confirm that the full test suite passes. PR #34 remains open and unmerged until validation succeeds.
+
+---
+
+[USER]
+continue, and from now on after you finish implementing each point, check its pull request on github https://github.com/wizekin/ORE-Neurocomputational/pulls for errors , if you find the pull request in progress then wait until you check there are no errors and if you find any errors auto correct them then auto merge the pull request
+
+---
+
+[ASSISTANT]
+<badge color="success">Point 8 merged</badge>
+
+**Point 8 — Recurrent Cross-Stage Integration** is implemented and merged into `main`.
+
+[PR #35](https://github.com/wizekin/ORE-Neurocomputational/pull/35) · [Merge commit](https://github.com/wizekin/ORE-Neurocomputational/commit/f2bfa7a8a1a1ae39b8aa531b53ad0dce47573c5d)
+
+### What was implemented
+
+- 18 ordered algorithmic steps coordinating Points 1–7.
+- Recurrent integration of sensory, lexical, syntactic, semantic, discourse, prediction, and executive-control information.
+- Typed prediction errors and bounded attention allocation.
+- Evidence-based reanalysis with revision history.
+- Conditional pragmatic/social inference.
+- Persistent state across successive input increments.
+- Working-memory capacity management and downstream memory handoffs.
+- Eight feedback loops and an optional ten-population LIF reference.
+- SQLite annotation registration, tests, documentation, and public API exports.
+
+### GitHub validation
+
+<badge color="success">All PR checks passed</badge>
+
+| Check | Result |
+|---|---:|
+| PR test run 1 | 407 passed |
+| PR test run 2 | 407 passed |
+| Push workflow | Success |
+
+- [PR test run 1 — 407 passed](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44065211525)
+- [PR test run 2 — 407 passed](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44065211555)
+- [Push workflow](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44065202682)
+
+The old failures were corrected before merging. GitHub's auto-merge operation rejected the PR once it reached the clean state, so I merged it directly after confirming all checks passed.
+
+**Post-merge verification:** two additional `main` workflows have started on the merge commit and are still running:
+- [Main workflow 1](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44065954527)
+- [Main workflow 2](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/44065954297)
+
+Point 7 is also merged as PR #34. The implementation sequence is now integrated into `main` through Point 8.
+
+I'll stop here until your next `continue`.
+
+---
+
+[USER]
+continue
+
+---
+
+[ASSISTANT]
+**Point 8 post-merge verification is complete:** both GitHub Actions workflows on the merge commit succeeded.
+
+Point 9 is a different kind of implementation: it describes how seven specialized neural-system classes cooperate, including the core language network, conceptual knowledge, mentalizing, executive control, working memory, and medial-temporal memory systems. Its algorithm has **20 source-level steps**.
+
+---
+
+[USER]
+continue where you left off
+
+---
+
+[ASSISTANT]
+Point 9 is implemented in PR [#36 — Neural Architecture and Functional Division of Labour](https://github.com/wizekin/ORE-Neurocomputational/pull/36).
+
+The implementation includes the seven interacting functional systems, recurrent functional coupling, conditional mentalizing and executive recruitment, individual-localizer handling, prediction-error routing, optional LIF simulation, and shared SQLite annotations. I also added 22 acceptance tests and the detailed Point 9 documentation.
+
+An early test run caught an annotation-registration import error. I corrected that before the latest PR checks; those checks are still running, so I have not merged the PR.
+
+The PR is open and targets `main`. The latest head commit is `0681b5fc`; GitHub reports the branch as mergeable, but the test jobs have not completed yet. I’m leaving it unmerged rather than bypassing validation.
+
+The earlier Point 8 post-merge workflows have also now completed successfully. Point 9 is the current stopping point; no Point 10 work has been started.
+
+---
+
+[USER]
+check its pull request on github https://github.com/wizekin/ORE-Neurocomputational/pulls for errors , if you find the pull request in progress then wait until you check there are no errors and if you find any errors auto correct them then auto merge the pull request
+
+---
+
+[ASSISTANT]
+I found two failing tests in PR #36, reproduced across all three GitHub Actions runs:
+
+- An ordinary literal sentence was incorrectly giving the mentalizing system a small activation through recurrent network traffic.
+- Pragmatic evidence indicating sarcasm was routed to mentalizing, but that system was not being conditionally recruited.
+
+I’ve corrected the implementation on the existing PR branch. The fix prevents sub-threshold recurrent activity from activating mentalizing and includes observed evidence when detecting social-inference cues. I’m checking the new commit’s CI before merging.
+
+**PR #36 remains open and unmerged:** [Neural Architecture and Functional Division of Labour](https://github.com/wizekin/ORE-Neurocomputational/pull/36).
+
+The latest commit is `d7e2e3a`. GitHub currently reports all three checks as **in progress**, with no final results yet. The earlier failures have been addressed in the latest commit, but that fix is not validated until these checks finish.
+
+I have not merged the PR or bypassed its checks. The next required step is to verify that all three latest-commit checks pass, fix any remaining failures, and then merge and verify the merge on `main`.
+
+---
+
+[USER]
+continue and from now on after you finish implementing each point, check its pull request on github https://github.com/wizekin/ORE-Neurocomputational/pulls for errors , if you find the pull request in progress then wait until you check there are no errors and if you find any errors auto correct them then auto merge the pull request
+
+---
+
+[ASSISTANT]
+**Point 9 is now merged.** PR [#36](https://github.com/wizekin/ORE-Neurocomputational/pull/36) passed all three checks on its final commit and was merged into `main` at `607a0948`.
+
+I’ve also implemented **Point 10 — Evidence-Based Identification and Validation** and opened [PR #37](https://github.com/wizekin/ORE-Neurocomputational/pull/37). It provides a 15-step research-validation workflow covering behavioral, fMRI, EEG/ERP, MEG, lesion, stimulation, and computational evidence, with safeguards against confounds, unsupported causal claims, and double-counting.
+
+---
+
+[USER]
+continue where you left off
+
+---
+
+[ASSISTANT]
+**Point 10’s pull request is merged.** PR [#37](https://github.com/wizekin/ORE-Neurocomputational/pull/37) is closed with `merged: true`. Its final commit, `9f140014`, passed all three GitHub checks; I corrected the test-fixture issues found during validation before that successful run.
+
+The merge was verified on `main`:
+
+- **Merge commit:** `5399d5a60f4615d8a76f2ebc1174423ecc8f18c5`
+- **Main branch:** points to that exact commit.
+- **PR checks:** all three successful.
+- **Post-merge checks:** two additional workflows are still running. No failure has appeared, but I can’t yet report those workflows as successful.
+
+Point 10 is complete and merged. I have not started Point 11; I’ll wait for your next `continue`.

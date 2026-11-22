@@ -1,0 +1,3344 @@
+Title: Integrated Reading Algorithm
+Conversation ID: 6af86b7a-b24c-83e9-976f-f73aede3ccec
+
+---
+
+[USER]
+I want you to turn the sequence of the following points into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Orthographic lexicon
+Lexical word identification
+Grapheme-to-phoneme conversion
+Dual-route reading model
+Interactive-Activation model
+TRACE spoken-word model
+Cohort model
+Shortlist B Bayesian recognition
+Connectionist spelling-to-sound-to-meaning mapping
+Word-level surprisal
+
+---
+
+[ASSISTANT]
+# Integrated Algorithm: Human-Inspired Orthographic and Spoken-Word Recognition System
+
+**Objective:** Transform written or spoken linguistic input into an identified word, its pronunciation, and its meaning by combining the computational principles of the ten models and mechanisms you listed.
+
+I will organize them into one large algorithm containing interconnected processing stages. Each stage will explain:
+
+1. What the brain is trying to accomplish.
+2. What information it receives and produces.
+3. The possible mathematical operations involved.
+4. How the processing can be represented algorithmically.
+5. How the stage interacts with the other stages.
+
+There is one important scientific distinction that affects the architecture: **TRACE, Cohort, and Shortlist B are models of spoken-word recognition, not consecutive stages of visual reading.** Similarly, Interactive Activation and the Dual-Route Cascaded model describe different aspects of visual word recognition and reading aloud. The Connectionist Triangle Model offers another account of how spelling, sound, and meaning interact.
+
+Consequently, the most biologically informed architecture is a collection of parallel, interconnected processing pathways, not ten independent modules executed one after another. We can nevertheless organize their operations into a coherent algorithm with a central coordination mechanism.
+
+## 1. Overall architecture
+
+I propose calling the integrated algorithm:
+
+**OWSR — Orthographic and Word-Recognition Algorithm**
+
+Its main objective is to establish a shared lexical representation that can be accessed through either visual or auditory input.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">OWSR processing architecture</title>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Input acquisition**
+
+    <text color="secondary" size="sm">Visual letter patterns OR acoustic speech signals</text>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(59,130,246,0.09)" radius="md" padding={2} gap={1}>
+        **Visual pathway**
+        <text size="xs" color="secondary">Orthographic analysis → Interactive Activation → Orthographic lexicon</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} gap={1}>
+        **Auditory pathway**
+        <text size="xs" color="secondary">Acoustic analysis → TRACE / Cohort / Shortlist B</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={3} align="center">
+    **Shared lexical identification and competition**
+    <text size="xs" color="secondary">Candidate activation, evidence accumulation, selection and disambiguation</text>
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={3} align="center">
+    **Dual-route and connectionist spelling–sound–meaning processing**
+    <text size="xs" color="secondary">Lexical route + grapheme-to-phoneme route + distributed semantic mapping</text>
+  </box>
+  <box background="rgba(236,72,153,0.09)" radius="md" padding={3} align="center">
+    **Word-level predictive processing**
+    <text size="xs" color="secondary">Context probability, surprisal and contextual integration</text>
+  </box>
+  <box background="rgba(34,197,94,0.10)" radius="md" padding={3} align="center">
+    **Final lexical representation**
+    <text size="xs" color="secondary">Identified word + pronunciation + meaning + confidence + contextual interpretation</text>
+  </box>
+  <text color="secondary" size="xs">Conceptual architecture, not a claim that the brain contains these exact computational modules or follows this precise anatomical order.</text>
+</box>
+
+The architecture draws on the dual-route and triangle approaches to reading, interactive-activation models of perception, and probabilistic and competitive models of spoken-word recognition. <Cite refs={["turn968678search9","turn638467view1","turn638467view2","turn638467view0"]}/>
+
+---
+
+# PART I — VISUAL ORTHOGRAPHIC PROCESSING
+
+## Stage 1 — Orthographic Lexicon Activation
+
+**Related mechanism: Orthographic lexicon**
+
+### 1.1. Objective
+
+The brain must recognize that a visual arrangement of letters corresponds to a previously learned written word.
+
+The orthographic lexicon is a component of the mental lexicon containing learned information about the written forms of words.
+
+For example, when a person sees:
+
+`BRAIN`
+
+the visual system receives a pattern of lines, curves, and spatial relationships. The linguistic system must associate that pattern with the previously acquired orthographic representation of the word.
+
+The representation can also be connected to:
+
+- Phonological representation: /breɪn/.
+- Semantic representation: the concept of a brain.
+- Morphological representation: relationships with words such as *brains* and *brainstem*.
+- Lexical properties: frequency, familiarity, and neighboring words.
+
+The mental lexicon is not necessarily a literal dictionary in the brain. Modern models allow orthographic, phonological, morphological, and semantic representations to be activated in parallel and distributed across interconnected neural populations. <Cite refs={["turn968678search2","turn968678search3","turn968678search9"]}/>
+
+### 1.2. Detailed algorithmic operations
+
+**Operation 1.1 — Receive visual orthographic information**
+
+Receive the output of visual processing:
+
+\[
+X = \{x_1,x_2,\ldots,x_n\}
+\]
+
+Where:
+
+- \(X\) is the visual representation.
+- \(x_i\) is the visual information corresponding to a particular position or region.
+- \(n\) is the number of represented positions.
+
+Each position may contain information about:
+
+- Letter shape.
+- Orientation.
+- Curvature.
+- Lines and intersections.
+- Relative spatial location.
+- Letter position.
+
+**Operation 1.2 — Search for compatible orthographic representations**
+
+Compare the input with stored orthographic patterns.
+
+Let:
+
+\[
+L = \{l_1,l_2,\ldots,l_m\}
+\]
+
+where each \(l_i\) represents a learned word form.
+
+Calculate an approximate compatibility score:
+
+\[
+M_i = \sum_{j=1}^{n}w_j\,s(x_j,l_{ij})
+\]
+
+Where:
+
+- \(M_i\) is the compatibility score of candidate word \(i\).
+- \(w_j\) is the relative importance of position \(j\).
+- \(s\) measures the similarity between input and stored information.
+
+This is a proposed computational implementation, not an established formula that individual neurons literally calculate.
+
+**Operation 1.3 — Incorporate word frequency**
+
+Frequently encountered written words tend to be recognized more efficiently than less familiar words, all else being equal.
+
+Represent the frequency contribution as:
+
+\[
+F_i = \log(1+f_i)
+\]
+
+Where \(f_i\) is the learned frequency of the word.
+
+Combine visual compatibility and frequency:
+
+\[
+A_i = \beta M_i+\gamma F_i
+\]
+
+Where \(\beta\) and \(\gamma\) determine their relative contributions.
+
+**Operation 1.4 — Activate candidate representations**
+
+Convert candidate scores into graded activation:
+
+\[
+a_i=\frac{1}{1+e^{-A_i}}
+\]
+
+This sigmoid is a possible computational approximation of graded neuronal responses.
+
+**Operation 1.5 — Send activation to connected representations**
+
+An activated orthographic representation provides evidence to associated:
+
+- Phonological representations.
+- Semantic representations.
+- Morphological representations.
+- Other orthographic representations.
+
+The important point is that these associated systems need not wait until orthographic processing has completely finished.
+
+### 1.3. Mathematical operations
+
+| Operation | Mathematical principle | Purpose |
+|---|---|---|
+| Visual matching | Similarity calculation | Identify compatible spellings |
+| Frequency integration | Weighted addition | Incorporate familiarity |
+| Activation | Sigmoid transformation | Represent graded responses |
+| Association | Weighted connections | Activate related representations |
+| Competition | Inhibition | Reduce activation of incompatible candidates |
+
+**Output of Stage 1:**
+
+A set of activated orthographic word candidates, each carrying a degree of compatibility with the visual input.
+
+---
+
+## Stage 2 — Lexical Word Identification
+
+**Related mechanism: Lexical word identification**
+
+### 2.1. Objective
+
+Determine which candidate represents the actual word being perceived.
+
+Stage 1 generates possible orthographic matches. Stage 2 evaluates these candidates and attempts to establish the most appropriate lexical identity.
+
+Consider:
+
+`C A R E`
+
+Possible competing representations might include:
+
+- CARE
+- CARS
+- CASE
+- CARD
+
+The linguistic system must distinguish among candidates based on their letter patterns and the surrounding context.
+
+### 2.2. Detailed algorithmic operations
+
+**Operation 2.1 — Collect active candidates**
+
+Receive the activated representations:
+
+\[
+C=\{c_1,c_2,\ldots,c_k\}
+\]
+
+Each candidate has an activation level \(a_i\).
+
+**Operation 2.2 — Calculate orthographic compatibility**
+
+Calculate how closely each candidate matches the observed sequence.
+
+One possible measure is a weighted position-dependent mismatch:
+
+\[
+D_i=\sum_{j=1}^{n}w_jd(x_j,c_{ij})
+\]
+
+Where \(d\) represents the degree of mismatch.
+
+Smaller values indicate better matches.
+
+**Operation 2.3 — Incorporate lexical familiarity**
+
+Calculate the prior probability associated with encountering a candidate word:
+
+\[
+P(c_i)
+\]
+
+This probability can be estimated from learned frequency and experience.
+
+**Operation 2.4 — Incorporate contextual information**
+
+Suppose the preceding sentence is:
+
+"The surgeon examined the patient's..."
+
+The candidate `BRAIN` may receive stronger semantic support than unrelated words with similar visual properties.
+
+Calculate:
+
+\[
+P(c_i\mid X,Ctx)
+\]
+
+Using a Bayesian formulation:
+
+\[
+P(c_i\mid X,Ctx)
+=
+\frac{
+P(X\mid c_i)\,P(c_i\mid Ctx)
+}{
+P(X\mid Ctx)
+}
+\]
+
+Where:
+
+- \(X\) is the visual evidence.
+- \(Ctx\) represents the linguistic context.
+- \(P(X\mid c_i)\) measures how well the word predicts the observed spelling.
+- \(P(c_i\mid Ctx)\) represents contextual expectations.
+
+This is a computational way to combine perceptual and contextual evidence.
+
+**Operation 2.5 — Establish lexical identity**
+
+Select a candidate when its evidence becomes sufficiently strong.
+
+For instance:
+
+\[
+c^*=\arg\max_{c_i} P(c_i\mid X,Ctx)
+\]
+
+However, the brain does not necessarily perform a single winner-takes-all decision. Multiple interpretations may remain active temporarily.
+
+**Operation 2.6 — Detect ambiguity**
+
+Calculate uncertainty across candidates:
+
+\[
+H(C)=-\sum_i P(c_i)\log P(c_i)
+\]
+
+Higher entropy indicates greater uncertainty.
+
+When uncertainty is high, maintain multiple candidates and continue processing instead of prematurely selecting one.
+
+### 2.3. Mathematical operations
+
+- Pattern matching.
+- Weighted distance calculation.
+- Frequency-based prior estimation.
+- Bayesian evidence integration.
+- Candidate competition.
+- Probability normalization.
+- Entropy-based uncertainty estimation.
+- Threshold-based decision-making.
+
+**Output of Stage 2:**
+
+A selected lexical candidate or a set of competing candidates with estimated identification confidence.
+
+---
+
+## Stage 3 — Interactive-Activation Processing
+
+**Related model: Interactive-Activation Model (McClelland and Rumelhart, 1981)**
+
+<AsyncImage query="McClelland Rumelhart 1981 interactive activation model visual features letters words three levels diagram" aspectRatio="16:9" fit="contain"/>
+
+### 3.1. Objective
+
+This model explains how visual features, letters, and whole-word representations interact during word recognition.
+
+An important characteristic is that processing is not exclusively bottom-up.
+
+The system does not simply:
+
+1. Recognize visual features.
+2. Recognize letters.
+3. Recognize words.
+
+Instead, activation can flow upward and downward between the processing levels.
+
+For example, suppose the visual input is partially unclear:
+
+`B R A I ?`
+
+The word-level representation `BRAIN` may become active based on the recognizable letters. That word-level activation can then strengthen the expected letter `N` at the final position.
+
+McClelland and Rumelhart's model uses excitation between compatible units, inhibition between competing units, and feedback from word representations to letter representations. <Cite refs={["turn638467view1","turn487793search5"]}/>
+
+### 3.2. Processing architecture
+
+The original conceptual architecture has three major levels.
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(16,185,129,0.09)" padding={3} radius="md" align="center">
+    **Level 3 — Word detectors**
+    <text size="xs" color="secondary">BRAIN · TRAIN · GRAIN · BRAND</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down-up" color="secondary" size="xl"/>
+    <text color="secondary" size="xs">Excitation, inhibition and feedback</text>
+  </box>
+  <box background="rgba(59,130,246,0.09)" padding={3} radius="md" align="center">
+    **Level 2 — Letter detectors**
+    <text size="xs" color="secondary">B · R · A · I · N · T · G</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary" size="xl"/>
+    <text color="secondary" size="xs">Feature-to-letter excitation</text>
+  </box>
+  <box background="rgba(245,158,11,0.09)" padding={3} radius="md" align="center">
+    **Level 1 — Visual feature detectors**
+    <text size="xs" color="secondary">Lines · curves · intersections · orientations</text>
+  </box>
+</box>
+
+### 3.3. Detailed algorithmic operations
+
+**Operation 3.1 — Activate visual feature units**
+
+For every visual position, calculate the degree to which observed features match stored letter features.
+
+\[
+F_j(t)=g(X_j)
+\]
+
+Where:
+
+- \(X_j\) represents the visual input at position \(j\).
+- \(F_j\) is the activation of the relevant feature units.
+- \(g\) is a nonlinear activation function.
+
+**Operation 3.2 — Transfer activation to letter units**
+
+A letter unit receives activation from compatible visual features:
+
+\[
+E_i^{letter}
+=
+\sum_j w_{ji}F_j
+\]
+
+For example, the combination of a vertical line and two curved structures may support activation of a particular letter.
+
+**Operation 3.3 — Activate candidate words**
+
+Letter units activate words containing compatible letters at corresponding positions.
+
+\[
+E_k^{word}
+=
+\sum_i v_{ik}A_i^{letter}
+\]
+
+A word receives stronger support when several of its letters are simultaneously activated.
+
+**Operation 3.4 — Inhibit competing word candidates**
+
+Word units compete with other candidate words.
+
+\[
+I_k=\sum_{r\neq k}u_{rk}A_r^{word}
+\]
+
+Where \(u_{rk}\) describes inhibitory influence.
+
+For example, activation of `BRAIN` can suppress incompatible alternatives.
+
+**Operation 3.5 — Return feedback to letter units**
+
+Activated word units send supportive signals to their corresponding letters.
+
+\[
+FB_i=\sum_k q_{ki}A_k^{word}
+\]
+
+The letter `N` receives support from an activated candidate such as `BRAIN` when it occupies the appropriate position.
+
+**Operation 3.6 — Update all activation levels**
+
+A general mathematical implementation is:
+
+\[
+A_i(t+1)=
+f\left[
+I_i+
+\sum_j w_{ji}^{+}A_j(t)
+-
+\sum_k w_{ki}^{-}A_k(t)
+-\theta_i
+\right]
+\]
+
+Where:
+
+- \(I_i\) is external input.
+- \(w^+\) represents excitatory connections.
+- \(w^-\) represents inhibitory connections.
+- \(\theta_i\) represents an activation threshold.
+- \(f\) is an activation function.
+
+Repeat the update process until the network reaches a sufficiently stable interpretation.
+
+### 3.4. Mathematical operations
+
+| Mathematical operation | Function |
+|---|---|
+| Weighted summation | Integrate visual and linguistic information |
+| Nonlinear activation | Transform incoming signals |
+| Lateral inhibition | Suppress competing interpretations |
+| Feedback propagation | Strengthen compatible lower-level representations |
+| Iterative updating | Allow the network to settle |
+| Thresholding | Determine whether activation is sufficient |
+
+**Output of Stage 3:** A dynamically stabilized set of visual letter and word representations.
+
+---
+
+## Stage 4 — Grapheme-to-Phoneme Conversion
+
+**Related mechanism: Grapheme-to-Phoneme Conversion (GPC)**
+
+### 4.1. Objective
+
+Convert written units into their corresponding speech-sound representations.
+
+A grapheme is a written unit that represents a sound. It may consist of one letter or several letters.
+
+Examples:
+
+| Grapheme | Possible phoneme |
+|---|---|
+| B | /b/ |
+| SH | /ʃ/ |
+| TH | /θ/ or /ð/ |
+| CH | /tʃ/ |
+| PH | /f/ |
+
+The conversion system must recognize that spelling-to-sound relationships are often context-dependent.
+
+For example:
+
+- C in *cat* → /k/.
+- C in *city* → /s/.
+
+Consequently, the brain must identify both the grapheme and its linguistic context.
+
+GPC is particularly important for reading unfamiliar words and pronounceable nonwords. Experimental and computational research also indicates that phonological activation can begin relatively early during reading aloud. <Cite refs={["turn218383view5","turn487793search3"]}/>
+
+### 4.2. Detailed algorithmic operations
+
+**Operation 4.1 — Receive orthographic representation**
+
+Input:
+
+\[
+O=(g_1,g_2,\ldots,g_n)
+\]
+
+Where \(g_i\) represents the written sequence or its candidate graphemes.
+
+**Operation 4.2 — Identify grapheme boundaries**
+
+Determine whether individual letters form independent graphemes or multi-letter graphemes.
+
+For example:
+
+`S H I P`
+
+must be represented as:
+
+\[
+(SH),(I),(P)
+\]
+
+rather than:
+
+\[
+(S),(H),(I),(P)
+\]
+
+This requires identifying combinations of letters that function as individual spelling-to-sound units.
+
+**Operation 4.3 — Extract contextual information**
+
+For each grapheme, collect:
+
+- Previous grapheme.
+- Following grapheme.
+- Position within the word.
+- Syllable position.
+- Morphological information.
+- Learned spelling-to-sound associations.
+
+**Operation 4.4 — Generate phoneme candidates**
+
+Calculate the possible sound outputs.
+
+\[
+P(\phi_i\mid g_i,C_i)
+\]
+
+Where:
+
+- \(\phi_i\) is a phoneme candidate.
+- \(g_i\) is the grapheme.
+- \(C_i\) is its context.
+
+For example:
+
+\[
+P(/s/\mid C,\text{following front vowel})
+>
+P(/k/\mid C,\text{following front vowel})
+\]
+
+The probability relationship depends on the learned language-specific spelling system.
+
+**Operation 4.5 — Combine individual phonemes**
+
+Generate possible phonological sequences:
+
+\[
+\Phi=(\phi_1,\phi_2,\ldots,\phi_m)
+\]
+
+The system must preserve the appropriate ordering and association between written and spoken units.
+
+**Operation 4.6 — Resolve pronunciation candidates**
+
+Select the best-supported sequence:
+
+\[
+\Phi^*=
+\arg\max_{\Phi}
+P(\Phi\mid O,C)
+\]
+
+**Operation 4.7 — Activate phonological representations**
+
+Send the resulting phonological sequence to the appropriate phonological processing network.
+
+### 4.3. Mathematical operations
+
+- Grapheme segmentation.
+- Sequence alignment.
+- Context-sensitive conditional probability.
+- Phonological candidate generation.
+- Probability multiplication or log-probability addition.
+- Sequence maximization.
+- Temporal ordering.
+
+An approximate probabilistic formulation is:
+
+\[
+P(\Phi\mid O)
+\propto
+\prod_{i=1}^{m}
+P(\phi_i\mid g_i,C_i)
+\]
+
+This simplified expression assumes conditional independence between mappings; real pronunciation patterns can depend on larger units and interactions.
+
+**Output of Stage 4:** One or more candidate phonological sequences generated from written input.
+
+---
+
+## Stage 5 — Dual-Route Cascaded Processing
+
+**Related model: Dual-Route Cascaded Model (DRC)**
+
+<AsyncImage query="Coltheart 2001 dual route cascaded model diagram lexical semantic route lexical nonsemantic route grapheme phoneme conversion" aspectRatio="16:9" fit="contain"/>
+
+### 5.1. Objective
+
+The brain can use different pathways to generate the pronunciation of a written word.
+
+This is important because reading a familiar word and reading an unfamiliar word do not necessarily require identical computational operations.
+
+For example:
+
+- Reading `HOUSE`: the system can retrieve a learned pronunciation.
+- Reading `MAVE`: the system can assemble a pronunciation from spelling-to-sound associations.
+- Reading an irregular word: relying exclusively on ordinary grapheme-to-phoneme relationships may produce an incorrect pronunciation.
+
+The DRC framework distinguishes three processing routes despite its name:
+
+1. Lexical non-semantic route.
+2. Lexical semantic route.
+3. Nonlexical grapheme-to-phoneme route.
+
+The three pathways contribute differently to reading aloud. <Cite refs={["turn638467view2","turn218383view5","turn487793search3"]}/>
+
+### 5.2. Route A — Lexical non-semantic pathway
+
+**Operation 5.1 — Retrieve the complete word's pronunciation**
+
+Send the identified orthographic word to its associated phonological lexical representation.
+
+For example:
+
+\[
+O(\text{HOUSE})
+\rightarrow
+P(\text{HOUSE})
+\]
+
+The system retrieves a stored pronunciation rather than assembling the entire pronunciation from individual graphemes.
+
+Possible mathematical approximation:
+
+\[
+A_L(\Phi)=
+\operatorname{Similarity}
+(O,\ O_{\text{stored}})
+\]
+
+The associated pronunciation receives activation proportional to the compatibility of the input and stored representation.
+
+### 5.3. Route B — Lexical semantic pathway
+
+**Operation 5.2 — Retrieve meaning**
+
+Transfer the orthographic representation into the semantic system.
+
+\[
+O(\text{HOUSE})\rightarrow S(\text{HOUSE})
+\]
+
+The semantic representation activates associated conceptual information.
+
+**Operation 5.3 — Retrieve pronunciation through semantic associations**
+
+The activated semantic representation contributes to the retrieval of the appropriate phonological representation.
+
+\[
+S(\text{HOUSE})
+\rightarrow
+P(\text{HOUSE})
+\]
+
+This provides another potential source of pronunciation information.
+
+### 5.4. Route C — Nonlexical pathway
+
+**Operation 5.4 — Convert graphemes into phonemes**
+
+Use the Stage 4 conversion operations.
+
+\[
+O\rightarrow GPC\rightarrow\Phi
+\]
+
+This pathway can generate pronunciations for unfamiliar words and pronounceable nonwords without requiring a stored whole-word entry.
+
+### 5.5. Operation 5.5 — Process the routes in parallel
+
+The routes begin receiving and processing information without requiring one entire pathway to finish before another starts.
+
+This is what makes the model cascaded.
+
+The three sources of phonological information can converge on the phonological output system.
+
+### 5.6. Operation 5.6 — Resolve route competition
+
+Suppose the input is an irregular word.
+
+The whole-word lexical pathway may generate one pronunciation while the GPC pathway generates a competing pronunciation.
+
+A useful implementation is to calculate support for each candidate phoneme sequence:
+
+\[
+R(\Phi)=
+\alpha A_L(\Phi)
++
+\beta A_S(\Phi)
++
+\gamma A_G(\Phi)
+\]
+
+Where:
+
+- \(A_L\): lexical non-semantic support.
+- \(A_S\): semantic-route support.
+- \(A_G\): GPC support.
+- \(\alpha,\beta,\gamma\): pathway weights.
+
+This weighted integration is a proposed engineering abstraction, not the exact equation of the published DRC model.
+
+For regular words, the routes can reinforce one another.
+
+For irregular words, the lexical pathway may provide information that overrides a misleading regular spelling-to-sound correspondence.
+
+For nonwords, the nonlexical pathway becomes particularly important.
+
+### 5.7. Mathematical operations
+
+| Operation | Purpose |
+|---|---|
+| Parallel activation | Process different routes simultaneously |
+| Association lookup | Retrieve stored pronunciations |
+| Rule-based mapping | Convert graphemes into phonemes |
+| Weighted integration | Combine pathway evidence |
+| Competitive inhibition | Resolve conflicting outputs |
+| Convergence | Produce a phonological representation |
+
+**Output of Stage 5:** A phonological representation supported by one or more lexical and sublexical pathways.
+
+---
+
+## Stage 6 — Connectionist Spelling-to-Sound-to-Meaning Mapping
+
+**Related model: Connectionist Triangle Model**
+
+<AsyncImage query="Seidenberg McClelland Plaut triangle model orthography phonology semantics connectionist network diagram" aspectRatio="16:9" fit="contain"/>
+
+### 6.1. Objective
+
+The Triangle Model provides a different computational explanation of how written forms, sounds, and meanings become associated.
+
+Instead of assuming that every word requires a separate explicit pronunciation rule or a single dictionary entry, this model uses distributed representations and learned connections between processing systems.
+
+The three major representational domains are:
+
+- Orthography (O).
+- Phonology (P).
+- Semantics (S).
+
+These domains are interconnected.
+
+The model can learn statistical spelling-to-sound relationships and handle both regular and exceptional words. <Cite refs={["turn755539search60","turn755539search61","turn968678search9"]}/>
+
+### 6.2. Detailed algorithmic operations
+
+**Operation 6.1 — Encode orthographic patterns**
+
+Convert the written word into a distributed orthographic representation.
+
+For example:
+
+\[
+O(\text{BRAIN})=
+[o_1,o_2,\ldots,o_n]
+\]
+
+This representation need not correspond to five independent character detectors. It can represent combinations of letter positions and orthographic features.
+
+**Operation 6.2 — Activate hidden connection units**
+
+Send orthographic information through interconnected processing units.
+
+A simplified mathematical operation:
+
+\[
+h=f(W_{OH}O+b_H)
+\]
+
+Where:
+
+- \(O\): orthographic representation.
+- \(W_{OH}\): connection weights.
+- \(h\): hidden-layer activation.
+- \(b_H\): bias.
+- \(f\): nonlinear activation function.
+
+**Operation 6.3 — Generate phonological representation**
+
+Use learned connections to calculate the expected sound representation:
+
+\[
+\hat P=f(W_{HP}h+b_P)
+\]
+
+The result represents the network's current pronunciation estimate.
+
+**Operation 6.4 — Generate semantic representation**
+
+Activate the conceptual representation associated with the orthographic input.
+
+\[
+\hat S=f(W_{HS}h+b_S)
+\]
+
+Additional direct connections may allow orthography to contribute to semantics and phonology to contribute to semantics.
+
+A useful conceptual structure is:
+
+\[
+O\leftrightarrow P
+\]
+
+\[
+O\leftrightarrow S
+\]
+
+\[
+P\leftrightarrow S
+\]
+
+**Operation 6.5 — Integrate information across the three domains**
+
+Information flowing between representations can strengthen compatible patterns.
+
+For example:
+
+The orthographic representation `BRAIN` activates a phonological pattern associated with /breɪn/, alongside semantic information about the organ and its functions.
+
+The three representations can mutually support the identification.
+
+**Operation 6.6 — Settle on stable representations**
+
+Use repeated network updates until the output representations become sufficiently stable.
+
+In an attractor-style implementation:
+
+\[
+z(t+1)=f(Wz(t)+I)
+\]
+
+Where \(z\) contains the current distributed activation state across the network.
+
+**Operation 6.7 — Learn and adjust connections**
+
+When the system is trained on words, it adjusts connection weights to improve its predictions.
+
+A simplified learning rule is:
+
+\[
+\Delta W=\eta\delta x
+\]
+
+Where:
+
+- \(\eta\): learning rate.
+- \(\delta\): prediction error.
+- \(x\): presynaptic activation.
+
+Connectionist reading models have used error-driven learning, including back-propagation, to establish spelling-to-sound mappings. This is a computational learning method, not evidence that the biological brain literally performs standard software back-propagation. <Cite refs={["turn755539search61","turn755539search60"]}/>
+
+### 6.3. Mathematical operations
+
+- Distributed encoding.
+- Matrix multiplication.
+- Nonlinear transformation.
+- Weighted association.
+- Recurrent activation.
+- Pattern completion.
+- Error calculation.
+- Connection-weight adaptation.
+- Attractor convergence.
+
+**Output of Stage 6:** A mutually associated orthographic, phonological, and semantic representation.
+
+---
+
+# PART II — AUDITORY SPOKEN-WORD RECOGNITION
+
+The next three models address an additional problem: identifying words from continuous speech.
+
+When somebody speaks, the brain receives a continuous acoustic signal. It does not receive neatly separated words.
+
+For example, a spoken phrase may contain:
+
+`thebrainprocessesinformation`
+
+The recognition system must identify the acoustic patterns, generate possible phonological sequences, find candidate words, and determine their boundaries.
+
+The three models provide different approaches to solving this problem.
+
+## Stage 7 — TRACE Spoken-Word Recognition
+
+**Related model: TRACE (McClelland and Elman, 1986)**
+
+<AsyncImage query="McClelland Elman TRACE speech perception model three levels acoustic features phonemes words interactive activation diagram" aspectRatio="16:9" fit="contain"/>
+
+### 7.1. Objective
+
+TRACE explains how speech sounds and words can be recognized through continuous interactions between different processing levels.
+
+The model uses three main representational levels:
+
+1. Acoustic-phonetic features.
+2. Phonemes.
+3. Words.
+
+Unlike a purely sequential system, TRACE allows activation to propagate upward and feedback to influence lower-level representations.
+
+For example, hearing an ambiguous sound may activate multiple phonemes. The possible words containing those phonemes can then send feedback that supports one interpretation.
+
+The model uses continuously updated excitation and inhibition between processing units. <Cite refs={["turn487793search0","turn487793search89"]}/>
+
+### 7.2. Detailed algorithmic operations
+
+**Operation 7.1 — Receive acoustic information**
+
+Receive the speech signal:
+
+\[
+A(t)
+\]
+
+The signal contains information changing over time.
+
+The auditory processing system extracts features associated with:
+
+- Frequency.
+- Amplitude.
+- Temporal duration.
+- Spectral patterns.
+- Formant transitions.
+- Voicing.
+- Articulation-related acoustic cues.
+
+**Operation 7.2 — Activate acoustic-phonetic feature units**
+
+Convert incoming acoustic evidence into graded feature activations.
+
+\[
+F_j(t)=g(A(t),j)
+\]
+
+Each feature detector represents a particular characteristic of the incoming acoustic signal.
+
+**Operation 7.3 — Generate competing phoneme representations**
+
+A single acoustic pattern may provide evidence for more than one phoneme.
+
+Calculate:
+
+\[
+A_{\phi_i}(t)
+\]
+
+for each possible phoneme.
+
+For example, an ambiguous sound may activate both /b/ and /p/, with different activation levels.
+
+**Operation 7.4 — Activate compatible word representations**
+
+The active phonemes send activation to lexical candidates containing those sounds.
+
+\[
+E_{w_i}(t)=
+\sum_j w_{ji}A_{\phi_j}(t)
+\]
+
+For example, the sound sequence:
+
+\[
+/k/\rightarrow /æ/\rightarrow /t/
+\]
+
+can activate the word `CAT`.
+
+**Operation 7.5 — Apply mutual word inhibition**
+
+Competing words suppress one another.
+
+\[
+I_{w_i}(t)=
+\sum_{k\neq i}v_{ki}A_{w_k}(t)
+\]
+
+If several words are compatible with the current acoustic sequence, they compete.
+
+**Operation 7.6 — Send feedback to phoneme representations**
+
+Activated word candidates provide feedback to their constituent phonemes.
+
+\[
+FB_{\phi_j}(t)=
+\sum_iq_{ij}A_{w_i}(t)
+\]
+
+This can strengthen phoneme representations compatible with the most active lexical candidates.
+
+**Operation 7.7 — Continuously update activation**
+
+A general dynamical representation is:
+
+\[
+\frac{dA_i}{dt}
+=
+-\lambda A_i
++
+E_i(t)
+-
+I_i(t)
+\]
+
+Where:
+
+- \(\lambda A_i\) represents activation decay.
+- \(E_i(t)\) represents excitatory input.
+- \(I_i(t)\) represents inhibitory input.
+
+In an actual computational implementation, the differential equation can be approximated with discrete time steps.
+
+**Operation 7.8 — Select the most strongly supported phonological interpretation**
+
+The system compares the activation of competing candidates and identifies those receiving the strongest combined evidence.
+
+### 7.3. Mathematical operations
+
+- Acoustic feature extraction.
+- Temporal signal analysis.
+- Weighted summation.
+- Excitatory propagation.
+- Lateral inhibition.
+- Recurrent feedback.
+- Continuous differential updating.
+- Competitive candidate selection.
+
+**Output of Stage 7:** A dynamically evolving collection of phonological and lexical candidates derived from spoken input.
+
+---
+
+## Stage 8 — Cohort-Based Word Recognition
+
+**Related model: Cohort Model (Marslen-Wilson)**
+
+<AsyncImage query="Cohort model spoken word recognition initial phoneme activation cohort competitors uniqueness point psychology diagram" aspectRatio="16:9" fit="contain"/>
+
+### 8.1. Objective
+
+The Cohort Model explains how the brain can identify a spoken word using its initial speech sounds.
+
+Its central idea is that the beginning of a word activates multiple candidate words that share similar initial phonological information.
+
+For example, hearing:
+
+`/kæ/`
+
+may activate:
+
+- CAT
+- CATTLE
+- CAPITAL
+- CAPTAIN
+
+As more speech arrives, candidates that no longer match the incoming sequence are progressively eliminated.
+
+The point at which a candidate becomes uniquely distinguishable is commonly discussed as its uniqueness point. <Cite refs={["turn968678search0","turn968678search12","turn968678search13"]}/>
+
+### 8.2. Detailed algorithmic operations
+
+**Operation 8.1 — Receive the first phonetic information**
+
+Let the incoming speech sequence be:
+
+\[
+S=(s_1,s_2,\ldots,s_t)
+\]
+
+Initially, only a small portion of the spoken word may be available.
+
+**Operation 8.2 — Generate the initial cohort**
+
+Search for lexical entries that share the observed initial phonetic information.
+
+\[
+C_1=
+\{w_i:\operatorname{Onset}(w_i)\sim s_1\}
+\]
+
+The symbol \(\sim\) indicates phonetic compatibility rather than necessarily exact identity.
+
+For example, the onset /b/ may activate words beginning with /b/.
+
+**Operation 8.3 — Expand the observed phonological sequence**
+
+When another phoneme arrives, update the observed sequence:
+
+\[
+S_t=(s_1,s_2,\ldots,s_t)
+\]
+
+**Operation 8.4 — Test all active candidates**
+
+For each candidate, determine how well its beginning matches the incoming sequence.
+
+A possible mathematical representation:
+
+\[
+M_i(t)=
+\sum_{j=1}^{t}
+\log P(s_j\mid w_i,j)
+\]
+
+This provides a cumulative measure of phonetic compatibility.
+
+**Operation 8.5 — Eliminate incompatible candidates**
+
+Remove candidates whose phonological patterns become sufficiently incompatible with the input.
+
+\[
+C_{t+1}
+=
+\{w_i\in C_t:M_i(t)>\tau_i\}
+\]
+
+Here, \(\tau_i\) is an illustrative compatibility criterion.
+
+**Operation 8.6 — Detect the uniqueness point**
+
+Determine whether a candidate has become distinguishable from the remaining competitors.
+
+A simplified measure is:
+
+\[
+U_t=|C_t|
+\]
+
+When:
+
+\[
+U_t=1
+\]
+
+one candidate remains.
+
+Real recognition does not always require waiting until only one word remains. Context and candidate strengths can allow recognition before complete uniqueness.
+
+**Operation 8.7 — Integrate contextual evidence**
+
+Use sentence meaning and syntactic information to support or weaken remaining candidates.
+
+For example, the sentence:
+
+"The animal began to..."
+
+may favor `CATTLE` over `CAPITAL` after hearing an ambiguous onset.
+
+**Operation 8.8 — Reanalyze if necessary**
+
+When no candidate adequately explains the signal, reconsider:
+
+- Phoneme boundaries.
+- Word boundaries.
+- Acoustic interpretation.
+- Earlier candidate eliminations.
+
+This allows the recognition process to correct an initially incorrect interpretation.
+
+### 8.3. Mathematical operations
+
+| Mathematical operation | Purpose |
+|---|---|
+| Prefix matching | Generate onset-compatible candidates |
+| Cumulative evidence | Evaluate incoming phonemes |
+| Phonetic similarity | Measure compatibility |
+| Candidate filtering | Eliminate incompatible words |
+| Set reduction | Track the remaining cohort |
+| Contextual weighting | Resolve ambiguity |
+| Uniqueness detection | Identify distinguishable words |
+
+**Output of Stage 8:** A progressively reduced set of spoken-word candidates.
+
+---
+
+## Stage 9 — Shortlist B Bayesian Recognition
+
+**Related model: Shortlist B (Norris and McQueen, 2008)**
+
+<AsyncImage query="Norris McQueen Shortlist B Bayesian model continuous speech recognition lexical candidates segmentation model figure" aspectRatio="16:9" fit="contain"/>
+
+### 9.1. Objective
+
+Shortlist B explains spoken-word recognition using Bayesian inference.
+
+It addresses an important problem: speech does not contain explicit physical gaps between every word.
+
+The recognition system must infer:
+
+1. Which words were spoken.
+2. Where one word ends and another begins.
+3. Which candidate sequence best explains the acoustic signal.
+
+Unlike the original interactive-activation Shortlist model, Shortlist B uses Bayesian probability calculations and does not rely on online lexical feedback into the acoustic processing stage.
+
+It also represents acoustic input using probabilities over multiple phoneme possibilities and temporal slices, rather than assuming an already-known sequence of discrete phonemes. <Cite refs={["turn638467view0","turn487793search1"]}/>
+
+### 9.2. Detailed algorithmic operations
+
+**Operation 9.1 — Receive probabilistic phonetic input**
+
+Represent each acoustic time segment by a distribution of phoneme possibilities.
+
+\[
+A_t=
+\{P(\phi_1\mid A_t),P(\phi_2\mid A_t),\ldots\}
+\]
+
+For example:
+
+| Phoneme | Acoustic probability |
+|---|---:|
+| /b/ | 0.65 |
+| /p/ | 0.25 |
+| /d/ | 0.10 |
+
+These numbers are illustrative.
+
+The important point is that input can be uncertain rather than representing one definite phoneme.
+
+**Operation 9.2 — Generate possible word hypotheses**
+
+Compare the incoming signal with stored lexical phonological representations.
+
+\[
+W=\{w_1,w_2,\ldots,w_n\}
+\]
+
+**Operation 9.3 — Generate possible word segmentations**
+
+A continuous speech signal may support multiple possible interpretations.
+
+For example:
+
+- `ICE CREAM`
+- `I SCREAM`
+
+Both can be considered as hypotheses when the acoustic evidence is ambiguous.
+
+Generate multiple possible sequences of words and boundaries.
+
+**Operation 9.4 — Calculate acoustic likelihood**
+
+For each proposed sequence, estimate the likelihood of observing the acoustic input if that sequence had actually been spoken.
+
+\[
+P(A\mid W)
+\]
+
+Where:
+
+- \(A\) is the acoustic signal.
+- \(W\) is a candidate word sequence.
+
+A more detailed model can use phoneme probabilities across time slices to calculate this likelihood.
+
+**Operation 9.5 — Calculate prior probability**
+
+Use the learned probability of the proposed word sequence.
+
+\[
+P(W)
+\]
+
+Common words and plausible word sequences may receive stronger prior support.
+
+**Operation 9.6 — Calculate posterior probability**
+
+Apply Bayes' rule:
+
+\[
+P(W\mid A)
+=
+\frac{P(A\mid W)P(W)}{P(A)}
+\]
+
+Since the denominator is shared across competing candidates:
+
+\[
+P(W\mid A)\propto P(A\mid W)P(W)
+\]
+
+**Operation 9.7 — Compare competing sequences**
+
+Determine which candidate sequence provides the best combination of acoustic fit and prior probability.
+
+\[
+W^*=\arg\max_W P(W\mid A)
+\]
+
+**Operation 9.8 — Select word boundaries and lexical identities**
+
+Determine the most probable segmentation of the continuous speech signal.
+
+**Operation 9.9 — Return the recognized sequence**
+
+Produce the selected sequence of lexical representations.
+
+### 9.3. Mathematical operations
+
+- Acoustic probability estimation.
+- Bayesian inference.
+- Likelihood calculation.
+- Prior probability estimation.
+- Posterior probability calculation.
+- Segmentation hypothesis generation.
+- Competitive hypothesis evaluation.
+- Maximum a posteriori selection.
+
+**Output of Stage 9:** A probabilistically selected sequence of spoken words and word boundaries.
+
+---
+
+# PART III — CONTEXTUAL AND PREDICTIVE PROCESSING
+
+## Stage 10 — Shared Cross-Modal Lexical Convergence
+
+This is an integration stage that I am adding to connect the written and spoken pathways.
+
+It is not a separate model among your ten points, but it is necessary to make the complete architecture work.
+
+### 10.1. Objective
+
+The brain must establish that visual and auditory forms can refer to the same lexical representation.
+
+Consider the word:
+
+`BRAIN`
+
+It may be encountered through:
+
+- Reading the printed word.
+- Hearing somebody pronounce it.
+- Internally recalling its pronunciation.
+- Retrieving its meaning from a previously activated concept.
+
+These input forms must be associated with compatible lexical information.
+
+### 10.2. Detailed algorithmic operations
+
+**Operation 10.1 — Receive pathway outputs**
+
+Visual pathway:
+
+\[
+O\rightarrow L_O
+\]
+
+Auditory pathway:
+
+\[
+A\rightarrow L_A
+\]
+
+Where \(L_O\) and \(L_A\) represent activated lexical candidates from orthographic and auditory processing.
+
+**Operation 10.2 — Compare lexical representations**
+
+Compare their associated phonological and lexical features.
+
+\[
+M(w)=
+\operatorname{Similarity}(L_O,L_A)
+\]
+
+**Operation 10.3 — Activate shared representations**
+
+If the representations are compatible, strengthen the corresponding lexical and semantic information.
+
+**Operation 10.4 — Resolve cross-modal conflicts**
+
+If written and spoken evidence disagree, retain uncertainty and re-evaluate the source information rather than automatically combining incompatible candidates.
+
+**Operation 10.5 — Establish a shared lexical state**
+
+Produce a representation containing:
+
+\[
+L=(O,P,S,M)
+\]
+
+Where:
+
+- \(O\): orthographic identity.
+- \(P\): phonological identity.
+- \(S\): semantic representation.
+- \(M\): morphological information.
+
+**Output of Stage 10:** A shared lexical representation accessible through written and spoken language.
+
+Importantly, auditory input is optional. During ordinary silent reading, the auditory pathway does not need to receive external speech. Phonological representations can instead become active internally.
+
+---
+
+## Stage 11 — Word-Level Surprisal
+
+**Related mechanism: Word-level Surprisal**
+
+### 11.1. Objective
+
+Word-level surprisal is a measure of how unexpected a word is given the preceding linguistic context.
+
+It comes from information theory and probabilistic language processing.
+
+The central principle is that an unexpected word provides more information than an easily predictable word.
+
+For example:
+
+"The doctor examined the patient's..."
+
+Possible next words might include:
+
+- BRAIN.
+- CAR.
+- AIRPLANE.
+
+Depending on the surrounding sentence, their probabilities will differ.
+
+Surprisal quantifies this difference.
+
+Research has demonstrated relationships between word predictability, surprisal, and the time people take to process words while reading. <Cite refs={["turn968678search5","turn755539search7"]}/>
+
+### 11.2. Detailed algorithmic operations
+
+**Operation 11.1 — Receive preceding linguistic context**
+
+Maintain a representation of the words already encountered:
+
+\[
+C_t=(w_1,w_2,\ldots,w_t)
+\]
+
+**Operation 11.2 — Generate probability distributions over possible next words**
+
+Calculate:
+
+\[
+P(w_{t+1}\mid C_t)
+\]
+
+This estimates the probability of each possible next word given the existing context.
+
+**Operation 11.3 — Receive the actual word**
+
+When the next word becomes available, retrieve its contextual probability.
+
+**Operation 11.4 — Calculate word surprisal**
+
+The central equation is:
+
+\[
+\boxed{
+S(w_{t+1})=
+-\log P(w_{t+1}\mid C_t)
+}
+\]
+
+Using base 2:
+
+\[
+S(w)=-\log_2P(w\mid C)
+\]
+
+The unit is bits.
+
+For example:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Surprisal calculation example</title>
+  <text color="secondary" size="xs">Hypothetical contextual probabilities</text>
+  <box gap={1}>
+    **Candidate A — Highly predictable**
+    <row align="center" justify="between">
+      <text color="secondary" size="sm">Probability: 0.80</text>
+      <title color="success" size="xl" tabularNums>0.32 bits</title>
+    </row>
+    <box background="surface-tertiary" radius="full" height="9px" clip>
+      <box background="#16A34A" width="80%" height="9px" radius="full"/>
+    </box>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Candidate B — Less predictable**
+    <row align="center" justify="between">
+      <text color="secondary" size="sm">Probability: 0.20</text>
+      <title color="warning" size="xl" tabularNums>2.32 bits</title>
+    </row>
+    <box background="surface-tertiary" radius="full" height="9px" clip>
+      <box background="#D97706" width="20%" height="9px" radius="full"/>
+    </box>
+  </box>
+  <divider color="subtle"/>
+  \[
+  -\log_2(0.80)=0.322
+  \]
+  \[
+  -\log_2(0.20)=2.322
+  \]
+  <text color="secondary" size="xs">The less predictable candidate has greater surprisal.</text>
+</box>
+
+**Operation 11.5 — Estimate processing difficulty**
+
+Greater surprisal is generally associated with increased processing demands.
+
+One illustrative relationship is:
+
+\[
+D_t=\alpha+\beta S(w_t)
+\]
+
+Where:
+
+- \(D_t\) represents estimated processing difficulty.
+- \(\alpha\) represents baseline difficulty.
+- \(\beta\) represents sensitivity to surprisal.
+
+This is a simplified predictive relationship, not a precise biological law.
+
+**Operation 11.6 — Update the linguistic context**
+
+After identifying the actual word, incorporate it into the ongoing context.
+
+\[
+C_{t+1}=Update(C_t,w_{t+1})
+\]
+
+The next prediction will therefore be based on the newly updated context.
+
+**Operation 11.7 — Generate new expectations**
+
+Use the updated context to influence subsequent lexical recognition.
+
+For example:
+
+"The doctor examined the patient's brain..."
+
+The following word predictions will now be influenced by the newly established topic.
+
+### 11.3. Mathematical operations
+
+| Mathematical operation | Purpose |
+|---|---|
+| Conditional probability | Estimate next-word likelihood |
+| Logarithmic transformation | Calculate surprisal |
+| Information measurement | Quantify unexpectedness |
+| Weighted prediction | Estimate processing difficulty |
+| Context updating | Incorporate new linguistic information |
+| Probability redistribution | Update future expectations |
+
+**Output of Stage 11:** A word-level surprisal value and an updated contextual prediction state.
+
+---
+
+# PART IV — FINAL INTEGRATION ALGORITHM
+
+We can now combine the stages into one coordinated processing system.
+
+## Stage 12 — Lexical Evidence Integration and Final Word Selection
+
+### 12.1. Objective
+
+Combine the available information and determine the best-supported lexical interpretation.
+
+At this point, the system may have several sources of information:
+
+- Orthographic compatibility.
+- Lexical activation.
+- Interactive activation.
+- Whole-word pronunciation.
+- GPC pronunciation.
+- Connectionist semantic activation.
+- Acoustic evidence, when speech is available.
+- Cohort competition, when speech is available.
+- Bayesian word-sequence probabilities, when speech is available.
+- Word-level surprisal.
+- Contextual semantic compatibility.
+
+The system must combine these sources without treating every source as equally reliable.
+
+### 12.2. Detailed algorithmic operations
+
+**Operation 12.1 — Collect candidate evidence**
+
+For every candidate word, construct an evidence vector:
+
+\[
+E_i=
+[
+O_i,P_i,S_i,A_i,C_i
+]
+\]
+
+Where:
+
+- \(O_i\): orthographic evidence.
+- \(P_i\): phonological evidence.
+- \(S_i\): semantic evidence.
+- \(A_i\): auditory evidence.
+- \(C_i\): contextual evidence.
+
+Unavailable evidence sources are simply omitted.
+
+**Operation 12.2 — Calculate combined support**
+
+A possible computational implementation is:
+
+\[
+R_i=
+\sum_j\lambda_jE_{ij}
+-
+\sum_k\mu_kI_{ik}
+\]
+
+Where:
+
+- \(\lambda_j\) are evidence weights.
+- \(\mu_k\) are inhibition weights.
+- \(I_{ik}\) represents incompatible evidence.
+
+**Operation 12.3 — Normalize the candidate scores**
+
+Convert combined support into relative probabilities:
+
+\[
+P_i=
+\frac{e^{R_i}}
+{\sum_j e^{R_j}}
+\]
+
+This is a softmax normalization.
+
+**Operation 12.4 — Measure uncertainty**
+
+Calculate:
+
+\[
+H=-\sum_iP_i\log P_i
+\]
+
+High uncertainty means multiple interpretations remain plausible.
+
+**Operation 12.5 — Determine whether additional processing is necessary**
+
+Use both the winning candidate probability and its margin over the runner-up:
+
+\[
+\Delta=P_{\text{best}}-P_{\text{second}}
+\]
+
+If the best candidate has strong confidence and a sufficient margin, accept it.
+
+Otherwise, continue processing.
+
+**Operation 12.6 — Activate reanalysis**
+
+Depending on the source of uncertainty, the system may:
+
+- Re-examine unclear visual letters.
+- Reconsider grapheme boundaries.
+- Recalculate phoneme candidates.
+- Reevaluate lexical competitors.
+- Reassess word boundaries.
+- Consult semantic associations.
+- Update contextual expectations.
+
+**Operation 12.7 — Establish the final lexical identity**
+
+Select the best-supported candidate once the evidence is sufficiently stable.
+
+---
+
+## Stage 13 — Produce the Final Linguistic Representation
+
+The system should not output only a word string. It should produce an integrated lexical record.
+
+For example, recognizing the word `BRAIN` could yield:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="xl">BRAIN</title>
+  <badge color="success">Illustrative recognized lexical entry</badge>
+  | Representation | Output |
+  |---|---|
+  | Orthographic form | BRAIN |
+  | Grapheme sequence | B – R – AI – N |
+  | Phonological form | /breɪn/ |
+  | Lexical identity | Brain |
+  | Semantic representation | Organ of the nervous system |
+  | Morphological information | Related forms: brains, brainstem |
+  | Contextual interpretation | Determined by surrounding sentence |
+  | Recognition confidence | Estimated probability |
+  | Surprisal | Calculated from preceding context |
+</box>
+
+If reading aloud is required, the phonological representation is subsequently passed to speech-production and articulatory systems.
+
+If silent reading is required, the semantic representation can continue to higher-level language comprehension without requiring overt speech production.
+
+---
+
+# 2. Complete algorithmic sequence
+
+The following is the proposed master sequence, with the ten original mechanisms retained and the necessary connecting operations added.
+
+| Order | Processing stage | Main algorithmic responsibility |
+|---:|---|---|
+| 1 | Orthographic lexicon | Activate stored written-word representations |
+| 2 | Lexical word identification | Generate, evaluate and identify candidates |
+| 3 | Interactive Activation | Coordinate feature, letter and word activation |
+| 4 | Grapheme-to-Phoneme | Generate phonological sequences |
+| 5 | Dual-Route Cascaded | Process lexical and sublexical pronunciation pathways |
+| 6 | Connectionist Triangle | Integrate spelling, sound and meaning |
+| 7 | TRACE | Interactively recognize spoken words |
+| 8 | Cohort | Generate and progressively eliminate spoken-word candidates |
+| 9 | Shortlist B | Perform Bayesian spoken-word and boundary recognition |
+| 10 | Cross-modal convergence | Associate written and spoken forms |
+| 11 | Word-level surprisal | Calculate contextual unexpectedness |
+| 12 | Lexical evidence integration | Resolve remaining competitors |
+| 13 | Final representation | Produce the identified word and its associated information |
+
+**An important implementation qualification:** Stages 7–9 should be implemented as parallel or alternative auditory-recognition models, not as three compulsory sequential brain operations. TRACE, Cohort, and Shortlist B have different computational assumptions, including different treatments of feedback and lexical competition. Their outputs can be compared in a research implementation, but that ensemble is an engineering proposal, not an established biological mechanism.
+
+---
+
+# 3. Complete master pseudocode
+
+Below is a high-level algorithm expressing the entire architecture. It deliberately separates visual and auditory input and runs the appropriate processing pathways.
+
+<CodeBlock language="python" editable>
+def OWSR(input_data, input_mode, context, knowledge_base):
+
+    # ===============================================
+    # 1. INITIALIZE PROCESSING STATE
+    # ===============================================
+
+    state = {
+        "orthographic_candidates": [],
+        "lexical_candidates": [],
+        "phonological_candidates": [],
+        "semantic_candidates": [],
+        "auditory_candidates": [],
+        "contextual_probabilities": {},
+        "surprisal": None,
+        "confidence": 0.0,
+        "recognized_word": None,
+    }
+
+    # ===============================================
+    # 2. VISUAL PROCESSING PATHWAY
+    # ===============================================
+
+    if input_mode == "visual":
+
+        # Stage 1: Orthographic lexicon
+        orthographic_input = extract_orthographic_features(
+            input_data
+        )
+
+        state["orthographic_candidates"] = (
+            activate_orthographic_lexicon(
+                orthographic_input,
+                knowledge_base
+            )
+        )
+
+        # Stage 2: Lexical identification
+        state["lexical_candidates"] = (
+            identify_lexical_candidates(
+                state["orthographic_candidates"],
+                context
+            )
+        )
+
+        # Stage 3: Interactive activation
+        state["lexical_candidates"] = (
+            interactive_activation(
+                orthographic_input,
+                state["lexical_candidates"]
+            )
+        )
+
+        # Stage 4: Grapheme-to-phoneme conversion
+        state["phonological_candidates"] = (
+            grapheme_to_phoneme(
+                orthographic_input,
+                knowledge_base
+            )
+        )
+
+        # Stage 5: Dual-route cascaded processing
+        lexical_route = process_lexical_routes(
+            state["lexical_candidates"],
+            knowledge_base
+        )
+
+        sublexical_route = process_sublexical_route(
+            state["phonological_candidates"]
+        )
+
+        phonological_evidence = integrate_routes(
+            lexical_route,
+            sublexical_route
+        )
+
+        # Stage 6: Connectionist mapping
+        semantic_evidence = triangle_network(
+            orthographic_input,
+            phonological_evidence,
+            knowledge_base
+        )
+
+    # ===============================================
+    # 3. AUDITORY PROCESSING PATHWAY
+    # ===============================================
+
+    elif input_mode == "auditory":
+
+        acoustic_input = analyze_acoustic_signal(
+            input_data
+        )
+
+        # TRACE processing
+        trace_candidates = TRACE(
+            acoustic_input,
+            knowledge_base
+        )
+
+        # Cohort processing
+        cohort_candidates = COHORT(
+            acoustic_input,
+            knowledge_base
+        )
+
+        # Shortlist B processing
+        shortlist_candidates = SHORTLIST_B(
+            acoustic_input,
+            context,
+            knowledge_base
+        )
+
+        # Compare alternative model outputs.
+        state["auditory_candidates"] = (
+            evaluate_auditory_hypotheses(
+                trace_candidates,
+                cohort_candidates,
+                shortlist_candidates
+            )
+        )
+
+    else:
+        raise ValueError("Unsupported input mode")
+
+    # ===============================================
+    # 4. CONTEXTUAL PROCESSING
+    # ===============================================
+
+    for candidate in get_available_candidates(state):
+
+        probability = calculate_contextual_probability(
+            candidate,
+            context
+        )
+
+        state["contextual_probabilities"][
+            candidate
+        ] = probability
+
+    # ===============================================
+    # 5. WORD-LEVEL SURPRISAL
+    # ===============================================
+
+    state["surprisal"] = calculate_word_surprisal(
+        state["contextual_probabilities"],
+        observed_input=input_data
+    )
+
+    # ===============================================
+    # 6. SEMANTIC AND LEXICAL CONVERGENCE
+    # ===============================================
+
+    candidates = activate_shared_lexical_representations(
+        state,
+        context
+    )
+
+    # ===============================================
+    # 7. COMPETITION AND EVIDENCE INTEGRATION
+    # ===============================================
+
+    while True:
+
+        scores = calculate_combined_evidence(
+            candidates
+        )
+
+        probabilities = normalize_scores(scores)
+
+        best, second = select_top_candidates(
+            probabilities
+        )
+
+        confidence = calculate_confidence(
+            best,
+            second,
+            probabilities
+        )
+
+        if confidence >= recognition_threshold():
+            break
+
+        # Reanalyze unresolved evidence.
+        candidates = perform_reanalysis(
+            candidates,
+            input_data,
+            context
+        )
+
+        if reanalysis_limit_reached():
+            break
+
+    # ===============================================
+    # 8. FINAL REPRESENTATION
+    # ===============================================
+
+    state["recognized_word"] = best
+
+    state["confidence"] = confidence
+
+    state["semantic_candidates"] = retrieve_semantics(
+        best,
+        knowledge_base
+    )
+
+    state["phonological_candidates"] = retrieve_phonology(
+        best,
+        knowledge_base
+    )
+
+    return state
+</CodeBlock>
+
+The functions above are architectural interfaces, not yet implementations of the biological or computational models. Each requires its own internal algorithm and data structures.
+
+---
+
+# 4. Mathematical operations inventory
+
+An important consequence of combining these ten mechanisms is that the architecture needs several different mathematical families.
+
+These are the operations I would prioritize when developing the computational implementation.
+
+| Mathematical family | Operations | Relevant stages |
+|---|---|---|
+| Linear algebra | Matrix multiplication, weighted sums, vector transformations | 1, 3, 6, 7 |
+| Nonlinear mathematics | Sigmoid, tanh, activation functions | 1, 3, 6 |
+| Probability theory | Conditional probability, likelihood, priors, posterior probabilities | 2, 4, 9, 11 |
+| Information theory | Entropy, logarithms, surprisal | 2, 9, 11, 12 |
+| Optimization | Maximum likelihood, maximum a posteriori, candidate maximization | 2, 4, 9, 12 |
+| Dynamic systems | State updates, decay, differential equations, convergence | 3, 6, 7 |
+| Graph computation | Activation propagation, connections, inhibition | 1, 3, 6, 7 |
+| Sequence computation | Segmentation, alignment, sequence comparison | 4, 8, 9 |
+| Learning theory | Weight adjustment, error-driven learning | 6 |
+| Statistical decision theory | Confidence estimation, thresholds, uncertainty | 2, 8, 12 |
+
+## 5. Important scientific limitations
+
+Before translating this into a Python implementation, several distinctions should remain explicit.
+
+**First: Mathematical operations are computational hypotheses.** We have evidence that the brain uses neuronal activation, synaptic interactions, recurrent connectivity, and population-level processing. However, it is not established that the brain literally calculates softmax, Bayesian posteriors, or logarithmic surprisal using the exact procedures written above. These mathematical operations describe possible functional computations.
+
+**Second: DRC and the Triangle Model are competing theoretical approaches in important respects.** DRC emphasizes distinct lexical and sublexical routes. The Triangle Model explains reading using distributed, learned connections. We can incorporate both into an experimental architecture, but should preserve their different assumptions instead of claiming they constitute one proven biological mechanism. <Cite refs={["turn755539search60","turn638467view2"]}/>
+
+**Third: Word recognition is not the whole reading-comprehension process.** Identifying a word is different from understanding the syntactic relationships, propositions, and larger meaning of a sentence or paragraph.
+
+**Fourth: Language characteristics matter.** The examples above are mainly English. Grapheme-to-phoneme procedures, orthographic representations, and ambiguity-resolution requirements must be adapted to the writing system and language being processed.
+
+---
+
+# 6. Recommended architecture for a research implementation
+
+I would divide OWSR into six independently testable subsystems rather than put all the operations into one enormous function.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Recommended software architecture</title>
+  <box gap={1}>
+    **Subsystem 1 — Orthographic Recognition**
+    <text color="secondary" size="sm">Orthographic lexicon, lexical identification, Interactive Activation.</text>
+    <badge>Visual input</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 2 — Phonological Conversion**
+    <text color="secondary" size="sm">Grapheme segmentation, GPC, phonological representations.</text>
+    <badge>Visual-to-phonological</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 3 — Dual-Route and Connectionist Processing**
+    <text color="secondary" size="sm">DRC pathways and Triangle network.</text>
+    <badge>Spelling–sound–meaning</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 4 — Auditory Recognition**
+    <text color="secondary" size="sm">TRACE, Cohort and Shortlist B as distinguishable recognition models.</text>
+    <badge>Auditory input</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 5 — Predictive Language Processing**
+    <text color="secondary" size="sm">Word-level probabilities, surprisal and contextual updates.</text>
+    <badge>Context</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 6 — Shared Lexical Coordinator**
+    <text color="secondary" size="sm">Cross-modal representation, candidate competition, confidence and final selection.</text>
+    <badge color="success">Integration</badge>
+  </box>
+</box>
+
+## 7. Proposed implementation order
+
+For a scientifically controlled Python research project, I recommend implementing the subsystems in this order:
+
+| Priority | Implementation | Reason |
+|---|---|---|
+| 1 | Orthographic lexicon | Establish word representations |
+| 2 | Interactive Activation | Establish recurrent recognition and competition |
+| 3 | Lexical identification | Establish candidate selection |
+| 4 | GPC | Establish spelling-to-sound conversion |
+| 5 | DRC | Implement parallel lexical and sublexical routes |
+| 6 | Triangle Model | Implement distributed spelling–sound–meaning associations |
+| 7 | TRACE | Add interactive auditory recognition |
+| 8 | Cohort | Add onset-based lexical competition |
+| 9 | Shortlist B | Add probabilistic continuous-speech recognition |
+| 10 | Surprisal | Add contextual predictive processing |
+| 11 | Shared coordinator | Integrate the pathways and test their interactions |
+
+The order of implementation is not a claim about the chronological order in which the brain developed or executes these processes.
+
+**My most important recommendation:** Give every subsystem an explicit input contract, output contract, internal mathematical model, and independent acceptance tests. This will make it possible to determine whether the implementation actually reproduces the behavior of the particular cognitive model it is supposed to represent.
+
+That distinction is especially important for ORE: implementing a model that produces the same final word is not sufficient to demonstrate that it reproduces the model's underlying processing mechanisms.
+
+---
+
+## 8. Primary research references
+
+These are the foundational papers and reviews behind the architecture.
+
+1. McClelland & Rumelhart (1981), *An Interactive Activation Model of Context Effects in Letter Perception*. <Link ref="turn487793search88" title="Original paper"/>.
+2. Coltheart et al. (2001), *DRC: A Dual Route Cascaded Model of Visual Word Recognition and Reading Aloud*. <Link ref="turn487793search4" title="Original paper"/>.
+3. McClelland & Elman (1986), *The TRACE Model of Speech Perception*. <Link ref="turn487793search0" title="Original paper"/>.
+4. Marslen-Wilson (1987), *Functional Parallelism in Spoken Word-Recognition*. <Link ref="turn968678search0" title="Original paper"/>.
+5. Norris & McQueen (2008), *Shortlist B: A Bayesian Model of Continuous Speech Recognition*. <Link ref="turn487793search87" title="Original paper"/>.
+6. Plaut et al. (1996), *Understanding Normal and Impaired Word Reading: Computational Principles in Quasi-Regular Domains*. <Link ref="turn755539search60" title="Original paper"/>.
+7. Smith & Levy (2013), *The Effect of Word Predictability on Reading Time Is Logarithmic*. <Link ref="turn968678search5" title="Original paper"/>.
+8. Timmer & Schiller (2014), *Neural Correlates Reveal Sub-Lexical Orthography and Phonology During Reading Aloud*. <Link ref="turn218383view5" title="Research review"/>.
+9. Yeatman et al., *Reading: The Confluence of Vision and Language*. <Link ref="turn968678search4" title="Neuroscience review"/>.
+10. *The Reading Brain – Transforming Vision into Language* (2026). <Link ref="turn968678search8" title="Recent neuroscience review"/>.
+
+**The next logical research step for ORE is to turn this master algorithm into a formal, numbered operation registry:** every operation should have its own mathematical specification, neuronal-process hypothesis, dependencies, data structures, input/output contracts, and independent validation criteria. That would make this architecture suitable for systematic implementation and scientific comparison rather than merely producing words correctly.
+
+---
+
+[ASSISTANT]
+# PART II — AUDITORY SPOKEN-WORD RECOGNITION
+
+The next three models address an additional problem: identifying words from continuous speech.
+
+When somebody speaks, the brain receives a continuous acoustic signal. It does not receive neatly separated words.
+
+For example, a spoken phrase may contain:
+
+`thebrainprocessesinformation`
+
+The recognition system must identify the acoustic patterns, generate possible phonological sequences, find candidate words, and determine their boundaries.
+
+The three models provide different approaches to solving this problem.
+
+## Stage 7 — TRACE Spoken-Word Recognition
+
+**Related model: TRACE (McClelland and Elman, 1986)**
+
+<AsyncImage query="McClelland Elman TRACE speech perception model three levels acoustic features phonemes words interactive activation diagram" aspectRatio="16:9" fit="contain"/>
+
+### 7.1. Objective
+
+TRACE explains how speech sounds and words can be recognized through continuous interactions between different processing levels.
+
+The model uses three main representational levels:
+
+1. Acoustic-phonetic features.
+2. Phonemes.
+3. Words.
+
+Unlike a purely sequential system, TRACE allows activation to propagate upward and feedback to influence lower-level representations.
+
+For example, hearing an ambiguous sound may activate multiple phonemes. The possible words containing those phonemes can then send feedback that supports one interpretation.
+
+The model uses continuously updated excitation and inhibition between processing units. <Cite refs={["turn487793search0","turn487793search89"]}/>
+
+### 7.2. Detailed algorithmic operations
+
+**Operation 7.1 — Receive acoustic information**
+
+Receive the speech signal:
+
+\[
+A(t)
+\]
+
+The signal contains information changing over time.
+
+The auditory processing system extracts features associated with:
+
+- Frequency.
+- Amplitude.
+- Temporal duration.
+- Spectral patterns.
+- Formant transitions.
+- Voicing.
+- Articulation-related acoustic cues.
+
+**Operation 7.2 — Activate acoustic-phonetic feature units**
+
+Convert incoming acoustic evidence into graded feature activations.
+
+\[
+F_j(t)=g(A(t),j)
+\]
+
+Each feature detector represents a particular characteristic of the incoming acoustic signal.
+
+**Operation 7.3 — Generate competing phoneme representations**
+
+A single acoustic pattern may provide evidence for more than one phoneme.
+
+Calculate:
+
+\[
+A_{\phi_i}(t)
+\]
+
+for each possible phoneme.
+
+For example, an ambiguous sound may activate both /b/ and /p/, with different activation levels.
+
+**Operation 7.4 — Activate compatible word representations**
+
+The active phonemes send activation to lexical candidates containing those sounds.
+
+\[
+E_{w_i}(t)=
+\sum_j w_{ji}A_{\phi_j}(t)
+\]
+
+For example, the sound sequence:
+
+\[
+/k/\rightarrow /æ/\rightarrow /t/
+\]
+
+can activate the word `CAT`.
+
+**Operation 7.5 — Apply mutual word inhibition**
+
+Competing words suppress one another.
+
+\[
+I_{w_i}(t)=
+\sum_{k\neq i}v_{ki}A_{w_k}(t)
+\]
+
+If several words are compatible with the current acoustic sequence, they compete.
+
+**Operation 7.6 — Send feedback to phoneme representations**
+
+Activated word candidates provide feedback to their constituent phonemes.
+
+\[
+FB_{\phi_j}(t)=
+\sum_iq_{ij}A_{w_i}(t)
+\]
+
+This can strengthen phoneme representations compatible with the most active lexical candidates.
+
+**Operation 7.7 — Continuously update activation**
+
+A general dynamical representation is:
+
+\[
+\frac{dA_i}{dt}
+=
+-\lambda A_i
++
+E_i(t)
+-
+I_i(t)
+\]
+
+Where:
+
+- \(\lambda A_i\) represents activation decay.
+- \(E_i(t)\) represents excitatory input.
+- \(I_i(t)\) represents inhibitory input.
+
+In an actual computational implementation, the differential equation can be approximated with discrete time steps.
+
+**Operation 7.8 — Select the most strongly supported phonological interpretation**
+
+The system compares the activation of competing candidates and identifies those receiving the strongest combined evidence.
+
+### 7.3. Mathematical operations
+
+- Acoustic feature extraction.
+- Temporal signal analysis.
+- Weighted summation.
+- Excitatory propagation.
+- Lateral inhibition.
+- Recurrent feedback.
+- Continuous differential updating.
+- Competitive candidate selection.
+
+**Output of Stage 7:** A dynamically evolving collection of phonological and lexical candidates derived from spoken input.
+
+---
+
+## Stage 8 — Cohort-Based Word Recognition
+
+**Related model: Cohort Model (Marslen-Wilson)**
+
+<AsyncImage query="Cohort model spoken word recognition initial phoneme activation cohort competitors uniqueness point psychology diagram" aspectRatio="16:9" fit="contain"/>
+
+### 8.1. Objective
+
+The Cohort Model explains how the brain can identify a spoken word using its initial speech sounds.
+
+Its central idea is that the beginning of a word activates multiple candidate words that share similar initial phonological information.
+
+For example, hearing:
+
+`/kæ/`
+
+may activate:
+
+- CAT
+- CATTLE
+- CAPITAL
+- CAPTAIN
+
+As more speech arrives, candidates that no longer match the incoming sequence are progressively eliminated.
+
+The point at which a candidate becomes uniquely distinguishable is commonly discussed as its uniqueness point. <Cite refs={["turn968678search0","turn968678search12","turn968678search13"]}/>
+
+### 8.2. Detailed algorithmic operations
+
+**Operation 8.1 — Receive the first phonetic information**
+
+Let the incoming speech sequence be:
+
+\[
+S=(s_1,s_2,\ldots,s_t)
+\]
+
+Initially, only a small portion of the spoken word may be available.
+
+**Operation 8.2 — Generate the initial cohort**
+
+Search for lexical entries that share the observed initial phonetic information.
+
+\[
+C_1=
+\{w_i:\operatorname{Onset}(w_i)\sim s_1\}
+\]
+
+The symbol \(\sim\) indicates phonetic compatibility rather than necessarily exact identity.
+
+For example, the onset /b/ may activate words beginning with /b/.
+
+**Operation 8.3 — Expand the observed phonological sequence**
+
+When another phoneme arrives, update the observed sequence:
+
+\[
+S_t=(s_1,s_2,\ldots,s_t)
+\]
+
+**Operation 8.4 — Test all active candidates**
+
+For each candidate, determine how well its beginning matches the incoming sequence.
+
+A possible mathematical representation:
+
+\[
+M_i(t)=
+\sum_{j=1}^{t}
+\log P(s_j\mid w_i,j)
+\]
+
+This provides a cumulative measure of phonetic compatibility.
+
+**Operation 8.5 — Eliminate incompatible candidates**
+
+Remove candidates whose phonological patterns become sufficiently incompatible with the input.
+
+\[
+C_{t+1}
+=
+\{w_i\in C_t:M_i(t)>\tau_i\}
+\]
+
+Here, \(\tau_i\) is an illustrative compatibility criterion.
+
+**Operation 8.6 — Detect the uniqueness point**
+
+Determine whether a candidate has become distinguishable from the remaining competitors.
+
+A simplified measure is:
+
+\[
+U_t=|C_t|
+\]
+
+When:
+
+\[
+U_t=1
+\]
+
+one candidate remains.
+
+Real recognition does not always require waiting until only one word remains. Context and candidate strengths can allow recognition before complete uniqueness.
+
+**Operation 8.7 — Integrate contextual evidence**
+
+Use sentence meaning and syntactic information to support or weaken remaining candidates.
+
+For example, the sentence:
+
+"The animal began to..."
+
+may favor `CATTLE` over `CAPITAL` after hearing an ambiguous onset.
+
+**Operation 8.8 — Reanalyze if necessary**
+
+When no candidate adequately explains the signal, reconsider:
+
+- Phoneme boundaries.
+- Word boundaries.
+- Acoustic interpretation.
+- Earlier candidate eliminations.
+
+This allows the recognition process to correct an initially incorrect interpretation.
+
+### 8.3. Mathematical operations
+
+| Mathematical operation | Purpose |
+|---|---|
+| Prefix matching | Generate onset-compatible candidates |
+| Cumulative evidence | Evaluate incoming phonemes |
+| Phonetic similarity | Measure compatibility |
+| Candidate filtering | Eliminate incompatible words |
+| Set reduction | Track the remaining cohort |
+| Contextual weighting | Resolve ambiguity |
+| Uniqueness detection | Identify distinguishable words |
+
+**Output of Stage 8:** A progressively reduced set of spoken-word candidates.
+
+---
+
+## Stage 9 — Shortlist B Bayesian Recognition
+
+**Related model: Shortlist B (Norris and McQueen, 2008)**
+
+<AsyncImage query="Norris McQueen Shortlist B Bayesian model continuous speech recognition lexical candidates segmentation model figure" aspectRatio="16:9" fit="contain"/>
+
+### 9.1. Objective
+
+Shortlist B explains spoken-word recognition using Bayesian inference.
+
+It addresses an important problem: speech does not contain explicit physical gaps between every word.
+
+The recognition system must infer:
+
+1. Which words were spoken.
+2. Where one word ends and another begins.
+3. Which candidate sequence best explains the acoustic signal.
+
+Unlike the original interactive-activation Shortlist model, Shortlist B uses Bayesian probability calculations and does not rely on online lexical feedback into the acoustic processing stage.
+
+It also represents acoustic input using probabilities over multiple phoneme possibilities and temporal slices, rather than assuming an already-known sequence of discrete phonemes. <Cite refs={["turn638467view0","turn487793search1"]}/>
+
+### 9.2. Detailed algorithmic operations
+
+**Operation 9.1 — Receive probabilistic phonetic input**
+
+Represent each acoustic time segment by a distribution of phoneme possibilities.
+
+\[
+A_t=
+\{P(\phi_1\mid A_t),P(\phi_2\mid A_t),\ldots\}
+\]
+
+For example:
+
+| Phoneme | Acoustic probability |
+|---|---:|
+| /b/ | 0.65 |
+| /p/ | 0.25 |
+| /d/ | 0.10 |
+
+These numbers are illustrative.
+
+The important point is that input can be uncertain rather than representing one definite phoneme.
+
+**Operation 9.2 — Generate possible word hypotheses**
+
+Compare the incoming signal with stored lexical phonological representations.
+
+\[
+W=\{w_1,w_2,\ldots,w_n\}
+\]
+
+**Operation 9.3 — Generate possible word segmentations**
+
+A continuous speech signal may support multiple possible interpretations.
+
+For example:
+
+- `ICE CREAM`
+- `I SCREAM`
+
+Both can be considered as hypotheses when the acoustic evidence is ambiguous.
+
+Generate multiple possible sequences of words and boundaries.
+
+**Operation 9.4 — Calculate acoustic likelihood**
+
+For each proposed sequence, estimate the likelihood of observing the acoustic input if that sequence had actually been spoken.
+
+\[
+P(A\mid W)
+\]
+
+Where:
+
+- \(A\) is the acoustic signal.
+- \(W\) is a candidate word sequence.
+
+A more detailed model can use phoneme probabilities across time slices to calculate this likelihood.
+
+**Operation 9.5 — Calculate prior probability**
+
+Use the learned probability of the proposed word sequence.
+
+\[
+P(W)
+\]
+
+Common words and plausible word sequences may receive stronger prior support.
+
+**Operation 9.6 — Calculate posterior probability**
+
+Apply Bayes' rule:
+
+\[
+P(W\mid A)
+=
+\frac{P(A\mid W)P(W)}{P(A)}
+\]
+
+Since the denominator is shared across competing candidates:
+
+\[
+P(W\mid A)\propto P(A\mid W)P(W)
+\]
+
+**Operation 9.7 — Compare competing sequences**
+
+Determine which candidate sequence provides the best combination of acoustic fit and prior probability.
+
+\[
+W^*=\arg\max_W P(W\mid A)
+\]
+
+**Operation 9.8 — Select word boundaries and lexical identities**
+
+Determine the most probable segmentation of the continuous speech signal.
+
+**Operation 9.9 — Return the recognized sequence**
+
+Produce the selected sequence of lexical representations.
+
+### 9.3. Mathematical operations
+
+- Acoustic probability estimation.
+- Bayesian inference.
+- Likelihood calculation.
+- Prior probability estimation.
+- Posterior probability calculation.
+- Segmentation hypothesis generation.
+- Competitive hypothesis evaluation.
+- Maximum a posteriori selection.
+
+**Output of Stage 9:** A probabilistically selected sequence of spoken words and word boundaries.
+
+---
+
+# PART III — CONTEXTUAL AND PREDICTIVE PROCESSING
+
+## Stage 10 — Shared Cross-Modal Lexical Convergence
+
+This is an integration stage that I am adding to connect the written and spoken pathways.
+
+It is not a separate model among your ten points, but it is necessary to make the complete architecture work.
+
+### 10.1. Objective
+
+The brain must establish that visual and auditory forms can refer to the same lexical representation.
+
+Consider the word:
+
+`BRAIN`
+
+It may be encountered through:
+
+- Reading the printed word.
+- Hearing somebody pronounce it.
+- Internally recalling its pronunciation.
+- Retrieving its meaning from a previously activated concept.
+
+These input forms must be associated with compatible lexical information.
+
+### 10.2. Detailed algorithmic operations
+
+**Operation 10.1 — Receive pathway outputs**
+
+Visual pathway:
+
+\[
+O\rightarrow L_O
+\]
+
+Auditory pathway:
+
+\[
+A\rightarrow L_A
+\]
+
+Where \(L_O\) and \(L_A\) represent activated lexical candidates from orthographic and auditory processing.
+
+**Operation 10.2 — Compare lexical representations**
+
+Compare their associated phonological and lexical features.
+
+\[
+M(w)=
+\operatorname{Similarity}(L_O,L_A)
+\]
+
+**Operation 10.3 — Activate shared representations**
+
+If the representations are compatible, strengthen the corresponding lexical and semantic information.
+
+**Operation 10.4 — Resolve cross-modal conflicts**
+
+If written and spoken evidence disagree, retain uncertainty and re-evaluate the source information rather than automatically combining incompatible candidates.
+
+**Operation 10.5 — Establish a shared lexical state**
+
+Produce a representation containing:
+
+\[
+L=(O,P,S,M)
+\]
+
+Where:
+
+- \(O\): orthographic identity.
+- \(P\): phonological identity.
+- \(S\): semantic representation.
+- \(M\): morphological information.
+
+**Output of Stage 10:** A shared lexical representation accessible through written and spoken language.
+
+Importantly, auditory input is optional. During ordinary silent reading, the auditory pathway does not need to receive external speech. Phonological representations can instead become active internally.
+
+---
+
+## Stage 11 — Word-Level Surprisal
+
+**Related mechanism: Word-level Surprisal**
+
+### 11.1. Objective
+
+Word-level surprisal is a measure of how unexpected a word is given the preceding linguistic context.
+
+It comes from information theory and probabilistic language processing.
+
+The central principle is that an unexpected word provides more information than an easily predictable word.
+
+For example:
+
+"The doctor examined the patient's..."
+
+Possible next words might include:
+
+- BRAIN.
+- CAR.
+- AIRPLANE.
+
+Depending on the surrounding sentence, their probabilities will differ.
+
+Surprisal quantifies this difference.
+
+Research has demonstrated relationships between word predictability, surprisal, and the time people take to process words while reading. <Cite refs={["turn968678search5","turn755539search7"]}/>
+
+### 11.2. Detailed algorithmic operations
+
+**Operation 11.1 — Receive preceding linguistic context**
+
+Maintain a representation of the words already encountered:
+
+\[
+C_t=(w_1,w_2,\ldots,w_t)
+\]
+
+**Operation 11.2 — Generate probability distributions over possible next words**
+
+Calculate:
+
+\[
+P(w_{t+1}\mid C_t)
+\]
+
+This estimates the probability of each possible next word given the existing context.
+
+**Operation 11.3 — Receive the actual word**
+
+When the next word becomes available, retrieve its contextual probability.
+
+**Operation 11.4 — Calculate word surprisal**
+
+The central equation is:
+
+\[
+\boxed{
+S(w_{t+1})=
+-\log P(w_{t+1}\mid C_t)
+}
+\]
+
+Using base 2:
+
+\[
+S(w)=-\log_2P(w\mid C)
+\]
+
+The unit is bits.
+
+For example:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Surprisal calculation example</title>
+  <text color="secondary" size="xs">Hypothetical contextual probabilities</text>
+  <box gap={1}>
+    **Candidate A — Highly predictable**
+    <row align="center" justify="between">
+      <text color="secondary" size="sm">Probability: 0.80</text>
+      <title color="success" size="xl" tabularNums>0.32 bits</title>
+    </row>
+    <box background="surface-tertiary" radius="full" height="9px" clip>
+      <box background="#16A34A" width="80%" height="9px" radius="full"/>
+    </box>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Candidate B — Less predictable**
+    <row align="center" justify="between">
+      <text color="secondary" size="sm">Probability: 0.20</text>
+      <title color="warning" size="xl" tabularNums>2.32 bits</title>
+    </row>
+    <box background="surface-tertiary" radius="full" height="9px" clip>
+      <box background="#D97706" width="20%" height="9px" radius="full"/>
+    </box>
+  </box>
+  <divider color="subtle"/>
+  \[
+  -\log_2(0.80)=0.322
+  \]
+  \[
+  -\log_2(0.20)=2.322
+  \]
+  <text color="secondary" size="xs">The less predictable candidate has greater surprisal.</text>
+</box>
+
+**Operation 11.5 — Estimate processing difficulty**
+
+Greater surprisal is generally associated with increased processing demands.
+
+One illustrative relationship is:
+
+\[
+D_t=\alpha+\beta S(w_t)
+\]
+
+Where:
+
+- \(D_t\) represents estimated processing difficulty.
+- \(\alpha\) represents baseline difficulty.
+- \(\beta\) represents sensitivity to surprisal.
+
+This is a simplified predictive relationship, not a precise biological law.
+
+**Operation 11.6 — Update the linguistic context**
+
+After identifying the actual word, incorporate it into the ongoing context.
+
+\[
+C_{t+1}=Update(C_t,w_{t+1})
+\]
+
+The next prediction will therefore be based on the newly updated context.
+
+**Operation 11.7 — Generate new expectations**
+
+Use the updated context to influence subsequent lexical recognition.
+
+For example:
+
+"The doctor examined the patient's brain..."
+
+The following word predictions will now be influenced by the newly established topic.
+
+### 11.3. Mathematical operations
+
+| Mathematical operation | Purpose |
+|---|---|
+| Conditional probability | Estimate next-word likelihood |
+| Logarithmic transformation | Calculate surprisal |
+| Information measurement | Quantify unexpectedness |
+| Weighted prediction | Estimate processing difficulty |
+| Context updating | Incorporate new linguistic information |
+| Probability redistribution | Update future expectations |
+
+**Output of Stage 11:** A word-level surprisal value and an updated contextual prediction state.
+
+---
+
+# PART IV — FINAL INTEGRATION ALGORITHM
+
+We can now combine the stages into one coordinated processing system.
+
+## Stage 12 — Lexical Evidence Integration and Final Word Selection
+
+### 12.1. Objective
+
+Combine the available information and determine the best-supported lexical interpretation.
+
+At this point, the system may have several sources of information:
+
+- Orthographic compatibility.
+- Lexical activation.
+- Interactive activation.
+- Whole-word pronunciation.
+- GPC pronunciation.
+- Connectionist semantic activation.
+- Acoustic evidence, when speech is available.
+- Cohort competition, when speech is available.
+- Bayesian word-sequence probabilities, when speech is available.
+- Word-level surprisal.
+- Contextual semantic compatibility.
+
+The system must combine these sources without treating every source as equally reliable.
+
+### 12.2. Detailed algorithmic operations
+
+**Operation 12.1 — Collect candidate evidence**
+
+For every candidate word, construct an evidence vector:
+
+\[
+E_i=
+[
+O_i,P_i,S_i,A_i,C_i
+]
+\]
+
+Where:
+
+- \(O_i\): orthographic evidence.
+- \(P_i\): phonological evidence.
+- \(S_i\): semantic evidence.
+- \(A_i\): auditory evidence.
+- \(C_i\): contextual evidence.
+
+Unavailable evidence sources are simply omitted.
+
+**Operation 12.2 — Calculate combined support**
+
+A possible computational implementation is:
+
+\[
+R_i=
+\sum_j\lambda_jE_{ij}
+-
+\sum_k\mu_kI_{ik}
+\]
+
+Where:
+
+- \(\lambda_j\) are evidence weights.
+- \(\mu_k\) are inhibition weights.
+- \(I_{ik}\) represents incompatible evidence.
+
+**Operation 12.3 — Normalize the candidate scores**
+
+Convert combined support into relative probabilities:
+
+\[
+P_i=
+\frac{e^{R_i}}
+{\sum_j e^{R_j}}
+\]
+
+This is a softmax normalization.
+
+**Operation 12.4 — Measure uncertainty**
+
+Calculate:
+
+\[
+H=-\sum_iP_i\log P_i
+\]
+
+High uncertainty means multiple interpretations remain plausible.
+
+**Operation 12.5 — Determine whether additional processing is necessary**
+
+Use both the winning candidate probability and its margin over the runner-up:
+
+\[
+\Delta=P_{\text{best}}-P_{\text{second}}
+\]
+
+If the best candidate has strong confidence and a sufficient margin, accept it.
+
+Otherwise, continue processing.
+
+**Operation 12.6 — Activate reanalysis**
+
+Depending on the source of uncertainty, the system may:
+
+- Re-examine unclear visual letters.
+- Reconsider grapheme boundaries.
+- Recalculate phoneme candidates.
+- Reevaluate lexical competitors.
+- Reassess word boundaries.
+- Consult semantic associations.
+- Update contextual expectations.
+
+**Operation 12.7 — Establish the final lexical identity**
+
+Select the best-supported candidate once the evidence is sufficiently stable.
+
+---
+
+## Stage 13 — Produce the Final Linguistic Representation
+
+The system should not output only a word string. It should produce an integrated lexical record.
+
+For example, recognizing the word `BRAIN` could yield:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="xl">BRAIN</title>
+  <badge color="success">Illustrative recognized lexical entry</badge>
+  | Representation | Output |
+  |---|---|
+  | Orthographic form | BRAIN |
+  | Grapheme sequence | B – R – AI – N |
+  | Phonological form | /breɪn/ |
+  | Lexical identity | Brain |
+  | Semantic representation | Organ of the nervous system |
+  | Morphological information | Related forms: brains, brainstem |
+  | Contextual interpretation | Determined by surrounding sentence |
+  | Recognition confidence | Estimated probability |
+  | Surprisal | Calculated from preceding context |
+</box>
+
+If reading aloud is required, the phonological representation is subsequently passed to speech-production and articulatory systems.
+
+If silent reading is required, the semantic representation can continue to higher-level language comprehension without requiring overt speech production.
+
+---
+
+# 2. Complete algorithmic sequence
+
+The following is the proposed master sequence, with the ten original mechanisms retained and the necessary connecting operations added.
+
+| Order | Processing stage | Main algorithmic responsibility |
+|---:|---|---|
+| 1 | Orthographic lexicon | Activate stored written-word representations |
+| 2 | Lexical word identification | Generate, evaluate and identify candidates |
+| 3 | Interactive Activation | Coordinate feature, letter and word activation |
+| 4 | Grapheme-to-Phoneme | Generate phonological sequences |
+| 5 | Dual-Route Cascaded | Process lexical and sublexical pronunciation pathways |
+| 6 | Connectionist Triangle | Integrate spelling, sound and meaning |
+| 7 | TRACE | Interactively recognize spoken words |
+| 8 | Cohort | Generate and progressively eliminate spoken-word candidates |
+| 9 | Shortlist B | Perform Bayesian spoken-word and boundary recognition |
+| 10 | Cross-modal convergence | Associate written and spoken forms |
+| 11 | Word-level surprisal | Calculate contextual unexpectedness |
+| 12 | Lexical evidence integration | Resolve remaining competitors |
+| 13 | Final representation | Produce the identified word and its associated information |
+
+**An important implementation qualification:** Stages 7–9 should be implemented as parallel or alternative auditory-recognition models, not as three compulsory sequential brain operations. TRACE, Cohort, and Shortlist B have different computational assumptions, including different treatments of feedback and lexical competition. Their outputs can be compared in a research implementation, but that ensemble is an engineering proposal, not an established biological mechanism.
+
+---
+
+# 3. Complete master pseudocode
+
+Below is a high-level algorithm expressing the entire architecture. It deliberately separates visual and auditory input and runs the appropriate processing pathways.
+
+<CodeBlock language="python" editable>
+def OWSR(input_data, input_mode, context, knowledge_base):
+
+    # ===============================================
+    # 1. INITIALIZE PROCESSING STATE
+    # ===============================================
+
+    state = {
+        "orthographic_candidates": [],
+        "lexical_candidates": [],
+        "phonological_candidates": [],
+        "semantic_candidates": [],
+        "auditory_candidates": [],
+        "contextual_probabilities": {},
+        "surprisal": None,
+        "confidence": 0.0,
+        "recognized_word": None,
+    }
+
+    # ===============================================
+    # 2. VISUAL PROCESSING PATHWAY
+    # ===============================================
+
+    if input_mode == "visual":
+
+        # Stage 1: Orthographic lexicon
+        orthographic_input = extract_orthographic_features(
+            input_data
+        )
+
+        state["orthographic_candidates"] = (
+            activate_orthographic_lexicon(
+                orthographic_input,
+                knowledge_base
+            )
+        )
+
+        # Stage 2: Lexical identification
+        state["lexical_candidates"] = (
+            identify_lexical_candidates(
+                state["orthographic_candidates"],
+                context
+            )
+        )
+
+        # Stage 3: Interactive activation
+        state["lexical_candidates"] = (
+            interactive_activation(
+                orthographic_input,
+                state["lexical_candidates"]
+            )
+        )
+
+        # Stage 4: Grapheme-to-phoneme conversion
+        state["phonological_candidates"] = (
+            grapheme_to_phoneme(
+                orthographic_input,
+                knowledge_base
+            )
+        )
+
+        # Stage 5: Dual-route cascaded processing
+        lexical_route = process_lexical_routes(
+            state["lexical_candidates"],
+            knowledge_base
+        )
+
+        sublexical_route = process_sublexical_route(
+            state["phonological_candidates"]
+        )
+
+        phonological_evidence = integrate_routes(
+            lexical_route,
+            sublexical_route
+        )
+
+        # Stage 6: Connectionist mapping
+        semantic_evidence = triangle_network(
+            orthographic_input,
+            phonological_evidence,
+            knowledge_base
+        )
+
+    # ===============================================
+    # 3. AUDITORY PROCESSING PATHWAY
+    # ===============================================
+
+    elif input_mode == "auditory":
+
+        acoustic_input = analyze_acoustic_signal(
+            input_data
+        )
+
+        # TRACE processing
+        trace_candidates = TRACE(
+            acoustic_input,
+            knowledge_base
+        )
+
+        # Cohort processing
+        cohort_candidates = COHORT(
+            acoustic_input,
+            knowledge_base
+        )
+
+        # Shortlist B processing
+        shortlist_candidates = SHORTLIST_B(
+            acoustic_input,
+            context,
+            knowledge_base
+        )
+
+        # Compare alternative model outputs.
+        state["auditory_candidates"] = (
+            evaluate_auditory_hypotheses(
+                trace_candidates,
+                cohort_candidates,
+                shortlist_candidates
+            )
+        )
+
+    else:
+        raise ValueError("Unsupported input mode")
+
+    # ===============================================
+    # 4. CONTEXTUAL PROCESSING
+    # ===============================================
+
+    for candidate in get_available_candidates(state):
+
+        probability = calculate_contextual_probability(
+            candidate,
+            context
+        )
+
+        state["contextual_probabilities"][
+            candidate
+        ] = probability
+
+    # ===============================================
+    # 5. WORD-LEVEL SURPRISAL
+    # ===============================================
+
+    state["surprisal"] = calculate_word_surprisal(
+        state["contextual_probabilities"],
+        observed_input=input_data
+    )
+
+    # ===============================================
+    # 6. SEMANTIC AND LEXICAL CONVERGENCE
+    # ===============================================
+
+    candidates = activate_shared_lexical_representations(
+        state,
+        context
+    )
+
+    # ===============================================
+    # 7. COMPETITION AND EVIDENCE INTEGRATION
+    # ===============================================
+
+    while True:
+
+        scores = calculate_combined_evidence(
+            candidates
+        )
+
+        probabilities = normalize_scores(scores)
+
+        best, second = select_top_candidates(
+            probabilities
+        )
+
+        confidence = calculate_confidence(
+            best,
+            second,
+            probabilities
+        )
+
+        if confidence >= recognition_threshold():
+            break
+
+        # Reanalyze unresolved evidence.
+        candidates = perform_reanalysis(
+            candidates,
+            input_data,
+            context
+        )
+
+        if reanalysis_limit_reached():
+            break
+
+    # ===============================================
+    # 8. FINAL REPRESENTATION
+    # ===============================================
+
+    state["recognized_word"] = best
+
+    state["confidence"] = confidence
+
+    state["semantic_candidates"] = retrieve_semantics(
+        best,
+        knowledge_base
+    )
+
+    state["phonological_candidates"] = retrieve_phonology(
+        best,
+        knowledge_base
+    )
+
+    return state
+</CodeBlock>
+
+The functions above are architectural interfaces, not yet implementations of the biological or computational models. Each requires its own internal algorithm and data structures.
+
+---
+
+# 4. Mathematical operations inventory
+
+An important consequence of combining these ten mechanisms is that the architecture needs several different mathematical families.
+
+These are the operations I would prioritize when developing the computational implementation.
+
+| Mathematical family | Operations | Relevant stages |
+|---|---|---|
+| Linear algebra | Matrix multiplication, weighted sums, vector transformations | 1, 3, 6, 7 |
+| Nonlinear mathematics | Sigmoid, tanh, activation functions | 1, 3, 6 |
+| Probability theory | Conditional probability, likelihood, priors, posterior probabilities | 2, 4, 9, 11 |
+| Information theory | Entropy, logarithms, surprisal | 2, 9, 11, 12 |
+| Optimization | Maximum likelihood, maximum a posteriori, candidate maximization | 2, 4, 9, 12 |
+| Dynamic systems | State updates, decay, differential equations, convergence | 3, 6, 7 |
+| Graph computation | Activation propagation, connections, inhibition | 1, 3, 6, 7 |
+| Sequence computation | Segmentation, alignment, sequence comparison | 4, 8, 9 |
+| Learning theory | Weight adjustment, error-driven learning | 6 |
+| Statistical decision theory | Confidence estimation, thresholds, uncertainty | 2, 8, 12 |
+
+## 5. Important scientific limitations
+
+Before translating this into a Python implementation, several distinctions should remain explicit.
+
+**First: Mathematical operations are computational hypotheses.** We have evidence that the brain uses neuronal activation, synaptic interactions, recurrent connectivity, and population-level processing. However, it is not established that the brain literally calculates softmax, Bayesian posteriors, or logarithmic surprisal using the exact procedures written above. These mathematical operations describe possible functional computations.
+
+**Second: DRC and the Triangle Model are competing theoretical approaches in important respects.** DRC emphasizes distinct lexical and sublexical routes. The Triangle Model explains reading using distributed, learned connections. We can incorporate both into an experimental architecture, but should preserve their different assumptions instead of claiming they constitute one proven biological mechanism. <Cite refs={["turn755539search60","turn638467view2"]}/>
+
+**Third: Word recognition is not the whole reading-comprehension process.** Identifying a word is different from understanding the syntactic relationships, propositions, and larger meaning of a sentence or paragraph.
+
+**Fourth: Language characteristics matter.** The examples above are mainly English. Grapheme-to-phoneme procedures, orthographic representations, and ambiguity-resolution requirements must be adapted to the writing system and language being processed.
+
+---
+
+# 6. Recommended architecture for a research implementation
+
+I would divide OWSR into six independently testable subsystems rather than put all the operations into one enormous function.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Recommended software architecture</title>
+  <box gap={1}>
+    **Subsystem 1 — Orthographic Recognition**
+    <text color="secondary" size="sm">Orthographic lexicon, lexical identification, Interactive Activation.</text>
+    <badge>Visual input</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 2 — Phonological Conversion**
+    <text color="secondary" size="sm">Grapheme segmentation, GPC, phonological representations.</text>
+    <badge>Visual-to-phonological</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 3 — Dual-Route and Connectionist Processing**
+    <text color="secondary" size="sm">DRC pathways and Triangle network.</text>
+    <badge>Spelling–sound–meaning</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 4 — Auditory Recognition**
+    <text color="secondary" size="sm">TRACE, Cohort and Shortlist B as distinguishable recognition models.</text>
+    <badge>Auditory input</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 5 — Predictive Language Processing**
+    <text color="secondary" size="sm">Word-level probabilities, surprisal and contextual updates.</text>
+    <badge>Context</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Subsystem 6 — Shared Lexical Coordinator**
+    <text color="secondary" size="sm">Cross-modal representation, candidate competition, confidence and final selection.</text>
+    <badge color="success">Integration</badge>
+  </box>
+</box>
+
+## 7. Proposed implementation order
+
+For a scientifically controlled Python research project, I recommend implementing the subsystems in this order:
+
+| Priority | Implementation | Reason |
+|---|---|---|
+| 1 | Orthographic lexicon | Establish word representations |
+| 2 | Interactive Activation | Establish recurrent recognition and competition |
+| 3 | Lexical identification | Establish candidate selection |
+| 4 | GPC | Establish spelling-to-sound conversion |
+| 5 | DRC | Implement parallel lexical and sublexical routes |
+| 6 | Triangle Model | Implement distributed spelling–sound–meaning associations |
+| 7 | TRACE | Add interactive auditory recognition |
+| 8 | Cohort | Add onset-based lexical competition |
+| 9 | Shortlist B | Add probabilistic continuous-speech recognition |
+| 10 | Surprisal | Add contextual predictive processing |
+| 11 | Shared coordinator | Integrate the pathways and test their interactions |
+
+The order of implementation is not a claim about the chronological order in which the brain developed or executes these processes.
+
+**My most important recommendation:** Give every subsystem an explicit input contract, output contract, internal mathematical model, and independent acceptance tests. This will make it possible to determine whether the implementation actually reproduces the behavior of the particular cognitive model it is supposed to represent.
+
+That distinction is especially important for ORE: implementing a model that produces the same final word is not sufficient to demonstrate that it reproduces the model's underlying processing mechanisms.
+
+---
+
+## 8. Primary research references
+
+These are the foundational papers and reviews behind the architecture.
+
+1. McClelland & Rumelhart (1981), *An Interactive Activation Model of Context Effects in Letter Perception*. <Link ref="turn487793search88" title="Original paper"/>.
+2. Coltheart et al. (2001), *DRC: A Dual Route Cascaded Model of Visual Word Recognition and Reading Aloud*. <Link ref="turn487793search4" title="Original paper"/>.
+3. McClelland & Elman (1986), *The TRACE Model of Speech Perception*. <Link ref="turn487793search0" title="Original paper"/>.
+4. Marslen-Wilson (1987), *Functional Parallelism in Spoken Word-Recognition*. <Link ref="turn968678search0" title="Original paper"/>.
+5. Norris & McQueen (2008), *Shortlist B: A Bayesian Model of Continuous Speech Recognition*. <Link ref="turn487793search87" title="Original paper"/>.
+6. Plaut et al. (1996), *Understanding Normal and Impaired Word Reading: Computational Principles in Quasi-Regular Domains*. <Link ref="turn755539search60" title="Original paper"/>.
+7. Smith & Levy (2013), *The Effect of Word Predictability on Reading Time Is Logarithmic*. <Link ref="turn968678search5" title="Original paper"/>.
+8. Timmer & Schiller (2014), *Neural Correlates Reveal Sub-Lexical Orthography and Phonology During Reading Aloud*. <Link ref="turn218383view5" title="Research review"/>.
+9. Yeatman et al., *Reading: The Confluence of Vision and Language*. <Link ref="turn968678search4" title="Neuroscience review"/>.
+10. *The Reading Brain – Transforming Vision into Language* (2026). <Link ref="turn968678search8" title="Recent neuroscience review"/>.
+
+**The next logical research step for ORE is to turn this master algorithm into a formal, numbered operation registry:** every operation should have its own mathematical specification, neuronal-process hypothesis, dependencies, data structures, input/output contracts, and independent validation criteria. That would make this architecture suitable for systematic implementation and scientific comparison rather than merely producing words correctly.

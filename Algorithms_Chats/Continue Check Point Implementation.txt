@@ -1,0 +1,139 @@
+Title: Continue Check Point Implementation
+Conversation ID: 6afd9dd8-3584-83e9-ad98-6397a94e8ed0
+
+---
+
+[USER]
+from our previous chat "Check Point 11 Implementation", continue where you left off
+
+---
+
+[USER]
+from our previous chat "Check Point 11 Implementation", continue where you left off point 17
+
+---
+
+[ASSISTANT]
+I'll continue with **Point 17** in the `wizekin/ORE-Neurocomputational` repository, resuming from the existing implementation rather than starting over.
+
+The last recorded state is:
+
+- **Point:** 17
+- **Pull request:** [PR #59](https://github.com/wizekin/ORE-Neurocomputational/pull/59)
+- **Branch:** Point 17 implementation branch
+- **Latest recorded commit:** `ab291588`
+- **Files changed:** 13
+- **Status:** Pull request open; CI checks were still running.
+
+The implementation must retain all the established requirements:
+
+1. Functional and biologically inspired Python algorithms.
+2. Mathematical operations underlying the algorithms.
+3. SQLite-based annotations and logging for every function and class.
+4. Tests, documentation, and runnable examples.
+5. Inspect the pull request and its CI checks.
+6. Automatically correct failures and rerun the relevant checks.
+7. Merge only after all required checks pass.
+
+## CI investigation
+
+I rechecked all three workflows and found the same underlying failure in each:
+
+<badge color="danger">3 workflows failing</badge>
+
+| Workflow | Result |
+|---|---|
+| Python tests | Failed |
+| Hybrid embodied-amodal validation | Failed |
+| General tests | Failed |
+
+**Root cause:** `test_expertise_chunking_reduces_cost_without_discarding_exceptions` expects the chunking result to contain `original_unit_count`, but the implementation does not provide that field.
+
+The runs report 831 passing tests and one failing Point 17 test. This is a concrete implementation/test-contract mismatch, not a dependency installation failure.
+
+I will correct the underlying implementation rather than weaken the test.
+
+## Correction and current status
+
+The missing field has already been added to `knowledge.py` in a subsequent commit:
+
+`eccc45b1b8c4ca24a589d6146df6781d7bbd65d0`
+
+The correction preserves the original unit count alongside the effective chunk count. The test itself remains intact.
+
+<badge color="success">Correction committed</badge> <badge color="warning">CI running</badge>
+
+The three workflows have restarted against the corrected branch:
+
+| Workflow | Run | Current state |
+|---|---:|---|
+| Python tests | #513 | Running |
+| Hybrid validation | #83 | Running |
+| General tests | #1198 | Running |
+
+I also checked the PR review threads: no outstanding review comments were found.
+
+**Merge status:** Not merged. GitHub currently rejects enabling auto-merge because the PR is in an unstable status.
+
+[Open Point 17 PR #59](https://github.com/wizekin/ORE-Neurocomputational/pull/59)
+
+The next required action is to verify all three workflows finish successfully, investigate and correct any further failures, and merge PR #59 only after all required checks pass.
+
+---
+
+[USER]
+continue Point 18
+
+---
+
+[ASSISTANT]
+## Point 18 implementation
+
+Point 17 is merged, and Point 18 has been implemented in the same repository.
+
+<badge color="success">PR created</badge> <badge color="warning">CI in progress</badge>
+
+**Pull request:** [#60 — Implement Point 18: Attentional Failure](https://github.com/wizekin/ORE-Neurocomputational/pull/60)
+
+The implementation includes all 17 registered operations, mathematical functions, distributed biological network surrogates, a complete processing pipeline, SQLite annotations and operation logging, focused tests, documentation, and a runnable example.
+
+### Validation status
+
+<badge color="warning">Awaiting CI results</badge>
+
+The current PR head is `2ae23a1`. GitHub reports:
+
+| Check | Status |
+|---|---|
+| Python tests | Running |
+| Hybrid embodied-amodal validation | Running |
+| General tests (PR) | Running |
+| General tests (push) | Running |
+
+All four jobs completed dependency installation successfully. Their test steps have not finished, and no final test results or failure logs are available yet.
+
+**PR #60 remains open and unmerged.** I have not merged it without successful checks.
+
+[View Point 18 PR #60](https://github.com/wizekin/ORE-Neurocomputational/pull/60)
+
+---
+
+[ASSISTANT]
+### Validation status
+
+<badge color="warning">Awaiting CI results</badge>
+
+The current PR head is `2ae23a1`. GitHub reports:
+
+| Check | Status |
+|---|---|
+| Python tests | Running |
+| Hybrid embodied-amodal validation | Running |
+| General tests (PR) | Running |
+| General tests (push) | Running |
+
+All four jobs completed dependency installation successfully. Their test steps have not finished, and no final test results or failure logs are available yet.
+
+**PR #60 remains open and unmerged.** I have not merged it without successful checks.
+
+[View Point 18 PR #60](https://github.com/wizekin/ORE-Neurocomputational/pull/60)

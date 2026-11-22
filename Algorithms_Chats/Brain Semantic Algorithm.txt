@@ -1,0 +1,3152 @@
+Title: Brain Semantic Algorithm
+Conversation ID: 6af94d75-5208-83ea-ab60-9880bad0a8b3
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Semantic composition:
+Retrieve individual word concepts
+Combine word meanings
+Predicate-argument composition
+Assign thematic roles
+Construct propositions
+Represent negation and modality
+Represent quantifiers and their scope
+Represent cause and effect
+Generate sentence-level semantic representations
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Brain-Inspired Semantic Composition
+
+**Objective:** Develop a comprehensive algorithm that explains how the human brain transforms the meanings of individual words into an integrated sentence-level representation containing entities, actions, relationships, events, logical structures, and causal information.
+
+Semantic composition is the process through which the brain constructs a unified meaning from multiple words. It goes beyond simply collecting word definitions: the brain must determine how concepts relate to one another, who participates in an event, what happens, whether the event is affirmed or denied, how certain it is, and how it relates causally to other events.
+
+For example:
+
+> The child carefully opened the red box because the toy was inside.
+
+Understanding this sentence requires the brain to retrieve the concepts CHILD, OPEN, BOX, RED, CAREFULLY, TOY, and INSIDE, but also to construct a structured interpretation:
+
+- The child is the agent performing an action.
+- Opening is the event.
+- The box is the object being opened.
+- Red describes the box.
+- Carefully describes the manner of opening.
+- The toy is located inside the box.
+- The location of the toy provides an explanation for the action in the given context.
+
+Research identifies semantic composition as a dynamic process involving interactions between temporal and frontal language networks, rather than a simple one-way sequence of isolated operations. The left anterior temporal lobe, left inferior frontal gyrus, posterior temporal cortex, and angular gyrus are among the regions implicated in different aspects of semantic integration. <Cite refs={["turn166271search2","turn166271search32","turn166271search0","turn166271search7"]}/>
+
+## 1. Fundamental architecture
+
+I propose organizing semantic composition into nine interconnected processing stages.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Input: Hierarchical syntactic representation**
+
+    <text color="secondary" size="xs">Words, grammatical structure, dependencies, and sentence context</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 1 — Retrieve individual word concepts**
+
+    <text color="secondary" size="xs">Recover conceptual, perceptual, functional, and relational information.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 2 — Combine word meanings**
+
+    <text color="secondary" size="xs">Integrate concepts into phrases and larger semantic structures.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 3 — Predicate-argument composition**
+
+    <text color="secondary" size="xs">Connect predicates with the entities and concepts they require.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 4 — Assign thematic roles**
+
+    <text color="secondary" size="xs">Determine agent, patient, theme, recipient, instrument, location, and other roles.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 5 — Construct propositions**
+
+    <text color="secondary" size="xs">Create explicit representations of events, states, and relationships.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 6 — Represent negation and modality**
+
+    <text color="secondary" size="xs">Represent truth denial, possibility, necessity, obligation, and uncertainty.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 7 — Represent quantifiers and their scope**
+
+    <text color="secondary" size="xs">Determine how many entities are involved and which propositions quantifiers govern.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} gap={1}>
+    **Stage 8 — Represent cause and effect**
+
+    <text color="secondary" size="xs">Construct causal, explanatory, and predictive relationships between events.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box background="rgba(22,163,74,0.09)" radius="md" padding={3} gap={1}>
+    **Stage 9 — Generate sentence-level semantic representation**
+
+    <text color="secondary" size="xs">Unify all concepts, events, arguments, logical operators, and relationships.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box background="rgba(22,163,74,0.09)" radius="md" padding={3} align="center">
+    **Output: Integrated semantic representation**
+
+    <text color="secondary" size="xs">A structured representation of what the sentence means.</text>
+  </box>
+</box>
+
+**Important biological distinction:** This is a computational organization of the processing functions, not a claim that the brain executes nine strictly separated stages in this exact order. In reality, semantic processing is incremental, parallel, recurrent, and influenced by predictions from context and stored knowledge. <Cite refs={["turn166271search2","turn689764search1","turn166271search4"]}/>
+
+## 2. Mathematical foundation used throughout the algorithm
+
+Before describing individual operations, we need a common mathematical representation.
+
+The following mathematical tools are useful for constructing a biologically inspired model:
+
+| Mathematical operation | Purpose |
+|---|---|
+| Vector representation | Encode distributed conceptual features |
+| Weighted summation | Integrate incoming neural signals |
+| Dot product | Measure similarity between concepts |
+| Bayesian inference | Resolve uncertain interpretations |
+| Probability distributions | Preserve competing meanings |
+| Tensor products / role binding | Represent relationships between entities |
+| Graph construction | Represent events and their participants |
+| Logical operators | Represent truth, negation, and modality |
+| Set theory | Represent quantifiers and their domains |
+| Recursive functions | Represent nested semantic structures |
+| Bayesian networks | Model probabilistic causal relationships |
+| Constraint optimization | Select compatible interpretations |
+| Feedback and error correction | Revise incomplete or incompatible interpretations |
+
+These are proposed computational descriptions of possible neural computations. We should not assume that individual neurons literally calculate a Python-style dot product, execute a logical operator, or manipulate a symbolic graph. Neural populations communicate through electrical and chemical activity, and computational models use these mathematical tools to approximate their collective behavior.
+
+---
+
+# 3. Detailed algorithmic stages
+
+## Stage 1 — Retrieve individual word concepts
+
+**Objective:** Recover the conceptual information associated with every recognized word before combining it with other concepts.
+
+The brain does not retrieve only a dictionary definition. A word can activate several interconnected types of knowledge:
+
+1. Object or entity information.
+2. Actions and functional properties.
+3. Sensory and perceptual characteristics.
+4. Abstract conceptual information.
+5. Relationships with other concepts.
+6. Context-dependent meanings.
+7. Previously learned situations and experiences.
+
+For example, retrieving the concept CHILD could activate:
+
+- Human.
+- Young person.
+- Living organism.
+- Has developmental characteristics.
+- Can perform actions.
+- Can perceive objects.
+- Can participate in social relationships.
+
+The information is distributed across interacting neural systems. Semantic knowledge can involve language-related, perceptual, motor, affective, and multimodal representations. <Cite refs={["turn166271search0","turn166271search10"]}/>
+
+### Algorithmic operations
+
+**1.1 — Receive individual lexical representations**
+
+Receive the output of the lexical processing algorithm:
+
+\[
+W = \{w_1,w_2,\ldots,w_n\}
+\]
+
+Each word already has an associated lexical identity and grammatical information.
+
+Example:
+
+\[
+W=\{\text{child, carefully, opened, red, box}\}
+\]
+
+**1.2 — Activate the corresponding conceptual representation**
+
+Use the recognized word to activate its associated semantic representation.
+
+Represent a concept computationally as:
+
+\[
+C_i =
+\begin{bmatrix}
+f_1\\
+f_2\\
+\vdots\\
+f_m
+\end{bmatrix}
+\]
+
+Where:
+
+- \(C_i\) = conceptual representation.
+- \(f_j\) = one conceptual feature.
+- \(m\) = number of represented features.
+
+For example:
+
+\[
+C_{\text{box}} =
+\begin{bmatrix}
+\text{physical object}\\
+\text{container}\\
+\text{has interior}\\
+\text{has boundaries}\\
+\text{can contain objects}\\
+\text{can be opened}
+\end{bmatrix}
+\]
+
+This is a conceptual illustration; actual neural representations are not necessarily stored as explicit feature arrays.
+
+**1.3 — Activate associated conceptual knowledge**
+
+Retrieve information connected to the primary concept.
+
+For BOX:
+
+\[
+A(\text{box})=
+\{\text{container, inside, outside, object, opening}\}
+\]
+
+The activation of associated concepts can be modeled using weighted connections:
+
+\[
+a_j = \sum_{i=1}^{m} w_{ij}x_i
+\]
+
+Where:
+
+- \(x_i\) = activity of an existing conceptual representation.
+- \(w_{ij}\) = connection strength between representations.
+- \(a_j\) = resulting activation.
+
+A nonlinear function can approximate neural activation:
+
+\[
+x_j^{new}=\sigma(a_j+b_j)
+\]
+
+Here, \(\sigma\) is an activation function and \(b_j\) represents an activation bias.
+
+**1.4 — Retrieve the different semantic dimensions**
+
+Recover the relevant types of conceptual knowledge.
+
+For a word \(w_i\), define:
+
+\[
+C_i =
+(C_{\text{identity}},
+C_{\text{features}},
+C_{\text{function}},
+C_{\text{relations}},
+C_{\text{experience}})
+\]
+
+For example, OPEN activates:
+
+| Dimension | Retrieved information |
+|---|---|
+| Identity | Opening action |
+| Physical properties | Change in accessibility or enclosure |
+| Functional properties | Allows access to an interior |
+| Related concepts | Closed, open, container, access |
+| Experience | Familiar experiences of opening doors, boxes, etc. |
+
+**1.5 — Resolve competing conceptual meanings**
+
+Some words have several meanings.
+
+Example:
+
+- Bank = financial institution.
+- Bank = side of a river.
+
+The brain must estimate which meaning is relevant to the current context.
+
+A computational approximation is Bayesian inference:
+
+\[
+P(s_i\mid w,c)=
+\frac{P(c\mid s_i,w)P(s_i\mid w)}
+{P(c\mid w)}
+\]
+
+Where:
+
+- \(s_i\) = candidate meaning.
+- \(w\) = recognized word.
+- \(c\) = surrounding context.
+
+The selected meaning can be determined by:
+
+\[
+s^*=\arg\max_{s_i}P(s_i\mid w,c)
+\]
+
+However, the system should retain multiple candidates when uncertainty is high.
+
+**1.6 — Produce the conceptual output**
+
+Generate an activated conceptual representation for every word.
+
+\[
+C=\{C_1,C_2,\ldots,C_n\}
+\]
+
+Each representation should contain its conceptual identity, semantic features, associated knowledge, and uncertainty.
+
+### Possible biological operations
+
+- Excitatory activation of associated neuronal populations.
+- Inhibitory competition between incompatible semantic interpretations.
+- Distributed population coding.
+- Associative retrieval through learned synaptic connections.
+- Recurrent activation between language-related and multimodal cortical networks.
+- Context-dependent modulation of activation.
+
+<text color="secondary" size="xs">Stage 1 output: individually activated word concepts, ready for semantic integration.</text>
+
+---
+
+## Stage 2 — Combine word meanings
+
+**Objective:** Integrate individual concepts into larger conceptual structures.
+
+This is where the brain moves from understanding separate words to understanding combinations of words.
+
+Consider:
+
+> Red box.
+
+The brain must combine RED and BOX to generate the concept of a box that has the property of being red.
+
+It cannot simply place two unrelated definitions beside each other.
+
+Research on semantic composition supports incremental integration of word meanings, including interactions among the left anterior temporal lobe, inferior frontal regions, and posterior temporal regions. <Cite refs={["turn166271search2","turn166271search32"]}/>
+
+### Algorithmic operations
+
+**2.1 — Receive activated conceptual representations**
+
+Input:
+
+\[
+C_{\text{red}}, C_{\text{box}}
+\]
+
+Each representation contains its own conceptual information.
+
+**2.2 — Retrieve the syntactic relationship**
+
+Use the hierarchical syntactic structure to determine how the words are connected.
+
+For example:
+
+\[
+[\text{Adjective: Red}+
+\text{Noun: Box}]
+\]
+
+The structure indicates that RED modifies BOX.
+
+This is important because the same words can have different relationships under different grammatical structures.
+
+**2.3 — Identify the semantic composition operation**
+
+Select the appropriate type of combination.
+
+Possible operations include:
+
+| Combination | Resulting semantic operation |
+|---|---|
+| Adjective + noun | Property modification |
+| Noun + noun | Conceptual restriction or classification |
+| Verb + noun | Event-entity integration |
+| Adverb + verb | Action modification |
+| Preposition + noun phrase | Relational composition |
+| Possessive + noun | Ownership or association |
+
+For RED + BOX:
+
+\[
+F(C_{\text{red}},C_{\text{box}})
+\]
+
+The composition function \(F\) integrates the property into the object representation.
+
+**2.4 — Integrate semantic features**
+
+A simplified computational operation is:
+
+\[
+C_{\text{red box}}=
+C_{\text{box}}\oplus C_{\text{red}}
+\]
+
+The operation \(\oplus\) is a structured combination, not ordinary addition.
+
+For example:
+
+\[
+C_{\text{red box}}=
+\{
+\text{container},
+\text{physical object},
+\text{has interior},
+\text{color=red}
+\}
+\]
+
+One possible vector approximation is:
+
+\[
+C_{\text{combined}}=
+g(C_{\text{head}},C_{\text{modifier}},R)
+\]
+
+Where:
+
+- \(C_{\text{head}}\) = primary concept.
+- \(C_{\text{modifier}}\) = modifying concept.
+- \(R\) = grammatical-semantic relationship.
+- \(g\) = composition function.
+
+**2.5 — Preserve the relationship between the original concepts**
+
+Do not destroy the distinction between the box and its color.
+
+Instead, represent:
+
+\[
+\text{COLOR}(\text{box},\text{red})
+\]
+
+This is more informative than treating RED and BOX as one undifferentiated concept.
+
+**2.6 — Integrate non-adjacent conceptual elements**
+
+Some words are separated in the sentence but must be combined.
+
+Example:
+
+> The boy opened the box that his father had bought.
+
+The brain must connect BOUGHT with BOX despite intervening words and clauses.
+
+Possible computational operations:
+
+- Retrieval of maintained conceptual representations.
+- Dependency-based matching.
+- Working-memory activation.
+- Recurrent updating of semantic relationships.
+
+**2.7 — Evaluate semantic compatibility**
+
+Determine whether the combination makes conceptual sense.
+
+For example:
+
+- Red box: compatible.
+- Heavy box: compatible.
+- Box that is an emotion: generally incompatible under an ordinary literal interpretation.
+
+A simplified compatibility measure is cosine similarity:
+
+\[
+\operatorname{sim}(A,B)=
+\frac{A\cdot B}{\|A\|\|B\|}
+\]
+
+However, simple similarity is not sufficient. Semantic compatibility must also consider the type of relationship. A verb and its argument can be compatible even when their independent semantic vectors are not especially similar.
+
+A more general evaluation is:
+
+\[
+K(A,B,R)\in[0,1]
+\]
+
+Where \(K\) measures the compatibility of concepts \(A\) and \(B\) under relationship \(R\).
+
+**2.8 — Update the combined conceptual representation**
+
+Generate larger semantic structures:
+
+\[
+P_1=F(C_1,C_2)
+\]
+
+\[
+P_2=F(P_1,C_3)
+\]
+
+\[
+P_3=F(P_2,C_4)
+\]
+
+This is a recursive composition process.
+
+The system progressively builds meaning rather than waiting until the entire sentence has been received.
+
+### Possible biological operations
+
+- Convergence of activity from different conceptual populations.
+- Excitatory and inhibitory integration.
+- Recurrent signaling between temporal and frontal areas.
+- Feature binding.
+- Context-dependent synchronization of neural activity.
+- Prediction-based adjustment of incoming semantic information.
+
+<text color="secondary" size="xs">Stage 2 output: integrated phrases and conceptual combinations that retain their internal relationships.</text>
+
+---
+
+## Stage 3 — Predicate-argument composition
+
+**Objective:** Connect actions, events, and states with the entities or concepts required to complete their meanings.
+
+This stage is particularly important because a verb does not simply represent an isolated action.
+
+It often predicts what types of entities must participate in the event.
+
+For example:
+
+> The child opened the box.
+
+The verb OPEN requires a representation of an opening event and typically involves:
+
+- An entity responsible for the action.
+- An object or boundary whose state changes.
+
+Similarly:
+
+> The teacher gave the student a book.
+
+The predicate GIVE involves three major arguments:
+
+- Giver.
+- Theme being transferred.
+- Recipient.
+
+### Algorithmic operations
+
+**3.1 — Identify predicate concepts**
+
+Retrieve the predicate representation.
+
+Examples:
+
+- OPEN.
+- GIVE.
+- EAT.
+- THINK.
+- SEE.
+- FALL.
+- BELONG.
+
+Represent a predicate as:
+
+\[
+V_j=
+\left(
+\text{event type},
+\text{argument structure},
+\text{semantic constraints}
+\right)
+\]
+
+**3.2 — Retrieve the predicate's argument structure**
+
+Determine the number and nature of arguments that the predicate can accept.
+
+For example:
+
+\[
+\operatorname{OPEN}(x,y)
+\]
+
+Where:
+
+- \(x\) = agent or initiating entity in an ordinary active construction.
+- \(y\) = object being opened.
+
+For GIVE:
+
+\[
+\operatorname{GIVE}(x,y,z)
+\]
+
+Where:
+
+- \(x\) = giver.
+- \(y\) = transferred object.
+- \(z\) = recipient.
+
+For THINK:
+
+\[
+\operatorname{THINK}(x,p)
+\]
+
+Where:
+
+- \(x\) = experiencer.
+- \(p\) = content of the thought, potentially a proposition.
+
+These are conceptual argument frames. Their precise semantic roles depend on the predicate and construction.
+
+**3.3 — Create unfilled argument positions**
+
+Initially, the predicate can be represented as an incomplete frame.
+
+Example:
+
+\[
+\operatorname{OPEN}(\square,\square)
+\]
+
+The empty positions indicate arguments that have not yet been identified.
+
+**3.4 — Retrieve candidate arguments**
+
+Identify noun phrases and other constituents that could fill the required positions.
+
+For:
+
+> The child opened the box.
+
+\[
+A=\{\text{child},\text{box}\}
+\]
+
+**3.5 — Match candidate arguments with predicate slots**
+
+Evaluate which candidate belongs in which position.
+
+A computational matching score could be:
+
+\[
+S(a,r)=
+w_1S_{\text{syntax}}+
+w_2S_{\text{semantic}}+
+w_3S_{\text{context}}+
+w_4S_{\text{world}}
+\]
+
+Where:
+
+- \(a\) = candidate argument.
+- \(r\) = predicate argument slot.
+- \(S_{\text{syntax}}\) = grammatical compatibility.
+- \(S_{\text{semantic}}\) = conceptual compatibility.
+- \(S_{\text{context}}\) = contextual compatibility.
+- \(S_{\text{world}}\) = knowledge-based compatibility.
+
+**3.6 — Bind the arguments to the predicate**
+
+Construct:
+
+\[
+\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+The predicate is now connected to its participants.
+
+**3.7 — Check argument completeness**
+
+Compare the filled argument positions with the requirements of the predicate and construction.
+
+For a simplified predicate frame:
+
+\[
+\text{Completion Ratio}=
+\frac{\text{Filled required arguments}}
+{\text{Total required arguments}}
+\]
+
+If one or more arguments are missing, the system can:
+
+- Search the preceding context.
+- Search the following context.
+- Recover an implicit argument where appropriate.
+- Maintain an unresolved argument position.
+
+An omitted argument does not always mean an incomplete sentence. For example, an imperative such as "Open the door!" can have an implicit addressee as agent.
+
+**3.8 — Construct the event representation**
+
+Generate an event structure:
+
+\[
+E=
+(\text{predicate},\text{arguments})
+\]
+
+Example:
+
+\[
+E_1=
+(\operatorname{OPEN},
+\text{child},
+\text{box})
+\]
+
+### Possible mathematical operations
+
+**Argument-slot matching:**
+
+\[
+M_{ij}=\operatorname{Score}(a_i,r_j)
+\]
+
+**Best compatible assignment:**
+
+\[
+M^*=\arg\max_M
+\sum_{ij}M_{ij}S(a_i,r_j)
+\]
+
+Subject to grammatical and semantic constraints.
+
+**Probabilistic assignment:**
+
+\[
+P(r_j\mid a_i,V,C)
+\]
+
+This maintains alternative interpretations when an argument's role remains uncertain.
+
+**Role-filler binding:**
+
+A possible vector-based model uses an operation such as:
+
+\[
+B=\sum_j R_j\otimes A_j
+\]
+
+Where \(R_j\) represents a semantic relation or argument role, \(A_j\) represents an argument, and \(\otimes\) represents a binding operation.
+
+### Possible biological operations
+
+- Retrieval of predicate-associated knowledge.
+- Neural activation of expected argument categories.
+- Matching of lexical, syntactic, and conceptual information.
+- Recurrent exchange between temporal and frontal language regions.
+- Working-memory maintenance of incomplete event structures.
+- Prediction and correction of missing or incompatible arguments.
+
+The relationship between verbs and their arguments is central to sentence meaning. Neural studies have associated these processes with distributed frontotemporal activity, although the precise contribution of each region remains under investigation. <Cite refs={["turn689764search2","turn689764search7","turn166271search7"]}/>
+
+<text color="secondary" size="xs">Stage 3 output: predicates connected to their relevant arguments, forming structured event and state representations.</text>
+
+---
+
+## Stage 4 — Assign thematic roles
+
+**Objective:** Determine what semantic function each entity performs within an event.
+
+This stage answers:
+
+- Who is performing the action?
+- Who or what is affected?
+- What is being transferred?
+- Who receives something?
+- What is used to perform an action?
+- Where does the event occur?
+- What initiates an event?
+
+Thematic roles are not the same as grammatical roles.
+
+For example:
+
+> The dog chased the cat.
+
+> The cat was chased by the dog.
+
+The grammatical structures differ, but the underlying thematic relationships remain the same:
+
+- DOG = Agent.
+- CAT = Patient or Theme.
+
+### Algorithmic operations
+
+**4.1 — Retrieve the thematic-role inventory**
+
+Create a set of candidate roles.
+
+| Role | Meaning | Example |
+|---|---|---|
+| Agent | Initiates or intentionally performs an action | The boy in "The boy kicked the ball" |
+| Patient | Undergoes a change or is affected | The ball |
+| Theme | Entity participating in or undergoing an event | The book in "She carried the book" |
+| Experiencer | Experiences a mental or emotional state | The woman in "She fears spiders" |
+| Stimulus | Causes or elicits an experience | Spiders |
+| Recipient | Receives something | The student in "She gave the student a book" |
+| Beneficiary | Benefits from an event | The child in "She cooked for the child" |
+| Instrument | Used to perform an action | The knife |
+| Source | Starting point | The station in "He left the station" |
+| Goal | Destination or endpoint | The school in "He went to school" |
+| Location | Where something occurs | The garden |
+| Cause | Produces an event or state | The storm in "The storm damaged the house" |
+
+Roles are not mutually interchangeable, and some verbs require different inventories.
+
+**4.2 — Retrieve syntactic evidence**
+
+Examine:
+
+- Subject position.
+- Object position.
+- Grammatical case.
+- Prepositional phrases.
+- Passive constructions.
+- Word order.
+- Agreement and morphological information.
+
+**4.3 — Retrieve semantic evidence**
+
+For each entity, consider its characteristics:
+
+\[
+F(x)=
+\{\text{animacy, intentionality, physical properties, function, etc.}\}
+\]
+
+For example:
+
+- A human can frequently act as an intentional agent.
+- A physical object can frequently act as a theme.
+- A location can frequently be a source or destination.
+
+These are tendencies, not absolute rules.
+
+**4.4 — Evaluate thematic-role candidates**
+
+For each entity \(x\) and candidate role \(r\):
+
+\[
+S(r,x,E)=
+w_sS_{\text{syntax}}+
+w_vS_{\text{verb}}+
+w_fS_{\text{features}}+
+w_cS_{\text{context}}
+\]
+
+**4.5 — Calculate role probabilities**
+
+One possible computational model is:
+
+\[
+P(r\mid x,E,C)=
+\frac{e^{S(r,x,E)}}
+{\sum_{r'}e^{S(r',x,E)}}
+\]
+
+This softmax equation provides a probability distribution over the candidate roles.
+
+**4.6 — Select compatible role assignments**
+
+For an event:
+
+\[
+E=\operatorname{KICK}(x,y)
+\]
+
+The system evaluates:
+
+\[
+r(x)=\text{Agent}
+\]
+
+\[
+r(y)=\text{Patient}
+\]
+
+It must jointly consider the assignments rather than choosing each role independently when the roles constrain one another.
+
+**4.7 — Resolve conflicts between syntactic and semantic information**
+
+Example:
+
+> The ball was kicked by the boy.
+
+A system that assigns the Agent role automatically to the grammatical subject will make a mistake.
+
+Instead, it must use:
+
+- Passive voice.
+- The preposition BY.
+- Predicate knowledge.
+- Semantic compatibility.
+
+**4.8 — Preserve unresolved ambiguity**
+
+If an entity could reasonably have two thematic roles, maintain both interpretations until more information becomes available.
+
+### Possible biological operations
+
+- Integration of syntactic and semantic information.
+- Competitive activation of alternative role interpretations.
+- Recurrent interaction between frontotemporal networks.
+- Context-sensitive modulation of candidate roles.
+- Memory retrieval of familiar event structures.
+- Inhibitory suppression of incompatible role assignments.
+
+Thematic-role processing is well established in sentence comprehension research, but the exact timing and division of labor among brain regions remain debated. <Cite refs={["turn689764search1","turn689764search2","turn166271search9"]}/>
+
+<text color="secondary" size="xs">Stage 4 output: participants connected to their event-specific thematic roles.</text>
+
+---
+
+## Stage 5 — Construct propositions
+
+**Objective:** Transform the event structures into propositions representing states of affairs that can be evaluated, remembered, related to other propositions, and used in reasoning.
+
+A proposition is more than a collection of words. It expresses something about the world or a possible situation.
+
+Consider:
+
+> The child opened the box.
+
+The system should construct:
+
+\[
+P_1=\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+This can be interpreted as a proposition describing an opening event involving a child and a box.
+
+### Algorithmic operations
+
+**5.1 — Receive completed event structures**
+
+Input:
+
+\[
+E_1=
+(\operatorname{OPEN},
+\text{child},
+\text{box})
+\]
+
+**5.2 — Retrieve the event's semantic structure**
+
+Determine:
+
+- What type of event is involved?
+- Which entities participate?
+- What changes or state transitions occur?
+- What properties characterize the event?
+- What relationships hold between its participants?
+
+**5.3 — Instantiate the event**
+
+Create an individual event representation:
+
+\[
+e_1=\operatorname{Instantiate}(\operatorname{OPEN})
+\]
+
+Assign the participants:
+
+\[
+\operatorname{Agent}(e_1,\text{child})
+\]
+
+\[
+\operatorname{Theme}(e_1,\text{box})
+\]
+
+**5.4 — Integrate the relevant attributes**
+
+Consider:
+
+> The child carefully opened the red box.
+
+The representation becomes:
+
+\[
+\begin{aligned}
+&\operatorname{OPEN}(e_1)\\
+&\operatorname{Agent}(e_1,\text{child})\\
+&\operatorname{Theme}(e_1,\text{box})\\
+&\operatorname{COLOR}(\text{box},\text{red})\\
+&\operatorname{MANNER}(e_1,\text{carefully})
+\end{aligned}
+\]
+
+The properties of the box remain separate from the manner of the event.
+
+**5.5 — Integrate temporal information**
+
+Use tense and aspect information from grammatical processing.
+
+For example:
+
+- The child opens the box.
+- The child opened the box.
+- The child is opening the box.
+- The child had opened the box.
+
+Represent the temporal information as:
+
+\[
+T(e_1)=
+(\text{time reference},\text{aspect})
+\]
+
+Tense and aspect are not identical: tense relates the situation to a temporal reference point, while aspect concerns how the situation unfolds or is viewed.
+
+**5.6 — Construct the proposition**
+
+Combine the event, roles, properties, and relevant temporal information.
+
+\[
+P_1=
+\operatorname{OPEN}
+(
+e_1,
+\text{child},
+\text{box},
+\text{carefully},
+\text{red}
+)
+\]
+
+This is a simplified formal representation.
+
+**5.7 — Integrate state and relation propositions**
+
+Not all sentences describe actions.
+
+Examples:
+
+- The child is happy.
+- The box is red.
+- The toy is inside the box.
+- The book belongs to the teacher.
+
+Their representations might be:
+
+\[
+P_2=\operatorname{HAPPY}(\text{child})
+\]
+
+\[
+P_3=\operatorname{COLOR}(\text{box},\text{red})
+\]
+
+\[
+P_4=\operatorname{INSIDE}(\text{toy},\text{box})
+\]
+
+**5.8 — Evaluate propositional completeness**
+
+Check whether:
+
+- The predicate is available.
+- Its participants are sufficiently identified.
+- Their relationships are established.
+- Required modifiers and temporal information have been integrated.
+- Any unresolved references are maintained.
+
+### Possible mathematical operations
+
+**Predicate application:**
+
+\[
+P=V(a_1,a_2,\ldots,a_k)
+\]
+
+**Feature integration:**
+
+\[
+P=\operatorname{Compose}(E,R,F,T)
+\]
+
+**Recursive proposition construction:**
+
+\[
+P_n=F(P_{n-1},C_n)
+\]
+
+**Relational representation:**
+
+\[
+R(x,y)
+\]
+
+Where \(R\) represents relationships such as ownership, location, comparison, or possession.
+
+### Possible biological operations
+
+- Event-feature integration.
+- Maintenance of event representations in distributed neural populations.
+- Binding of participant and event information.
+- Retrieval of temporal and situational knowledge.
+- Construction of increasingly integrated semantic patterns.
+- Recurrent consolidation of conceptual information.
+
+Studies have found neural activity that increases as sentence-level meaning is progressively constructed, rather than merely reflecting isolated word meanings or syntax alone. <Cite refs={["turn689764search4","turn166271search7"]}/>
+
+<text color="secondary" size="xs">Stage 5 output: structured propositions describing events, states, and relationships.</text>
+
+---
+
+# 4. Logical and contextual semantic processing
+
+## Stage 6 — Represent negation and modality
+
+**Objective:** Modify the interpretation of propositions according to logical negation, possibility, necessity, obligation, uncertainty, and other modal meanings.
+
+This stage is important because the brain must understand not only what happens, but also whether something happens, could happen, must happen, or should happen.
+
+There are two major components.
+
+### Part A — Negation processing
+
+Consider:
+
+> The child did not open the box.
+
+The system must represent the denial of the opening proposition.
+
+\[
+P=\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+\[
+P'=\neg P
+\]
+
+The meaning is not simply that the word OPEN disappears. The proposition remains available as the content being denied.
+
+#### Algorithmic operations
+
+**6.1 — Detect negation expressions**
+
+Identify expressions such as:
+
+- Not.
+- No.
+- Never.
+- Nobody.
+- Nothing.
+- Neither.
+- Without.
+
+**6.2 — Determine the semantic target of negation**
+
+Identify exactly what is being negated.
+
+Compare:
+
+1. The child did not open the box.
+2. The child opened not the red box but the blue box.
+
+In the first case, the event proposition is negated.
+
+In the second, the negation contrasts alternative objects.
+
+**6.3 — Retrieve the proposition affected by negation**
+
+\[
+P=\operatorname{Target}(\text{NEG})
+\]
+
+**6.4 — Construct the negation operator**
+
+\[
+P'=\operatorname{NOT}(P)
+\]
+
+**6.5 — Integrate the negated representation**
+
+Preserve the original proposition as the scope of the negation.
+
+The structured representation is:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(220,70,70,0.09)" padding={2} radius="md" align="center">
+    **NEGATION**
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border padding={3} radius="md" align="center">
+    **OPEN(child, box)**
+    <text color="secondary" size="xs">Proposition being denied</text>
+  </box>
+</box>
+
+**6.6 — Evaluate the truth implications**
+
+Under classical bivalent logic:
+
+\[
+\operatorname{Truth}(\neg P)=1-\operatorname{Truth}(P)
+\]
+
+This formula is applicable to binary truth values.
+
+When reasoning with uncertain propositions, a probabilistic representation may be used:
+
+\[
+P(\neg P\mid C)=1-P(P\mid C)
+\]
+
+This assumes that \(P\) and its negation exhaust the relevant alternatives under the chosen model.
+
+Importantly, the neural representation of negation is not necessarily a simple subtraction or inhibition of the positive proposition. The mechanisms of negation processing remain an active research topic. <Cite refs={["turn689764search8","turn689764search12"]}/>
+
+### Part B — Modality processing
+
+Modality expresses the status of a proposition with respect to possibility, necessity, belief, permission, obligation, or ability.
+
+Consider:
+
+- The child may open the box.
+- The child must open the box.
+- The child can open the box.
+- The child should open the box.
+
+These sentences do not have identical meanings.
+
+#### Algorithmic operations
+
+**6.7 — Detect modal expressions**
+
+Identify words and constructions such as:
+
+| Expression | Possible interpretation |
+|---|---|
+| May | Possibility or permission |
+| Might | Possibility with uncertainty |
+| Can | Ability or possibility |
+| Must | Necessity or obligation |
+| Should | Recommendation or obligation |
+| Could | Conditional or potential ability |
+| Probably | High estimated likelihood |
+
+The interpretation depends on context.
+
+**6.8 — Classify the modal meaning**
+
+Major modal categories include:
+
+1. Epistemic modality: what is possible or necessary given available knowledge.
+2. Deontic modality: what is permitted, required, or forbidden.
+3. Dynamic modality: what an individual can or is able to do.
+4. Conditional and counterfactual modality: what would happen under an alternative condition.
+
+**6.9 — Retrieve the proposition under modality**
+
+\[
+P=\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+**6.10 — Apply the appropriate modal operator**
+
+Examples:
+
+\[
+\Diamond P = \text{Possibly }P
+\]
+
+\[
+\Box P = \text{Necessarily }P
+\]
+
+These are standard modal-logic notations.
+
+For deontic modality, we can introduce:
+
+\[
+O(P)=\text{It is obligatory that }P
+\]
+
+\[
+Perm(P)=\text{It is permitted that }P
+\]
+
+**6.11 — Integrate the modal operator with the proposition**
+
+For:
+
+> The child may open the box.
+
+\[
+P'=\operatorname{MAY}(
+\operatorname{OPEN}(\text{child},\text{box})
+)
+\]
+
+**6.12 — Estimate modal confidence**
+
+When modality involves an epistemic judgment, the brain can draw on evidence and contextual information to estimate how plausible the proposition is.
+
+One computational approximation is:
+
+\[
+P(P\mid E,C)
+\]
+
+Where:
+
+- \(E\) = available evidence.
+- \(C\) = context.
+- \(P(P\mid E,C)\) = estimated probability of the proposition.
+
+However, possibility and necessity are not simply equivalent to numerical probability. A model must keep logical modality separate from probabilistic confidence.
+
+### Possible biological operations for Stage 6
+
+- Detection and integration of grammatical negation.
+- Scope-dependent neural processing.
+- Inhibitory and excitatory interactions.
+- Retrieval of alternative possible situations.
+- Context-dependent evaluation of evidence.
+- Maintenance of competing interpretations.
+- Recurrent updating of the proposition.
+
+<text color="secondary" size="xs">Stage 6 output: propositions with explicit negation, modality, and associated uncertainty or normative status.</text>
+
+---
+
+## Stage 7 — Represent quantifiers and their scope
+
+**Objective:** Determine how many entities are involved in a proposition and how quantifying expressions influence the meaning of other parts of the sentence.
+
+This stage is essential for understanding statements such as:
+
+- Every child opened a box.
+- Some children opened boxes.
+- No child opened a box.
+- Most students passed the examination.
+- Not every student passed the examination.
+
+The system needs to determine both the quantity of entities and the logical relationships created by quantifier scope.
+
+### Part A — Quantifier detection
+
+**7.1 — Identify quantifier expressions**
+
+Retrieve quantifier-related words.
+
+| Quantifier | Meaning |
+|---|---|
+| All / Every | All members of the relevant domain |
+| Some | At least one member |
+| No | Zero members |
+| None | Zero members |
+| Most | More than half of the relevant domain |
+| Many | A relatively large number |
+| Few | A relatively small number |
+| Several | More than a small number |
+| Exactly three | A specific number |
+| Each | Every individual member considered distributively |
+
+Some quantifiers have context-dependent or vague boundaries, such as MANY and FEW.
+
+**7.2 — Identify the quantifier's domain**
+
+Determine the set of entities to which the quantifier applies.
+
+Example:
+
+> Every child opened a box.
+
+Define:
+
+\[
+D=\{\text{relevant children}\}
+\]
+
+The domain might be all children in a classroom rather than all children in the world.
+
+**7.3 — Retrieve the quantified property**
+
+Identify the predicate or property being evaluated.
+
+\[
+P(x)=\operatorname{OPENED}(x,\text{a box})
+\]
+
+**7.4 — Construct the quantifier restriction**
+
+For EVERY:
+
+\[
+\forall x\in D
+\]
+
+For SOME:
+
+\[
+\exists x\in D
+\]
+
+For NO:
+
+\[
+\neg\exists x\in D
+\]
+
+For MOST:
+
+\[
+|\{x\in D:P(x)\}|>\frac{|D|}{2}
+\]
+
+These formulas illustrate their logical meanings.
+
+### Part B — Quantifier-scope processing
+
+Quantifier scope determines which parts of a sentence are governed by which quantifiers or logical operators.
+
+Consider:
+
+> A teacher praised every student.
+
+There are two possible logical structures.
+
+**Interpretation 1: One particular teacher praised every student.**
+
+\[
+\exists x[
+Teacher(x)\land
+\forall y(Student(y)\rightarrow Praised(x,y))
+]
+\]
+
+**Interpretation 2: Every student was praised by some teacher, possibly a different teacher for each student.**
+
+\[
+\forall y[
+Student(y)\rightarrow
+\exists x(Teacher(x)\land Praised(x,y))
+]
+\]
+
+These are logically different representations.
+
+### Algorithmic operations
+
+**7.5 — Retrieve the hierarchical semantic structure**
+
+Use the syntactic dependencies to identify which expressions are related.
+
+**7.6 — Identify quantifier restrictors**
+
+For EVERY STUDENT:
+
+\[
+R(x)=Student(x)
+\]
+
+The restrictor defines the domain of entities being quantified over.
+
+**7.7 — Identify quantifier scope**
+
+Determine the proposition or predicate that the quantifier governs.
+
+For example:
+
+\[
+S(x)=Praised(\text{teacher},x)
+\]
+
+**7.8 — Construct the quantifier relationship**
+
+Combine the restrictor and scope into a generalized quantifier representation.
+
+\[
+Q(R,S)
+\]
+
+Where:
+
+- \(Q\) = quantifier.
+- \(R\) = restrictor.
+- \(S\) = scope.
+
+**7.9 — Handle nested quantifiers**
+
+When multiple quantifiers appear, construct alternative hierarchical interpretations when necessary.
+
+For example:
+
+\[
+\exists x\forall y
+\]
+
+versus:
+
+\[
+\forall y\exists x
+\]
+
+**7.10 — Interact with negation**
+
+Consider:
+
+> Not every child opened a box.
+
+A logical interpretation is:
+
+\[
+\neg\forall x[
+Child(x)\rightarrow
+\exists y(Box(y)\land Opened(x,y))
+]
+\]
+
+This means it is not the case that all children opened a box.
+
+By contrast:
+
+\[
+\forall x[
+Child(x)\rightarrow
+\neg\exists y(Box(y)\land Opened(x,y))
+]
+\]
+
+means that no child opened a box.
+
+The difference is created by scope.
+
+**7.11 — Resolve scope ambiguity**
+
+When several readings are possible, evaluate:
+
+- Grammatical structure.
+- Semantic compatibility.
+- Context.
+- Prosody in spoken language.
+- Plausibility of the interpretation.
+- Working-memory demands.
+
+A possible mathematical model is:
+
+\[
+P(I_i\mid S,C)=
+\frac{e^{Score(I_i,S,C)}}
+{\sum_j e^{Score(I_j,S,C)}}
+\]
+
+Where \(I_i\) is a candidate scope interpretation.
+
+**7.12 — Store the quantified proposition**
+
+Preserve the quantifier, its domain, restrictor, scope, and relationship to other operators.
+
+### Part C — Quantifier verification
+
+An additional operation may be necessary when the listener is explicitly asked whether a quantified statement is true.
+
+**7.13 — Retrieve the relevant entity set**
+
+\[
+D=\{x_1,x_2,\ldots,x_n\}
+\]
+
+**7.14 — Evaluate the property for the relevant entities**
+
+\[
+P(x_i)\in\{0,1\}
+\]
+
+**7.15 — Apply the quantifier's verification rule**
+
+For EVERY:
+
+\[
+\bigwedge_{i=1}^{n}P(x_i)
+\]
+
+For SOME:
+
+\[
+\bigvee_{i=1}^{n}P(x_i)
+\]
+
+For EXACTLY \(k\):
+
+\[
+\sum_{i=1}^{n}P(x_i)=k
+\]
+
+For MOST:
+
+\[
+\sum_{i=1}^{n}P(x_i)>\frac{n}{2}
+\]
+
+**7.16 — Generate the resulting interpretation or judgment**
+
+The system can produce:
+
+- True.
+- False.
+- Uncertain.
+- Insufficient information.
+
+An important qualification: ordinary sentence comprehension does not always require explicit counting or exhaustive verification of every member of a set. Quantifier processing can have different computational demands depending on whether someone is simply understanding a sentence or performing a truth-verification task. <Cite refs={["turn689764search10","turn689764search1"]}/>
+
+### Possible biological operations
+
+- Activation of conceptual categories.
+- Maintenance of quantifier scope.
+- Recursive integration of nested representations.
+- Competition between alternative scope interpretations.
+- Retrieval and maintenance of domain information.
+- Quantitative estimation where required.
+- Working-memory and cognitive-control operations.
+
+<text color="secondary" size="xs">Stage 7 output: quantified propositions with explicit semantic domains, variable bindings, and scope relationships.</text>
+
+---
+
+## Stage 8 — Represent cause and effect
+
+**Objective:** Identify and represent how one event or state produces, contributes to, or explains another event or state.
+
+This stage extends semantic processing beyond individual events.
+
+The brain must understand not only:
+
+- What happened?
+- Who participated?
+- What were the resulting states?
+
+It must also determine:
+
+- Why did it happen?
+- What caused it?
+- What resulted from it?
+- What would have happened if the cause had been different?
+
+Consider:
+
+> The drain was blocked, so the street flooded.
+
+There are two main propositions:
+
+\[
+P_1=\operatorname{BLOCKED}(\text{drain})
+\]
+
+\[
+P_2=\operatorname{FLOODED}(\text{street})
+\]
+
+The sentence establishes a causal relationship:
+
+\[
+P_1\rightarrow P_2
+\]
+
+Here, the arrow represents a causal relationship, rather than merely the logical implication that if one statement is true then another must be true.
+
+### Part A — Identify causal expressions
+
+**8.1 — Detect explicit causal linguistic markers**
+
+Retrieve words and expressions that signal causal relationships.
+
+Examples:
+
+| Expression | Function |
+|---|---|
+| Because | Introduces a reason or cause |
+| Therefore | Introduces a consequence |
+| So | Can introduce a result |
+| Consequently | Introduces a consequence |
+| Due to | Introduces a cause |
+| As a result | Introduces an outcome |
+| Caused by | Explicit causal relationship |
+| Since | Can introduce a reason |
+
+**8.2 — Detect implicit causal relationships**
+
+Not all causal relationships are explicitly marked.
+
+Example:
+
+> The child dropped the glass. It broke.
+
+The brain can infer a likely relationship between the two events from:
+
+- The order in which they occur.
+- Physical knowledge.
+- Event compatibility.
+- Previous experience.
+- The causal mechanisms associated with dropping and breaking.
+
+**8.3 — Retrieve the relevant propositions**
+
+Receive the semantic representations generated by Stage 5.
+
+\[
+P_1,P_2,\ldots,P_n
+\]
+
+**8.4 — Identify candidate cause and effect events**
+
+For each event pair, generate possible relationships:
+
+\[
+C(P_i,P_j)
+\]
+
+Where \(C\) is a candidate causal relation.
+
+**8.5 — Determine temporal relationships**
+
+Evaluate whether the proposed cause occurs before or during the relevant effect.
+
+For example:
+
+\[
+t_{\text{cause}}\leq t_{\text{effect}}
+\]
+
+Temporal precedence is useful evidence, but it is not sufficient to establish causation.
+
+### Part B — Evaluate causal compatibility
+
+**8.6 — Retrieve causal knowledge**
+
+Activate previously acquired knowledge about the participating entities and events.
+
+For BLOCKED DRAIN:
+
+- A drain permits water to flow away.
+- Blocking a drain restricts water movement.
+- Accumulating water can contribute to flooding.
+
+**8.7 — Retrieve causal mechanisms**
+
+Identify possible mechanisms linking the events.
+
+For example:
+
+\[
+\text{Blockage}
+\rightarrow
+\text{Restricted drainage}
+\rightarrow
+\text{Water accumulation}
+\rightarrow
+\text{Flooding}
+\]
+
+This generates a chain of intermediate causal states.
+
+**8.8 — Evaluate causal plausibility**
+
+A simplified score could be:
+
+\[
+S_c=
+w_1S_{\text{temporal}}+
+w_2S_{\text{mechanism}}+
+w_3S_{\text{context}}+
+w_4S_{\text{experience}}+
+w_5S_{\text{evidence}}
+\]
+
+Where each component contributes to causal plausibility.
+
+**8.9 — Compare alternative explanations**
+
+The system should avoid automatically treating the first plausible explanation as the correct one.
+
+For example, flooding may result from:
+
+- Blocked drainage.
+- Heavy rainfall.
+- River overflow.
+- Water infrastructure failure.
+
+The brain can maintain and evaluate competing explanations.
+
+### Part C — Construct causal relationships
+
+**8.10 — Create a causal connection**
+
+Represent the identified relationship:
+
+\[
+\operatorname{CAUSE}(P_1,P_2)
+\]
+
+For the previous example:
+
+\[
+\operatorname{CAUSE}
+(
+\operatorname{BLOCKED}(\text{drain}),
+\operatorname{FLOODED}(\text{street})
+)
+\]
+
+**8.11 — Add intermediate causal mechanisms**
+
+If appropriate, expand the relationship:
+
+\[
+C_1\rightarrow C_2\rightarrow C_3\rightarrow C_4
+\]
+
+This allows the system to represent causal chains rather than only direct cause-effect pairs.
+
+**8.12 — Estimate causal confidence**
+
+One possible operation is Bayesian inference:
+
+\[
+P(C\mid E)=
+\frac{P(E\mid C)P(C)}
+{P(E)}
+\]
+
+Where:
+
+- \(C\) = proposed causal explanation.
+- \(E\) = available evidence.
+- \(P(C)\) = prior plausibility.
+- \(P(E\mid C)\) = likelihood of the evidence under the proposed cause.
+
+This provides a computational description of how evidence and prior knowledge can influence causal judgments.
+
+**8.13 — Distinguish causal relationships from correlations**
+
+Suppose two events frequently happen together.
+
+\[
+P(B\mid A)>P(B)
+\]
+
+This association alone does not prove:
+
+\[
+A\operatorname{CAUSES}B
+\]
+
+A stronger causal analysis considers whether changing \(A\) would change the probability or occurrence of \(B\).
+
+A formal representation from causal inference is:
+
+\[
+P(B\mid do(A))
+\]
+
+Here, \(do(A)\) represents an intervention that sets \(A\), rather than merely observing it.
+
+The brain need not explicitly perform Pearl-style interventions. This notation is useful for an algorithm intended to distinguish causal reasoning from statistical association.
+
+**8.14 — Generate counterfactual alternatives**
+
+The brain may also consider:
+
+> What would have happened if the drain had not been blocked?
+
+Represent:
+
+\[
+P(B\mid do(A=0))
+\]
+
+Compare it with:
+
+\[
+P(B\mid do(A=1))
+\]
+
+The difference can help characterize the causal contribution of the blockage.
+
+**8.15 — Integrate the causal structure**
+
+Generate a causal graph.
+
+<box border radius="lg" padding={3} gap={2}>
+  <box border radius="md" padding={2} align="center">
+    **Drain becomes blocked**
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary" size="lg"/>
+    <text color="secondary" size="xs">Restricts water flow</text>
+  </box>
+  <box border radius="md" padding={2} align="center">
+    **Water accumulates**
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary" size="lg"/>
+    <text color="secondary" size="xs">Contributes to flooding</text>
+  </box>
+  <box border radius="md" padding={2} align="center">
+    **Street floods**
+  </box>
+  <caption color="secondary" textAlign="center">Illustrative causal mechanism, not a claim that every blockage necessarily produces flooding.</caption>
+</box>
+
+### Possible mathematical operations
+
+| Operation | Application |
+|---|---|
+| Bayesian inference | Evaluate causal explanations |
+| Conditional probability | Evaluate event dependencies |
+| Causal graph construction | Connect causes and effects |
+| Temporal ordering | Check event sequence |
+| Constraint evaluation | Check whether proposed mechanisms are plausible |
+| Counterfactual comparison | Evaluate alternative situations |
+| Recursive graph expansion | Represent intermediate causes |
+| Prediction error | Adjust expectations when outcomes differ |
+
+### Possible biological operations
+
+- Retrieval of learned event schemas.
+- Integration of temporal and conceptual information.
+- Activation of associative and causal knowledge.
+- Prediction of subsequent events.
+- Comparison of expected and observed outcomes.
+- Recurrent adjustment of candidate explanations.
+- Interaction between language networks and broader memory and reasoning systems.
+
+**Important:** Causal reasoning is not necessarily completed inside the core language network. It can recruit broader knowledge and reasoning systems. The language system supplies structured propositions and relationships that can be used by those systems.
+
+<text color="secondary" size="xs">Stage 8 output: causal, explanatory, predictive, and potentially counterfactual relationships between propositions and events.</text>
+
+---
+
+# 5. Final semantic integration
+
+## Stage 9 — Generate sentence-level semantic representations
+
+**Objective:** Integrate everything generated by the previous stages into one coherent, structured representation of the sentence.
+
+This is the final integration stage.
+
+The brain must combine:
+
+- Individual word concepts.
+- Combined phrase meanings.
+- Predicates and their arguments.
+- Thematic roles.
+- Events and states.
+- Propositions.
+- Negation.
+- Modality.
+- Quantifier domains and scope.
+- Causal relationships.
+- Contextual information.
+
+It should produce a semantic representation that can be used by subsequent cognitive processes, such as reasoning, memory, prediction, and discourse comprehension.
+
+### Algorithmic operations
+
+**9.1 — Collect all available semantic representations**
+
+Receive the outputs from Stages 1–8.
+
+\[
+S=
+\{C,P,E,R,L,Q,K\}
+\]
+
+Where:
+
+- \(C\) = concepts.
+- \(P\) = propositions.
+- \(E\) = events and states.
+- \(R\) = semantic and thematic relationships.
+- \(L\) = logical operators.
+- \(Q\) = quantifiers and their scope.
+- \(K\) = causal knowledge and relationships.
+
+**9.2 — Construct a common conceptual reference system**
+
+Ensure that the representations referring to the same entity are connected.
+
+For example:
+
+> The child opened the box. It contained a toy.
+
+The word IT refers to THE BOX.
+
+The semantic representation should not create an entirely new entity for every occurrence of the same referent.
+
+Perform reference resolution:
+
+\[
+\operatorname{Reference}(w_i)=e_j
+\]
+
+Where \(w_i\) is a referring expression and \(e_j\) is an existing entity representation.
+
+**9.3 — Construct entity nodes**
+
+For every identified entity, create a conceptual node.
+
+Example:
+
+\[
+V=\{\text{child},\text{box},\text{toy}\}
+\]
+
+Each entity receives its corresponding conceptual characteristics.
+
+**9.4 — Construct event and state nodes**
+
+Create nodes for every predicate or state.
+
+Example:
+
+\[
+E=\{
+e_1:\operatorname{OPEN},
+e_2:\operatorname{INSIDE}
+\}
+\]
+
+**9.5 — Bind thematic roles to event nodes**
+
+Connect each event to its participants.
+
+\[
+\operatorname{Agent}(e_1,\text{child})
+\]
+
+\[
+\operatorname{Theme}(e_1,\text{box})
+\]
+
+**9.6 — Integrate object properties and event modifiers**
+
+Add relevant features:
+
+\[
+\operatorname{COLOR}(\text{box},\text{red})
+\]
+
+\[
+\operatorname{MANNER}(e_1,\text{carefully})
+\]
+
+**9.7 — Integrate temporal information**
+
+Attach tense, aspect, and relevant temporal relationships to the events and states.
+
+\[
+T(e_i)=
+(\text{time},\text{aspect})
+\]
+
+**9.8 — Integrate logical operators**
+
+Attach negation and modality to their correct semantic targets.
+
+Examples:
+
+\[
+\operatorname{NOT}(P_1)
+\]
+
+\[
+\operatorname{MAY}(P_2)
+\]
+
+**9.9 — Integrate quantified expressions**
+
+Bind quantified variables to their domains and scopes.
+
+For example:
+
+\[
+\forall x\in D
+\]
+
+The quantifier should remain connected to the proposition or predicate it governs.
+
+**9.10 — Integrate causal relationships**
+
+Connect the propositions with their relevant causal or explanatory relations.
+
+\[
+\operatorname{CAUSE}(P_1,P_2)
+\]
+
+**9.11 — Perform global semantic consistency checking**
+
+Now the brain must evaluate the integrated representation.
+
+Check:
+
+1. Are the entities compatible with their assigned roles?
+2. Are the relationships consistent with the predicates?
+3. Are modifiers attached to the correct concepts?
+4. Are negation and modality applied to the correct propositions?
+5. Are quantifier domains and scopes correctly established?
+6. Are causal relationships plausible?
+7. Are the propositions compatible with available contextual knowledge?
+8. Are there unresolved ambiguities?
+
+**9.12 — Identify semantic conflicts**
+
+For example:
+
+> The stone deliberately felt sad.
+
+Under a normal literal interpretation, the sentence presents a potential conceptual conflict because deliberate emotional experience is ordinarily associated with sentient entities.
+
+The system should not necessarily reject the sentence. It should consider:
+
+- Figurative language.
+- Personification.
+- Fictional context.
+- Alternative meanings of the concepts.
+
+**9.13 — Generate alternative semantic interpretations when necessary**
+
+Instead of immediately discarding uncertain representations, maintain multiple candidates.
+
+\[
+I=\{I_1,I_2,\ldots,I_n\}
+\]
+
+Estimate:
+
+\[
+P(I_i\mid W,S,C,K)
+\]
+
+Where:
+
+- \(W\) = words.
+- \(S\) = syntactic structure.
+- \(C\) = sentence and discourse context.
+- \(K\) = stored conceptual and world knowledge.
+
+**9.14 — Select or maintain the best interpretation**
+
+The highest-probability interpretation can be selected when sufficient evidence exists:
+
+\[
+I^*=\arg\max_i P(I_i\mid W,S,C,K)
+\]
+
+When uncertainty persists, retain multiple interpretations instead of forcing an arbitrary decision.
+
+**9.15 — Generate the final semantic structure**
+
+The output should have multiple interconnected representations.
+
+I recommend generating the following:
+
+| Representation | Purpose |
+|---|---|
+| Conceptual representation | Stores the activated word concepts |
+| Entity representation | Stores the participants and their characteristics |
+| Event representation | Stores actions and states |
+| Thematic-role representation | Stores who does what to whom |
+| Propositional representation | Stores complete semantic statements |
+| Logical representation | Stores negation, modality, and quantifier scope |
+| Causal representation | Stores explanatory and predictive relationships |
+| Contextual representation | Connects the sentence with prior knowledge |
+
+**9.16 — Pass the integrated representation to downstream cognitive systems**
+
+The completed representation can be used by:
+
+- Reasoning systems.
+- Working memory.
+- Episodic memory formation.
+- Long-term semantic memory.
+- Predictive processing.
+- Discourse comprehension.
+- Decision-making.
+- Response generation.
+
+This represents the interface between sentence-level comprehension and broader cognitive processing.
+
+<text color="secondary" size="xs">Stage 9 output: a unified semantic representation that preserves the internal structure and meaning of the sentence.</text>
+
+---
+
+# 6. Complete semantic integration example
+
+Let's now run all nine stages on one sentence to see how the algorithm behaves as a unified system.
+
+**Input sentence:**
+
+> Every child may open the red box because a toy is inside it.
+
+This sentence is useful because it contains:
+
+- A quantifier.
+- A modality.
+- A predicate.
+- Two thematic participants.
+- An adjective.
+- A causal or explanatory connective.
+- A location relationship.
+- A referring expression.
+
+### Step 1 — Word concept retrieval
+
+Retrieve:
+
+\[
+\begin{aligned}
+C=\{&
+\text{every, child, may, open, the, red,}\\
+&\text{box, because, a, toy, is, inside, it
+\}
+\end{aligned}
+\]
+
+Activate the associated conceptual features.
+
+### Step 2 — Word combination
+
+Construct:
+
+\[
+NP_1=\operatorname{EVERY}(\text{child})
+\]
+
+\[
+NP_2=\operatorname{RED}(\text{box})
+\]
+
+\[
+NP_3=\operatorname{TOY}
+\]
+
+\[
+PP_1=\operatorname{INSIDE}(\text{toy},\text{box})
+\]
+
+The pronoun IT must eventually link to the box.
+
+### Step 3 — Predicate-argument composition
+
+Retrieve the OPEN predicate:
+
+\[
+\operatorname{OPEN}(x,y)
+\]
+
+Populate the argument positions:
+
+\[
+\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+### Step 4 — Thematic-role assignment
+
+\[
+\operatorname{Agent}(e_1,\text{child})
+\]
+
+\[
+\operatorname{Theme}(e_1,\text{box})
+\]
+
+For the location state:
+
+\[
+\operatorname{Theme}(e_2,\text{toy})
+\]
+
+\[
+\operatorname{Location}(e_2,\text{box})
+\]
+
+### Step 5 — Proposition construction
+
+Construct:
+
+\[
+P_1=\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+\[
+P_2=\operatorname{INSIDE}(\text{toy},\text{box})
+\]
+
+Add the property:
+
+\[
+\operatorname{RED}(\text{box})
+\]
+
+### Step 6 — Modality processing
+
+The modal MAY governs the opening proposition:
+
+\[
+P_1'=\Diamond P_1
+\]
+
+This indicates possibility, subject to the particular reading of MAY.
+
+### Step 7 — Quantifier and scope processing
+
+The quantifier EVERY applies to the child domain.
+
+Under a simplified interpretation:
+
+\[
+\forall x[
+Child(x)\rightarrow
+\Diamond OPEN(x,\text{box})
+]
+\]
+
+This represents the possibility of opening for every child.
+
+### Step 8 — Causal and explanatory integration
+
+The BECAUSE expression introduces an explanatory relationship between:
+
+\[
+P_2=\operatorname{INSIDE}(\text{toy},\text{box})
+\]
+
+And:
+
+\[
+P_1'=\Diamond\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+One possible representation is:
+
+\[
+\operatorname{EXPLAIN}(P_2,P_1')
+\]
+
+This is an explanatory relationship rather than proof of physical causation. The toy's being inside the box provides a contextual reason for opening it.
+
+### Step 9 — Final integrated representation
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Semantic graph</title>
+  <box gap={1} align="center">
+    <badge color="discovery">QUANTIFIER</badge>
+    **EVERY CHILD**
+    <text color="secondary" size="xs">Entity domain and variable</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box background="rgba(59,130,246,0.08)" padding={3} radius="md" gap={2}>
+    <badge color="info">MODAL PROPOSITION</badge>
+    **MAY OPEN**
+    <row justify="between">
+      <text color="secondary" size="sm">Agent</text>
+      **Child**
+    </row>
+    <divider color="subtle"/>
+    <row justify="between">
+      <text color="secondary" size="sm">Theme</text>
+      **Red box**
+    </row>
+    <row justify="between">
+      <text color="secondary" size="sm">Property</text>
+      **Red**
+    </row>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary"/>
+    <badge color="success">EXPLANATORY RELATION</badge>
+    <text color="secondary" size="xs">BECAUSE</text>
+  </box>
+  <box border padding={3} radius="md" gap={2}>
+    **TOY INSIDE BOX**
+    <row justify="between">
+      <text color="secondary" size="sm">Theme</text>
+      **Toy**
+    </row>
+    <divider color="subtle"/>
+    <row justify="between">
+      <text color="secondary" size="sm">Location</text>
+      **Box**
+    </row>
+  </box>
+  <caption color="secondary">The same box entity is shared across the opening event and the location proposition.</caption>
+</box>
+
+The final representation is not just a sentence embedding. It is an interconnected semantic structure containing entities, events, properties, logical operators, and relationships.
+
+---
+
+# 7. The global mathematical algorithm
+
+The nine stages should not operate as nine isolated functions. They should communicate through a shared semantic processing system.
+
+I recommend a recurrent architecture with four common computational mechanisms:
+
+1. **Activation:** Retrieve and activate relevant conceptual representations.
+2. **Integration:** Combine concepts and relationships into larger semantic structures.
+3. **Evaluation:** Assess semantic compatibility, logical structure, and contextual plausibility.
+4. **Revision:** Correct or modify earlier interpretations when new information arrives.
+
+## 7.1 — Maintain a shared semantic state
+
+At any moment, the system maintains an internal representation:
+
+\[
+S_t =
+\{
+C_t,E_t,R_t,P_t,L_t,Q_t,K_t
+\}
+\]
+
+Where:
+
+| Symbol | Internal information |
+|---|---|
+| \(C_t\) | Activated concepts |
+| \(E_t\) | Events and states |
+| \(R_t\) | Semantic and thematic relationships |
+| \(P_t\) | Propositions |
+| \(L_t\) | Logical operators |
+| \(Q_t\) | Quantifiers and scope |
+| \(K_t\) | Causal and contextual knowledge |
+
+The subscript \(t\) represents the current processing point.
+
+When a new word arrives, the system updates the existing semantic state instead of rebuilding the entire interpretation from scratch.
+
+## 7.2 — Calculate concept compatibility
+
+When two concepts must be combined, calculate their compatibility.
+
+\[
+K(C_i,C_j,R)
+\]
+
+Where \(R\) represents the intended relationship.
+
+For example:
+
+\[
+K(\text{red},\text{box},\text{property})
+\]
+
+This estimates whether RED can meaningfully modify BOX.
+
+The system can combine multiple compatibility signals:
+
+\[
+K=
+w_1K_{\text{semantic}}+
+w_2K_{\text{syntactic}}+
+w_3K_{\text{contextual}}+
+w_4K_{\text{experiential}}
+\]
+
+Weights represent the relative contribution of each source.
+
+## 7.3 — Calculate the probability of competing interpretations
+
+Suppose a sentence has several possible semantic interpretations.
+
+The system generates:
+
+\[
+I=\{I_1,I_2,\ldots,I_n\}
+\]
+
+Each interpretation receives a score based on:
+
+- Lexical meaning.
+- Syntactic structure.
+- Thematic roles.
+- Context.
+- World knowledge.
+- Logical consistency.
+- Causal plausibility.
+
+A general probabilistic formulation is:
+
+\[
+P(I_i\mid X)
+\propto
+P(X\mid I_i)P(I_i)
+\]
+
+Where \(X\) represents the available linguistic and contextual evidence.
+
+This permits the system to maintain multiple interpretations until sufficient information becomes available.
+
+## 7.4 — Perform global constraint optimization
+
+The system can also be modeled through a constraint-based energy function.
+
+\[
+\begin{aligned}
+E(I)=
+&\lambda_1 E_{\text{lexical}}+
+\lambda_2 E_{\text{composition}}\\
+&+\lambda_3 E_{\text{arguments}}+
+\lambda_4 E_{\text{roles}}\\
+&+\lambda_5 E_{\text{propositions}}+
+\lambda_6 E_{\text{logic}}\\
+&+\lambda_7 E_{\text{scope}}+
+\lambda_8 E_{\text{causal}}\\
+&+\lambda_9 E_{\text{context}}
+\end{aligned}
+\]
+
+Each \(E\) represents a measure of incompatibility or processing cost.
+
+The \(\lambda\) coefficients determine the relative importance of different constraints.
+
+An optimized interpretation is:
+
+\[
+I^*=\arg\min_I E(I)
+\]
+
+This is a useful computational architecture for an implementation. It does not imply that the biological brain explicitly calculates this exact energy equation.
+
+## 7.5 — Perform recurrent semantic updating
+
+When new information conflicts with an existing interpretation, update the semantic representation.
+
+\[
+S_{t+1}=F(S_t,W_{t+1},C,K)
+\]
+
+Where:
+
+- \(S_t\) = current semantic state.
+- \(W_{t+1}\) = newly processed word or constituent.
+- \(C\) = linguistic context.
+- \(K\) = stored knowledge.
+- \(F\) = semantic updating function.
+
+The updated state can modify:
+
+- Concept selection.
+- Predicate arguments.
+- Thematic roles.
+- Proposition structure.
+- Negation scope.
+- Quantifier scope.
+- Causal interpretation.
+
+This recurrent mechanism is especially important for ambiguous or structurally complex sentences.
+
+---
+
+# 8. Master algorithm: Complete processing sequence
+
+The following is the consolidated operation registry. It can serve as the blueprint for a future Python implementation.
+
+| Stage | Main operations | Result |
+|---|---|---|
+| 1. Word concepts | Activate, retrieve, classify, disambiguate | Concept representations |
+| 2. Semantic combination | Integrate, modify, bind, evaluate compatibility | Combined concepts |
+| 3. Predicate-argument composition | Retrieve frames, create slots, match, bind | Completed event frames |
+| 4. Thematic roles | Identify candidates, evaluate, assign, revise | Role-structured events |
+| 5. Proposition construction | Instantiate events, integrate properties and time | Propositions |
+| 6. Negation and modality | Detect operators, determine scope, integrate | Modified propositions |
+| 7. Quantification and scope | Identify domains, bind variables, resolve scope | Quantified propositions |
+| 8. Causal composition | Identify causes, infer mechanisms, evaluate effects | Causal structures |
+| 9. Sentence-level representation | Integrate, check, resolve, update | Unified semantic structure |
+
+## 8.1 — Consolidated pseudocode
+
+This is the high-level control algorithm. Each operation would eventually be implemented as an independent Python function or module.
+
+This is the main processing sequence. The individual functions would need to support incremental processing, uncertainty, alternative interpretations, and feedback rather than operating exclusively as a one-pass pipeline.
+
+---
+
+# 9. Biological architecture: How the stages might interact in the brain
+
+For a biologically inspired Python implementation, I recommend avoiding the assumption that every stage belongs to one specific brain region.
+
+Instead, model the system as interacting functional networks.
+
+<AsyncImage query="human brain lateral view neuroscience language network labeled Broca Wernicke angular gyrus anterior temporal lobe middle temporal gyrus scientific anatomical illustration" aspectRatio="16:9" width="100%" fit="contain"/>
+
+The following is a functional approximation, not a definitive one-region-per-operation map.
+
+| Brain system or region | Possible contribution |
+|---|---|
+| Anterior temporal lobe | Integration of conceptual and combinatorial semantic information |
+| Posterior middle temporal gyrus | Access to lexical-semantic information and semantic relationships |
+| Left inferior frontal gyrus | Controlled semantic processing, selection, and unification |
+| Angular gyrus | Integration of conceptual and contextual information |
+| Posterior temporal language regions | Processing and integration of linguistic relationships |
+| Distributed sensory and motor areas | Supporting perceptual and action-related conceptual knowledge |
+| Hippocampal memory system | Retrieval and relational integration of experiences |
+| Broader prefrontal systems | Supporting complex reasoning, evaluation, and cognitive control |
+
+These areas interact, and their contribution depends on the task and linguistic construction. The relationship between semantic composition and specific neural computations is still being investigated. <Cite refs={["turn166271search0","turn166271search2","turn166271search4","turn166271search7","turn689764search9"]}/>
+
+## 9.1 — Recommended modular organization
+
+For your broader neurocomputational architecture, I would organize the implementation as follows:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Semantic composition processing network</title>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} align="center">
+    **Lexical and syntactic input**
+
+    <text color="secondary" size="xs">Existing lexical-access and parsing systems</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Concept activation module**
+        <text color="secondary" size="xs">Semantic retrieval and disambiguation</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Composition module**
+        <text color="secondary" size="xs">Concept integration and feature binding</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Predicate module**
+        <text color="secondary" size="xs">Argument frames and event construction</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Thematic-role module**
+        <text color="secondary" size="xs">Agent, patient, recipient, and other roles</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Proposition module**
+        <text color="secondary" size="xs">Event and state representations</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Logical-semantic module**
+        <text color="secondary" size="xs">Negation, modality, and quantifiers</text>
+      </box>
+    </grid-item>
+    <grid-item span={2}>
+      <box border radius="md" padding={2}>
+        **Causal reasoning module**
+        <text color="secondary" size="xs">Causal inference, explanation, and predictive relations</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(22,163,74,0.08)" radius="md" padding={3} align="center">
+    **Semantic integration controller**
+
+    <text color="secondary" size="xs">Coordinates information, evaluates compatibility, manages uncertainty, and triggers revisions.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} align="center">
+    **Unified sentence-level representation**
+  </box>
+  <box background="rgba(148,163,184,0.10)" radius="md" padding={2}>
+    <row align="center" justify="center" gap={2}>
+      <icon name="repeat" color="secondary"/>
+      **Shared feedback and working-memory system**
+    </row>
+    <text color="secondary" size="xs" textAlign="center">Provides recurrent information exchange between modules and supports revision of previously constructed representations.</text>
+  </box>
+</box>
+
+## 9.2 — Biological computations worth modeling
+
+I recommend investigating and implementing these additional mathematical mechanisms across the modules:
+
+| Neural/computational mechanism | Potential implementation |
+|---|---|
+| Population coding | Distributed conceptual activation vectors |
+| Synaptic weighting | Trainable relationship strengths |
+| Excitation and inhibition | Activation and competition equations |
+| Hebbian association | Experience-dependent concept connections |
+| Attractor dynamics | Stabilization of competing interpretations |
+| Predictive processing | Expected-versus-observed semantic information |
+| Bayesian updating | Revision of conceptual probabilities |
+| Recurrent connectivity | Feedback between semantic modules |
+| Working-memory maintenance | Temporarily maintained event and proposition structures |
+| Constraint satisfaction | Joint resolution of conflicting information |
+
+One particularly important consideration is that semantic composition should operate with both distributed representations and explicit relational structures.
+
+Distributed representations help capture similarities, associations, and conceptual generalization. Explicit structures help preserve distinctions such as:
+
+\[
+\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+versus:
+
+\[
+\operatorname{OPEN}(\text{box},\text{child})
+\]
+
+Although the same concepts are involved, the event structures differ.
+
+This distinction is essential if the objective is to build a system capable of structured semantic reasoning rather than merely associating words with one another.
+
+---
+
+# 10. Recommended implementation boundaries
+
+For a practical implementation, I recommend maintaining nine separately testable modules and one shared integration controller.
+
+| Module | Suggested Python responsibility |
+|---|---|
+| `concept_retrieval` | Retrieve and disambiguate semantic concepts |
+| `semantic_composition` | Combine concepts and construct phrase meanings |
+| `predicate_arguments` | Retrieve predicates and bind argument slots |
+| `thematic_roles` | Assign semantic roles to participants |
+| `proposition_builder` | Construct structured propositions |
+| `negation_modality` | Apply logical and modal operators |
+| `quantifier_scope` | Construct quantified representations and scope trees |
+| `causal_semantics` | Construct and evaluate causal relationships |
+| `sentence_semantics` | Generate the final integrated representation |
+| `semantic_controller` | Coordinate modules and manage feedback |
+
+Each module should have:
+
+- A clearly defined input structure.
+- A clearly defined output structure.
+- Its own mathematical operations.
+- Explicit processing rules.
+- Confidence scores or uncertainty where appropriate.
+- A record of which rules it applied.
+- Diagnostic information about incompatible interpretations.
+- Tests using simple, ambiguous, and complex sentences.
+
+**My most important architectural recommendation:** Do not make `sentence_semantics` simply concatenate the outputs from all nine modules. It should construct a unified semantic graph in which concepts, predicates, arguments, roles, propositions, operators, and causal relationships are connected through typed relationships.
+
+That graph should preserve both the final meaning and the reasoning structure that produced it.
+
+## 11. Final scientific boundary
+
+There are three different levels of knowledge that should remain distinct when developing this architecture:
+
+- **Established cognitive functions:** People retrieve word meanings, combine concepts, assign thematic roles, interpret logical operators, and construct sentence-level meanings.
+- **Supported computational theories:** Distributed activation, probabilistic inference, semantic composition, working-memory integration, and constraint-based interpretation provide useful models of these operations.
+- **Implementation hypotheses:** The exact equations, optimization functions, data structures, activation thresholds, and division of computation among your Python modules are engineering proposals, not experimentally established descriptions of exact neuronal calculations.
+
+Keeping these distinctions explicit will make the resulting architecture more scientifically defensible.
+
+**The overall result:** This algorithm transforms lexical information into structured conceptual knowledge. It does not merely answer what individual words mean; it constructs a representation of who or what is involved, what happens, how the participants relate, whether the proposition is asserted or denied, how it is quantified, and why one event might be related to another.
+
+That is the central computational objective of semantic composition.
+
+---
+
+[ASSISTANT]
+---
+
+# 7. The global mathematical algorithm
+
+The nine stages should not operate as nine isolated functions. They should communicate through a shared semantic processing system.
+
+I recommend a recurrent architecture with four common computational mechanisms:
+
+1. **Activation:** Retrieve and activate relevant conceptual representations.
+2. **Integration:** Combine concepts and relationships into larger semantic structures.
+3. **Evaluation:** Assess semantic compatibility, logical structure, and contextual plausibility.
+4. **Revision:** Correct or modify earlier interpretations when new information arrives.
+
+## 7.1 — Maintain a shared semantic state
+
+At any moment, the system maintains an internal representation:
+
+\[
+S_t =
+\{
+C_t,E_t,R_t,P_t,L_t,Q_t,K_t
+\}
+\]
+
+Where:
+
+| Symbol | Internal information |
+|---|---|
+| \(C_t\) | Activated concepts |
+| \(E_t\) | Events and states |
+| \(R_t\) | Semantic and thematic relationships |
+| \(P_t\) | Propositions |
+| \(L_t\) | Logical operators |
+| \(Q_t\) | Quantifiers and scope |
+| \(K_t\) | Causal and contextual knowledge |
+
+The subscript \(t\) represents the current processing point.
+
+When a new word arrives, the system updates the existing semantic state instead of rebuilding the entire interpretation from scratch.
+
+## 7.2 — Calculate concept compatibility
+
+When two concepts must be combined, calculate their compatibility.
+
+\[
+K(C_i,C_j,R)
+\]
+
+Where \(R\) represents the intended relationship.
+
+For example:
+
+\[
+K(\text{red},\text{box},\text{property})
+\]
+
+This estimates whether RED can meaningfully modify BOX.
+
+The system can combine multiple compatibility signals:
+
+\[
+K=
+w_1K_{\text{semantic}}+
+w_2K_{\text{syntactic}}+
+w_3K_{\text{contextual}}+
+w_4K_{\text{experiential}}
+\]
+
+Weights represent the relative contribution of each source.
+
+## 7.3 — Calculate the probability of competing interpretations
+
+Suppose a sentence has several possible semantic interpretations.
+
+The system generates:
+
+\[
+I=\{I_1,I_2,\ldots,I_n\}
+\]
+
+Each interpretation receives a score based on:
+
+- Lexical meaning.
+- Syntactic structure.
+- Thematic roles.
+- Context.
+- World knowledge.
+- Logical consistency.
+- Causal plausibility.
+
+A general probabilistic formulation is:
+
+\[
+P(I_i\mid X)
+\propto
+P(X\mid I_i)P(I_i)
+\]
+
+Where \(X\) represents the available linguistic and contextual evidence.
+
+This permits the system to maintain multiple interpretations until sufficient information becomes available.
+
+## 7.4 — Perform global constraint optimization
+
+The system can also be modeled through a constraint-based energy function.
+
+\[
+\begin{aligned}
+E(I)=
+&\lambda_1 E_{\text{lexical}}+
+\lambda_2 E_{\text{composition}}\\
+&+\lambda_3 E_{\text{arguments}}+
+\lambda_4 E_{\text{roles}}\\
+&+\lambda_5 E_{\text{propositions}}+
+\lambda_6 E_{\text{logic}}\\
+&+\lambda_7 E_{\text{scope}}+
+\lambda_8 E_{\text{causal}}\\
+&+\lambda_9 E_{\text{context}}
+\end{aligned}
+\]
+
+Each \(E\) represents a measure of incompatibility or processing cost.
+
+The \(\lambda\) coefficients determine the relative importance of different constraints.
+
+An optimized interpretation is:
+
+\[
+I^*=\arg\min_I E(I)
+\]
+
+This is a useful computational architecture for an implementation. It does not imply that the biological brain explicitly calculates this exact energy equation.
+
+## 7.5 — Perform recurrent semantic updating
+
+When new information conflicts with an existing interpretation, update the semantic representation.
+
+\[
+S_{t+1}=F(S_t,W_{t+1},C,K)
+\]
+
+Where:
+
+- \(S_t\) = current semantic state.
+- \(W_{t+1}\) = newly processed word or constituent.
+- \(C\) = linguistic context.
+- \(K\) = stored knowledge.
+- \(F\) = semantic updating function.
+
+The updated state can modify:
+
+- Concept selection.
+- Predicate arguments.
+- Thematic roles.
+- Proposition structure.
+- Negation scope.
+- Quantifier scope.
+- Causal interpretation.
+
+This recurrent mechanism is especially important for ambiguous or structurally complex sentences.
+
+---
+
+# 8. Master algorithm: Complete processing sequence
+
+The following is the consolidated operation registry. It can serve as the blueprint for a future Python implementation.
+
+| Stage | Main operations | Result |
+|---|---|---|
+| 1. Word concepts | Activate, retrieve, classify, disambiguate | Concept representations |
+| 2. Semantic combination | Integrate, modify, bind, evaluate compatibility | Combined concepts |
+| 3. Predicate-argument composition | Retrieve frames, create slots, match, bind | Completed event frames |
+| 4. Thematic roles | Identify candidates, evaluate, assign, revise | Role-structured events |
+| 5. Proposition construction | Instantiate events, integrate properties and time | Propositions |
+| 6. Negation and modality | Detect operators, determine scope, integrate | Modified propositions |
+| 7. Quantification and scope | Identify domains, bind variables, resolve scope | Quantified propositions |
+| 8. Causal composition | Identify causes, infer mechanisms, evaluate effects | Causal structures |
+| 9. Sentence-level representation | Integrate, check, resolve, update | Unified semantic structure |
+
+## 8.1 — Consolidated pseudocode
+
+This is the high-level control algorithm. Each operation would eventually be implemented as an independent Python function or module.
+
+This is the main processing sequence. The individual functions would need to support incremental processing, uncertainty, alternative interpretations, and feedback rather than operating exclusively as a one-pass pipeline.
+
+---
+
+# 9. Biological architecture: How the stages might interact in the brain
+
+For a biologically inspired Python implementation, I recommend avoiding the assumption that every stage belongs to one specific brain region.
+
+Instead, model the system as interacting functional networks.
+
+<AsyncImage query="human brain lateral view neuroscience language network labeled Broca Wernicke angular gyrus anterior temporal lobe middle temporal gyrus scientific anatomical illustration" aspectRatio="16:9" width="100%" fit="contain"/>
+
+The following is a functional approximation, not a definitive one-region-per-operation map.
+
+| Brain system or region | Possible contribution |
+|---|---|
+| Anterior temporal lobe | Integration of conceptual and combinatorial semantic information |
+| Posterior middle temporal gyrus | Access to lexical-semantic information and semantic relationships |
+| Left inferior frontal gyrus | Controlled semantic processing, selection, and unification |
+| Angular gyrus | Integration of conceptual and contextual information |
+| Posterior temporal language regions | Processing and integration of linguistic relationships |
+| Distributed sensory and motor areas | Supporting perceptual and action-related conceptual knowledge |
+| Hippocampal memory system | Retrieval and relational integration of experiences |
+| Broader prefrontal systems | Supporting complex reasoning, evaluation, and cognitive control |
+
+These areas interact, and their contribution depends on the task and linguistic construction. The relationship between semantic composition and specific neural computations is still being investigated. <Cite refs={["turn166271search0","turn166271search2","turn166271search4","turn166271search7","turn689764search9"]}/>
+
+## 9.1 — Recommended modular organization
+
+For your broader neurocomputational architecture, I would organize the implementation as follows:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Semantic composition processing network</title>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} align="center">
+    **Lexical and syntactic input**
+
+    <text color="secondary" size="xs">Existing lexical-access and parsing systems</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Concept activation module**
+        <text color="secondary" size="xs">Semantic retrieval and disambiguation</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Composition module**
+        <text color="secondary" size="xs">Concept integration and feature binding</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Predicate module**
+        <text color="secondary" size="xs">Argument frames and event construction</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Thematic-role module**
+        <text color="secondary" size="xs">Agent, patient, recipient, and other roles</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Proposition module**
+        <text color="secondary" size="xs">Event and state representations</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} height="100%">
+        **Logical-semantic module**
+        <text color="secondary" size="xs">Negation, modality, and quantifiers</text>
+      </box>
+    </grid-item>
+    <grid-item span={2}>
+      <box border radius="md" padding={2}>
+        **Causal reasoning module**
+        <text color="secondary" size="xs">Causal inference, explanation, and predictive relations</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(22,163,74,0.08)" radius="md" padding={3} align="center">
+    **Semantic integration controller**
+
+    <text color="secondary" size="xs">Coordinates information, evaluates compatibility, manages uncertainty, and triggers revisions.</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary"/></box>
+  <box border radius="md" padding={3} align="center">
+    **Unified sentence-level representation**
+  </box>
+  <box background="rgba(148,163,184,0.10)" radius="md" padding={2}>
+    <row align="center" justify="center" gap={2}>
+      <icon name="repeat" color="secondary"/>
+      **Shared feedback and working-memory system**
+    </row>
+    <text color="secondary" size="xs" textAlign="center">Provides recurrent information exchange between modules and supports revision of previously constructed representations.</text>
+  </box>
+</box>
+
+## 9.2 — Biological computations worth modeling
+
+I recommend investigating and implementing these additional mathematical mechanisms across the modules:
+
+| Neural/computational mechanism | Potential implementation |
+|---|---|
+| Population coding | Distributed conceptual activation vectors |
+| Synaptic weighting | Trainable relationship strengths |
+| Excitation and inhibition | Activation and competition equations |
+| Hebbian association | Experience-dependent concept connections |
+| Attractor dynamics | Stabilization of competing interpretations |
+| Predictive processing | Expected-versus-observed semantic information |
+| Bayesian updating | Revision of conceptual probabilities |
+| Recurrent connectivity | Feedback between semantic modules |
+| Working-memory maintenance | Temporarily maintained event and proposition structures |
+| Constraint satisfaction | Joint resolution of conflicting information |
+
+One particularly important consideration is that semantic composition should operate with both distributed representations and explicit relational structures.
+
+Distributed representations help capture similarities, associations, and conceptual generalization. Explicit structures help preserve distinctions such as:
+
+\[
+\operatorname{OPEN}(\text{child},\text{box})
+\]
+
+versus:
+
+\[
+\operatorname{OPEN}(\text{box},\text{child})
+\]
+
+Although the same concepts are involved, the event structures differ.
+
+This distinction is essential if the objective is to build a system capable of structured semantic reasoning rather than merely associating words with one another.
+
+---
+
+# 10. Recommended implementation boundaries
+
+For a practical implementation, I recommend maintaining nine separately testable modules and one shared integration controller.
+
+| Module | Suggested Python responsibility |
+|---|---|
+| `concept_retrieval` | Retrieve and disambiguate semantic concepts |
+| `semantic_composition` | Combine concepts and construct phrase meanings |
+| `predicate_arguments` | Retrieve predicates and bind argument slots |
+| `thematic_roles` | Assign semantic roles to participants |
+| `proposition_builder` | Construct structured propositions |
+| `negation_modality` | Apply logical and modal operators |
+| `quantifier_scope` | Construct quantified representations and scope trees |
+| `causal_semantics` | Construct and evaluate causal relationships |
+| `sentence_semantics` | Generate the final integrated representation |
+| `semantic_controller` | Coordinate modules and manage feedback |
+
+Each module should have:
+
+- A clearly defined input structure.
+- A clearly defined output structure.
+- Its own mathematical operations.
+- Explicit processing rules.
+- Confidence scores or uncertainty where appropriate.
+- A record of which rules it applied.
+- Diagnostic information about incompatible interpretations.
+- Tests using simple, ambiguous, and complex sentences.
+
+**My most important architectural recommendation:** Do not make `sentence_semantics` simply concatenate the outputs from all nine modules. It should construct a unified semantic graph in which concepts, predicates, arguments, roles, propositions, operators, and causal relationships are connected through typed relationships.
+
+That graph should preserve both the final meaning and the reasoning structure that produced it.
+
+## 11. Final scientific boundary
+
+There are three different levels of knowledge that should remain distinct when developing this architecture:
+
+- **Established cognitive functions:** People retrieve word meanings, combine concepts, assign thematic roles, interpret logical operators, and construct sentence-level meanings.
+- **Supported computational theories:** Distributed activation, probabilistic inference, semantic composition, working-memory integration, and constraint-based interpretation provide useful models of these operations.
+- **Implementation hypotheses:** The exact equations, optimization functions, data structures, activation thresholds, and division of computation among your Python modules are engineering proposals, not experimentally established descriptions of exact neuronal calculations.
+
+Keeping these distinctions explicit will make the resulting architecture more scientifically defensible.
+
+**The overall result:** This algorithm transforms lexical information into structured conceptual knowledge. It does not merely answer what individual words mean; it constructs a representation of who or what is involved, what happens, how the participants relate, whether the proposition is asserted or denied, how it is quantified, and why one event might be related to another.
+
+That is the central computational objective of semantic composition.

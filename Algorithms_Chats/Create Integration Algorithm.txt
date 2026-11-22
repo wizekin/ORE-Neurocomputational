@@ -1,0 +1,1074 @@
+Title: Create Integration Algorithm
+Conversation ID: 6aff2dd3-ff74-83e9-913b-f2e3b9207eef
+
+---
+
+[USER]
+Create an algorithm for implementing the following task from our previous chat "ORE Integration Plan." [https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416](https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416):  &#x20;
+
+## **Task 4. Connect sensory processing to language and semantic understanding**
+
+Priority 4
+
+This should be the first complete cooperative cognitive pathway.
+
+I recommend the following progression:
+
+## **First integrated cognitive pathway**
+
+1. **Visual perception**
+
+   `ore_n1` → `ore_n2`
+
+   Extract visual evidence and organize its structure.
+2. **Orthographic recognition**
+
+   `ore_n3` → `ore_n4`
+
+   Generate grapheme hypotheses, incorporate attention and regulate uncertainty.
+3. **Lexical identification**
+
+   `ore_lexical_access`
+
+   Identify candidate words, morphology and phonological information.
+4. **Syntactic interpretation**
+
+   `ore_syntax`
+
+   Identify sentence structure, dependencies and grammatical relationships.
+5. **Semantic interpretation**
+
+   `ore_semantic_composition`
+
+   Construct propositions, concepts, relations and semantic graphs.
+6. **Contextual interpretation**
+
+   `ore_discourse` and relevant knowledge systems.
+
+   Relate the proposition to its context and prior information.
+7. **Cognitive integration**
+
+   `ore_working_memory` and the main coordinator.
+
+   Maintain relevant information, compare alternatives and decide whether the interpretation is sufficiently supported.
+
+One important implementation detail: N9 expects localized visual patches or supplied grapheme evidence. It does not silently provide a complete character-segmentation system for arbitrary raw images.
+
+Therefore, we need an explicit localization/segmentation interface before claiming that the entire raw-image-to-understanding pathway is connected.
+
+---
+
+[ASSISTANT]
+# Task 4 — Connect sensory processing to language and semantic understanding
+
+<row align="center" gap={2}>
+  <badge color="success">Priority 4</badge>
+  <badge color="info">Integration algorithm</badge>
+  <badge color="secondary">ORE-Neurocomputational</badge>
+</row>
+
+## 1. Objective
+
+Connect the existing ORE modules into the first complete cooperative cognitive pathway, allowing the system to receive a visual text image, recognize its characters, identify words, understand sentence structure, construct meaning, and integrate the resulting interpretation into working memory.
+
+The intended pathway is:
+
+The most important architectural decision is that **we should use the existing ORE N9 as the internal coordinator of the visual-language pathway**, while the main brain coordinator developed in Task 3 handles higher-level coordination with the other brain systems.
+
+We should not create another monolithic processing pipeline.
+
+---
+
+## 2. Repository inspection: What already exists?
+
+I inspected the current `main` branch of [wizekin/ORE-Neurocomputational](https://github.com/wizekin/ORE-Neurocomputational).
+
+The repository already contains much of the functionality needed for this task.
+
+| Cognitive function | Existing implementation | Integration status |
+|---|---|---|
+| Early visual processing | `ore_n1` | Implemented |
+| Visual structural processing | `ore_n2` | Implemented |
+| Grapheme recognition | `ore_n3` | Implemented, requires trained model |
+| Attention and precision | `ore_n4` | Implemented |
+| Lexical identification | `ore_lexical_access` | Implemented |
+| Syntax | `ore_syntax` | Implemented |
+| Semantic composition | `ore_semantic_composition` | Implemented |
+| Context and discourse | `ore_discourse` | Implemented |
+| Working memory | `ore_working_memory` | Implemented |
+| Internal pathway coordinator | `ore_n9` | Implemented |
+| Main shared workspace | `ore_workspace` | Implemented |
+| Universal module communication | `ore_contracts` | Implemented |
+
+There are three important gaps.
+
+### Gap 1: Raw-image localization and segmentation
+
+N9 expects already-localized visual patches.
+
+Its `N9Patch` accepts:
+
+- A localized grayscale image.
+- An existing N2 result.
+- A feature vector.
+- A supplied grapheme probability distribution.
+
+It does not automatically divide an arbitrary full image containing text into words and individual characters.
+
+This means the first new component must be an explicit localization and segmentation interface.
+
+See [N9 contracts](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/contracts.py).
+
+### Gap 2: Complete runtime configuration
+
+N9 can invoke N1 and N2 automatically for image patches.
+
+However:
+
+- N3 must be fitted before recognition.
+- N4 is invoked when an N3 result is available.
+- Lexical access needs an explicitly configured language lexicon.
+- Semantic composition needs compatible concepts and predicate frames.
+- Syntax and discourse need their respective adapters.
+
+N9 deliberately reports missing components instead of inventing their outputs.
+
+Importantly, completing all 120 N9 operations does not necessarily mean all cognitive modules actually executed.
+
+### Gap 3: Working-memory integration
+
+N9 currently handles visual, orthographic, lexical, syntactic, semantic, and discourse processing.
+
+However, it does not directly invoke `ore_working_memory`.
+
+We need an explicit output adapter that converts N9 interpretations into working-memory inputs.
+
+Relevant implementation files:
+
+- [N9 pipeline](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/pipeline.py)
+- [N9 language adapters](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/adapters.py)
+- [Working-memory contracts](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_working_memory/contracts.py)
+
+---
+
+# 3. The implementation algorithm
+
+I recommend implementing this task in eight sequential phases.
+
+## Phase 1. Create an explicit visual localization and segmentation interface
+
+<badge color="success">First implementation priority</badge>
+
+**New package:**
+
+### 1.1. Input
+
+The localization module receives:
+
+The image is the original text image, not an individual character.
+
+### 1.2. Locate text regions
+
+Implement the following algorithm:
+
+1. Normalize the image into a consistent grayscale representation.
+2. Identify candidate text regions.
+3. Detect horizontal or vertical text lines according to the script profile.
+4. Identify word boundaries.
+5. Generate candidate character boundaries.
+6. Extract individual character patches.
+7. Preserve their original image coordinates.
+
+For the first implementation, use a constrained printed-text segmentation algorithm.
+
+Do not assume that connected-component segmentation will correctly separate every character. Connected letters, overlapping characters, handwriting, and ligatures require additional processing.
+
+### 1.3. Construct localized patches
+
+Each localized character should have:
+
+### 1.4. Preserve segmentation alternatives
+
+An important addition is to allow multiple plausible segmentations.
+
+For example:
+
+The module should preserve the alternative hypotheses and their confidence values instead of silently committing to an uncertain segmentation.
+
+For the first working version, the main coordinator can evaluate a bounded number of segmentation hypotheses independently.
+
+### 1.5. Produce the N9 input interface
+
+Convert each localized glyph into an existing `N9Patch`.
+
+Generate `word_spans` using the positions of the glyphs belonging to each word.
+
+For example:
+
+These are ordered, non-overlapping intervals using the existing N9 convention `[start, end)`.
+
+The result becomes:
+
+**Important:** N9 requires individual image patches of at least 4 × 4 pixels and consistent feature dimensions for N3 recognition. The localization adapter must therefore perform controlled crop normalization while preserving the original coordinates and source information.
+
+---
+
+## Phase 2. Connect visual processing to orthographic recognition
+
+This phase connects:
+
+The existing implementations should be reused, not rewritten.
+
+### 2.1. N1 processing
+
+For every localized glyph:
+
+N1 performs:
+
+- Photoreceptor adaptation.
+- Retinal ON/OFF separation.
+- Center-surround processing.
+- LGN contrast normalization.
+- V1 orientation processing.
+- Spatial pooling.
+- Feature construction.
+
+The output contains visual feature representations and intermediate stage results.
+
+### 2.2. N2 processing
+
+Pass the N1 result to N2:
+
+N2 constructs structural visual evidence, including:
+
+- Contours.
+- Boundaries.
+- Junctions.
+- Curvature.
+- Shape fragments.
+- Figure-ground organization.
+- Structural representations.
+
+The important distinction is:
+
+N1 extracts lower-level visual features, whereas N2 organizes these features into more structured visual representations.
+
+### 2.3. Prepare N3 training
+
+N3 requires labeled visual patches.
+
+For training, use:
+
+Collect multiple examples of each grapheme.
+
+Then:
+
+This produces:
+
+- Grapheme population prototypes.
+- Feature normalization statistics.
+- Unigram probabilities.
+- Forward transition probabilities.
+- Reverse transition probabilities.
+- A frozen model fingerprint.
+
+The transition model is particularly important because graphemes are not recognized independently of their neighboring characters.
+
+### 2.4. Execute orthographic recognition
+
+For an incoming sequence, create:
+
+Then execute:
+
+The output retains:
+
+### 2.5. Integrate N4
+
+N9 already provides the connection to N4.
+
+N4 receives the N3 result and computes:
+
+- Visual uncertainty.
+- Prediction errors.
+- Task relevance.
+- Attention allocation.
+- Sensory precision.
+- Prior precision.
+- Attended grapheme beliefs.
+
+This means N4 should not be implemented again inside the new segmentation package.
+
+**Phase 2 completion condition:** Every localized glyph must produce a valid N1/N2 output, and the fitted N3/N4 pathway must produce structured grapheme distributions with preserved uncertainty.
+
+---
+
+## Phase 3. Connect orthographic recognition to lexical identification
+
+**Existing package:** `ore_lexical_access`
+
+This phase transforms grapheme sequences into word-level candidates.
+
+The connection should use the existing:
+
+from:
+
+`ore_n9/adapters.py`
+
+### Algorithm
+
+1. Receive N9's grapheme probability matrix.
+2. Retrieve the previously generated `word_spans`.
+3. Decode grapheme candidates within each word boundary.
+4. Preserve alternatives from the recognition stage.
+5. Submit each candidate word to lexical access.
+6. Retrieve lexical identity candidates.
+7. Retrieve morphological hypotheses.
+8. Retrieve phonological representations.
+9. Retrieve grammatical categories.
+10. Retrieve meaning candidates and semantic features.
+
+Example:
+
+<box border radius="lg" padding={3} gap={3}>
+  **Orthographic input**
+
+  <title size="2xl" textAlign="center">M U S I C I A N</title>
+  <divider color="subtle"/>
+  **Lexical output**
+
+  
+  <text color="secondary" size="xs">Illustrative output, not an assertion of measured model accuracy.</text>
+</box>
+
+The actual output should retain the alternatives, lexical entry identifiers, provenance, and visual score.
+
+### Important implementation requirement
+
+The lexical inventory and semantic concepts must share compatible concept identifiers.
+
+Otherwise, lexical access might correctly identify a word while semantic composition fails to retrieve its intended concept.
+
+---
+
+## Phase 4. Connect lexical identification to syntactic interpretation
+
+**Existing package:** `ore_syntax`
+
+Use:
+
+The algorithm should transfer the lexical output into:
+
+The syntax processor should then:
+
+1. Identify possible grammatical categories.
+2. Evaluate ambiguous grammatical categories.
+3. Construct phrase candidates.
+4. Construct constituency structures.
+5. Construct dependency relationships.
+6. Identify predicate-argument structures.
+7. Identify supported thematic roles.
+8. Preserve unresolved dependencies.
+9. Calculate syntactic consistency.
+10. Return alternative parses where appropriate.
+
+Example:
+
+**Input sentence:**
+
+> The musician tunes the instrument.
+
+**Expected syntactic organization:**
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **Sentence (S)**
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(16,185,129,0.10)" radius="md" padding={2} align="center">
+        **Noun Phrase (NP)**
+        <text color="secondary" size="xs">The musician</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(245,158,11,0.10)" radius="md" padding={2} align="center">
+        **Verb Phrase (VP)**
+        <text color="secondary" size="xs">tunes the instrument</text>
+      </box>
+    </grid-item>
+  </grid>
+  <text color="secondary" size="xs" textAlign="center">Simplified representation of sentence structure.</text>
+</box>
+
+The syntactic output is passed to semantic composition.
+
+One limitation to preserve: the current `ore_syntax` implementation contains English-specific lexical and grammatical rules. The first implementation should therefore use an explicitly configured language profile rather than assume that changing its `language` parameter automatically provides multilingual parsing.
+
+---
+
+## Phase 5. Connect syntax to semantic composition
+
+**Existing package:** `ore_semantic_composition`
+
+This is one of the most important connections.
+
+Syntax identifies relationships between words.
+
+Semantic composition uses those relationships to construct meaningful representations.
+
+Use:
+
+### Algorithm
+
+1. Receive lexical hypotheses.
+2. Receive the syntax result.
+3. Retrieve the corresponding concept hypotheses.
+4. Resolve supported word concepts.
+5. Retrieve predicate frames.
+6. Identify predicate-argument relationships.
+7. Evaluate selectional compatibility.
+8. Identify thematic roles.
+9. Construct propositions.
+10. Construct the typed semantic graph.
+11. Preserve semantic alternatives and ambiguity.
+
+For example:
+
+Input:
+
+> The musician tunes the instrument.
+
+Output:
+
+<box border radius="lg" padding={3} gap={2}>
+  **Semantic proposition**
+
+  <title size="xl" color="success">TUNE</title>
+  <row justify="between">
+    **Agent**
+    Musician
+  </row>
+  <divider color="subtle"/>
+  <row justify="between">
+    **Action**
+    Tunes
+  </row>
+  <divider color="subtle"/>
+  <row justify="between">
+    **Patient**
+    Instrument
+  </row>
+  <divider color="subtle"/>
+  **Semantic relationships**
+
+  <text color="secondary" size="sm">Musician → Agent of → Tune</text>
+  <text color="secondary" size="sm">Tune → Acts upon → Instrument</text>
+</box>
+
+The semantic graph must have unique node IDs and valid edge references.
+
+N9 already contains a semantic graph validation function that discards dangling edges and malformed relationships.
+
+This should be preserved.
+
+---
+
+## Phase 6. Connect semantic interpretation to discourse and context
+
+**Existing package:** `ore_discourse`
+
+This component answers a different question:
+
+Not just what does the sentence mean, but how does it relate to the surrounding situation?
+
+Use the existing:
+
+### Algorithm
+
+1. Receive semantic propositions.
+2. Receive the semantic graph.
+3. Retrieve available previous discourse context.
+4. Retrieve document context.
+5. Retrieve domain and topic information.
+6. Evaluate proposition compatibility with context.
+7. Generate context-dependent predictions.
+8. Identify temporal relations.
+9. Identify causal relations.
+10. Construct the situation model.
+11. Identify potential knowledge conflicts.
+12. Estimate contextual uncertainty.
+
+Example:
+
+First sentence:
+
+> The musician tunes the instrument.
+
+Second sentence:
+
+> He wants to prepare it for the concert.
+
+The discourse module should attempt to relate:
+
+- He → musician.
+- It → instrument.
+- Concert → contextual event.
+- Prepare → possible relation to the previous action.
+
+However, coreference must remain evidence-dependent. The system should not automatically accept every pronoun relationship merely because it is plausible.
+
+The result becomes a contextual state that can be used by the other cognitive systems.
+
+---
+
+# 4. Phase 7. Connect the pathway to working memory
+
+<badge color="success">Essential new integration</badge>
+
+**Existing package:** `ore_working_memory`
+
+This phase makes the pathway part of the broader cognitive system rather than an isolated text-processing chain.
+
+Currently, N9 provides an integrated interpretation, but the working-memory processor is a separate subsystem.
+
+We need an explicit adapter between them.
+
+### 7.1. Create a working-memory adapter
+
+Suggested location:
+
+Its responsibility is to convert `N9Result` into `WorkingMemoryRequest`.
+
+### 7.2. Translate the N9 output
+
+The adapter should retrieve:
+
+| N9 output | Working-memory input |
+|---|---|
+| Recognized lexical hypotheses | Candidate interpretations |
+| Syntax result | `syntax_result` |
+| Semantic propositions | Semantic interpretation evidence |
+| Semantic graph | Supporting knowledge |
+| Discourse situation model | Context |
+| Confidence scores | Interpretation scores |
+| Unresolved dependencies | `partial_structures` |
+| Current processing task | `task_sequence` |
+| Current goal | `goals` |
+
+Example:
+
+The actual interpretation candidates must use the fields supported by `WorkingMemoryRequest`, with finite values between zero and one for its normalized scores.
+
+### 7.3. Working-memory operations
+
+The existing processor already has 40 canonical operations.
+
+The pathway should use these operations to:
+
+1. Maintain recognized information.
+2. Organize information into chunks.
+3. Maintain incomplete syntactic structures.
+4. Retain alternative interpretations.
+5. Retrieve relevant contextual evidence.
+6. Track unresolved relationships.
+7. Evaluate semantic ambiguity.
+8. Compare grammatical compatibility.
+9. Compare contextual compatibility.
+10. Regulate competing interpretations.
+11. Maintain cognitive goals.
+12. Evaluate whether an interpretation can be accepted.
+13. Preserve task-related information.
+
+The working-memory module should be allowed to report that insufficient evidence exists.
+
+It must not be forced to select a single interpretation.
+
+### 7.4. Send the result to the main coordinator
+
+After processing, the working-memory output is returned to the main brain coordinator.
+
+The coordinator receives:
+
+This gives the main coordinator enough information to compare the results of different specialized systems.
+
+---
+
+# 5. Phase 8. Integrate everything with the main brain coordinator
+
+This phase connects Task 4 with Task 3.
+
+The main coordinator must not duplicate the internal responsibilities of N9.
+
+Instead, its role is to:
+
+- Initialize the cognitive task.
+- Retrieve the relevant modules.
+- Check their capabilities.
+- Verify contract compatibility.
+- Dispatch the visual-language pathway.
+- Maintain the shared workspace.
+- Collect module results.
+- Compare conflicting interpretations.
+- Decide whether additional processing is needed.
+- Publish the resulting cognitive state.
+
+### 8.1. Use the existing universal module registry
+
+Use:
+
+Register the visual-language pathway and any additional adapters that must be independently discoverable by the main coordinator.
+
+Each manifest should define:
+
+- Module identity.
+- Input ports.
+- Output ports.
+- Contract versions.
+- Responsibilities.
+- Capabilities.
+- Dependencies.
+
+For example:
+
+| Module | Required input | Output |
+|---|---|---|
+| Text localization | Raw text image | Localized glyph sequence |
+| Visual-language pathway | Localized glyph sequence | Integrated interpretation |
+| Working memory adapter | N9 result | Working-memory state |
+| Main coordinator | Cognitive findings | Integrated cognitive decision |
+
+The registry should validate the interfaces before the coordinator attempts execution.
+
+One important distinction: `ModuleRegistry` validates module registrations and runtime bindings. It does not itself schedule or execute the modules. That remains the responsibility of the main coordinator.
+
+See [ORE module communication registry](https://github.com/wizekin/ORE-Neurocomputational/blob/main/docs/ORE_MODULE_COMMUNICATION_REGISTRY.md).
+
+### 8.2. Use the existing shared workspace
+
+Use `ore_workspace`.
+
+Each module should publish its findings through the existing controlled publication mechanism rather than directly modifying the shared state.
+
+The coordinator should maintain the following information:
+
+Each finding should preserve:
+
+- Producer module.
+- Sequence ID.
+- Supporting evidence.
+- Confidence.
+- Source information.
+- Workspace revision.
+- Dependencies.
+
+This ensures the different cognitive systems can access shared information without silently overwriting each other's results.
+
+---
+
+# 6. Mathematical operations involved
+
+The mathematical operations should primarily reuse the existing module implementations.
+
+We should avoid introducing a second collection of unrelated mathematical models.
+
+There are four particularly important operations.
+
+### 6.1. Grapheme probability estimation
+
+N3 produces a distribution over grapheme candidates for each localized patch.
+
+For patch \(i\):
+
+\[
+P_v(g_i\mid x_i)
+\]
+
+Where:
+
+- \(x_i\) is visual evidence.
+- \(g_i\) is a possible grapheme.
+- \(P_v\) is the visual probability distribution.
+
+The system must preserve all candidate probabilities rather than retaining only the highest-scoring grapheme.
+
+### 6.2. Orthographic prediction and attention
+
+N3 uses contextual transition information to generate grapheme predictions.
+
+N4 then estimates attention and precision based on uncertainty, prediction errors, and task relevance.
+
+The attention distribution is normalized:
+
+\[
+\sum_{i=1}^{n} A_i=1
+\]
+
+Where \(A_i\) represents the allocation of attention to patch \(i\).
+
+The sensory and prior precision estimates regulate how much weight should be assigned to bottom-up observations and contextual predictions.
+
+### 6.3. Evidence integration
+
+N9 combines sensory evidence and bidirectional contextual priors using a precision-weighted operation:
+
+\[
+Q_i(g)=
+\operatorname{softmax}
+\left[
+\pi_{s,i}\log(P_v(g_i)+\epsilon)
++
+\pi_{p,i}\log(P_t(g_i)+\epsilon)
+\right]
+\]
+
+Where:
+
+- \(P_v\) is visual evidence.
+- \(P_t\) is the bidirectional transition prior.
+- \(\pi_s\) is sensory precision.
+- \(\pi_p\) is prior precision.
+- \(\epsilon\) prevents taking the logarithm of zero.
+
+### 6.4. Top-down feedback
+
+After lexical and semantic processing, higher-level systems can provide additional evidence.
+
+N9 performs bounded posterior revision:
+
+\[
+Q^{(t+1)}
+=
+(1-\rho)Q^{(t)}
++
+\rho\hat{Q}^{(t+1)}
+\]
+
+Where:
+
+- \(Q^{(t)}\) is the current belief.
+- \(\hat Q\) is the proposed updated belief.
+- \(\rho\) is the damping factor.
+
+The essential requirement is that the original visual distribution remains preserved.
+
+A semantic prediction must never silently overwrite contradictory visual evidence.
+
+The system should record the disagreement and potentially request targeted reprocessing.
+
+---
+
+# 7. Complete execution algorithm
+
+The following pseudocode describes the expected behavior of the main coordinator after implementation.
+
+<CodeBlock language="python" editable>
+def process_visual_language_task(
+    image,
+    sequence_id,
+    script_profile,
+    context,
+    main_coordinator,
+):
+    """
+    Execute the cooperative visual-to-semantic cognitive pathway.
+
+    The main coordinator manages module execution and shared state.
+    N9 manages the internal visual-language processing stages.
+    """
+
+    # 1. Initialize the cognitive task.
+    task = main_coordinator.initialize_task(
+        sequence_id=sequence_id,
+        task_type="visual_language_comprehension",
+        goal="understand_visual_text",
+    )
+
+    # 2. Validate required module availability.
+    main_coordinator.validate_capabilities([
+        "visual.text_localization",
+        "visual.early_processing",
+        "visual.structural_processing",
+        "language.grapheme_recognition",
+        "language.attention",
+        "language.lexical_access",
+        "language.syntax",
+        "language.semantic_composition",
+        "language.discourse",
+        "cognition.working_memory",
+    ])
+
+    # 3. Localize and segment the image.
+    segmentation = main_coordinator.text_localizer.process(
+        image=image,
+        script_profile=script_profile,
+    )
+
+    if not segmentation.hypotheses:
+        return main_coordinator.abstain(
+            reason="No reliable text segmentation"
+        )
+
+    pathway_results = []
+
+    # 4. Process a bounded number of segmentation alternatives.
+    for hypothesis in segmentation.hypotheses:
+
+        # 4.1 Convert localized glyphs into N9 patches.
+        patches, word_spans = hypothesis.to_n9_input()
+
+        # 4.2 Construct the N9 request.
+        request = create_n9_request(
+            sequence_id=sequence_id,
+            patches=patches,
+            word_spans=word_spans,
+            script_profile=script_profile,
+            context=context,
+        )
+
+        # 4.3 Run the complete N1-N8 pathway through N9.
+        n9_result = main_coordinator.visual_language_pathway.process(
+            request
+        )
+
+        # 4.4 Preserve uncertainty and verify required stages.
+        validate_pathway_result(n9_result)
+
+        # 4.5 Convert the result into working-memory evidence.
+        wm_request = create_working_memory_request(
+            n9_result=n9_result,
+            context=context,
+            goals=task.goals,
+        )
+
+        # 4.6 Execute working-memory processing.
+        wm_result = main_coordinator.working_memory.process(
+            wm_request
+        )
+
+        pathway_results.append({
+            "segmentation": hypothesis,
+            "n9_result": n9_result,
+            "working_memory": wm_result,
+        })
+
+    # 5. Compare alternative segmentation and interpretation results.
+    integrated_result = main_coordinator.integrate_findings(
+        pathway_results
+    )
+
+    # 6. Resolve conflicts or retain ambiguity.
+    decision = main_coordinator.evaluate_interpretation(
+        integrated_result
+    )
+
+    # 7. Publish findings through the shared workspace.
+    main_coordinator.publish_cognitive_state(
+        sequence_id=sequence_id,
+        findings=integrated_result,
+        decision=decision,
+    )
+
+    # 8. Return the final cognitive result.
+    return {
+        "sequence_id": sequence_id,
+        "decision": decision,
+        "interpretations": integrated_result,
+        "status": "completed",
+    }
+</CodeBlock>
+
+The functions `initialize_task`, `validate_capabilities`, `integrate_findings`, and the other coordinator methods represent the interfaces to be implemented in Task 3. They are not claims that these exact methods already exist in the repository.
+
+---
+
+# 8. Testing and validation algorithm
+
+This is particularly important because the current N9 tests already demonstrate some integrations, but not the complete raw-image-to-semantic-understanding pathway.
+
+For example:
+
+- `tests/test_n9.py` verifies that N9 can process localized image patches using N1 and N2.
+- `tests/test_n9_language_adapters.py` verifies lexical, syntax, semantic, and discourse cooperation using supplied grapheme probabilities.
+
+The latter test does not demonstrate raw-image character recognition.
+
+Also, the current image-patch test does not supply a fitted N3 model. Consequently, it cannot demonstrate complete orthographic recognition.
+
+We must close those gaps.
+
+## 8.1. Unit tests
+
+| Test | Expected result |
+|---|---|
+| Image normalization | Valid grayscale representation |
+| Text localization | Text regions correctly identified |
+| Character segmentation | Valid localized patches |
+| Word boundary construction | Correct `word_spans` |
+| Segmentation uncertainty | Alternative boundaries preserved |
+| N1 processing | Valid visual feature outputs |
+| N2 processing | Valid structural representations |
+| N3 recognition | Valid grapheme distributions |
+| N4 processing | Valid normalized attention |
+| Lexical access | Word candidates and morphology |
+| Syntax | Valid dependency and phrase structures |
+| Semantic composition | Valid propositions and graph |
+| Discourse | Contextual interpretation |
+| Working memory | Valid bounded cognitive state |
+
+## 8.2. Integration tests
+
+Create tests for the following connections:
+
+Every test should check both the output data and its provenance.
+
+## 8.3. Full cooperative cognitive test
+
+Use a known sentence:
+
+> The musician tunes the instrument.
+
+Prepare a labeled visual training dataset, fit N3, and then test the system using a separate visual image of the sentence with known localization annotations.
+
+Verify that the final result contains:
+
+- The recognized graphemes.
+- The correct word boundaries.
+- Lexical candidates.
+- Grammatical categories.
+- Syntactic dependencies.
+- The proposition that the musician is the Agent of tuning the instrument.
+- A valid semantic graph.
+- A contextual representation.
+- A working-memory interpretation.
+
+Then test a second sentence that provides context for the first one.
+
+This demonstrates both individual sentence comprehension and cross-sentence contextual integration.
+
+## 8.4. Negative tests
+
+We should deliberately test failures:
+
+- Missing N3 model.
+- Missing lexical inventory.
+- Invalid segmentation.
+- Ambiguous graphemes.
+- Missing semantic concepts.
+- Incompatible contracts.
+- Invalid semantic graph edges.
+- Insufficient working-memory evidence.
+- Conflicting contextual information.
+
+The system should report `UNAVAILABLE`, `PARTIAL`, `AMBIGUOUS`, or `ABSTAIN` where appropriate.
+
+It must never report a successful interpretation merely because an operation trace contains 120 records.
+
+---
+
+# 9. Final acceptance criteria
+
+The task should be considered functionally complete only when the following conditions are satisfied.
+
+{@body const criteria = [
+"Raw text images can enter an explicit localization and segmentation interface.",
+"Localized patches retain bounding boxes, logical ordering, and segmentation confidence.",
+"Every localized patch can pass through N1 and N2.",
+"A fitted N3 model recognizes grapheme candidates and preserves uncertainty.",
+"N4 performs attention and precision processing on actual N3 results.",
+"Lexical access retrieves word, morphological, phonological, and semantic hypotheses.",
+"Syntax receives actual lexical evidence.",
+"Semantic composition receives compatible concepts and syntactic structures.",
+"Discourse receives semantic propositions and contextual information.",
+"Working memory receives N9 interpretations through an explicit adapter.",
+"The Task 3 main coordinator can dispatch and integrate the pathway.",
+"All inter-module contracts and dependencies are validated.",
+"Function and class annotations and execution events are preserved in the existing SQLite logging infrastructure.",
+"Integration tests verify the entire image-to-understanding pathway.",
+"Uncertainty, failures, and unsupported interpretations remain explicit."
+]}
+{@body const [done,setDone] = DIL.useState([])}
+<box border radius="lg" padding={3} gap={3}>
+  <row align="center" justify="between">
+    **Task 4 acceptance checklist**
+    <title color="success" size="xl" tabularNums>{done.length}/{criteria.length}</title>
+  </row>
+  <box background="surface-tertiary" radius="full" height="7px" clip>
+    <box background="#16A34A" height="7px" radius="full" width={`${100*done.length/criteria.length}%`}/>
+  </box>
+  {#each criteria as item,i}
+    <checkbox key={i} checked={done.includes(i)} onChange={v=>setDone(old=>v?[...old,i]:old.filter(x=>x!==i))}>{item}</checkbox>
+  {/each}
+</box>
+
+One additional distinction is important:
+
+**Software integration, recognition accuracy, and biological validity are three separate acceptance levels.**
+
+Passing integration tests demonstrates that the software components cooperate. Recognition accuracy requires independent held-out visual datasets. Biological validity requires separate empirical neuroscientific evidence.
+
+---
+
+# 10. Recommended implementation order
+
+I recommend the following order when we proceed to actual coding.
+
+| Order | Implementation | Reason |
+|---:|---|---|
+| 1 | `ore_text_localization` | Closes the raw-image input gap |
+| 2 | N3 training and N1–N4 integration | Completes sensory-to-orthographic processing |
+| 3 | Configure N6, syntax, N8 and N7 adapters | Connects recognition to understanding |
+| 4 | Working-memory adapter | Connects language understanding to cognition |
+| 5 | Main coordinator integration | Makes the pathway cooperatively accessible |
+| 6 | Universal registry and workspace integration | Establishes controlled communication |
+| 7 | Logging and annotations | Makes operations traceable |
+| 8 | End-to-end testing | Verifies the complete pathway |
+
+**Implementation principle:** Reuse the existing packages, add only missing interfaces and adapters, and keep the original evidence available throughout processing.
+
+## Final architectural result
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">ORE's first complete cooperative cognitive pathway</title>
+  <AsyncImage query="scientific illustration human brain computational neuroscience visual cortex ventral visual stream language comprehension semantic processing neural network modules blue white academic infographic" aspectRatio="16:9" width="100%"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} gap={1}>
+    **Sensory systems**
+
+    N1 + N2 + N3 + N4
+
+    <text color="secondary" size="xs">Transform visual observations into structured, attended orthographic evidence.</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} gap={1}>
+    **Language systems**
+
+    Lexical access + Syntax + Semantic composition
+
+    <text color="secondary" size="xs">Transform recognized visual language into words, structures, concepts, and propositions.</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(168,85,247,0.09)" radius="md" padding={3} gap={1}>
+    **Contextual and cognitive systems**
+
+    Discourse + Working memory
+
+    <text color="secondary" size="xs">Relate interpretations to context, maintain alternatives, and evaluate understanding.</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.09)" radius="md" padding={3} gap={1}>
+    **Main brain coordinator**
+
+    Global integration + Shared workspace
+
+    <text color="secondary" size="xs">Coordinate, compare, validate, and publish the integrated cognitive state.</text>
+  </box>
+</box>
+
+The intended outcome is not simply an OCR system connected to a language parser. It is a cooperative architecture in which visual, orthographic, lexical, syntactic, semantic, contextual, and memory systems contribute distinct evidence toward a common interpretation.
+
+**My recommendation:** Begin actual implementation with Phase 1, the new `ore_text_localization` package. This removes the most fundamental missing connection: giving the existing cognitive architecture a clearly defined way to receive and organize raw visual text.

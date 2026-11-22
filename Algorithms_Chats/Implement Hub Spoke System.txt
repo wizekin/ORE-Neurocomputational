@@ -1,0 +1,1765 @@
+Title: Implement Hub Spoke System
+Conversation ID: 6afad9ae-dae0-83ea-8ea4-212dc5d7633f
+
+---
+
+[USER]
+Get "Master Algorithm - Hub-and-Spoke Semantic Concept Integration.txt" from my google drive through composio plugin , Auto implement 21 stages and their operations both functionally and biologically in python and consider the mathematical operations involved. You can use github through github plugin for the implementation. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin. Create the annotations for every function and classes to be stored in logger's the sqlite database
+
+---
+
+[ASSISTANT]
+Implemented the 21-stage Hub-and-Spoke subsystem in a new `ore_hub_spoke` package and opened a pull request against `main`.
+
+<row align="center" gap={2}>
+  <badge color="success">Implementation pushed</badge>
+  <badge color="warning">CI verification running</badge>
+</row>
+
+**[Review PR #20 — Hub-and-Spoke semantic integration](https://github.com/wizekin/ORE-Neurocomputational/pull/20)**
+
+The implementation includes the 21-stage registry and its individually identified sub-operations; modality-specific feature processing; nonlinear, recurrent hub integration and feedback; concept selection and semantic control; authorized experience-based learning; and separate hub, spoke, and connection lesion simulations.
+
+It also adds an optional LIF biological-reference simulation and integrates with the existing `ore_logger` SQLite database for class/function annotations and execution traces. The existing `ore_semantic` subsystem remains intact.
+
+**Validation update:** one full-repository GitHub Actions test run for the PR’s exact commit has succeeded. Two duplicate workflow runs are still marked in progress, so I’m checking their final status as well.
+
+### Implementation details
+
+The registry contains **103 individually traceable sub-operations** across the 21 stages, covering the mathematical operations, functional responsibilities, and biological references.
+
+The main components are:
+
+- `ore_hub_spoke/pipeline.py` — functional processing, recurrent integration, feedback, learning, and lesion experiments.
+- `ore_hub_spoke/biology.py` — LIF population simulation with explicit physical units.
+- `ore_hub_spoke/registry.py` — all 21 stages and their operation definitions.
+- `ore_hub_spoke/annotations.py` — SQLite annotation indexing and execution recording.
+- `tests/test_hub_spoke.py` — 12 regression and integration tests.
+- `docs/HUB_AND_SPOKE_21_STAGE_ARCHITECTURE.md` — equations, architecture, API, and usage.
+
+### SQLite usage
+
+After installing the updated repository, use:
+
+To record a completed processing run:
+
+These use the existing `ore_logger` SQLite database and its annotation/event tables. The CI test verifies annotation indexing and event persistence using a temporary SQLite database.
+
+### Verification and limitations
+
+<badge color="success">One full test run passed</badge>
+
+[View the successful GitHub Actions run](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43849823448).
+
+Two additional checks were still running at the latest verification. The PR remains open and has not been merged.
+
+One important scientific boundary: this implementation accepts extracted semantic feature maps, not raw images or audio. Its LIF model is a computational neuroscience reference, not a validated reproduction of human brain activity.
+
+The next useful follow-up is to monitor the two outstanding checks and report their final combined result.
+
+<SuggestAutomation label="Monitor PR #20 checks" emoji="🧪"/>
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Distributed-Only Models: These argue there is no central hub; instead, meaning arises from the
+pattern of activation across widespread cortex. Concepts are represented by the co-activation of
+their sensory, motor, and affective feature networks. The so-called “sensory-motor” or “embodied”
+approach falls in this category. For example, Martin’s GRAPES model emphasizes that object
+categories are grounded in interacting circuits of perception, action, and emotion systems.
+ In that view, hearing “violin” would re-activate auditory representations of its sound, motor
+representations of how to play it, and visual form information in temporal and parietal cortex,
+without requiring an amodal locus. Such models naturally explain category-specific impairments
+(e.g. face recognition in fusiform gyrus) and neuroimaging findings of modality-specific activations
+for certain concepts (e.g. motor cortex for action words). However, purely distributed accounts
+struggle to explain why ATL appears crucial (see below) and why damage to any one region does not
+immediately wipe out a concept (SD patients gradually lose detail, suggesting a central bottleneck)
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Distributed-Only Semantic Representation and Embodied Concept Processing
+
+<badge color="success">Comprehensive computational model</badge> <badge color="info">21 algorithmic stages</badge>
+
+## 1. Understanding the model before constructing the algorithm
+
+The central idea of the Distributed-Only Model is that **a concept is not stored in one central brain location. It is represented by a coordinated pattern of activity across multiple, anatomically distributed neural populations.**
+
+Different populations encode different properties of the same concept. These populations interact through learned connections, and their collective activation constitutes the semantic representation.
+
+For example, when you hear the word *violin*, several neural systems can become active:
+
+<box gap={3}>
+  <row align=start gap={3}>
+    <AsyncImage query="violin close up wooden musical instrument front view" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Visual-property networks**
+
+      Represent the violin's shape, color, strings, wooden body, and bow.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="violinist playing violin bow close up hands" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Action and motor networks**
+
+      Represent holding the violin, positioning the fingers, manipulating the bow, and playing.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="violin strings bow musical performance orchestra" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Auditory-property networks**
+
+      Represent characteristic sounds, pitch, timbre, melodies, and musical patterns.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="classical violin concert orchestra emotional performance" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Affective networks**
+
+      Represent emotional associations, such as pleasure, sadness, familiarity, or musical excitement.
+    </box>
+  </row>
+</box>
+
+The important point is that these are not necessarily four independent representations. Their populations interact and influence one another. Together they create a distributed representation of the violin.
+
+### The GRAPES framework
+
+Alex Martin's GRAPES framework stands for:
+
+**Grounding Representations in Action, Perception, and Emotion Systems.**
+
+An important detail: GRAPES does not simply propose that concepts are stored in primary sensory and motor cortices. Martin emphasizes property-specific representations in higher-level processing regions associated with perception and action. Different properties can be represented in different interconnected cortical systems. <Cite refs={["turn525222search0","turn886817search1","turn886817search2"]}/>
+
+This is important for designing the algorithm correctly.
+
+---
+
+## 2. The mathematical foundation of distributed semantic representation
+
+Before defining the stages, let's establish the basic mathematical representation.
+
+### 2.1 Represent the brain as a distributed network
+
+Let:
+
+\[
+G=(V,E)
+\]
+
+Where:
+
+- \(V\): neural populations distributed across cortical regions.
+- \(E\): connections transmitting signals between those populations.
+
+Suppose our conceptual network has the following populations:
+
+\[
+V=
+\{
+V_{\text{visual}},
+V_{\text{auditory}},
+V_{\text{action}},
+V_{\text{tactile}},
+V_{\text{affective}},
+V_{\text{linguistic}},
+V_{\text{context}}
+\}
+\]
+
+Each population contains many neurons.
+
+For every population \(r\), define:
+
+\[
+\mathbf{x}_r(t)=
+[x_{r,1}(t),x_{r,2}(t),\ldots,x_{r,n_r}(t)]
+\]
+
+Here, \(x_{r,i}(t)\) represents the activity of neuron \(i\), or a population-level activity estimate, at time \(t\).
+
+The concept is represented by the collection:
+
+\[
+\boxed{
+\mathcal{S}_c(t)=
+\{\mathbf{x}_1(t),\mathbf{x}_2(t),\ldots,\mathbf{x}_R(t)\}
+}
+\]
+
+This collection is a mathematical description of a distributed state, not a new central representation stored somewhere in the brain.
+
+### 2.2 Connections between neural populations
+
+Let:
+
+\[
+W_{rs}
+\]
+
+represent the connection weights from population \(s\) to population \(r\).
+
+These connections allow activity in one network to influence another.
+
+For example:
+
+\[
+W_{\text{auditory, action}}
+\]
+
+represents connections through which auditory activity can influence action-related populations.
+
+The complete connectivity structure can be represented mathematically as a block matrix:
+
+\[
+W=
+\begin{bmatrix}
+W_{11}&W_{12}&\cdots&W_{1R}\\
+W_{21}&W_{22}&\cdots&W_{2R}\\
+\vdots&\vdots&\ddots&\vdots\\
+W_{R1}&W_{R2}&\cdots&W_{RR}
+\end{bmatrix}
+\]
+
+Unlike a hub-and-spoke architecture, this model does not require all information to pass through a single semantic integration node.
+
+### 2.3 The basic neural activation equation
+
+A simplified population-level model of activity is:
+
+\[
+\tau_r\frac{d\mathbf{x}_r}{dt}
+=
+-\mathbf{x}_r+
+\phi\left(
+\sum_s W_{rs}\mathbf{x}_s+
+B_r\mathbf{u}+
+\mathbf{g}_r-
+\mathbf{i}_r
+\right)
+\]
+
+Where:
+
+| Symbol | Meaning |
+|---|---|
+| \(\tau_r\) | Time constant of the population |
+| \(\mathbf{x}_r\) | Current population activity |
+| \(W_{rs}\) | Connection weights |
+| \(\mathbf{u}\) | External sensory or linguistic input |
+| \(B_r\) | Input-to-population transformation |
+| \(\mathbf{g}_r\) | Contextual or attentional influence |
+| \(\mathbf{i}_r\) | Inhibitory influence |
+| \(\phi\) | Nonlinear activation function |
+
+This is the foundation of our algorithm.
+
+**Scientific qualification:** These equations are computational approximations of possible neuronal mechanisms. The brain does not literally calculate matrices, cosine similarities, or symbolic equations. Synaptic currents, membrane dynamics, neuronal firing, and population interactions are the biological processes that such mathematics attempts to model.
+
+---
+
+# 3. The complete 21-stage distributed semantic algorithm
+
+I will organize the algorithm into four major phases.
+
+<box border radius="lg" gap={3} padding={3}>
+  <title size="lg">Algorithm architecture</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **Phase I — Input encoding and initial activation**
+
+      <text color="secondary" size="sm">Stages 1–5: Transform incoming information into distributed property-specific activation.</text>
+    </list-item>
+    <list-item>
+      **Phase II — Distributed feature reactivation and interaction**
+
+      <text color="secondary" size="sm">Stages 6–14: Reactivate action, emotion, memory, and perceptual features and coordinate their activity.</text>
+    </list-item>
+    <list-item>
+      **Phase III — Semantic interpretation and output**
+
+      <text color="secondary" size="sm">Stages 15–18: Establish concept identity, retrieve category knowledge, and generate a response.</text>
+    </list-item>
+    <list-item>
+      **Phase IV — Learning, redundancy, and degradation**
+
+      <text color="secondary" size="sm">Stages 19–21: Update distributed connections and explain the effects of localized and progressive damage.</text>
+    </list-item>
+  </list>
+</box>
+
+## Phase I — Input encoding and initial activation
+
+### Stage 1. Receive incoming conceptual information
+
+**Objective:** Receive the stimulus that should activate an existing semantic representation.
+
+Possible incoming signals include:
+
+- Written words.
+- Spoken words.
+- Pictures of objects.
+- Direct observation of objects.
+- Sounds.
+- Actions.
+- Recalled experiences.
+- Combinations of these sources.
+
+For example, when somebody says *violin*, the brain receives an acoustic signal.
+
+The auditory system processes the acoustic characteristics and the linguistic system extracts information identifying the spoken word.
+
+When looking at a violin, visual processing provides object-form information instead.
+
+**Possible mathematical operations**
+
+1. Signal sampling:
+
+\[
+u[n]=s(n\Delta t)
+\]
+
+2. Signal decomposition:
+
+\[
+U(f)=\mathcal{F}\{u(t)\}
+\]
+
+3. Feature extraction:
+
+\[
+\mathbf{f}_{input}=
+[f_1,f_2,\ldots,f_n]
+\]
+
+4. Signal normalization:
+
+\[
+\hat f_i=
+\frac{f_i-\mu}{\sigma+\epsilon}
+\]
+
+5. Temporal filtering:
+
+\[
+y(t)=h(t)*u(t)
+\]
+
+Here, \(h(t)\) represents a filtering or response kernel.
+
+**Biological interpretation:** Sensory processing pathways transform acoustic, visual, tactile, and other signals into neural activity that can influence higher-level property representations.
+
+The Fourier transform is a useful engineering representation, not a claim that neurons explicitly perform a Fourier transform.
+
+---
+
+### Stage 2. Extract property-specific information
+
+**Objective:** Decompose incoming sensory information into properties that can activate different distributed neural populations.
+
+For the word *violin*, associated properties may include:
+
+| Property | Possible representation |
+|---|---|
+| Shape | Elongated wooden body |
+| Color | Brown, black, or another observed color |
+| Sound | Characteristic musical timbre |
+| Motion | Bow movement |
+| Action | Holding and playing |
+| Texture | Wooden surface |
+| Function | Producing music |
+| Emotion | Musical enjoyment |
+
+The brain does not necessarily have a separate neuron for every property.
+
+Instead, multiple neurons can participate in distributed codes for different combinations of properties.
+
+**Possible mathematical operations**
+
+Feature extraction:
+
+\[
+\mathbf{f}_r=\phi_r(W_r\mathbf{u})
+\]
+
+Dimensionality reduction:
+
+\[
+\mathbf{z}_r=P_r\mathbf{f}_r
+\]
+
+Feature selectivity:
+
+\[
+a_i=
+\begin{cases}
+1 & f_i>\theta_i\\
+0 & f_i\leq\theta_i
+\end{cases}
+\]
+
+Graded activation:
+
+\[
+a_i=\sigma(f_i-\theta_i)
+\]
+
+Where:
+
+\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]
+
+**Biological interpretation:** Different perceptual association populations respond preferentially to different properties, such as form, color, movement, or sound.
+
+GRAPES particularly emphasizes property-specific rather than strictly modality-specific representations. For instance, shape information can be acquired through vision or touch. <Cite refs={["turn886817search1","turn886817search4"]}/>
+
+---
+
+### Stage 3. Activate the initial concept-related neural populations
+
+**Objective:** Use the incoming signal to initiate activity within neural populations associated with the recognized word or object.
+
+For spoken *violin*, initial activation can involve:
+
+- Auditory language-related populations.
+- Phonological representations.
+- Lexical representations.
+- Previously learned connections with object-related properties.
+
+The activation does not have to begin in every property system simultaneously.
+
+Instead, the initial activation spreads through the pathways already established by experience.
+
+**Possible mathematical operations**
+
+Weighted input:
+
+\[
+\mathbf{a}(0)=W_{input}\mathbf{u}
+\]
+
+Nonlinear activation:
+
+\[
+a_i(0)=\phi(z_i)
+\]
+
+Threshold detection:
+
+\[
+a_i(0)>\theta_i
+\]
+
+Initial population activity:
+
+\[
+A_r(0)=\frac{1}{N_r}
+\sum_{i=1}^{N_r}a_{r,i}(0)
+\]
+
+**Biological interpretation:** Neurons responding to the incoming word or object activate through their synaptic connections with other cortical populations.
+
+---
+
+### Stage 4. Retrieve the learned distributed concept associations
+
+**Objective:** Use the activated representations to reactivate associated properties stored across the cortex.
+
+For example:
+
+The auditory representation of *violin* can activate populations previously associated with:
+
+- Its visual form.
+- Its typical sound.
+- Its use.
+- The actions required to play it.
+- Its familiar contexts.
+
+This is an important stage because conceptual retrieval can happen even when the object itself is not physically present.
+
+**Possible mathematical operations**
+
+Associative activation propagation:
+
+\[
+\mathbf{a}(t+1)=
+\phi(W\mathbf{a}(t)+\mathbf{b})
+\]
+
+For an individual target population:
+
+\[
+a_j(t+1)=
+\phi\left(
+\sum_i w_{ji}a_i(t)+b_j
+\right)
+\]
+
+A simplified spreading-activation approximation is:
+
+\[
+a_j(t+1)=
+a_j(t)+
+\eta\sum_iw_{ji}a_i(t)
+\]
+
+Here, \(\eta\) controls the strength of spreading activation.
+
+**Biological interpretation:** Previously strengthened synaptic pathways permit activity from one neural population to reactivate related populations.
+
+This is one of the core mechanisms of embodied and distributed semantic processing.
+
+---
+
+### Stage 5. Reactivate perceptual-property networks
+
+**Objective:** Reactivate neural representations of the object's perceptual properties, even without current sensory stimulation.
+
+For violin, this can include:
+
+- Visual form.
+- Color.
+- Surface characteristics.
+- Characteristic sound.
+- Object movement.
+- Spatial configuration.
+
+The network does not need a central structure that stores the complete violin concept.
+
+Instead, each property-related population contributes its own information.
+
+Alex Martin's GRAPES review describes property-related activations distributed across perceptual and action systems, including object-form, color, and motion-related representations. <Cite refs={["turn886817search1","turn886817search2"]}/>
+
+**Possible mathematical operations**
+
+Reactivation:
+
+\[
+\mathbf{x}_{visual}(t+1)=
+\phi(W_{visual,auditory}\mathbf{x}_{auditory}(t))
+\]
+
+Multiple-property activation:
+
+\[
+\mathbf{x}_{perception}=
+\{
+\mathbf{x}_{form},
+\mathbf{x}_{color},
+\mathbf{x}_{motion},
+\mathbf{x}_{sound}
+\}
+\]
+
+Activation strength:
+
+\[
+A_{property}=
+\sum_i a_i
+\]
+
+Similarity between current and remembered property patterns:
+
+\[
+S(\mathbf{x},\mathbf{p})=
+\frac{\mathbf{x}\cdot\mathbf{p}}
+{\|\mathbf{x}\|\|\mathbf{p}\|+\epsilon}
+\]
+
+**Biological interpretation:** Associative cortical networks reinstate previously acquired property information.
+
+---
+
+## Phase II — Distributed feature reactivation and interaction
+
+### Stage 6. Reactivate action and motor-related representations
+
+**Objective:** Retrieve knowledge about what actions are associated with the object.
+
+For violin, the brain can reactivate representations associated with:
+
+1. Holding the instrument.
+2. Positioning the fingers.
+3. Moving the bow.
+4. Coordinating the two hands.
+5. Producing musical sequences.
+
+This does not mean the person must physically perform these actions.
+
+Semantic understanding can reactivate aspects of action-related representations without producing an overt movement.
+
+**Possible mathematical operations**
+
+Motor-pattern retrieval:
+
+\[
+\mathbf{x}_{motor}=
+\phi(W_{motor,semantic}\mathbf{x}_{semantic})
+\]
+
+Action-sequence representation:
+
+\[
+\mathbf{M}=
+[m_1,m_2,\ldots,m_T]
+\]
+
+Action prediction:
+
+\[
+\hat{\mathbf{m}}_{t+1}
+=
+F(\mathbf{m}_t,\mathbf{c})
+\]
+
+Where \(\mathbf{c}\) represents the current concept-related activity.
+
+Motor-pattern similarity:
+
+\[
+S_{motor}=
+\frac{\mathbf{x}_{motor}\cdot\mathbf{p}_{motor}}
+{\|\mathbf{x}_{motor}\|\|\mathbf{p}_{motor}\|+\epsilon}
+\]
+
+**Biological interpretation:** Action-related cortical networks, including premotor and parietal systems, can participate in retrieving object-associated manipulation and use information.
+
+Martin discusses tool-related activity extending beyond visual object processing into regions associated with object motion and manipulation, including posterior middle temporal cortex and intraparietal and ventral premotor regions. <Cite refs={["turn886817search1","turn886817search4"]}/>
+
+---
+
+### Stage 7. Reactivate emotional and affective representations
+
+**Objective:** Retrieve the emotional significance associated with a concept.
+
+Consider two people hearing the same violin sound.
+
+One might associate it with:
+
+- Pleasure.
+- Relaxation.
+- Childhood memories.
+
+Another might associate it with:
+
+- Sadness.
+- A particular unpleasant experience.
+- A negative emotional event.
+
+The semantic associations can therefore differ because their previous experiences differ.
+
+**Possible mathematical operations**
+
+Affective feature representation:
+
+\[
+\mathbf{e}=
+[e_1,e_2,\ldots,e_n]
+\]
+
+Emotional activation:
+
+\[
+\mathbf{x}_{affective}=
+\phi(W_{affective}\mathbf{x}_{concept})
+\]
+
+Valuation:
+
+\[
+V=
+\sum_iw_ie_i
+\]
+
+Context-dependent emotional valuation:
+
+\[
+V(c,k)=
+\sum_iw_i(k)e_i(c)
+\]
+
+Where \(k\) represents the current context.
+
+**Biological interpretation:** Affective systems, including networks involving the amygdala and other valuation-related regions, contribute emotional properties and significance to object representations.
+
+In Martin's discussion of faces, for example, face perception is associated with activity extending beyond fusiform regions into biological-motion and affect-related systems. <Cite refs={["turn886817search1"]}/>
+
+---
+
+### Stage 8. Retrieve associated episodic experiences
+
+**Objective:** Reactivate previous experiences associated with the concept.
+
+For the violin example, relevant memories might include:
+
+- Seeing somebody play.
+- Hearing an orchestra.
+- Learning to play violin.
+- Watching a musical performance.
+- Holding the instrument.
+
+The episodic retrieval process provides additional evidence for activating distributed properties.
+
+**Possible mathematical operations**
+
+Cue similarity:
+
+\[
+S_i=
+\operatorname{Similarity}
+(\mathbf{q},\mathbf{m}_i)
+\]
+
+Retrieval probability:
+
+\[
+P(m_i|\mathbf{q})=
+\frac{\exp(\beta S_i)}
+{\sum_j\exp(\beta S_j)}
+\]
+
+Memory strength:
+
+\[
+R_i=F_iC_iD_i
+\]
+
+Where:
+
+- \(F_i\): familiarity.
+- \(C_i\): contextual match.
+- \(D_i\): memory strength or durability.
+
+**Biological interpretation:** Medial-temporal and hippocampal systems can assist in reinstating associated experiences and their contextual information.
+
+Importantly, episodic retrieval is supporting the distributed semantic representation rather than acting as a central semantic concept store.
+
+---
+
+### Stage 9. Establish recurrent connections between the active populations
+
+**Objective:** Allow different neural populations to continuously influence one another.
+
+This is one of the most important stages.
+
+So far, we have activated visual, auditory, action, and emotional networks.
+
+Now the activity must become interactive.
+
+For example:
+
+- Auditory properties can influence expectations about visual properties.
+- Visual properties can activate manipulation information.
+- Action properties can activate expected sounds.
+- Emotional information can change the relevance of particular memories.
+
+This process is bidirectional.
+
+**Possible mathematical operations**
+
+Recurrent network update:
+
+\[
+\mathbf{x}_r(t+1)=
+\phi\left(
+\sum_sW_{rs}\mathbf{x}_s(t)
+\right)
+\]
+
+Two-way communication:
+
+\[
+\mathbf{x}_a(t+1)=
+\phi(W_{ab}\mathbf{x}_b(t))
+\]
+
+\[
+\mathbf{x}_b(t+1)=
+\phi(W_{ba}\mathbf{x}_a(t))
+\]
+
+Recurrent refinement:
+
+\[
+\mathbf{x}(t+1)=
+\phi(W\mathbf{x}(t)+B\mathbf{u})
+\]
+
+Convergence measurement:
+
+\[
+\Delta(t)=
+\|\mathbf{x}(t+1)-\mathbf{x}(t)\|_2
+\]
+
+The network may continue interacting until its activity stabilizes or the incoming information changes.
+
+**Biological interpretation:** Recurrent synaptic connections permit distributed populations to influence each other continuously.
+
+There is no requirement that all signals travel through an anterior temporal hub.
+
+---
+
+### Stage 10. Apply local excitation and inhibition
+
+**Objective:** Prevent excessive activation and resolve competition between neural populations.
+
+Suppose a word is associated with several alternative interpretations.
+
+For example, hearing *bass* could activate representations of:
+
+- A musical instrument.
+- A type of fish.
+
+The active populations must compete according to the available evidence and context.
+
+Inhibition is also important for maintaining relatively sparse and selective neural activity.
+
+**Possible mathematical operations**
+
+Excitatory activation:
+
+\[
+E_i=\sum_jw_{ij}^{+}a_j
+\]
+
+Inhibitory influence:
+
+\[
+I_i=\sum_jw_{ij}^{-}a_j
+\]
+
+Net activity:
+
+\[
+z_i=E_i-I_i-\theta_i
+\]
+
+Nonlinear firing:
+
+\[
+a_i=\sigma(z_i)
+\]
+
+Divisive normalization:
+
+\[
+a_i'=
+\frac{a_i}
+{\epsilon+\sum_{j\in P}a_j}
+\]
+
+Here, \(P\) is a local population or competition group.
+
+**Biological interpretation:** Excitatory and inhibitory synaptic interactions regulate the activity of neural populations.
+
+This provides a mechanism for selecting relevant information without requiring one central concept-selection area to contain all semantic information.
+
+---
+
+### Stage 11. Dynamically adjust the contribution of different property networks
+
+**Objective:** Allow the importance of different properties to change according to the current stimulus and task.
+
+Consider recognizing a violin through different inputs.
+
+When hearing it:
+
+- Auditory properties become particularly informative.
+
+When seeing it:
+
+- Visual properties become particularly informative.
+
+When examining how to play it:
+
+- Action-related properties become particularly informative.
+
+A distributed representation therefore need not activate all properties equally.
+
+**Possible mathematical operations**
+
+Reliability estimation:
+
+\[
+q_r=f(\text{signal quality},\text{confidence},\text{context})
+\]
+
+Normalization:
+
+\[
+w_r=
+\frac{\exp(q_r/T)}
+{\sum_s\exp(q_s/T)}
+\]
+
+Weighted population contribution:
+
+\[
+\mathbf{z}_r=w_r\mathbf{x}_r
+\]
+
+Here, \(T\) controls the selectivity of the weighting.
+
+The complete distributed state still consists of multiple separate population activities:
+
+\[
+\mathcal{S}=
+\{\mathbf{z}_1,\mathbf{z}_2,\ldots,\mathbf{z}_R\}
+\]
+
+The weighted collection is an analytical description, not an amodal neural hub.
+
+**Biological interpretation:** Attention, signal reliability, and current behavioral demands can influence the strength of different cortical contributions.
+
+---
+
+### Stage 12. Coordinate the timing of distributed activity
+
+**Objective:** Coordinate different populations so their activity can participate in the same semantic processing event.
+
+Distributed networks do not necessarily activate at exactly the same moment.
+
+Their signals have different transmission delays and temporal dynamics.
+
+Coordination may involve recurrent interactions and neuronal oscillations.
+
+**Possible mathematical operations**
+
+Phase representation:
+
+\[
+\theta_i(t)
+\]
+
+Phase difference:
+
+\[
+\Delta\theta_{ij}(t)=
+\theta_i(t)-\theta_j(t)
+\]
+
+A possible phase-coherence measure is:
+
+\[
+R_{ij}=
+\left|
+\frac{1}{T}
+\sum_{t=1}^{T}
+e^{i\Delta\theta_{ij}(t)}
+\right|
+\]
+
+Interpretation:
+
+- \(R_{ij}\approx1\): strong phase consistency.
+- \(R_{ij}\approx0\): weak phase consistency.
+
+Temporal cross-correlation can also be used:
+
+\[
+C_{ij}(\tau)=
+\sum_t x_i(t)x_j(t+\tau)
+\]
+
+Where \(\tau\) represents the time delay between two neural signals.
+
+**Biological interpretation:** Neural oscillations, communication delays, and temporal coordination can contribute to interactions between distributed populations.
+
+These measures are possible modeling mechanisms, not proof that a particular oscillatory mechanism is responsible for semantic binding.
+
+---
+
+### Stage 13. Construct a distributed semantic cell assembly
+
+**Objective:** Establish a coordinated population pattern representing the concept through co-activation of its associated properties.
+
+This is the central operation of the distributed-only model.
+
+For violin, imagine the following neural populations are active:
+
+\[
+\begin{aligned}
+A_{\text{violin}}=\{&
+V_{\text{shape}},
+V_{\text{color}},
+V_{\text{sound}},\\
+&V_{\text{manipulation}},
+V_{\text{movement}},
+V_{\text{affect}},
+V_{\text{language}}
+\}
+\end{aligned}
+\]
+
+Together, their activity constitutes a distributed cell assembly.
+
+The important point is that the representation is distributed across the participating populations.
+
+There is no single location that must contain the complete semantic representation.
+
+**Possible mathematical operations**
+
+Population co-activation:
+
+\[
+C_{ij}=a_i a_j
+\]
+
+Correlation:
+
+\[
+\rho_{ij}=
+\frac{\operatorname{Cov}(a_i,a_j)}
+{\sigma_i\sigma_j+\epsilon}
+\]
+
+Assembly activation:
+
+\[
+A_c(t)=
+\sum_iw_{c,i}a_i(t)
+\]
+
+A thresholded assembly-membership approximation:
+
+\[
+M_i(c)=
+\mathbb{1}
+[a_i(t)>\theta_i]
+\]
+
+The concept is identified through the collective pattern of active populations.
+
+**Biological interpretation:** Coordinated neuronal populations form functional assemblies through their connectivity and co-activation.
+
+Research on distributed cell assemblies has found category-specific patterns spanning several cortical regions, including somatotopic motor activation for action-related words. <Cite refs={["turn525222search2","turn579928view3"]}/>
+
+---
+
+### Stage 14. Complete an incomplete concept representation through associative activation
+
+**Objective:** Recover missing conceptual properties when only partial information is available.
+
+Suppose you hear only the characteristic sound of a violin.
+
+You may be able to retrieve:
+
+- Its shape.
+- Its material.
+- How it is played.
+- Its typical visual appearance.
+
+This is a form of associative pattern completion.
+
+**Possible mathematical operations**
+
+Initialize the partial state:
+
+\[
+\mathbf{x}(0)=\mathbf{x}_{observed}
+\]
+
+Propagate through the recurrent network:
+
+\[
+\mathbf{x}(t+1)=
+\phi(W\mathbf{x}(t)+\mathbf{b})
+\]
+
+Preserve observed features:
+
+\[
+x_i(t+1)=x_i(0)
+\quad
+\text{for clamped observed dimensions}
+\]
+
+Continue updating unobserved dimensions.
+
+Stop when:
+
+\[
+\|\mathbf{x}(t+1)-\mathbf{x}(t)\|<\epsilon
+\]
+
+This can produce a more complete distributed activation pattern.
+
+However, inferred features must remain distinguishable from actually observed features.
+
+**Biological interpretation:** Learned associative pathways can reinstate features from incomplete cues.
+
+---
+
+## Phase III — Semantic interpretation and output
+
+### Stage 15. Activate category-specific distributed circuits
+
+**Objective:** Allow the combination of active features to activate networks characteristic of particular object categories.
+
+For example:
+
+**Faces**
+
+Relevant property networks can include facial form, biological motion, and emotional expressions.
+
+**Tools**
+
+Relevant networks can include object form, movement, and manipulation.
+
+**Actions**
+
+Relevant networks can include motor-related representations associated with the body parts involved in the action.
+
+The important characteristic is that categories are associated with distinct but overlapping distributed neural patterns.
+
+**Possible mathematical operations**
+
+Category feature representation:
+
+\[
+\mathbf{p}_c=
+[p_{c,1},p_{c,2},\ldots,p_{c,n}]
+\]
+
+Category activation:
+
+\[
+A_c=
+\sum_iw_{c,i}a_i
+\]
+
+Similarity:
+
+\[
+S(c)=
+\operatorname{Similarity}
+(\mathcal{S},\mathcal{P}_c)
+\]
+
+A possible distributed similarity model:
+
+\[
+S(c)=
+\sum_r
+\alpha_r
+\operatorname{cosine}
+(\mathbf{x}_r,\mathbf{p}_{c,r})
+\]
+
+Where \(\mathbf{p}_{c,r}\) represents the learned property pattern for category \(c\) in region \(r\).
+
+The comparison is against distributed patterns, not a central semantic code.
+
+**Biological interpretation:** Different object categories rely on partially distinct property-sensitive neural circuits.
+
+For example, Martin's GRAPES review describes how face processing can extend beyond fusiform regions, while tool processing recruits networks associated with movement and manipulation. <Cite refs={["turn886817search1","turn886817search4"]}/>
+
+---
+
+### Stage 16. Apply contextual and task-dependent semantic modulation
+
+**Objective:** Change the relative activation of distributed information according to the current task.
+
+Consider:
+
+- "Describe the violin."
+- "Play the violin."
+- "Identify the sound of a violin."
+- "Compare the violin with a guitar."
+
+The same concept can activate different properties depending on the question.
+
+For describing, shape, color, and material may be especially relevant.
+
+For playing, manipulation and action-related representations may become more important.
+
+For identifying sound, auditory characteristics become particularly relevant.
+
+**Possible mathematical operations**
+
+Task representation:
+
+\[
+\mathbf{q}=
+[q_1,q_2,\ldots,q_n]
+\]
+
+Feature relevance:
+
+\[
+r_i=
+\operatorname{sim}(\mathbf{f}_i,\mathbf{q})
+\]
+
+Task-dependent activation:
+
+\[
+a_i'=
+\phi(a_i+\lambda r_i-\mu d_i)
+\]
+
+Where \(d_i\) is the degree of distractor relevance.
+
+Contextual integration:
+
+\[
+A(c|k,q)=
+F(c,k,q)
+\]
+
+Here, \(k\) is contextual information and \(q\) is the current task.
+
+**Biological interpretation:** Prefrontal and other control networks can influence distributed semantic processing according to the current goal.
+
+These systems influence retrieval without becoming a central storage location for the concept.
+
+---
+
+### Stage 17. Distinguish competing semantic interpretations
+
+**Objective:** Identify the interpretation best supported by the collective distributed activity.
+
+For example, the word *bass* could represent a musical instrument or a fish.
+
+The brain can compare the active patterns against learned property associations.
+
+**Possible mathematical operations**
+
+Candidate score:
+
+\[
+S(c)=
+\sum_r
+w_rS_r(c)
+\]
+
+Posterior-like normalization:
+
+\[
+P(c|\mathbf{x})=
+\frac{\exp(\beta S(c))}
+{\sum_j\exp(\beta S(j))}
+\]
+
+Selection margin:
+
+\[
+\Delta=S(c_1)-S(c_2)
+\]
+
+Entropy:
+
+\[
+H(C)=
+-\sum_cP(c)\log P(c)
+\]
+
+A large selection margin and low uncertainty provide stronger evidence for one interpretation.
+
+These equations are useful mathematical readouts of population activity. They should not be interpreted as evidence that the brain explicitly computes Bayesian posterior probabilities.
+
+**Biological interpretation:** Competing distributed neural assemblies can become active simultaneously, with recurrent excitation, inhibition, and contextual influences helping resolve the competition.
+
+---
+
+### Stage 18. Generate a semantic response or behavioral action
+
+**Objective:** Translate the distributed semantic representation into an observable response.
+
+Possible outputs include:
+
+- Naming an object.
+- Explaining an object's properties.
+- Describing its function.
+- Recognizing its category.
+- Producing an action.
+- Making a decision.
+
+For violin, the output might be:
+
+"A violin is a stringed musical instrument played using a bow."
+
+Alternatively, the person might recognize a violin sound or prepare to manipulate the instrument.
+
+**Possible mathematical operations**
+
+Feature readout:
+
+\[
+\mathbf{y}=W_{out}\mathbf{x}_{distributed}
+\]
+
+Classification:
+
+\[
+c^*=\operatorname{argmax}_cS(c)
+\]
+
+Word-output probability:
+
+\[
+P(w_i)=
+\operatorname{softmax}(z_i)
+\]
+
+Motor response selection:
+
+\[
+m^*=
+\operatorname{argmax}_mQ(m|\mathcal{S},q)
+\]
+
+**Biological interpretation:** Distributed conceptual activity influences language production, decision-making, and action-planning systems.
+
+These output systems read information from the distributed representation; they do not have to store the entire concept.
+
+---
+
+## Phase IV — Learning, redundancy, and degradation
+
+### Stage 19. Update distributed connections through experience
+
+**Objective:** Modify the connections between neural populations when their activity repeatedly coincides.
+
+Imagine a child learning about violins.
+
+The child:
+
+1. Sees a violin.
+2. Hears its sound.
+3. Observes someone playing it.
+4. Experiences the instrument's physical properties.
+5. Learns its name.
+6. Develops emotional and contextual associations.
+
+Over time, these experiences strengthen connections between the relevant neural populations.
+
+**Possible mathematical operations**
+
+Hebbian learning:
+
+\[
+\Delta w_{ij}=
+\eta a_i a_j
+\]
+
+Where:
+
+- \(a_i\): presynaptic activity.
+- \(a_j\): postsynaptic activity.
+- \(\eta\): learning rate.
+
+Weight update:
+
+\[
+w_{ij}(t+1)=
+w_{ij}(t)+\Delta w_{ij}
+\]
+
+To prevent unlimited growth, a decay or normalization term may be included:
+
+\[
+\Delta w_{ij}=
+\eta a_i a_j-\lambda w_{ij}
+\]
+
+An alternative Oja-style rule is:
+
+\[
+\Delta w_{ij}=
+\eta y(x_i-yw_{ij})
+\]
+
+A temporally sensitive plasticity approximation is spike-timing-dependent plasticity:
+
+\[
+\Delta w=
+\begin{cases}
+A_+\exp(-\Delta t/\tau_+), & \Delta t>0\\
+-A_-\exp(\Delta t/\tau_-), & \Delta t<0
+\end{cases}
+\]
+
+Here, the relative timing of pre- and postsynaptic spikes influences the direction of the weight change.
+
+**Biological interpretation:** Experience-dependent synaptic plasticity changes how strongly distributed neural populations influence one another.
+
+The result is an increasingly interconnected network capable of reconstructing familiar concepts from partial input.
+
+---
+
+### Stage 20. Maintain redundancy and distributed representations
+
+**Objective:** Ensure that concept information is represented through overlapping neural populations rather than relying on one individual region.
+
+This is essential to understanding why localized damage may not immediately eliminate an entire concept.
+
+Imagine that violin-related sound, action, and visual properties each involve multiple populations and pathways.
+
+Damage to one population may remove some details, but other populations can continue contributing.
+
+**Possible mathematical operations**
+
+Redundant representation:
+
+\[
+\mathcal{R}_c=
+\bigcup_{r=1}^{R}\mathcal{F}_{c,r}
+\]
+
+Where \(\mathcal{F}_{c,r}\) represents the properties of concept \(c\) represented in region \(r\).
+
+Coverage after damage:
+
+\[
+Coverage(c)=
+\frac{
+\sum_i\mathbb{1}[f_i\text{ remains accessible}]
+}{
+\sum_i\mathbb{1}[f_i\text{ was represented}]
+}
+\]
+
+Network connectivity:
+
+\[
+d_i=\sum_jA_{ij}
+\]
+
+Where \(d_i\) represents the degree of a node in the network.
+
+A node with many connections can have a substantial influence even if it does not store the complete semantic representation.
+
+**Biological interpretation:** Overlapping representations and recurrent connections provide multiple routes for retrieving conceptual information.
+
+An important distinction: distributed redundancy does not imply that every concept feature is stored equally across all regions. Some property representations remain relatively specialized.
+
+---
+
+### Stage 21. Simulate localized damage and progressive semantic degradation
+
+**Objective:** Explain why damage to an individual region can produce selective impairment, while progressive neurodegeneration can eventually cause widespread semantic problems.
+
+This stage is particularly important because it addresses one of the biggest challenges for purely distributed-only models.
+
+Consider three possible damage scenarios.
+
+**Scenario A — Damage to a visual-property network**
+
+The person may experience difficulty recognizing or retrieving the visual form of an object.
+
+However, associated auditory and action-related knowledge may remain more accessible.
+
+**Scenario B — Damage to an action-related network**
+
+The person may have difficulty retrieving how a tool is manipulated or used.
+
+Its visual or auditory characteristics may remain available.
+
+**Scenario C — Progressive degeneration affecting interconnected networks**
+
+The impairment may become much broader.
+
+As neural populations and their connections deteriorate, the entire distributed assembly becomes less effective.
+
+#### Possible mathematical operations
+
+Localized neural damage can be represented using a lesion mask:
+
+\[
+\mathbf{x}'=D\mathbf{x}
+\]
+
+Where \(D\) is a diagonal matrix that attenuates selected neural populations.
+
+Connection damage:
+
+\[
+W'=D_rWD_s
+\]
+
+Progressive deterioration:
+
+\[
+w_{ij}(t+1)=
+w_{ij}(t)-\delta_{ij}(t)
+\]
+
+The activity of remaining populations can be recalculated:
+
+\[
+\mathbf{x}'(t+1)=
+\phi(W'\mathbf{x}'(t)+\mathbf{b})
+\]
+
+The model can measure conceptual performance through:
+
+\[
+Q(c)=
+\sum_r\alpha_rS_r(c)
+\]
+
+After damage:
+
+\[
+\Delta Q(c)=Q_{\text{damaged}}(c)-Q_{\text{healthy}}(c)
+\]
+
+This allows us to model the difference between losing one property and losing access to the wider distributed representation.
+
+#### Why this matters for semantic dementia
+
+Semantic dementia is an important challenge for distributed-only theories.
+
+Patients can progressively lose conceptual knowledge across different modalities. More familiar and typical concepts or properties can be relatively preserved compared with less familiar, atypical, or highly specific information. <Cite refs={["turn886817search6","turn886817search7"]}/>
+
+Furthermore, research has found that anterior temporal degeneration can be accompanied by reduced physiological integrity in connected, distributed modality-selective cortical regions. This provides an alternative network-level explanation for why a localized degenerative process can have widespread functional consequences. <Cite refs={["turn525222search4","turn525222search8"]}/>
+
+However, these findings do not eliminate the theoretical challenge for distributed-only models. Damage to the anterior temporal lobes can also disrupt the integration of multiple features into coherent new concepts, a finding that is important to hub-and-spoke accounts. <Cite refs={["turn525222search7","turn525222search6"]}/>
+
+**Biological interpretation:** The distributed-only explanation is that the damage may affect a highly connected part of the network and its connected populations, progressively disrupting the coordinated activity that supports conceptual knowledge.
+
+This does not require assuming that the anterior temporal lobe contains every concept in a centralized semantic store.
+
+---
+
+# 4. Complete algorithm in pseudocode
+
+The 21 stages can now be expressed as one continuous algorithm.
+
+<CodeBlock language="python" editable>
+ALGORITHM: DISTRIBUTED_ONLY_SEMANTIC_PROCESSING
+
+INPUT:
+    sensory_input
+    linguistic_input
+    contextual_information
+    episodic_memory
+    current_task
+
+DATA:
+    distributed_neural_populations
+    interpopulation_connections
+    learned_property_associations
+    category_specific_distributed_patterns
+    plasticity_parameters
+
+OUTPUT:
+    semantic_interpretation
+    activated_property_networks
+    confidence
+    behavioral_response
+
+BEGIN:
+
+    # PHASE I: INPUT ENCODING
+
+    1. RECEIVE_INPUT()
+       Receive sensory, linguistic, and contextual signals.
+       Extract useful signals and retain their sources.
+
+    2. EXTRACT_PROPERTIES()
+       Identify form, color, sound, movement, action,
+       tactile, affective, and other relevant properties.
+
+    3. INITIALIZE_ACTIVITY()
+       Activate neural populations corresponding
+       to the incoming signals.
+
+    4. RETRIEVE_ASSOCIATIONS()
+       Spread activation through previously learned
+       interpopulation connections.
+
+    5. ACTIVATE_PERCEPTUAL_NETWORKS()
+       Reactivate relevant visual, auditory,
+       and other perceptual property networks.
+
+    # PHASE II: DISTRIBUTED INTERACTION
+
+    6. ACTIVATE_ACTION_NETWORKS()
+       Retrieve manipulation, movement, and
+       action-related representations.
+
+    7. ACTIVATE_AFFECTIVE_NETWORKS()
+       Retrieve emotional and valuation-related
+       properties associated with the concept.
+
+    8. REINSTATE_EPISODIC_CONTEXT()
+       Retrieve relevant experiences and
+       reactivate their associated properties.
+
+    9. PROPAGATE_RECURRENT_ACTIVITY()
+       Allow active neural populations to
+       influence one another through recurrent connections.
+
+    10. APPLY_LOCAL_COMPETITION()
+        Apply excitation, inhibition, and
+        normalization to regulate activity.
+
+    11. ESTIMATE_PROPERTY_RELIABILITY()
+        Adjust the contribution of different
+        populations according to signal quality and task.
+
+    12. COORDINATE_TEMPORAL_ACTIVITY()
+        Coordinate population activity through
+        recurrent interactions and possible oscillatory coupling.
+
+    13. FORM_DISTRIBUTED_CELL_ASSEMBLY()
+        Establish coordinated activation across
+        the populations representing the concept.
+
+    14. COMPLETE_PARTIAL_PATTERN()
+        Reactivate supported missing properties
+        using learned associative connections.
+
+    # PHASE III: SEMANTIC INTERPRETATION
+
+    15. ACTIVATE_CATEGORY_SPECIFIC_NETWORKS()
+        Activate distributed patterns associated
+        with candidate semantic categories.
+
+    16. APPLY_CONTEXTUAL_CONTROL()
+        Reweight features according to current task
+        and contextual information.
+
+    17. DISAMBIGUATE_CONCEPTS()
+        Compare competing distributed patterns
+        and estimate the strongest interpretation.
+
+    18. GENERATE_RESPONSE()
+        Produce a verbal, cognitive, or motor response
+        using the activated distributed representation.
+
+    # PHASE IV: LEARNING AND RESILIENCE
+
+    19. UPDATE_CONNECTIONS()
+        Strengthen or weaken interpopulation connections
+        according to experience-dependent plasticity.
+
+    20. MAINTAIN_REDUNDANCY()
+        Preserve overlapping representations and
+        multiple retrieval pathways.
+
+    21. SIMULATE_NETWORK_DEGRADATION()
+        Model localized lesions, pathway damage,
+        and progressive loss of distributed semantic activity.
+
+    RETURN:
+        semantic_interpretation
+        activated_property_networks
+        confidence
+        behavioral_response
+        network_diagnostics
+
+END
+</CodeBlock>
+
+---
+
+# 5. Mathematical operations inventory
+
+The following table summarizes the important mathematical mechanisms in the algorithm.
+
+| Mathematical operation | Biological/computational role | Stages |
+|---|---|---|
+| Signal filtering | Extract useful incoming information | 1 |
+| Feature extraction and projection | Represent object properties | 2 |
+| Weighted synaptic summation | Initiate neural activity | 3 |
+| Associative spreading activation | Retrieve related concepts | 4 |
+| Nonlinear activation | Reactivate perceptual properties | 5 |
+| Vector projection | Activate action-related properties | 6 |
+| Valuation functions | Retrieve emotional significance | 7 |
+| Similarity-based retrieval | Reactivate episodic memories | 8 |
+| Recurrent matrix operations | Enable interregional communication | 9 |
+| Excitation and inhibition | Regulate competing neural activity | 10 |
+| Softmax and normalization | Model dynamic contribution weighting | 11 |
+| Cross-correlation and phase coherence | Model temporal coordination | 12 |
+| Correlation and co-activation | Form distributed cell assemblies | 13 |
+| Recurrent pattern completion | Recover incomplete representations | 14 |
+| Similarity and distributed classification | Activate categories | 15 |
+| Feature weighting and gating | Apply contextual control | 16 |
+| Entropy and competition | Resolve ambiguous interpretations | 17 |
+| Readout and decoding | Produce cognitive or behavioral output | 18 |
+| Hebbian and timing-dependent plasticity | Learn associations | 19 |
+| Redundancy and connectivity measures | Preserve access through multiple pathways | 20 |
+| Lesion masks and connectivity degradation | Model progressive semantic impairment | 21 |
+
+---
+
+# 6. Comparing Distributed-Only and Hub-and-Spoke architectures
+
+This distinction is particularly important when developing a computational implementation.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Distributed-only architecture**
+  <AsyncImage query="scientific neural network diagram interconnected distributed cortical brain regions nodes no central hub neuroscience illustration" aspectRatio="16:9" width="100%" fit="contain"/>
+  <text color="secondary" size="sm">Conceptual information is represented through coordinated activity across multiple interconnected neural populations. No single amodal semantic hub is required.</text>
+  <divider color="subtle"/>
+  **Hub-and-spoke architecture**
+  <AsyncImage query="hub and spoke semantic cognition brain model anterior temporal lobe sensory motor spokes neuroscience diagram" aspectRatio="16:9" width="100%" fit="contain"/>
+  <text color="secondary" size="sm">Modality-specific spokes interact with an anterior temporal transmodal hub that contributes to integrated semantic representations.</text>
+</box>
+
+| Characteristic | Distributed-only | Hub-and-spoke |
+|---|---|---|
+| Semantic storage | Widespread cortical networks | Distributed spokes plus ATL hub |
+| Concept representation | Joint activation patterns | Spoke patterns coordinated through hub |
+| Integration | Recurrent interregional interaction | Hub-mediated transmodal integration |
+| Redundancy | Overlapping distributed representations | Distributed spokes with a critical convergence component |
+| Local damage | Selective feature loss and possible compensation | Selective spoke effects and potentially broad hub effects |
+| Semantic dementia | Requires an explanation based on network disruption and progressive deterioration | Explained partly through damage to the transmodal integration system |
+
+One critical distinction: distributed-only does not mean that all brain regions contribute equally. A region can be highly connected or particularly important to a particular category without becoming a central semantic repository.
+
+---
+
+# 7. Scientific evidence and limitations
+
+Three findings are particularly relevant to this algorithm.
+
+**1. Distributed category-specific activation**
+
+Pulvermüller and colleagues examined distributed cortical activity associated with semantic categories. Their findings included somatotopic motor activation for action words involving different body parts, together with distributed temporal and frontal activity. <Cite refs={["turn579928view3","turn525222search3"]}/>
+
+**2. GRAPES and property-specific representations**
+
+Martin's GRAPES framework supports the idea that object concepts arise from interactive circuits involving action, perception, and emotion systems. It also emphasizes that property representations are not simply confined to primary sensory or motor cortices. <Cite refs={["turn525222search0","turn886817search1"]}/>
+
+**3. The anterior temporal lobe challenge**
+
+Research on semantic dementia indicates that ATL degeneration is associated with a broader deterioration of semantic function. Some studies also show physiological abnormalities in connected distributed cortical networks. This means a purely distributed model must explain both the importance of the ATL and the widespread consequences of its degeneration. <Cite refs={["turn525222search4","turn525222search7","turn886817search7"]}/>
+
+The distributed-only architecture is therefore a scientifically meaningful model, but the complete human semantic system cannot currently be described as definitively following this architecture alone.
+
+---
+
+# 8. Implications for implementing this algorithm in ORE-Neurocomputational
+
+There is an important architectural decision here.
+
+A faithful distributed-only implementation should not reuse the existing Hub-and-Spoke architecture and simply rename the ATL hub.
+
+Instead, it should implement an independent model with distributed populations and recurrent connectivity.
+
+My proposed package organization would be:
+
+The three most important mathematical components would be:
+
+1. **Distributed recurrent dynamics:** Every population can influence other connected populations without routing everything through a central hub.
+2. **Hebbian distributed learning:** Connections are modified according to co-activation and experience.
+3. **Distributed pattern completion:** A partial input can reactivate a larger network pattern through recurrent associative connections.
+
+The model should also include separate tests for category-specific impairments, cross-modal concept retrieval, partial-cue recognition, local lesions, and progressive network degradation.
+
+**My recommendation:** Preserve the distributed-only implementation as a separate model, then eventually compare it experimentally against your existing `ore_hub_spoke` implementation using identical concepts, input features, learning experiences, and lesion conditions. That would let you investigate whether a central hub actually improves semantic integration, generalization, and resilience rather than assuming that either architecture is superior.

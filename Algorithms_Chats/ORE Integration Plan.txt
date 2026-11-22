@@ -1,0 +1,1582 @@
+Title: ORE Integration Plan
+Conversation ID: 6afeffcd-f84c-83ea-9948-2ef5ba2ca416
+
+---
+
+[USER]
+I want you to review my whole ORE-Neurocomputational repo https://github.com/wizekin/ORE-Neurocomputational, I want you to imagine my Github ORE-Neurocomputational as baby brain but its main divisions or structures are not connected. What are the most basic tasks which can be used to make the disconnected parts of the ORE-Neurocomputational to team up to solve that problem and how can this be implemented
+
+---
+
+[ASSISTANT]
+# ORE-Neurocomputational: From disconnected brain structures to a cooperative brain
+
+After reviewing the repository's architecture, package structure, integration mechanisms, contracts, major processing pipelines, and tests, I think your analogy is very useful.
+
+My main conclusion is:
+
+**ORE-Neurocomputational already has many of the specialized structures needed to represent a brain. Its biggest architectural challenge now is developing reliable communication, coordination, shared memory, and cooperation between those structures.**
+
+I would not start by implementing another 100 brain algorithms. I would start by teaching the existing structures how to work together.
+
+Let's approach this as the development of a baby's brain: individual structures first develop their specialized functions, then increasingly sophisticated connections allow them to cooperate.
+
+## 1. What I found in your repository
+
+<box border radius="lg" gap={3} padding={3}>
+  <title size="xl">ORE repository at a glance</title>
+  <grid columns={2} gap={3}>
+    <grid-item>
+      <title size="2xl" color="default" tabularNums>62</title>
+      <text color="secondary" size="xs">ORE Python packages</text>
+    </grid-item>
+    <grid-item>
+      <title size="2xl" color="default" tabularNums>704</title>
+      <text color="secondary" size="xs">Repository tree entries</text>
+    </grid-item>
+    <grid-item>
+      <title size="2xl" color="default" tabularNums>85</title>
+      <text color="secondary" size="xs">Pytest files</text>
+    </grid-item>
+    <grid-item>
+      <title size="2xl" color="success">3</title>
+      <text color="secondary" size="xs">GitHub Actions workflows</text>
+    </grid-item>
+  </grid>
+  <divider color="subtle"/>
+  <text color="secondary" size="xs">Reviewed branch: main</text>
+  <text size="xs" tabularNums>Latest commit inspected: bc0b06e (19 November 2026)</text>
+  <text size="xs" color="secondary">Merge of Point 08: Curiosity and Motivated Learning.</text>
+  <text size="sm"><Link url="https://github.com/wizekin/ORE-Neurocomputational/commit/bc0b06e7552ed2f042ddd70ed31dadcb8ddce0ba" title="View the inspected commit"/></text>
+</box>
+
+I identified several major families of structures.
+
+| Brain function | Existing ORE packages |
+|---|---|
+| Visual processing | `ore_n1`, `ore_n2`, `ore_n3`, `ore_n4`, `ore_n5`, `ore_n6` |
+| Language processing | `ore_lexical_access`, `ore_syntax`, `ore_semantic_composition`, `ore_discourse` |
+| Semantic representation | `ore_semantic`, `ore_hub_spoke`, `ore_distributed_semantics`, `ore_atl_amodal` |
+| Working and long-term memory | `ore_working_memory`, `ore_hippocampal_encoding`, `ore_cortical_learning`, `ore_memory_transformation` |
+| Learning and knowledge | `ore_schema_formation`, `ore_schema_guided_inference`, `ore_analogical_transfer`, `ore_reconstructive_memory` |
+| Attention and cognitive control | `ore_cognitive_load`, `ore_attentional_failure`, `ore_cognitive_heuristics` |
+| Feedback and motivation | `ore_feedback_seeking`, `ore_corrective_learning`, `ore_curiosity_motivation`, `ore_emotion_motivation` |
+
+This is a substantial foundation.
+
+However, having these structures implemented independently does not automatically mean they cooperate during a cognitive task.
+
+## 2. The important discovery: you already have three integration foundations
+
+I found something important: your repository isn't completely disconnected.
+
+It already contains several attempts at integration.
+
+### A. N9 — the integrated processing controller
+
+<badge color="success">Existing integration foundation</badge>
+
+File: `ore_n9/pipeline.py`
+
+N9 has a 120-operation processing sequence.
+
+It already contains:
+
+- Input initialization and state preparation.
+- N1 and N2 visual processing.
+- Optional N3 and N4 orthographic processing and attention.
+- Lexical access through N6.
+- Syntactic processing.
+- Semantic composition through N8.
+- Contextual and discourse processing through N7.
+- Prediction-error computation and feedback.
+- Decision-making and abstention.
+- Controlled learning proposals.
+
+It even defines a dependency graph:
+
+This is precisely the beginning of a cooperative brain.
+
+However, there is an important limitation.
+
+**N1 and N2 can be initialized automatically, but N3 and N4 have configuration requirements, while N5–N8 and syntax depend on explicitly supplied adapters.**
+
+The controller deliberately marks missing components as unavailable or uses constrained fallback behavior.
+
+In other words, having 120 operations in its trace does not guarantee that all 120 operations involved fully configured functional modules.
+
+See:
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/pipeline.py" title="N9 processing controller"/>
+- <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/contracts.py" title="N9 interfaces and adapters"/>
+
+### B. The N9 language adapter stack
+
+<badge color="success">Already demonstrated cooperation</badge>
+
+File: `ore_n9/adapters.py`
+
+This is another important achievement.
+
+You already have a function:
+
+`build_n9_language_adapters()`
+
+It connects existing implementations:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={2} align="center">
+    **N6 — Lexical Access**
+
+    <text size="xs" color="secondary">ore_lexical_access</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={2} align="center">
+    **Syntax Processing**
+
+    <text size="xs" color="secondary">ore_syntax</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={2} align="center">
+    **N8 — Semantic Composition**
+
+    <text size="xs" color="secondary">ore_semantic_composition</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={2} align="center">
+    **N7 — Discourse and Context**
+
+    <text size="xs" color="secondary">ore_discourse</text>
+  </box>
+  <text color="secondary" size="xs">The actual adapters pass structured evidence, rather than simply passing text between packages.</text>
+</box>
+
+There is even an integration test comparing:
+
+- "musician tunes instrument"
+- "musician tunes microwave"
+
+The test checks whether semantic selectional evidence distinguishes an instrument from a household appliance.
+
+That's an excellent example of multiple cognitive structures cooperating to solve a problem.
+
+See <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_n9_language_adapters.py" title="N9 language integration tests"/>.
+
+### C. Canonical ORE integration
+
+<badge color="success">Existing system-level foundation</badge>
+
+Files:
+- `ore_contracts/integration.py`
+- `ore_contracts/adapters.py`
+- `ore_contracts/governance.py`
+
+This is particularly interesting.
+
+Your `ore_contracts` package already has:
+
+- A canonical phase registry.
+- A common `RunContext`.
+- Standardized artifact contracts.
+- Backend registration.
+- Functional and biological execution tracks.
+- Evidence provenance.
+- Controlled learning authorization.
+- A `CanonicalOREController`.
+
+The controller can coordinate functional, biological, hybrid and validation modes.
+
+It also already contains `LegacyN9FunctionalBackend`, which provides a bridge to the existing `ore_n9.N9Processor`.
+
+However, its backend registry starts empty. The required processors must be registered explicitly.
+
+This suggests an opportunity: use this canonical architecture as the foundation of the overall brain coordinator instead of creating another independent controller.
+
+One important distinction: canonical B-N9 and the older `ore_n9.N9Processor` have different responsibilities, even though they share the N9 name.
+
+See <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/integration.py" title="Canonical integration controller"/>.
+
+---
+
+## 3. What is actually missing?
+
+I would identify five major weaknesses.
+
+### Problem 1: No universal communication language
+
+Individual modules have their own input and output structures.
+
+For example:
+
+- N1 produces visual feature maps.
+- N3 works with visual and grapheme evidence.
+- Lexical access works with word-level hypotheses.
+- Semantic composition works with concepts and predicate frames.
+- Working memory maintains temporary cognitive representations.
+
+The modules need to understand what another module's output means.
+
+Otherwise, one module might produce a perfectly valid result that another module cannot consume.
+
+You already have `ore_contracts` to address this problem, but its interfaces and adapters have not yet become the universal communication mechanism for all 62 packages.
+
+### Problem 2: No universal shared workspace
+
+Imagine a baby seeing a cat.
+
+The visual system detects its shape.
+
+The semantic system retrieves its characteristics.
+
+The memory system remembers previous encounters.
+
+The language system retrieves the word "cat".
+
+Attention decides which information deserves additional processing.
+
+These structures need access to a common representation of the current situation.
+
+In your repository, N9 can load caller-supplied context and working-memory snapshots. However, its `N9Adapters` does not contain a dedicated working-memory or episodic-memory processor interface.
+
+That means your existing `ore_working_memory`, `ore_hippocampal_encoding`, and related packages are not first-class participants in the N9 processing network.
+
+This is one of the most important gaps.
+
+### Problem 3: No universal coordinator connecting all the structures
+
+N9 coordinates a particular processing sequence.
+
+`CanonicalOREController` coordinates functional and biological execution tracks.
+
+`ore_reading` has another integrated reading processor.
+
+Other packages such as `ore_grounded_integration`, `ore_hub_spoke`, and `ore_hybrid_embodied_amodal` implement additional integration architectures.
+
+The issue isn't that these projects are useless. The issue is deciding how they cooperate under one system-level coordination architecture.
+
+We should not create several competing brains inside ORE.
+
+### Problem 4: Missing recurrent communication between cognitive systems
+
+The brain does not merely process information in one direction.
+
+For example:
+
+1. Visual processing generates possible word identities.
+2. Lexical processing identifies possible words.
+3. Semantic processing predicts which words are appropriate.
+4. Those predictions influence attention and interpretation.
+5. Visual processing may be recruited again when the evidence remains insufficient.
+
+N9 already models some bounded feedback.
+
+However, other systems, particularly memory, learning, working memory and cognitive control, need equally explicit communication channels with the primary processing network.
+
+### Problem 5: Successful execution is not the same as successful cooperation
+
+Your repository has extensive individual tests, and some integration tests.
+
+However, we need stronger system-level tests proving that all required structures actually participate in a complete cognitive task.
+
+Your existing source-to-code audit also identified some partially implemented source algorithms, including gaps in semantic-memory acquisition and trace granularity in predictive orthography.
+
+See <Link url="https://github.com/wizekin/ORE-Neurocomputational/blob/main/docs/ORE_SOURCE_TO_CODE_IMPLEMENTATION_CROSSWALK.md" title="Existing source-to-code audit"/>.
+
+That document is dated November 16, so it should eventually be refreshed against the newer implementations merged on November 19.
+
+---
+
+# 4. The most basic tasks for developing a cooperative brain
+
+I would develop the brain in seven fundamental capabilities.
+
+These are more important initially than adding additional specialized algorithms.
+
+## Task 1. Teach every brain structure how to communicate
+
+<badge color="success">Priority 1 — Start here</badge>
+
+Biological analogy: neurons need compatible signaling mechanisms.
+
+Software equivalent: every ORE package must expose a standardized communication interface.
+
+Each module should declare:
+
+| Property | Purpose |
+|---|---|
+| Module ID | Identify the structure |
+| Responsibility | Explain what it does |
+| Input contract | Describe what it can receive |
+| Output contract | Describe what it produces |
+| Dependencies | Identify required information |
+| Confidence | Communicate uncertainty |
+| Provenance | Identify where evidence came from |
+| Status | Report success, partial output, abstention or failure |
+
+For example:
+
+A semantic processor should explicitly declare that it accepts lexical and syntactic evidence and produces semantic graphs and propositions.
+
+A memory processor should declare what kind of memory representation it accepts and retrieves.
+
+I recommend extending `ore_contracts` instead of creating another independent contracts package.
+
+Possible architecture:
+
+This is a proposed interface, not an existing repository API.
+
+The important idea is that ORE should be able to discover what each structure can do without requiring the coordinator to understand its internal implementation.
+
+## Task 2. Create a shared brain workspace
+
+<badge color="success">Priority 2</badge>
+
+Biological analogy: working memory and recurrently accessible representations.
+
+Software equivalent: a shared, per-task information workspace.
+
+I would call it:
+
+**ORE Shared Cognitive Workspace (SCW).**
+
+Every cognitive structure can read relevant information from the workspace and publish new findings.
+
+For example, when interpreting:
+
+"The boy opened the door."
+
+The workspace might contain:
+
+This is simplified illustrative data.
+
+Every new result becomes available to the structures that need it.
+
+For example:
+
+- Semantic composition reads lexical and syntactic representations.
+- Working memory maintains relevant unfinished information.
+- Memory systems retrieve relevant experiences.
+- Cognitive control evaluates conflicts.
+- Discourse processing incorporates previous context.
+
+Importantly, shared access should not mean uncontrolled modification.
+
+Each module should publish its own findings with provenance. A coordinator or designated state manager should validate changes to shared state.
+
+Also, `ore_logger` should remain responsible for execution observation and logging. It should not become the cognitive workspace or communication bus.
+
+## Task 3. Create the main brain coordinator
+
+<badge color="success">Priority 3</badge>
+
+Biological analogy: large-scale coordination between brain networks, including executive-control and attentional systems.
+
+Software equivalent: a dependency-aware task coordinator.
+
+The coordinator should:
+
+1. Receive a cognitive task.
+2. Identify which modules can contribute.
+3. Inspect their availability.
+4. Determine what information each module requires.
+5. Schedule execution.
+6. Publish results into the shared workspace.
+7. Detect missing information and conflicts.
+8. Request additional processing where necessary.
+9. Combine the results.
+10. Return a decision with appropriate uncertainty.
+
+I recommend building on:
+
+`ore_contracts.CanonicalOREController`
+
+and using the existing N9 functional processor through its `LegacyN9FunctionalBackend` bridge.
+
+This would give ORE two clearly separated levels:
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3}>
+    **Level 1 — Global coordinator**
+
+    `CanonicalOREController`
+
+    <text size="xs" color="secondary">Controls execution modes, module registration, provenance, validation and overall execution.</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={3}>
+    **Level 2 — Specialized cognitive networks**
+
+    - N9 recognition and comprehension
+    - Working-memory network
+    - Semantic-memory network
+    - Contextual reasoning network
+    - Learning and feedback network
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="xl"/>
+  </box>
+  <box background="rgba(148,163,184,0.12)" radius="md" padding={3}>
+    **Level 3 — Individual structures**
+
+    Existing 62 ORE packages.
+
+    <text color="secondary" size="xs">Each retains its internal architecture and specialized algorithms.</text>
+  </box>
+</box>
+
+The coordinator should not perform all the cognitive computations itself.
+
+Its responsibility is to make sure the appropriate structures cooperate.
+
+## Task 4. Connect sensory processing to language and semantic understanding
+
+<badge color="success">Priority 4</badge>
+
+This should be the first complete cooperative cognitive pathway.
+
+I recommend the following progression:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">First integrated cognitive pathway</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **Visual perception**
+
+      `ore_n1` → `ore_n2`
+
+      Extract visual evidence and organize its structure.
+    </list-item>
+    <list-item>
+      **Orthographic recognition**
+
+      `ore_n3` → `ore_n4`
+
+      Generate grapheme hypotheses, incorporate attention and regulate uncertainty.
+    </list-item>
+    <list-item>
+      **Lexical identification**
+
+      `ore_lexical_access`
+
+      Identify candidate words, morphology and phonological information.
+    </list-item>
+    <list-item>
+      **Syntactic interpretation**
+
+      `ore_syntax`
+
+      Identify sentence structure, dependencies and grammatical relationships.
+    </list-item>
+    <list-item>
+      **Semantic interpretation**
+
+      `ore_semantic_composition`
+
+      Construct propositions, concepts, relations and semantic graphs.
+    </list-item>
+    <list-item>
+      **Contextual interpretation**
+
+      `ore_discourse` and relevant knowledge systems.
+
+      Relate the proposition to its context and prior information.
+    </list-item>
+    <list-item>
+      **Cognitive integration**
+
+      `ore_working_memory` and the main coordinator.
+
+      Maintain relevant information, compare alternatives and decide whether the interpretation is sufficiently supported.
+    </list-item>
+  </list>
+</box>
+
+One important implementation detail: N9 expects localized visual patches or supplied grapheme evidence. It does not silently provide a complete character-segmentation system for arbitrary raw images.
+
+Therefore, we need an explicit localization/segmentation interface before claiming that the entire raw-image-to-understanding pathway is connected.
+
+## Task 5. Connect memory to every relevant cognitive structure
+
+<badge color="success">Priority 5</badge>
+
+This is where ORE could become substantially more sophisticated.
+
+Memory should not be an isolated package.
+
+It should provide useful information to the other systems.
+
+Imagine ORE receiving:
+
+"The mechanic repaired the engine."
+
+The memory system might retrieve:
+
+- Previous experiences involving mechanics.
+- Knowledge about engines.
+- Typical relationships between mechanics and repairs.
+- Previous examples of repair activities.
+- Relevant causal knowledge.
+
+Then these structures could cooperate:
+
+| Structure | Contribution |
+|---|---|
+| Working memory | Maintains the current sentence |
+| Hippocampal encoding | Encodes relevant new episodes |
+| Semantic memory | Retrieves existing knowledge |
+| Schema formation | Activates typical event structures |
+| Analogical transfer | Finds related experiences |
+| Reconstructive memory | Evaluates incomplete recalled information |
+| Cognitive control | Evaluates competing interpretations |
+
+The coordinator receives all the results and decides which information is relevant.
+
+I would make `ore_working_memory` the first memory module connected to the shared workspace, followed by semantic and episodic retrieval.
+
+## Task 6. Create recurrent feedback and corrective learning
+
+<badge color="success">Priority 6</badge>
+
+This is particularly important because the brain must learn that its previous interpretation was wrong.
+
+Consider:
+
+"The musician tunes the microwave."
+
+The semantic system detects a potential incompatibility between the verb and the object.
+
+Instead of blindly accepting the sentence, it should communicate this conflict to other structures.
+
+The processing sequence becomes:
+
+Relevant existing packages include:
+
+- `ore_corrective_learning`
+- `ore_feedback_seeking`
+- `ore_confirmation_bias`
+- `ore_cognitive_heuristics`
+- `ore_curiosity_motivation`
+
+The system should have bounded feedback loops, avoid repeatedly activating the same unsuccessful process, and never convert an unsupported hypothesis into a fact.
+
+Actual model updates should remain separate from inference and require explicit authorization, following the protection mechanisms already present in N9 and `ore_contracts`.
+
+## Task 7. Teach the brain to coordinate its own resources
+
+<badge color="success">Priority 7</badge>
+
+This is an advanced but important capability.
+
+Not every cognitive structure should participate in every task.
+
+For example:
+
+When recognizing a familiar word, ORE might need only visual recognition and lexical access.
+
+When interpreting a complex metaphor, it might require:
+
+- Lexical access.
+- Semantic composition.
+- Contextual interpretation.
+- Analogical transfer.
+- Semantic memory.
+- Working memory.
+- Cognitive control.
+
+The coordinator should select modules based on:
+
+- Task requirements.
+- Uncertainty.
+- Information availability.
+- Computational cost.
+- Previous processing failures.
+- Expected information gain.
+
+This is comparable to attention and resource allocation in biological systems.
+
+It prevents unnecessary processing and reduces the computational burden.
+
+---
+
+# 5. How the connections should look
+
+There is one important architectural decision I would make.
+
+**Do not connect every one of the 62 packages directly to all the others.**
+
+That would create a huge and difficult-to-manage network.
+
+With 62 packages, a fully connected directed network could have 3,782 direct connections.
+
+Instead, use a sparse communication architecture.
+
+A module communicates with the shared workspace and the coordinator. The coordinator sends relevant information to the structures that need it.
+
+This is similar to a combination of hub-and-spoke architecture, a shared blackboard, and recurrent feedback.
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">Proposed ORE connectome</title>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **Global Cognitive Coordinator**
+
+    <text size="xs" color="secondary">Task routing · Scheduling · Integration · Decision</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" size="xl" color="secondary"/>
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={3} align="center">
+    **Shared Cognitive Workspace**
+
+    <text size="xs" color="secondary">Current task · Evidence · Hypotheses · Memory · Goals · Uncertainty</text>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box border radius="md" padding={2} gap={1} align="center">
+        <icon name="eye" size="xl"/>
+        **Perception**
+
+        <text size="xs" color="secondary" textAlign="center">N1–N4 and visual modules</text>
+        <badge color="success">Specialized</badge>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} gap={1} align="center">
+        <icon name="languages" size="xl"/>
+        **Language**
+
+        <text size="xs" color="secondary" textAlign="center">Lexical, syntax, semantics</text>
+        <badge color="success">Specialized</badge>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} gap={1} align="center">
+        <icon name="brain" size="xl"/>
+        **Memory**
+
+        <text size="xs" color="secondary" textAlign="center">Working, episodic, semantic</text>
+        <badge color="success">Specialized</badge>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box border radius="md" padding={2} gap={1} align="center">
+        <icon name="sliders-horizontal" size="xl"/>
+        **Control and Learning**
+
+        <text size="xs" color="secondary" textAlign="center">Attention, feedback, motivation</text>
+        <badge color="success">Specialized</badge>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down-up" size="xl" color="secondary"/>
+  </box>
+  <box background="rgba(168,135,75,0.10)" radius="md" padding={3} align="center">
+    **Integrated Cognitive Output**
+
+    <text color="secondary" size="xs">Reasoning · Interpretation · Decisions · Uncertainty · Learning opportunities</text>
+  </box>
+  <caption>Conceptual architecture. Communication is selective and bidirectional where required, rather than every package directly connecting to every other package.</caption>
+</box>
+
+# 6. The actual implementation plan I recommend
+
+I would organize the development into these implementation stages.
+
+| Stage | Implementation | Expected result |
+|---|---|---|
+| 01 | Universal module contracts and capability registry | Structures understand each other's interfaces |
+| 02 | Shared Cognitive Workspace | Structures can exchange and retrieve task information |
+| 03 | Global coordinator and dependency scheduler | Structures can be activated according to task requirements |
+| 04 | Perception-to-semantics integration | First complete cooperative cognitive pathway |
+| 05 | Working and long-term memory integration | Contextual and experience-based interpretation |
+| 06 | Feedback and corrective learning integration | Recurrent interpretation and error correction |
+| 07 | Adaptive coordination | ORE selects appropriate structures dynamically |
+| 08 | Global integration tests | Demonstrate that the structures actually cooperate |
+
+### Proposed implementation locations
+
+Rather than making a new independent architecture, I would extend the following existing components.
+
+| Component | Proposed responsibility |
+|---|---|
+| `ore_contracts` | Module contracts, registration and communication standards |
+| `ore_contracts/integration.py` | Global coordination and execution |
+| `ore_n9` | Existing recognition and comprehension processing network |
+| `ore_working_memory` | Cognitive working-state processing |
+| `ore_logger` | Execution tracing and diagnostics |
+| `tests/` | Pairwise and system-wide integration tests |
+
+For the first new implementation, I would introduce three fundamental concepts inside the existing contracts architecture:
+
+**1. ModuleRegistry**
+
+Knows which modules exist, what they do, what they require and what they produce.
+
+**2. CognitiveWorkspace**
+
+Holds shared, run-specific cognitive information and evidence.
+
+**3. CognitiveCoordinator**
+
+Determines which modules should participate, schedules them and integrates their results.
+
+These three elements are the foundation of the connections that the other algorithms will use.
+
+---
+
+# 7. How will we know that the brain has started cooperating?
+
+I would establish a very small acceptance experiment.
+
+Give ORE a simple task:
+
+"The musician tunes the instrument."
+
+The system should demonstrate the following:
+
+1. Visual processing identifies the input when visual evidence is supplied.
+2. Orthographic processing generates grapheme hypotheses.
+3. Lexical processing identifies musician, tunes and instrument.
+4. Syntax determines the grammatical relationships.
+5. Semantic composition identifies the agent, action and patient.
+6. Semantic memory retrieves relevant information.
+7. Working memory maintains the current proposition.
+8. Discourse processing incorporates available context.
+9. Cognitive control evaluates whether the result is sufficiently supported.
+10. The coordinator generates an integrated answer with evidence and uncertainty.
+
+Then introduce an ambiguous or conflicting example.
+
+The system should request additional evidence when necessary rather than blindly accepting its first interpretation.
+
+<box border radius="lg" padding={3} gap={2}>
+  **Four levels of integration testing**
+  <list marker="number" gap={2}>
+    <list-item>
+      **Communication test**
+
+      Can module A pass a valid representation to module B?
+    </list-item>
+    <list-item>
+      **Cooperation test**
+
+      Can two or more modules combine their outputs to solve a problem?
+    </list-item>
+    <list-item>
+      **Recurrent integration test**
+
+      Can one module's result cause another module to reconsider its previous interpretation?
+    </list-item>
+    <list-item>
+      **System intelligence test**
+
+      Can the entire network solve a task that no individual component can solve adequately by itself?
+    </list-item>
+  </list>
+</box>
+
+These tests should inspect actual outputs and execution statuses, not merely count the number of operations in a trace.
+
+Keep your existing automated tests and GitHub Actions workflows enabled. The existing `python-tests.yml` already runs the full pytest suite on pushes and pull requests. Every new integration stage should add tests rather than replace or disable existing coverage.
+
+---
+
+# 8. My most important recommendation
+
+I would resist the temptation to make the next development stage another collection of specialized brain algorithms.
+
+Your repository already has considerable specialization.
+
+The next stage should be called something like:
+
+**ORE — Brain Network Connectivity and Cooperative Cognition**
+
+Its primary objective would be:
+
+> Transform ORE-Neurocomputational from a collection of independently functioning neurocomputational structures into a coordinated cognitive system in which specialized structures communicate, share information, retrieve relevant memories, exchange predictions, resolve conflicts, and cooperate to solve cognitive tasks.
+
+I would start with just three implementations:
+
+1. Universal Module Communication and Capability Registry.
+2. Shared Cognitive Workspace.
+3. Global Cognitive Coordinator.
+
+Then connect the existing N9, working-memory, semantic-memory and language-processing structures through those mechanisms.
+
+This is the direction I believe will give your project the greatest architectural benefit.
+
+**One final distinction:** successful software integration would demonstrate computational cooperation, not prove that ORE reproduces the actual biological brain. Its functional computations, simplified biological simulations and empirical biological validation should remain separate tracks.
+
+I have completed an architecture-level review of the current repository tree and its central integration mechanisms. I have not performed a line-by-line audit of all 704 tree entries or run the 85 test files, so this is not a certification of current test success.
+
+The first concrete development milestone should be implementing the three foundational components inside `ore_contracts`, with a dedicated integration test proving that two existing ORE modules can exchange information and jointly solve a task.
+
+---
+
+[USER]
+create an algorithm for implementing task 1
+
+---
+
+[ASSISTANT]
+# ORE Task 1 — Universal Module Communication and Capability Registry
+
+<badge color="success">Foundational architecture algorithm</badge> <badge color="info">Implementation specification</badge>
+
+**Objective:** Teach every ORE cognitive structure how to describe itself, communicate its capabilities, identify compatible structures, and exchange information through standardized interfaces.
+
+The biological analogy is the development of communication between different neural structures. Each structure has its own specialized function, but it must be able to receive and interpret signals from other structures.
+
+The software implementation should achieve the same organizational principle without requiring all existing ORE packages to be rewritten.
+
+I recommend implementing this inside the existing `ore_contracts` package.
+
+---
+
+# Part 1. Fundamental design
+
+## 1.1 What are we building?
+
+The new system will consist of four components.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} gap={1}>
+    **1. Module Communication Protocol**
+
+    Establishes the common rules every module must follow when describing its inputs, outputs and processing capabilities.
+  </box>
+  <box background="rgba(46,125,80,0.10)" radius="md" padding={3} gap={1}>
+    **2. Contract Catalog**
+
+    Maintains definitions of the standardized information structures that modules can exchange.
+  </box>
+  <box background="rgba(168,135,75,0.10)" radius="md" padding={3} gap={1}>
+    **3. Module Registry**
+
+    Registers ORE structures and maintains their capabilities, dependencies and communication interfaces.
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={3} gap={1}>
+    **4. Compatibility Validator**
+
+    Determines whether the output of one module can be understood and consumed by another module.
+  </box>
+</box>
+
+These four components establish communication infrastructure. They do not yet implement the shared cognitive workspace or global coordinator.
+
+## 1.2 Existing infrastructure to reuse
+
+We should avoid duplicating what already exists.
+
+| Existing ORE component | How we reuse it |
+|---|---|
+| `ContractEnvelope` | Metadata, provenance and version identification |
+| `FeatureTensor` | Standardized visual feature representation |
+| `GraphemeEvidence` | Standardized grapheme evidence |
+| `VisualFeatureBundle` | Standardized visual information exchange |
+| `RunContext` | Shared execution context |
+| `LegacyN1Adapter` and other adapters | Compatibility with existing modules |
+| `CanonicalBackendRegistry` | Existing functional and biological backend registration |
+
+Relevant files:
+
+- [ore_contracts/__init__.py](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/__init__.py)
+- [ore_contracts/advanced.py](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/advanced.py)
+- [ore_contracts/adapters.py](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/adapters.py)
+- [ore_contracts/integration.py](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/integration.py)
+
+---
+
+# Part 2. The implementation algorithm
+
+I propose dividing the implementation into 24 ordered operations.
+
+## Stage A — Establish universal communication rules
+
+### Operation 01 — Inspect and inventory existing ORE interfaces
+
+**Purpose:** Identify how existing packages currently receive and return information.
+
+Algorithm:
+
+1. Enumerate all `ore_*` packages.
+2. Locate each package's public entry points.
+3. Identify its principal processor classes.
+4. Identify its request and result classes.
+5. Identify its current input structures.
+6. Identify its current output structures.
+7. Identify existing adapters.
+8. Identify external package dependencies.
+9. Identify whether processing is functional, biological-reference, or hybrid.
+10. Record its current interface without modifying the original package.
+
+For example:
+
+This is an illustrative inventory record.
+
+**Important:** The inventory must distinguish between a feature that exists in the code and a feature that has merely been described in documentation.
+
+### Operation 02 — Establish universal module identification
+
+Every module must have a stable identity.
+
+Introduce a `ModuleIdentity` structure.
+
+Required fields:
+
+| Field | Description |
+|---|---|
+| module_id | Unique identifier |
+| module_version | Module implementation version |
+| module_name | Human-readable name |
+| parent_module | Optional hierarchical parent |
+| package_path | Python package |
+| biological_reference | Biological system being approximated, if applicable |
+
+Example:
+
+The identifier must remain stable even if the Python implementation is reorganized.
+
+### Operation 03 — Define the universal input port
+
+Each module must declare what information it can receive.
+
+Create an `InputPort` structure.
+
+Required properties:
+
+- Port identifier.
+- Contract identifier.
+- Accepted contract versions.
+- Required or optional status.
+- Expected data type.
+- Multiplicity: one input or multiple inputs.
+- Validation requirements.
+
+Example:
+
+This means the receiving module requires one or more valid IF-06 evidence objects.
+
+### Operation 04 — Define the universal output port
+
+Each module must declare what it produces.
+
+Create an `OutputPort` structure.
+
+Required properties:
+
+- Port identifier.
+- Contract identifier.
+- Contract version.
+- Output data type.
+- Description.
+- Whether output is always available or conditionally produced.
+
+For example:
+
+### Operation 05 — Establish universal contract identification
+
+Every information structure exchanged between modules must have an identifiable contract.
+
+Reuse the existing contract identifiers where possible.
+
+For new contracts:
+
+1. Assign a unique contract identifier.
+2. Define its expected Python model.
+3. Define its required fields.
+4. Define its optional fields.
+5. Define its validation rules.
+6. Define its version.
+7. Define its serialization policy where serialization is supported.
+
+The contract catalog must prevent two different structures from being treated as equivalent merely because they happen to contain similar dictionary keys.
+
+### Operation 06 — Establish contract version compatibility
+
+Different modules may be developed at different times.
+
+Therefore, their interfaces need controlled version compatibility.
+
+Algorithm:
+
+1. Read the producer contract identifier.
+2. Read the producer contract version.
+3. Read the consumer's accepted contract versions.
+4. Compare the contract identifiers.
+5. Check the supported version range.
+6. Determine whether direct consumption is permitted.
+7. Search for an explicitly registered converter if versions are incompatible.
+8. Reject the connection if neither direct compatibility nor a valid converter exists.
+
+A fundamental rule:
+
+\[
+Compatible(A,B)=
+ID_A=ID_B
+\land
+Version_A\in AcceptedVersions_B
+\]
+
+When an interface undergoes a breaking change, increment its major version.
+
+Never silently convert incompatible information.
+
+---
+
+## Stage B — Establish the universal module protocol
+
+### Operation 07 — Define the ORE module interface
+
+Introduce a common Python protocol.
+
+A module should expose two fundamental operations:
+
+The actual implementation should use Python typing `Protocol` rather than requiring inheritance from one base class.
+
+This matters because the existing 62 packages already have different internal architectures.
+
+We should use adapters to make them compatible instead of rewriting every processor.
+
+### Operation 08 — Create the Module Manifest
+
+The manifest describes the complete communication capabilities of a module.
+
+Recommended structure:
+
+The manifest must be validated before registration.
+
+It must not claim that an unimplemented functionality is available.
+
+### Operation 09 — Establish standardized module results
+
+Modules must return results with an explicit execution status.
+
+Introduce:
+
+A `ModuleResult` should contain:
+
+- Module identity.
+- Execution status.
+- Produced artifacts.
+- Diagnostics.
+- Warnings.
+- Provenance.
+- Processing metadata.
+
+An important distinction:
+
+An operation that abstains because evidence is insufficient is not equivalent to an operation that crashes.
+
+The communication layer must preserve that distinction.
+
+### Operation 10 — Establish the universal artifact envelope
+
+Reuse `ContractEnvelope`.
+
+Every exchanged artifact should preserve:
+
+- Contract ID.
+- Schema version.
+- Run ID.
+- Producer ID.
+- Configuration hash.
+- Creation time.
+- Evidence type.
+- Parent artifact IDs.
+- Optional data hash and model reference.
+
+Introduce a lightweight `ContractArtifact` wrapper:
+
+The payload contains the actual information.
+
+The envelope identifies its meaning, origin and lineage.
+
+For numerical arrays, content hashing must use a deterministic array-aware serializer or hashing implementation, not an arbitrary object representation.
+
+### Operation 11 — Create universal input validation
+
+Before a receiving module accepts an artifact:
+
+1. Validate its envelope.
+2. Verify the contract ID.
+3. Verify the contract version.
+4. Verify the producer identity.
+5. Check the payload against the contract definition.
+6. Validate numerical values where applicable.
+7. Validate required metadata.
+8. Check evidence provenance.
+9. Check relevant execution policies.
+10. Accept or reject the artifact with an explicit reason.
+
+No module should consume an artifact simply because it arrived from another ORE package.
+
+---
+
+## Stage C — Build the Contract Catalog and Module Registry
+
+### Operation 12 — Create the Contract Catalog
+
+Create a central catalog of valid communication contracts.
+
+Recommended file:
+
+`ore_contracts/contracts_registry.py`
+
+It should provide:
+
+Each contract should be registered only once for a particular version.
+
+The catalog should reference existing contract models instead of recreating IF-05, IF-06 and other already established structures.
+
+### Operation 13 — Create the Module Registry
+
+Recommended file:
+
+`ore_contracts/module_registry.py`
+
+The registry maintains two separate records:
+
+**A. Module manifest records**
+
+Describe what modules exist and what they are capable of doing.
+
+**B. Runtime backend bindings**
+
+Identify which actual implementation or adapter is currently available to execute that module.
+
+This distinction is essential.
+
+For example:
+
+`ore_semantic` may be known to the registry even when its runtime adapter has not yet been developed.
+
+The registry should report:
+
+It must never report an executable module just because a manifest exists.
+
+### Operation 14 — Implement module registration
+
+Algorithm:
+
+1. Receive a module manifest.
+2. Validate its identity.
+3. Validate its version.
+4. Check whether the identifier already exists.
+5. Verify all referenced contract IDs.
+6. Validate its input ports.
+7. Validate its output ports.
+8. Validate declared capabilities.
+9. Validate dependency identifiers.
+10. Store the manifest.
+11. Return registration status.
+
+Duplicate module identities must be rejected unless an explicit versioned registration policy permits them.
+
+### Operation 15 — Implement backend binding
+
+After registering a manifest:
+
+1. Receive a module adapter.
+2. Identify its target module.
+3. Check that it implements the universal interface.
+4. Compare its declared interface with the module manifest.
+5. Run a basic validation of its input/output behavior.
+6. Bind it to the module ID.
+7. Mark it as available for execution.
+
+Backend binding should not automatically execute learning operations or change any model parameters.
+
+### Operation 16 — Implement capability registration
+
+Capabilities describe what a module can do, independently of how it is implemented.
+
+Use namespaced identifiers.
+
+Examples:
+
+One module may advertise multiple capabilities.
+
+Multiple modules may advertise the same capability.
+
+This makes it possible to introduce alternative implementations later.
+
+### Operation 17 — Implement capability discovery
+
+The registry should support questions such as:
+
+It should return all modules that declare the requested capability, while distinguishing:
+
+- Declared.
+- Registered.
+- Backend bound.
+- Validated.
+- Disabled.
+
+The registry should not assume that every declared module is ready for execution.
+
+---
+
+## Stage D — Teach existing ORE modules to communicate
+
+### Operation 18 — Create legacy module adapters
+
+This is one of the most important steps.
+
+We must preserve the existing ORE processors.
+
+For example:
+
+The adapter translates standardized requests into the processor's existing request format and translates its result into standardized artifacts.
+
+For example:
+
+`LegacyN1Adapter` already converts N1 results into a `VisualFeatureBundle`.
+
+That is an excellent starting point.
+
+Other existing examples include:
+
+- `LexicalAccessN6Adapter`
+- `SyntaxN9Adapter`
+- `SemanticCompositionN8Adapter`
+
+We should reuse and extend these instead of implementing duplicate logic.
+
+### Operation 19 — Validate producer-to-consumer compatibility
+
+The registry must be able to evaluate a connection.
+
+Example:
+
+Algorithm:
+
+1. Find the producer module.
+2. Find the requested output port.
+3. Find the consumer module.
+4. Find its corresponding input port.
+5. Check contract compatibility.
+6. Check version compatibility.
+7. Check any required adapter.
+8. Validate the data transformation.
+9. Produce a compatibility report.
+
+Possible results:
+
+Compatibility must be a verifiable decision, not a similarity score.
+
+### Operation 20 — Establish module dependencies
+
+Each manifest should describe which other structures provide information required for its processing.
+
+Example:
+
+This operation records dependencies only.
+
+It does not yet schedule or execute modules. That belongs to the later global coordinator task.
+
+### Operation 21 — Build a communication compatibility map
+
+Use all registered manifests and their ports to construct a graph.
+
+Each module becomes a node.
+
+A directed edge represents a validated information interface.
+
+For example:
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">Example compatibility graph</title>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **ore_lexical_access**
+  </box>
+  <row justify="center" align="center" gap={2}>
+    <icon name="arrow-down" color="success"/>
+    <badge color="success">IF-compatible</badge>
+  </row>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **ore_syntax**
+  </box>
+  <row justify="center" align="center" gap={2}>
+    <icon name="arrow-down" color="success"/>
+    <badge color="success">IF-compatible</badge>
+  </row>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **ore_semantic_composition**
+  </box>
+  <row justify="center" align="center" gap={2}>
+    <icon name="arrow-down" color="success"/>
+    <badge color="success">IF-compatible</badge>
+  </row>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **ore_discourse**
+  </box>
+  <caption>Illustrative communication graph. An edge is only marked compatible after the appropriate interfaces and adapters have been validated.</caption>
+</box>
+
+The graph should be exportable as JSON for future visualization and inspection.
+
+---
+
+## Stage E — Establish reliability and testing
+
+### Operation 22 — Introduce registration and communication diagnostics
+
+Every registered module should have a diagnostic report containing:
+
+- Module ID and version.
+- Declared capabilities.
+- Input contracts.
+- Output contracts.
+- Bound backend.
+- Dependency status.
+- Contract-validation status.
+- Compatibility status.
+- Known limitations.
+
+This information will eventually allow the global coordinator to discover what resources are available without inspecting individual package internals.
+
+### Operation 23 — Implement automated tests
+
+Create:
+
+`tests/test_module_registry.py`
+
+The tests should include:
+
+| Test | Expected result |
+|---|---|
+| Register valid module | Success |
+| Register duplicate identity | Rejected |
+| Register missing contract | Rejected |
+| Invalid input port | Rejected |
+| Invalid output port | Rejected |
+| Bind compatible adapter | Success |
+| Bind incompatible adapter | Rejected |
+| Same contract and accepted version | Compatible |
+| Incompatible major version | Rejected |
+| Unknown capability | Empty result |
+| Find registered capability | Correct modules returned |
+| Optional unavailable module | Remains discoverable |
+| Invalid artifact provenance | Rejected |
+| Failed backend | Failure status preserved |
+| Legacy processor adapter | Original processor still works |
+
+Also test the compatibility map against real existing ORE modules, not only artificial test modules.
+
+### Operation 24 — Establish implementation acceptance
+
+The task is complete only when all the following conditions are satisfied:
+
+1. The registry can identify existing ORE modules.
+2. Module manifests have valid input/output declarations.
+3. Existing communication contracts can be reused.
+4. Legacy adapters can expose existing modules through the universal interface.
+5. Contract versions are validated.
+6. The registry can discover capabilities.
+7. Compatibility between two modules can be verified.
+8. Incompatible communication is rejected with an explicit explanation.
+9. Missing backends are accurately reported.
+10. No existing module's internal processing behavior is unintentionally changed.
+11. Integration tests demonstrate actual communication between at least two existing ORE modules.
+12. All existing automated tests continue to pass.
+
+---
+
+# Part 3. Mathematical and computational operations
+
+Although this task is primarily a software-architecture implementation, several mathematical operations are useful.
+
+### A. Contract compatibility
+
+Define:
+
+\[
+C(A,B)=I(A,B)\cdot V(A,B)\cdot S(A,B)
+\]
+
+Where:
+
+- \(I\) = contract identifier compatibility.
+- \(V\) = version compatibility.
+- \(S\) = structural validation.
+
+Each is binary: 1 if valid, 0 otherwise.
+
+Therefore:
+
+\[
+C(A,B)=1
+\]
+
+only when all three conditions are satisfied.
+
+An explicitly validated adapter can provide a separate conversion path when direct compatibility is unavailable.
+
+### B. Dependency completeness
+
+For a module \(M\), define:
+
+\[
+D(M)=\frac{\text{available required dependencies}}
+{\text{total required dependencies}}
+\]
+
+For a module with four required dependencies, three available dependencies produce:
+
+\[
+D(M)=\frac{3}{4}=0.75
+\]
+
+This metric can describe readiness, but the module should not be classified as fully ready when a required dependency is missing.
+
+### C. Registry coverage
+
+\[
+R_c=\frac{\text{modules with validated manifests}}
+{\text{total identified modules}}
+\]
+
+We can calculate this to measure how much of the repository has been incorporated into the communication infrastructure.
+
+### D. Interface validation coverage
+
+\[
+I_c=\frac{\text{validated declared connections}}
+{\text{total declared connections}}
+\]
+
+This provides a measure of how much of the proposed connectome has actually been checked.
+
+These metrics must never substitute for functional tests.
+
+---
+
+# Part 4. Proposed file organization
+
+I recommend adding the following files without restructuring the original packages.
+
+Tests:
+
+Documentation:
+
+# Part 5. Implementation order
+
+I recommend implementing these operations incrementally to avoid introducing widespread regressions.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Implementation sequence**
+
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **Foundation**
+
+      Operations 01–06
+
+      Establish identities, ports, contracts and version rules.
+    </list-item>
+    <list-item>
+      **Universal interface**
+
+      Operations 07–11
+
+      Define module protocol, manifests and artifacts.
+    </list-item>
+    <list-item>
+      **Registry**
+
+      Operations 12–17
+
+      Register modules, bind backends and discover capabilities.
+    </list-item>
+    <list-item>
+      **Connectivity**
+
+      Operations 18–21
+
+      Adapt existing packages and validate their communication.
+    </list-item>
+    <list-item>
+      **Verification**
+
+      Operations 22–24
+
+      Add diagnostics, automated tests and acceptance checks.
+    </list-item>
+  </list>
+</box>
+
+For the first real integration demonstration, I suggest using the already connected language-processing structures:
+
+`ore_lexical_access` → `ore_syntax` → `ore_semantic_composition`
+
+This will allow us to demonstrate the new universal protocol using working processors rather than building an artificial example that does nothing meaningful.
+
+---
+
+# Part 6. What this accomplishes for the future ORE brain
+
+Once Task 1 is implemented, ORE will have a new capability that it currently lacks at a universal repository level.
+
+It will know:
+
+- Which cognitive structures exist.
+- What each structure does.
+- What information each structure can receive.
+- What information each structure can produce.
+- Which structures can communicate.
+- Which structures require adapters.
+- Which structures are unavailable.
+- Which communication interfaces are incompatible.
+
+But it will not yet decide which structures should collaborate on a particular problem.
+
+That will be Task 3, the Global Cognitive Coordinator.
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">The evolutionary progression</title>
+  <box gap={1}>
+    <row align="center" justify="between">
+      **Current ORE**
+      <badge color="warning">Specialized structures</badge>
+    </row>
+    <text color="secondary" size="xs">Many independently implemented cognitive systems.</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <row align="center" justify="between">
+      **After Task 1**
+      <badge color="success">Communication capability</badge>
+    </row>
+    <text color="secondary" size="xs">Structures can describe themselves and identify compatible communication interfaces.</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **After Task 2**
+
+    <text color="secondary" size="xs">Structures can access shared task information through a common cognitive workspace.</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **After Task 3**
+
+    <text color="secondary" size="xs">A coordinator can select and organize the appropriate structures for a task.</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **After Tasks 4–8**
+
+    <text color="secondary" size="xs">Integrated perception, memory, reasoning, feedback and adaptive resource allocation.</text>
+  </box>
+</box>
+
+**My architectural recommendation:** Do not make every ORE module inherit a new base class or rewrite its processor. Make the universal communication layer an independent infrastructure, and use adapters to connect existing structures progressively.
+
+That way, the brain can grow without damaging the specialized structures it already possesses.

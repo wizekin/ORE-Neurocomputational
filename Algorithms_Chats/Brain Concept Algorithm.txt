@@ -1,0 +1,2263 @@
+Title: Brain Concept Algorithm
+Conversation ID: 6afb247d-4ec4-83ea-b627-2414e6159019
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step: Embodied/Grounded vs. Amodal Debate: The field also debates whether conceptual knowledge must involve sensorimotor re-enactments (grounded in perception and action systems) or can reside in abstract, amodal symbols. Grounded cognition theories (e.g. Barsalou 2008; Martin 2016) argu“e that even abstract concepts ”are built on neural circuits for perception and action. Amodal theorists counter that the ATL hub shows pure concept representations independent of modality. Recent data suggest a compromise: while modality-specific areas undoubtedly co【†n】【†t】r“”ibute features (e.g. visual cortex for seeing an instrument), the ATL seems to abstract across them. For example, neuroimaging shows overlapping ATL activation for the same concept presented as a word or picture, consistent with an amodal hub. Meanwhile, distributed spokes implement embodied content (e.g. premotor cortex for tool use). Thus many researchers now favor a hybrid: modality-specific encoding feeding into an ATL hub that yields coherent, abstract concepts
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Hybrid Embodied–Amodal Concept Formation and Processing
+
+**Algorithm ID:** HEC-01  
+**Name:** Hybrid Embodied–Amodal Semantic Processing Algorithm  
+**Primary neural architecture:** Distributed modality-specific networks + bilateral Anterior Temporal Lobe (ATL) semantic hub  
+**Main objective:** Transform sensory experiences, motor experiences, language, emotions, and contextual information into coherent, generalizable conceptual representations that can be retrieved and reconstructed through different modalities.
+
+## 1. Understanding the algorithm
+
+The central idea is that the human brain does not necessarily store every concept as either:
+
+1. A collection of sensory and motor experiences only (grounded representation).
+2. An entirely abstract representation disconnected from sensory and motor systems (amodal representation).
+
+Instead, the hybrid model proposes cooperation between two levels of representation.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(45,125,210,0.09)" radius="md" padding={3} align="center" gap={1}>
+    **Level 1 — Distributed embodied representations**
+
+    <text color="secondary" size="sm" textAlign="center">Visual · Auditory · Motor · Somatosensory · Emotional · Linguistic · Interoceptive information</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down-up" color="secondary" size="xl"/>
+    <text color="secondary" size="xs">Parallel communication and recurrent integration</text>
+  </box>
+  <box background="rgba(34,160,110,0.10)" radius="md" padding={3} align="center" gap={1}>
+    **Level 2 — Anterior Temporal Lobe (ATL) semantic hub**
+
+    <text color="secondary" size="sm" textAlign="center">Cross-modal integration · Conceptual abstraction · Generalization · Semantic coherence</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down-up" color="secondary" size="xl"/>
+    <text color="secondary" size="xs">Top-down reconstruction and feedback</text>
+  </box>
+  <box background="rgba(45,125,210,0.09)" radius="md" padding={3} align="center" gap={1}>
+    **Level 3 — Flexible conceptual use**
+
+    <text color="secondary" size="sm" textAlign="center">Recognition · Understanding · Imagery · Prediction · Reasoning · Language · Action</text>
+  </box>
+</box>
+
+For example, consider the concept **GUITAR**.
+
+The brain may obtain information about a guitar through:
+
+- Vision: its shape, strings, color, and physical structure.
+- Hearing: the sounds produced by its strings.
+- Motor experience: how the fingers and hands manipulate it.
+- Somatosensation: the pressure and vibration experienced while playing it.
+- Language: the word "guitar" and its relationships with other words.
+- Emotion and memory: personal experiences associated with playing or hearing it.
+
+The distributed neural networks process these different types of information. The ATL integrates their contributions into a coherent conceptual representation.
+
+Consequently, hearing the word "guitar" can activate relevant conceptual knowledge without requiring the brain to reproduce the entire original visual or motor experience.
+
+This is the central computational principle behind the algorithm.
+
+The proposal is consistent with grounded cognition and the hub-and-spoke framework. However, the ATL should be understood as a proposed transmodal integration system, not necessarily as the exclusive location of every part of conceptual knowledge. <Cite refs={["turn533772search0","turn533772search3","turn705258search10"]}/>
+
+---
+
+## 2. Mathematical notation used throughout the algorithm
+
+Before constructing the individual stages, we need a common mathematical representation of neural activity.
+
+| Symbol | Meaning |
+|---|---|
+| \(X_m\) | Input information from modality \(m\) |
+| \(S_m\) | Extracted features from modality \(m\) |
+| \(W_m\) | Connection weights between neural populations |
+| \(B_m\) | Bias or baseline input |
+| \(A_m\) | Attention applied to modality \(m\) |
+| \(Z_m\) | Higher-level modality-specific representation |
+| \(H\) | Integrated ATL conceptual representation |
+| \(C\) | Contextual information |
+| \(R_m\) | Reliability of information from modality \(m\) |
+| \(\sigma\) | Nonlinear activation function |
+| \(\eta\) | Learning rate |
+| \(\Delta W\) | Change in synaptic connection strength |
+| \(E\) | Prediction error |
+| \(t\) | Processing time or computational iteration |
+
+We will use these equations as computational approximations of neural processes.
+
+**Important biological distinction:** The brain does not literally execute Python instructions, matrix multiplication commands, or software-style loss functions. Mathematical equations describe useful abstractions of processes that can be implemented through membrane potentials, synaptic transmission, neural population activity, recurrent connections, oscillations, and synaptic plasticity.
+
+The following algorithm therefore has two complementary interpretations:
+
+- **Functional interpretation:** What information-processing operation takes place?
+- **Biological interpretation:** How could interacting neural populations implement that operation?
+
+---
+
+# 3. The master algorithm — sequential processing stages
+
+Although the following stages are numbered sequentially for implementation and explanation, biological processing is largely parallel and recurrent. Several stages operate simultaneously, and information can travel in both directions between the ATL and distributed cortical networks.
+
+## Stage 1 — Environmental and internal stimulus acquisition
+
+**Operation ID:** HEC-01.01  
+**Operation:** Acquire sensory and internally generated information.
+
+### 1.1 Functional explanation
+
+The algorithm starts when the brain receives information from one or more sources.
+
+External sources include:
+
+- Visual objects and scenes.
+- Sounds and speech.
+- Touch and physical contact.
+- Smells and tastes.
+
+Internal sources include:
+
+- Remembered experiences.
+- Mental imagery.
+- Bodily conditions.
+- Emotional states.
+- Linguistic thoughts.
+
+Each source produces a different input pattern.
+
+For example, when someone sees a guitar, visual input contains information about its shape, dimensions, strings, color, and spatial position.
+
+When that person hears the guitar, auditory input contains information about sound frequency, intensity, duration, and timbre.
+
+### 1.2 Biological implementation
+
+Different sensory systems receive and initially process their corresponding signals.
+
+| Input | Principal neural systems |
+|---|---|
+| Visual | Retina, thalamic visual pathways, visual cortex |
+| Auditory | Cochlea, auditory pathways, auditory cortex |
+| Somatosensory | Somatosensory cortex |
+| Motor-related | Motor and premotor systems |
+| Olfactory | Olfactory bulb and olfactory cortex |
+| Taste | Gustatory cortex and associated pathways |
+| Emotional | Amygdala, insula, and associated networks |
+| Internal bodily signals | Insula and other interoceptive networks |
+
+These are broad examples rather than isolated processing locations.
+
+### 1.3 Mathematical operations
+
+**A. Signal transduction**
+
+Physical stimulation is converted into neural activity.
+
+A simplified representation:
+
+\[
+X_m(t)=F_m(I_m(t))
+\]
+
+Where:
+
+- \(I_m(t)\): physical or internally generated input.
+- \(F_m\): biological transduction and initial processing function.
+- \(X_m(t)\): resulting neural signal.
+- \(m\): information modality.
+
+**B. Signal normalization**
+
+Neural systems adjust their responses to the characteristics of incoming signals.
+
+A simplified normalization operation:
+
+\[
+X'_m=\frac{X_m-\mu_m}{\sigma_m+\epsilon}
+\]
+
+Here, \(\mu_m\) and \(\sigma_m\) represent local signal statistics, and \(\epsilon\) prevents division by zero.
+
+This is a computational abstraction of several biological normalization mechanisms, not a claim that neurons explicitly calculate this expression.
+
+**Result:** Multiple neural input streams become available for parallel processing.
+
+---
+
+## Stage 2 — Parallel distribution to modality-specific processing networks
+
+**Operation ID:** HEC-01.02  
+**Operation:** Distribute information to specialized neural networks.
+
+### 2.1 Functional explanation
+
+The brain does not initially combine all information into a single representation.
+
+Instead, different information streams are processed by specialized networks.
+
+For example:
+
+- Visual information travels through visual processing networks.
+- Auditory information enters auditory processing networks.
+- Movement-related information engages motor and premotor networks.
+- Touch-related information engages somatosensory networks.
+
+These streams remain connected.
+
+For example, when a person looks at a guitar, visual information can interact with stored knowledge about the sounds and movements associated with playing it.
+
+### 2.2 Biological implementation
+
+Relevant cortical and subcortical populations communicate through interconnected pathways.
+
+These include:
+
+- Feedforward projections.
+- Feedback projections.
+- Association pathways.
+- Long-range white-matter connections.
+- Recurrent connections between cortical areas.
+
+The result is not a collection of completely independent processing units, but a distributed interacting network.
+
+### 2.3 Mathematical operations
+
+**A. Parallel distribution**
+
+For input \(X\), define modality-specific transformations:
+
+\[
+X \rightarrow
+\begin{cases}
+X_v\\
+X_a\\
+X_m\\
+X_s\\
+X_e\\
+X_l
+\end{cases}
+\]
+
+Where:
+
+- \(v\): visual.
+- \(a\): auditory.
+- \(m\): motor.
+- \(s\): somatosensory.
+- \(e\): emotional.
+- \(l\): linguistic.
+
+**B. Weighted connectivity**
+
+Information transmitted between two neural populations can be represented as:
+
+\[
+Y_j=\phi\left(\sum_i W_{ij}X_i+b_j\right)
+\]
+
+Where:
+
+- \(W_{ij}\): connection strength between populations.
+- \(X_i\): incoming activity.
+- \(b_j\): baseline input.
+- \(\phi\): nonlinear activation function.
+
+**C. Recurrent communication**
+
+Feedback allows an area to modify another area's activity:
+
+\[
+X_m(t+1)=\phi(W_{mm}X_m(t)+W_{hm}H(t))
+\]
+
+Here, \(H\) represents incoming information from higher-level integration networks.
+
+**Result:** The input is distributed to multiple specialized neural networks that can process different aspects of the same experience.
+
+---
+
+## Stage 3 — Modality-specific feature extraction
+
+**Operation ID:** HEC-01.03  
+**Operation:** Extract features appropriate to each modality.
+
+### 3.1 Functional explanation
+
+Each modality-specific network identifies important characteristics of its input.
+
+For the guitar example:
+
+| Neural network | Features extracted |
+|---|---|
+| Visual | Shape, body, strings, color, dimensions |
+| Auditory | Pitch, tone, timbre, rhythm |
+| Motor | Finger positioning, hand movements, strumming |
+| Somatosensory | Pressure, vibration, physical contact |
+| Emotional | Positive or negative associations |
+| Linguistic | Word forms, sounds, and associated meanings |
+
+Feature extraction enables the brain to identify useful components without having to process every detail of the experience equally.
+
+### 3.2 Biological implementation
+
+Specialized neural populations respond selectively to particular properties.
+
+For example:
+
+- Visual populations respond to particular orientations, shapes, and object properties.
+- Auditory populations respond to sound-frequency and temporal characteristics.
+- Motor-related populations represent aspects of movement and action.
+- Somatosensory populations represent bodily contact and physical properties.
+
+Higher association areas combine lower-level features into more complex representations.
+
+### 3.3 Mathematical operations
+
+**A. Feature extraction**
+
+For each modality:
+
+\[
+S_m=\phi(W_m^{(1)}X_m+b_m^{(1)})
+\]
+
+**B. Hierarchical feature transformation**
+
+\[
+S_m^{(k+1)}
+=
+\phi(W_m^{(k+1)}S_m^{(k)}+b_m^{(k+1)})
+\]
+
+This represents progressive transformation from relatively simple features into more complex representations.
+
+For visual processing, for example:
+
+\[
+\text{Edges}
+\rightarrow
+\text{Contours}
+\rightarrow
+\text{Parts}
+\rightarrow
+\text{Object structure}
+\]
+
+**C. Feature similarity**
+
+The similarity between two feature patterns can be estimated by cosine similarity:
+
+\[
+\operatorname{sim}(S_i,S_j)=
+\frac{S_i\cdot S_j}
+{\|S_i\|\|S_j\|+\epsilon}
+\]
+
+This is useful as a model of similarity-based recognition.
+
+**Result:** Each modality has a structured feature representation describing its contribution to the experience.
+
+---
+
+## Stage 4 — Attention-dependent feature selection
+
+**Operation ID:** HEC-01.04  
+**Operation:** Select the most relevant features.
+
+### 4.1 Functional explanation
+
+Not every feature deserves equal processing priority.
+
+Suppose someone looks at a guitar while trying to identify whether it is a guitar or a violin.
+
+The brain needs to emphasize distinguishing characteristics.
+
+It may prioritize:
+
+- Guitar body shape.
+- Number and arrangement of strings.
+- Neck structure.
+
+It may temporarily reduce the importance of:
+
+- Background objects.
+- Wall color.
+- Unrelated sounds.
+
+This enables the semantic system to process the most useful information.
+
+Attention can also prioritize a particular modality. For example, a person may concentrate on the guitar's sound while ignoring its appearance.
+
+### 4.2 Biological implementation
+
+Attention involves interacting systems, including:
+
+- Frontal and parietal control networks.
+- Sensory association cortices.
+- Thalamic pathways.
+- Neuromodulatory systems.
+
+Top-down signals can alter the sensitivity and activity of selected neural populations.
+
+### 4.3 Mathematical operations
+
+**A. Attention weight calculation**
+
+\[
+A_m=\sigma(W_qQ+W_cC+b)
+\]
+
+Where:
+
+- \(Q\): current task or attentional goal.
+- \(C\): context.
+- \(A_m\): attention weights.
+- \(\sigma\): sigmoid activation.
+
+**B. Feature filtering**
+
+\[
+\widetilde S_m=A_m\odot S_m
+\]
+
+Here, \(\odot\) means element-wise multiplication.
+
+A feature receiving a higher attention weight contributes more strongly to subsequent processing.
+
+**C. Inhibition**
+
+Unwanted activation can be suppressed:
+
+\[
+S_m^{\text{selected}}
+=
+A_m\odot S_m-
+\lambda I_m
+\]
+
+Where \(I_m\) represents competing or irrelevant activation.
+
+This is a simplified model of selective excitation and inhibition.
+
+**Result:** The brain obtains a task-relevant subset of the available information.
+
+---
+
+## Stage 5 — Construction of modality-specific semantic representations
+
+**Operation ID:** HEC-01.05  
+**Operation:** Transform extracted features into meaningful modality-specific representations.
+
+### 5.1 Functional explanation
+
+Feature extraction alone does not create a complete conceptual representation.
+
+The brain must organize extracted features into higher-level structures.
+
+For example, visual features of a guitar become associated with an object representation containing information such as:
+
+- It is an instrument.
+- It has strings.
+- It has a neck.
+- It can be held.
+- It is used to produce music.
+
+Similarly, motor features become associated with knowledge about how a guitar is played.
+
+These representations are distributed across specialized cortical networks.
+
+### 5.2 Biological implementation
+
+Association cortices combine incoming information with previously learned patterns.
+
+Examples include:
+
+- Visual association cortex.
+- Auditory association cortex.
+- Premotor and motor association networks.
+- Somatosensory association cortex.
+- Language-related temporal networks.
+
+### 5.3 Mathematical operations
+
+**A. Associative feature transformation**
+
+\[
+Z_m=\phi(W_m^{(2)}\widetilde S_m+b_m^{(2)})
+\]
+
+**B. Feature combination**
+
+Suppose the visual representation contains several features:
+
+\[
+Z_v=
+\begin{bmatrix}
+z_{\text{shape}}\\
+z_{\text{strings}}\\
+z_{\text{neck}}\\
+z_{\text{body}}
+\end{bmatrix}
+\]
+
+These features are combined into a higher-dimensional representation.
+
+**C. Nonlinear interaction**
+
+Some properties become meaningful through combinations of other properties.
+
+A simplified operation is:
+
+\[
+Z_m=
+\phi(W_1S_m+W_2(S_m\otimes S_m))
+\]
+
+Here, \(\otimes\) represents an interaction between features.
+
+For example, the combination of a particular body shape and string arrangement can be more informative than either property individually.
+
+**Result:** Each modality develops a relatively rich representation of the concept.
+
+---
+
+## Stage 6 — Activation of previously acquired conceptual knowledge
+
+**Operation ID:** HEC-01.06  
+**Operation:** Retrieve previously learned associations.
+
+### 6.1 Functional explanation
+
+The brain does not process every experience independently.
+
+Incoming information activates related knowledge acquired through previous experiences.
+
+For example, seeing a guitar may activate associations with:
+
+- Musical instruments.
+- Music.
+- Musicians.
+- Playing.
+- Strings.
+- Guitar cases.
+- Musical performances.
+
+These associations help the brain interpret incomplete or ambiguous information.
+
+If a guitar is partially hidden, previously acquired knowledge can help identify it.
+
+### 6.2 Biological implementation
+
+This involves distributed associative memory networks and recurrent interactions between modality-specific areas and higher-order association regions.
+
+The ATL participates in semantic representation by integrating information from multiple regions.
+
+### 6.3 Mathematical operations
+
+**A. Similarity-based memory retrieval**
+
+Let \(Z_m\) represent the current input and \(P_i\) represent a stored pattern.
+
+\[
+A_i=\operatorname{sim}(Z_m,P_i)
+\]
+
+**B. Context-adjusted activation**
+
+\[
+A_i'=
+A_i+\alpha C_i+\beta F_i
+\]
+
+Where:
+
+- \(C_i\): compatibility with current context.
+- \(F_i\): familiarity or prior association strength.
+- \(\alpha,\beta\): weighting parameters.
+
+**C. Associative spreading activation**
+
+A simplified network model:
+
+\[
+a^{(t+1)}=
+\phi(Wa^{(t)}+x)
+\]
+
+Where \(W\) contains learned relationships between representations.
+
+Repeated activation can spread from the initially recognized concept to associated concepts.
+
+**Result:** The brain retrieves previously learned knowledge that can help complete the current conceptual representation.
+
+---
+
+## Stage 7 — Temporal alignment and cross-modal binding
+
+**Operation ID:** HEC-01.07  
+**Operation:** Associate features originating from different modalities when they belong to the same object or experience.
+
+### 7.1 Functional explanation
+
+This stage is essential because information arrives through different channels and sometimes at different times.
+
+Suppose a person:
+
+1. Sees a guitar.
+2. Hears someone playing it.
+3. Watches the player's fingers moving.
+4. Feels the guitar vibrating while holding it.
+
+The brain must associate these signals with the same underlying object and event.
+
+Otherwise, visual, auditory, and motor information could remain unrelated.
+
+Cross-modal binding helps establish that these different experiences concern one coherent object.
+
+### 7.2 Biological implementation
+
+Binding involves interactions between sensory association networks, temporal association regions, attention systems, and other convergence networks.
+
+Temporal relationships, spatial relationships, and learned associations all contribute.
+
+It should not be assumed that one dedicated synchronization mechanism performs all binding.
+
+### 7.3 Mathematical operations
+
+**A. Temporal proximity**
+
+A simplified temporal association function:
+
+\[
+B_{ij}=
+\exp\left(
+-\frac{|t_i-t_j|}{\tau}
+\right)
+\]
+
+Where:
+
+- \(t_i,t_j\): times of two signals.
+- \(\tau\): temporal integration parameter.
+
+Signals occurring close together receive stronger temporal association in this simplified model.
+
+**B. Spatial compatibility**
+
+\[
+B_s=\operatorname{sim}(P_i,P_j)
+\]
+
+Where \(P_i,P_j\) describe spatial information.
+
+**C. Combined binding strength**
+
+\[
+B_{ij}^{*}
+=
+\alpha B_{ij}
++\beta B_s
++\gamma B_{\text{learned}}
+\]
+
+The combination incorporates temporal, spatial, and learned relationships.
+
+**D. Neural co-activation**
+
+A simplified Hebbian learning expression is:
+
+\[
+\Delta W_{ij}
+=
+\eta x_i x_j
+\]
+
+If two neural populations are repeatedly active together, their effective connection may strengthen, subject to biological constraints and other plasticity mechanisms.
+
+**Result:** Information from different modalities becomes associated with common objects, properties, or events.
+
+---
+
+## Stage 8 — Feedforward transmission to the ATL semantic hub
+
+**Operation ID:** HEC-01.08  
+**Operation:** Transmit modality-specific semantic representations to higher-order convergence networks.
+
+### 8.1 Functional explanation
+
+At this point, the distributed networks have generated meaningful representations of the experience.
+
+These representations contribute to ATL processing.
+
+For our example:
+
+\[
+\begin{aligned}
+Z_v&=\text{Visual guitar representation}\\
+Z_a&=\text{Auditory guitar representation}\\
+Z_m&=\text{Motor guitar representation}\\
+Z_s&=\text{Somatosensory guitar representation}\\
+Z_l&=\text{Linguistic guitar representation}
+\end{aligned}
+\]
+
+These representations provide different information about the same concept.
+
+The ATL receives information through its connections with distributed cortical systems.
+
+### 8.2 Biological implementation
+
+The ATL is not one completely homogeneous structure.
+
+The bilateral anterior temporal lobes contain regions with different connectivity profiles.
+
+The graded hub-and-spoke account proposes that the ventrolateral ATL contributes strongly to transmodal integration, while surrounding regions exhibit varying specializations related to their connectivity with other systems. <Cite refs={["turn705258search7","turn705258search10"]}/>
+
+### 8.3 Mathematical operations
+
+**A. Modality-specific projection**
+
+Each modality is mapped into a representation suitable for convergence:
+
+\[
+U_m=P_mZ_m
+\]
+
+Where:
+
+- \(P_m\): projection weights.
+- \(Z_m\): modality-specific semantic representation.
+- \(U_m\): representation transmitted towards ATL integration.
+
+**B. Dimensional transformation**
+
+Different modalities may have different representational dimensions.
+
+For example:
+
+\[
+Z_v\in\mathbb R^{256}
+\]
+
+\[
+Z_a\in\mathbb R^{128}
+\]
+
+\[
+Z_m\in\mathbb R^{192}
+\]
+
+A common representational space can be approximated by:
+
+\[
+U_m=P_mZ_m,\qquad U_m\in\mathbb R^{d}
+\]
+
+Here, \(d\) is the dimension of the shared conceptual space.
+
+These dimensions are hypothetical examples for a computational model, not measurements of actual ATL neurons.
+
+**Result:** Multiple modality-specific representations become available for cross-modal integration.
+
+---
+
+## Stage 9 — Reliability estimation and weighted modality integration
+
+**Operation ID:** HEC-01.09  
+**Operation:** Determine how strongly different modalities should contribute to the integrated representation.
+
+### 9.1 Functional explanation
+
+Not every modality provides equally useful information in every situation.
+
+Consider three situations:
+
+**Situation A:** A person hears a guitar behind a curtain.
+
+Auditory information is highly informative, while visual information is unavailable.
+
+**Situation B:** A person sees a guitar but cannot hear anything.
+
+Visual information becomes highly informative.
+
+**Situation C:** A person plays a guitar.
+
+Motor, tactile, auditory, and visual information can all contribute.
+
+The semantic system must therefore be flexible rather than requiring all modalities to contribute equally.
+
+### 9.2 Biological implementation
+
+Neural connectivity and activity levels influence which inputs contribute to the integrated representation.
+
+Attention, task requirements, signal quality, and learned associations can all alter the influence of different sources.
+
+### 9.3 Mathematical operations
+
+**A. Calculate input reliability**
+
+A simplified reliability estimate:
+
+\[
+R_m=
+\frac{1}{\sigma_m^2+\epsilon}
+\]
+
+Higher uncertainty corresponds to lower reliability.
+
+**B. Normalize reliability weights**
+
+\[
+w_m=
+\frac{R_m}{\sum_j R_j}
+\]
+
+Therefore:
+
+\[
+\sum_m w_m=1
+\]
+
+**C. Weighted integration**
+
+\[
+U_{\text{combined}}
+=
+\sum_m w_m U_m
+\]
+
+The weights can additionally depend on task relevance and attention:
+
+\[
+w_m=
+\frac{\exp(q_m)}
+{\sum_j\exp(q_j)}
+\]
+
+Where \(q_m\) combines information about reliability, relevance, and current task demands.
+
+**Result:** More informative and relevant modality-specific representations contribute more strongly to the integration process.
+
+---
+
+## Stage 10 — Cross-modal integration within the ATL
+
+**Operation ID:** HEC-01.10  
+**Operation:** Combine distributed features into a coherent conceptual representation.
+
+<AsyncImage query="scientific neuroscience illustration anterior temporal lobe hub and spoke model semantic cognition distributed cortical sensory motor spokes brain diagram" aspectRatio="16:9" width="100%" maxHeight={230} fit="contain"/>
+
+### 10.1 Functional explanation
+
+This is the central operation of the hybrid model.
+
+The ATL integrates information arriving from different neural networks.
+
+For the concept GUITAR:
+
+- Visual information contributes information about appearance.
+- Auditory information contributes information about sound.
+- Motor information contributes knowledge about playing.
+- Somatosensory information contributes tactile properties.
+- Linguistic information contributes word-associated knowledge.
+- Emotional information contributes relevant experiential associations.
+
+The resulting conceptual representation is not simply a list of separate features.
+
+It is an integrated structure in which features become associated with a common concept.
+
+This makes it possible to recognize that a guitar seen in a photograph, heard in a recording, or referred to in conversation is the same general type of thing.
+
+### 10.2 Biological implementation
+
+The ATL's interconnected neural populations receive converging information from distributed cortical regions.
+
+Repeated interactions among these populations support the development of coherent, generalizable semantic representations.
+
+The hub-and-spoke framework specifically proposes that modality-specific spokes and the ATL hub make complementary contributions rather than competing to store all conceptual information independently. <Cite refs={["turn533772search3","turn705258search8"]}/>
+
+### 10.3 Mathematical operations
+
+**A. Initial convergence**
+
+\[
+H_{\text{input}}
+=
+\sum_m w_mU_m
+\]
+
+**B. Recurrent integration**
+
+The ATL representation can be updated repeatedly:
+
+\[
+H^{(t+1)}
+=
+\phi\left(
+W_{\text{in}}H_{\text{input}}
++
+W_{\text{rec}}H^{(t)}
++
+b
+\right)
+\]
+
+Where:
+
+- \(W_{\text{in}}\): incoming connectivity.
+- \(W_{\text{rec}}\): recurrent connectivity.
+- \(H^{(t)}\): current integrated representation.
+- \(b\): baseline input.
+
+**C. Leaky temporal integration**
+
+\[
+H^{(t+1)}
+=
+(1-\lambda)H^{(t)}
++
+\lambda H_{\text{new}}
+\]
+
+The parameter \(\lambda\) controls the relative contribution of new information and the previously established representation.
+
+**D. Nonlinear feature integration**
+
+\[
+H=\phi\left(\sum_m W_mU_m+b\right)
+\]
+
+This allows interactions between different modality-specific inputs.
+
+For example, the combination of string-related visual information and sound-related information may contribute to a richer representation than either input alone.
+
+**Result:** The ATL produces a more coherent, cross-modal representation of the concept.
+
+---
+
+## Stage 11 — Extraction of modality-independent conceptual information
+
+**Operation ID:** HEC-01.11  
+**Operation:** Identify conceptual properties that remain useful across different input modalities.
+
+### 11.1 Functional explanation
+
+This stage explains how a concept can be accessed through different modalities without requiring an entirely different conceptual identity for each modality.
+
+Consider three input situations:
+
+- A person reads the word GUITAR.
+- A person sees a photograph of a guitar.
+- A person hears a guitar being played.
+
+The physical input patterns are different.
+
+However, they can activate overlapping semantic representations.
+
+This suggests that the conceptual system contains information that is not restricted to the original sensory format.
+
+For example, the general knowledge that a guitar is a musical instrument can be accessed regardless of whether the initial stimulus is a word, picture, or sound.
+
+### 11.2 Biological implementation
+
+The ATL is proposed to provide transmodal convergence.
+
+The key distinction is that the integrated conceptual representation can be accessed by different modality-specific routes.
+
+This does not mean all modality-specific information disappears. Rather, the hub supports information common to different experiences while the spokes retain more specialized information.
+
+Research using distortion-corrected fMRI has provided evidence for a central ATL region that responds to semantic information across different types of concepts and surrounding regions with more graded specialization. <Cite refs={["turn705258search2","turn705258search10"]}/>
+
+### 11.3 Mathematical operations
+
+**A. Shared representation**
+
+Let:
+
+\[
+H_v,H_a,H_l
+\]
+
+represent ATL activity patterns associated with accessing a concept through visual, auditory, and linguistic inputs.
+
+A simplified common representation is:
+
+\[
+H_{\text{common}}
+=
+\sum_m w_mH_m
+\]
+
+**B. Cross-modal similarity**
+
+\[
+S_{ij}
+=
+\frac{H_i\cdot H_j}
+{\|H_i\|\|H_j\|+\epsilon}
+\]
+
+A high similarity indicates that two different access routes produce similar conceptual representations.
+
+**C. Modality invariance objective**
+
+In an artificial computational implementation, one could minimize:
+
+\[
+L_{\text{invariance}}
+=
+\sum_{i\ne j}
+\|H_i-H_j\|^2
+\]
+
+This encourages representations of the same concept to become more similar across modalities.
+
+**D. Preservation of unique information**
+
+Complete equality is not desirable because different modalities also provide unique information.
+
+Therefore:
+
+\[
+Z_m=
+D_m(H_{\text{common}})+R_m^{\text{unique}}
+\]
+
+Where:
+
+- \(D_m\): modality-specific reconstruction.
+- \(R_m^{\text{unique}}\): information that is specific to that modality.
+
+This gives us two useful components:
+
+1. Shared conceptual knowledge.
+2. Modality-specific knowledge.
+
+**Result:** The brain can access a common concept through different sensory or linguistic routes while preserving unique information supplied by each modality.
+
+---
+
+## Stage 12 — Preservation of embodied and modality-specific information
+
+**Operation ID:** HEC-01.12  
+**Operation:** Maintain modality-specific contributions alongside the abstract conceptual representation.
+
+### 12.1 Functional explanation
+
+It is important not to interpret abstraction as the removal of all sensory and motor information.
+
+The brain still needs modality-specific information to answer questions such as:
+
+- What does a guitar look like?
+- What does it sound like?
+- How is it played?
+- How does it feel when held?
+- What physical movements are necessary to manipulate it?
+
+The ATL representation alone is therefore not necessarily sufficient for every task.
+
+For example, the abstract knowledge that a guitar is a musical instrument does not provide all the detailed information required to execute a particular finger movement.
+
+The corresponding motor and sensory systems remain important.
+
+### 12.2 Biological implementation
+
+Distributed modality-specific networks continue to contribute information to conceptual processing.
+
+Examples include:
+
+- Visual association regions for appearance.
+- Auditory regions for sound.
+- Premotor regions for movement-related knowledge.
+- Somatosensory regions for tactile properties.
+- Emotional and interoceptive systems for bodily and affective information.
+
+The relative contribution of each system depends on the nature of the concept and the current task.
+
+### 12.3 Mathematical operations
+
+**A. Extract modality-specific residuals**
+
+\[
+R_m=Z_m-\widehat Z_m
+\]
+
+Where:
+
+\[
+\widehat Z_m=D_m(H_{\text{common}})
+\]
+
+Here, \(R_m\) represents information not captured by reconstructing the modality-specific representation from the common conceptual representation.
+
+**B. Reconstruct modality-specific knowledge**
+
+\[
+\widehat Z_m=
+\phi(D_mH_{\text{common}}+b_m)
+\]
+
+**C. Combine common and unique information**
+
+\[
+Z_m^{*}
+=
+\alpha H_{\text{common}}
++
+\beta R_m
+\]
+
+The weights depend on task requirements.
+
+For example:
+
+- Object classification gives greater weight to common conceptual knowledge.
+- Visual imagery gives greater weight to visual-specific information.
+- Action planning gives greater weight to motor-specific information.
+
+**Result:** The system preserves both abstract conceptual knowledge and detailed embodied information.
+
+---
+
+## Stage 13 — Conceptual categorization and semantic generalization
+
+**Operation ID:** HEC-01.13  
+**Operation:** Recognize the general category of an object and distinguish it from similar concepts.
+
+### 13.1 Functional explanation
+
+Once information is integrated, the brain can identify the concept's category and its relationships with other concepts.
+
+For example:
+
+\[
+\text{Guitar}\rightarrow\text{Musical instrument}
+\]
+
+It can also distinguish between:
+
+\[
+\text{Guitar}\ne\text{Violin}
+\]
+
+Even though the two objects share properties:
+
+- Both are musical instruments.
+- Both produce musical sounds.
+- Both have strings.
+
+They also have distinguishing characteristics.
+
+Generalization allows the brain to recognize different guitars despite variations in:
+
+- Color.
+- Size.
+- Shape.
+- Manufacturer.
+- Orientation.
+- Image quality.
+
+### 13.2 Biological implementation
+
+The ATL hub supports generalizable conceptual representations, while distributed spokes contribute distinguishing sensory, motor, and other properties.
+
+Recurrent interactions enable detailed information to influence categorization.
+
+### 13.3 Mathematical operations
+
+**A. Prototype representation**
+
+A simplified category prototype is:
+
+\[
+P_c=
+\frac{1}{N}
+\sum_{i=1}^{N}H_i
+\]
+
+Where \(H_i\) represents learned instances of category \(c\).
+
+**B. Similarity-based categorization**
+
+\[
+S_c=\operatorname{sim}(H,P_c)
+\]
+
+**C. Category selection**
+
+\[
+P(c\mid H)=
+\frac{\exp(\beta S_c)}
+{\sum_j\exp(\beta S_j)}
+\]
+
+The system can select the category with the highest posterior score.
+
+**D. Differentiation**
+
+\[
+D(H_i,H_j)=\|H_i-H_j\|
+\]
+
+This represents conceptual differences between similar items.
+
+**E. Generalization**
+
+A new instance can be classified through:
+
+\[
+\widehat c=
+\arg\max_c P(c\mid H)
+\]
+
+**Result:** The conceptual system can recognize members of a category while retaining the ability to distinguish individual concepts.
+
+---
+
+## Stage 14 — Context-dependent conceptual abstraction
+
+**Operation ID:** HEC-01.14  
+**Operation:** Adapt the conceptual representation to the surrounding context.
+
+### 14.1 Functional explanation
+
+The same concept can have different relevant properties depending on context.
+
+Consider the word "guitar":
+
+**Context A: Musical performance**
+
+Relevant information:
+
+- Musical sound.
+- Playing techniques.
+- Chords.
+- Rhythm.
+- Musical instruments.
+
+**Context B: Manufacturing**
+
+Relevant information:
+
+- Materials.
+- Wood.
+- Construction.
+- Components.
+- Manufacturing processes.
+
+**Context C: Purchasing**
+
+Relevant information:
+
+- Price.
+- Quality.
+- Brand.
+- Condition.
+- Market value.
+
+The conceptual identity remains recognizable, but different properties become more important.
+
+This means conceptual processing must not rely exclusively on fixed stored features.
+
+### 14.2 Biological implementation
+
+Context-dependent conceptual processing involves interactions between:
+
+- ATL semantic representations.
+- Frontal semantic control networks.
+- Temporoparietal semantic networks.
+- Linguistic and episodic memory systems.
+
+The semantic control system helps bias retrieval towards information appropriate for the current situation.
+
+### 14.3 Mathematical operations
+
+**A. Context representation**
+
+\[
+C=\phi(W_cX_c+b_c)
+\]
+
+**B. Context-dependent conceptual transformation**
+
+\[
+H_c=
+\phi(W_hH+W_c'C)
+\]
+
+**C. Contextual feature weighting**
+
+\[
+A_i=
+\frac{\exp(\beta S_i+\gamma C_i)}
+{\sum_j\exp(\beta S_j+\gamma C_j)}
+\]
+
+Where:
+
+- \(S_i\): conceptual relevance.
+- \(C_i\): contextual relevance.
+- \(A_i\): activation weight.
+
+**D. Context-sensitive abstraction**
+
+\[
+H_{\text{adapted}}
+=
+\sum_i A_iF_i
+\]
+
+Here, \(F_i\) represents conceptual features.
+
+**Result:** The brain selects and emphasizes properties that are appropriate to the current context without necessarily changing the underlying identity of the concept.
+
+---
+
+## Stage 15 — Top-down activation of embodied representations
+
+**Operation ID:** HEC-01.15  
+**Operation:** Reactivate relevant modality-specific systems using the integrated conceptual representation.
+
+### 15.1 Functional explanation
+
+The information flow is not restricted to:
+
+\[
+\text{Sensory systems}
+\rightarrow
+\text{ATL}
+\]
+
+It can also travel in the reverse direction:
+
+\[
+\text{ATL}
+\rightarrow
+\text{Sensory and motor systems}
+\]
+
+This is important because the brain can retrieve sensory and motor information even when the original stimulus is no longer present.
+
+For example, imagine being asked:
+
+"What does a guitar look like?"
+
+The brain can retrieve visual characteristics without currently seeing a guitar.
+
+When asked:
+
+"How do you play a guitar?"
+
+The brain can retrieve relevant movement-related knowledge.
+
+When asked:
+
+"What does a guitar sound like?"
+
+The brain can reactivate relevant auditory representations.
+
+This is a major feature of grounded cognition: knowledge can involve partial reactivation or simulation of previous perceptual, motor, and introspective experiences. <Cite refs={["turn533772search0","turn533772search6"]}/>
+
+### 15.2 Biological implementation
+
+Top-down signals from higher-order association regions can influence distributed sensory and motor networks.
+
+Depending on the task, these networks may include:
+
+- Visual association cortex.
+- Auditory association cortex.
+- Premotor cortex.
+- Motor cortex.
+- Somatosensory cortex.
+- Emotional and introspective systems.
+
+The degree of reactivation is not necessarily identical across concepts or tasks.
+
+### 15.3 Mathematical operations
+
+**A. Top-down projection**
+
+\[
+\widehat Z_m=
+\phi(V_mH_{\text{adapted}}+b_m)
+\]
+
+Where:
+
+- \(V_m\): top-down projection weights.
+- \(H_{\text{adapted}}\): context-adjusted ATL representation.
+- \(\widehat Z_m\): reconstructed modality-specific representation.
+
+**B. Task-dependent simulation**
+
+\[
+\widehat Z_m^{*}=G_m\odot\widehat Z_m
+\]
+
+Here, \(G_m\) is a gating function indicating which modality should be reactivated.
+
+**C. Partial simulation**
+
+\[
+\widehat Z_m^{*}=
+\rho_m\widehat Z_m
+\]
+
+Where \(0\leq\rho_m\leq1\) controls the degree of reactivation in the model.
+
+For example:
+
+- Visual question: stronger visual reconstruction.
+- Movement question: stronger motor reconstruction.
+- Sound question: stronger auditory reconstruction.
+
+**Result:** Abstract conceptual representations can activate relevant embodied information when the task requires it.
+
+---
+
+## Stage 16 — Predictive reconstruction and completion of missing information
+
+**Operation ID:** HEC-01.16  
+**Operation:** Use stored conceptual knowledge to predict or reconstruct missing information.
+
+### 16.1 Functional explanation
+
+The brain frequently receives incomplete information.
+
+For example, a person sees only part of a guitar behind another object.
+
+The visual information is insufficient to identify all its properties.
+
+However, previously acquired conceptual knowledge can provide predictions about:
+
+- The missing shape.
+- The likely location of strings.
+- The relationship between the body and neck.
+- The object's likely function.
+
+This process helps maintain coherent perception and conceptual understanding.
+
+### 16.2 Biological implementation
+
+This operation involves recurrent processing between:
+
+- Higher-order conceptual networks.
+- Sensory association networks.
+- Predictive and attentional systems.
+
+The higher-order representation supplies expectations that can influence lower-level processing.
+
+### 16.3 Mathematical operations
+
+**A. Generate a prediction**
+
+\[
+\widehat X_m=F_m(H,C)
+\]
+
+**B. Calculate prediction error**
+
+\[
+E_m=X_m-\widehat X_m
+\]
+
+**C. Update the representation**
+
+\[
+H_{t+1}=H_t+\eta W_eE_m
+\]
+
+Here:
+
+- \(E_m\): mismatch between predicted and received information.
+- \(W_e\): transformation of prediction error.
+- \(\eta\): update strength.
+
+**D. Bayesian interpretation**
+
+\[
+P(H\mid X,C)
+\propto
+P(X\mid H)P(H\mid C)
+\]
+
+This provides a useful probabilistic model:
+
+- \(P(X\mid H)\): how compatible the input is with the proposed concept.
+- \(P(H\mid C)\): how likely that concept is given the context.
+
+**Result:** The brain can use previous knowledge and contextual expectations to interpret incomplete or uncertain information.
+
+---
+
+## Stage 17 — Semantic decision and response preparation
+
+**Operation ID:** HEC-01.17  
+**Operation:** Convert the integrated conceptual representation into task-appropriate information or action.
+
+### 17.1 Functional explanation
+
+After concept activation and integration, the brain must determine what to do with the information.
+
+Possible outputs include:
+
+- Recognizing the object.
+- Naming the object.
+- Describing its properties.
+- Answering a question.
+- Comparing it with another object.
+- Imagining its appearance.
+- Preparing a related movement.
+
+For example, when someone asks, "What is a guitar?", the system needs to select an appropriate conceptual description.
+
+When someone asks, "How do I play it?", motor-related knowledge becomes more relevant.
+
+### 17.2 Biological implementation
+
+Semantic processing interacts with systems involved in response selection and control.
+
+Important structures include:
+
+- Inferior frontal regions involved in semantic control.
+- Temporal semantic networks.
+- Language production networks.
+- Premotor and motor systems when an action is required.
+
+The frontal and temporoparietal semantic control networks help constrain the activation of representations according to task requirements. <Cite refs={["turn533772search3"]}/>
+
+### 17.3 Mathematical operations
+
+**A. Calculate candidate response scores**
+
+\[
+S_i=
+w_1R_i+w_2C_i+w_3T_i
+\]
+
+Where:
+
+- \(R_i\): semantic relevance.
+- \(C_i\): contextual suitability.
+- \(T_i\): task suitability.
+
+**B. Select the response**
+
+\[
+i^*=\arg\max_iS_i
+\]
+
+**C. Suppress competing responses**
+
+\[
+A_i^{*}=A_i-\lambda A_{\text{competitors}}
+\]
+
+**D. Generate an output representation**
+
+\[
+Y=\phi(W_oH_{\text{adapted}}+b_o)
+\]
+
+**Result:** The conceptual representation is transformed into information appropriate for recognition, communication, reasoning, or action.
+
+---
+
+## Stage 18 — Feedback from the result to the conceptual system
+
+**Operation ID:** HEC-01.18  
+**Operation:** Evaluate the output and adjust ongoing conceptual processing.
+
+### 18.1 Functional explanation
+
+Conceptual processing does not necessarily terminate after producing an output.
+
+The brain can evaluate whether the result is appropriate.
+
+For example:
+
+1. A person identifies an object as a guitar.
+2. Additional information suggests that it is actually a bass guitar.
+3. The conceptual system revises its interpretation.
+4. Relevant representations become more strongly activated.
+5. The previous interpretation is corrected.
+
+This feedback supports flexible and accurate processing.
+
+### 18.2 Biological implementation
+
+Feedback involves recurrent communication between semantic representations, control networks, memory systems, and relevant sensory or motor regions.
+
+Conflict and errors can lead to changes in attentional selection and neural activation.
+
+### 18.3 Mathematical operations
+
+**A. Output error**
+
+\[
+E_o=Y_{\text{target}}-Y_{\text{actual}}
+\]
+
+**B. Internal representation adjustment**
+
+\[
+H_{\text{new}}=
+H_{\text{old}}+\eta W_oE_o
+\]
+
+**C. Attention adjustment**
+
+\[
+A_m^{\text{new}}
+=
+A_m^{\text{old}}+\eta_A\Delta A_m
+\]
+
+**D. Reprocessing**
+
+If the confidence in the current representation remains below a threshold:
+
+\[
+\text{If }P(H\mid X,C)<\theta
+\]
+
+then the system can request:
+
+- More sensory processing.
+- Additional feature extraction.
+- Alternative concept activation.
+- Greater contextual analysis.
+- Further cross-modal integration.
+
+**Result:** Conceptual interpretation can be corrected and refined through recurrent processing.
+
+---
+
+## Stage 19 — Learning, synaptic modification, and conceptual development
+
+**Operation ID:** HEC-01.19  
+**Operation:** Update distributed and integrated representations based on experience.
+
+### 19.1 Functional explanation
+
+Every new experience can potentially modify the brain's conceptual knowledge.
+
+Suppose someone learns to play the guitar for the first time.
+
+Initially, that person may know:
+
+- What a guitar looks like.
+- What it sounds like.
+- That it is used to produce music.
+
+After several months of practice, the individual may additionally acquire:
+
+- More detailed motor knowledge.
+- Greater sensitivity to musical sounds.
+- Better understanding of string arrangements.
+- More associations between physical actions and auditory outcomes.
+
+The concept becomes richer because different distributed systems acquire additional associated information.
+
+The ATL representation can also be refined through repeated interaction with these systems.
+
+### 19.2 Biological implementation
+
+Learning involves changes in neural connectivity and neuronal responsiveness.
+
+Possible mechanisms include:
+
+- Long-term potentiation (LTP).
+- Long-term depression (LTD).
+- Changes in synaptic efficacy.
+- Structural plasticity.
+- Changes in inhibition and excitation.
+- Neuromodulatory influences.
+- Memory consolidation.
+
+These mechanisms operate differently according to the neural circuit and learning conditions.
+
+### 19.3 Mathematical operations
+
+**A. Hebbian learning**
+
+A simplified learning rule:
+
+\[
+\Delta W_{ij}
+=
+\eta x_i y_j
+\]
+
+**B. Weight decay or stabilization**
+
+\[
+\Delta W_{ij}
+=
+\eta x_i y_j-\lambda W_{ij}
+\]
+
+**C. Error-dependent learning**
+
+\[
+\Delta W
+=
+-\eta\frac{\partial L}{\partial W}
+\]
+
+This is a useful artificial-network analogy. It should not be interpreted as evidence that biological neurons directly calculate a global backpropagation gradient.
+
+**D. Repeated experience integration**
+
+For experiences \(H_1,H_2,\ldots,H_n\):
+
+\[
+H_{\text{updated}}
+=
+\frac{\sum_{i=1}^{n}\alpha_iH_i}
+{\sum_{i=1}^{n}\alpha_i}
+\]
+
+Where \(\alpha_i\) represents the contribution of each experience.
+
+**E. Forgetting or gradual decay**
+
+\[
+W(t)=W_0e^{-\lambda t}
+\]
+
+This illustrates one possible mathematical model for gradual weakening of some associations. Actual biological forgetting involves more complicated processes than uniform exponential decay.
+
+**Result:** The conceptual system develops increasingly refined associations between embodied features and integrated semantic representations.
+
+---
+
+# 4. Complete master algorithm flow
+
+The 19 stages can now be assembled into one overall algorithm.
+
+<CodeBlock language="text" editable>
+ALGORITHM: HEC-01
+NAME: Hybrid Embodied-Amodal Conceptual Processing
+
+INPUT:
+    External sensory information
+    Internal bodily information
+    Emotional information
+    Linguistic information
+    Previously acquired knowledge
+    Current context
+    Current task
+
+INITIALIZE:
+    Modality-specific neural representations
+    Distributed semantic associations
+    ATL conceptual representation
+    Contextual and attentional states
+
+STAGE 01: ACQUIRE INFORMATION
+    Receive sensory and internally generated signals.
+    Convert inputs into neural activity patterns.
+
+STAGE 02: DISTRIBUTE INFORMATION
+    Route signals to corresponding specialized networks.
+    Maintain communication between neural systems.
+
+STAGE 03: EXTRACT FEATURES
+    Extract visual, auditory, motor, tactile,
+    emotional, linguistic, and other relevant features.
+
+STAGE 04: SELECT RELEVANT FEATURES
+    Apply attention-dependent weighting.
+    Reduce irrelevant or competing information.
+
+STAGE 05: CONSTRUCT MODAL REPRESENTATIONS
+    Transform extracted features into
+    modality-specific semantic representations.
+
+STAGE 06: ACTIVATE EXISTING KNOWLEDGE
+    Retrieve previously learned concepts.
+    Activate associated properties and relationships.
+
+STAGE 07: PERFORM CROSS-MODAL BINDING
+    Associate signals belonging to the same object,
+    event, or conceptual experience.
+
+STAGE 08: TRANSMIT TO ATL
+    Project modality-specific representations
+    into anterior temporal convergence networks.
+
+STAGE 09: ESTIMATE MODAL RELIABILITY
+    Evaluate the relevance and reliability
+    of different incoming information streams.
+
+STAGE 10: INTEGRATE REPRESENTATIONS
+    Combine distributed information through
+    recurrent ATL interactions.
+
+STAGE 11: EXTRACT COMMON CONCEPTUAL INFORMATION
+    Develop representations that can be accessed
+    through multiple input modalities.
+
+STAGE 12: PRESERVE MODALITY-SPECIFIC INFORMATION
+    Retain unique visual, auditory, motor,
+    tactile, emotional, and other properties.
+
+STAGE 13: CATEGORIZE AND GENERALIZE
+    Identify conceptual categories.
+    Distinguish similar concepts.
+    Generalize across different experiences.
+
+STAGE 14: ADAPT TO CONTEXT
+    Select conceptually relevant information
+    according to the current situation and task.
+
+STAGE 15: REACTIVATE EMBODIED KNOWLEDGE
+    Send top-down signals to relevant
+    sensory, motor, and other neural systems.
+
+STAGE 16: PREDICT AND COMPLETE INFORMATION
+    Generate expectations.
+    Compare predicted and actual information.
+    Correct incomplete or inaccurate representations.
+
+STAGE 17: SELECT AND PREPARE RESPONSE
+    Select the appropriate conceptual output,
+    verbal response, decision, or action.
+
+STAGE 18: EVALUATE AND CORRECT
+    Evaluate the result.
+    Revise the representation when necessary.
+    Repeat relevant processing stages.
+
+STAGE 19: LEARN AND UPDATE
+    Modify relevant connections.
+    Strengthen useful associations.
+    Refine distributed and integrated knowledge.
+
+OUTPUT:
+    Coherent conceptual representation
+    Flexible cross-modal access
+    Context-sensitive semantic knowledge
+    Reconstructed embodied information
+    Recognition, reasoning, communication, or action
+
+END ALGORITHM
+</CodeBlock>
+
+---
+
+# 5. Example: Complete processing of the concept GUITAR
+
+Let's execute the algorithm from beginning to end using three different ways of encountering the same concept.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Input A — Visual access**
+  <row align="center" gap={3}>
+    <AsyncImage query="acoustic guitar isolated front view white background" aspectRatio="5:4" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **Stimulus:** Photograph of a guitar.
+
+      <text color="secondary" size="xs">Visual processing extracts its body, strings, neck, and shape.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  **Input B — Auditory access**
+  <row align="center" gap={3}>
+    <AsyncImage query="acoustic guitar being played closeup strings sound performance" aspectRatio="5:4" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **Stimulus:** Sound of a guitar being played.
+
+      <text color="secondary" size="xs">Auditory processing extracts timbre, pitch, rhythm, and acoustic properties.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  **Input C — Linguistic access**
+  <row align="center" gap={3}>
+    <box background="surface-secondary" radius="md" size="112px" justify="center" align="center">
+      <title size="xl">GUITAR</title>
+    </box>
+    <box flex="1" gap={1}>
+      **Stimulus:** Reading or hearing the word "guitar".
+
+      <text color="secondary" size="xs">Language processing activates lexical and semantic associations.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <box background="rgba(34,160,110,0.10)" padding={3} radius="md" gap={1}>
+    **Convergent conceptual outcome**
+
+    <title size="2xl" color="success" textAlign="center">GUITAR</title>
+    <text color="secondary" size="sm" textAlign="center">A coherent conceptual representation accessible through different modalities.</text>
+  </box>
+</box>
+
+The important distinction is that the three input methods do not need to produce identical sensory activity.
+
+Instead, they can activate sufficiently overlapping semantic representations.
+
+For example:
+
+\[
+H_{\text{visual}}\approx H_{\text{auditory}}\approx H_{\text{linguistic}}
+\]
+
+This is a conceptual approximation, not a claim that the brain produces exactly identical neural activation patterns.
+
+The resulting conceptual knowledge can then activate different spokes depending on the question.
+
+| Question | Information emphasized |
+|---|---|
+| What does it look like? | Visual |
+| What does it sound like? | Auditory |
+| How is it played? | Motor |
+| What does it feel like? | Somatosensory |
+| Is it a musical instrument? | Shared conceptual knowledge |
+| What is its market value? | Contextual, linguistic, and learned knowledge |
+
+This demonstrates the central advantage of the hybrid architecture: **a common conceptual identity with flexible access to distributed embodied information.**
+
+---
+
+# 6. The complete information-processing architecture
+
+The algorithm can also be understood as four interacting computational subsystems.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    <badge color="info">Subsystem A</badge>
+    **Embodied feature-processing subsystem**
+
+    Performs stimulus acquisition, feature extraction, modality-specific encoding, and retrieval of sensory and motor information.
+
+    <text color="secondary" size="xs">HEC-01.01 – HEC-01.07</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="success">Subsystem B</badge>
+    **Cross-modal integration subsystem**
+
+    Projects modality-specific knowledge into the ATL, integrates features, and develops generalizable conceptual representations.
+
+    <text color="secondary" size="xs">HEC-01.08 – HEC-01.12</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="discovery">Subsystem C</badge>
+    **Semantic abstraction and reconstruction subsystem**
+
+    Performs categorization, generalization, contextual adaptation, top-down simulation, and predictive completion.
+
+    <text color="secondary" size="xs">HEC-01.13 – HEC-01.16</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="warning">Subsystem D</badge>
+    **Control, feedback, and learning subsystem**
+
+    Selects appropriate responses, evaluates results, corrects representations, and updates learned associations.
+
+    <text color="secondary" size="xs">HEC-01.17 – HEC-01.19</text>
+  </box>
+</box>
+
+## 7. Biological and mathematical mechanisms summary
+
+The following table consolidates the mathematical operations that could be represented in a computational implementation.
+
+| Mathematical operation | Functional purpose | Biological interpretation |
+|---|---|---|
+| Weighted summation | Combine incoming signals | Synaptic integration |
+| Nonlinear activation | Produce selective responses | Neuronal firing dynamics |
+| Vector representation | Describe population activity | Population coding |
+| Attention weighting | Prioritize relevant features | Gain modulation |
+| Similarity calculation | Compare representations | Distributed pattern matching |
+| Temporal integration | Combine information over time | Recurrent neural activity |
+| Hebbian association | Learn co-occurring features | Synaptic plasticity |
+| Reliability weighting | Adjust modality contributions | Confidence-sensitive integration |
+| Recurrent updating | Refine conceptual representations | Recurrent excitation and inhibition |
+| Dimensional projection | Transform information between systems | Population-level transformations |
+| Probabilistic inference | Interpret ambiguous information | Bayesian computational description |
+| Prediction error | Detect discrepancies | Predictive and error-sensitive processing |
+| Pattern completion | Recover missing information | Associative retrieval |
+| Representation reconstruction | Reactivate embodied information | Top-down neural signaling |
+| Competitive selection | Select relevant representations | Excitation, inhibition, and control |
+
+## 8. Important scientific considerations
+
+There are three distinctions worth preserving when turning this algorithm into an actual neurocomputational architecture.
+
+**A. The ATL does not necessarily contain the entire concept independently.**
+
+The hub-and-spoke framework proposes that conceptual knowledge depends on both the ATL and distributed cortical representations. Damage to particular spokes can impair particular types of conceptual information, while ATL damage can produce broader semantic difficulties. <Cite refs={["turn533772search5","turn533772search3"]}/>
+
+**B. Abstraction does not mean eliminating embodiment.**
+
+The brain can access shared conceptual information without completely reconstructing the original sensory experience. However, sensory, motor, emotional, and linguistic systems can contribute when their information is relevant.
+
+For instance, abstract concepts may depend more heavily on linguistic, emotional, social, and introspective associations than on direct physical experiences. A 2025 fMRI study also found ventral ATL involvement in processing several types of abstract verbs, alongside graded differences across ATL regions. <Cite refs={["turn705258search0","turn705258search2"]}/>
+
+**C. The stages are a computational decomposition, not a proven biological timetable.**
+
+The brain does not necessarily finish Stage 3 before starting Stage 4, or finish every embodied operation before activating the ATL. The systems interact continuously.
+
+The algorithm's ordering describes functional dependencies, not a rigid sequence of independent neural events.
+
+---
+
+## 9. Final architectural principle
+
+The most important mathematical idea underlying this entire model is the combination of shared and modality-specific representations:
+
+\[
+\boxed{
+\text{Conceptual Knowledge}
+=
+\text{Integrated Semantic Representation}
++
+\text{Distributed Embodied Information}
+}
+\]
+
+With the additional property:
+
+\[
+\boxed{
+\text{Conceptual Retrieval}
+=
+\text{Bottom-Up Activation}
++
+\text{Top-Down Reconstruction}
++
+\text{Contextual Control}
+}
+\]
+
+Together, these principles describe a system capable of:
+
+1. Learning concepts through sensory, motor, linguistic, and emotional experiences.
+2. Integrating information from different experiences.
+3. Developing shared conceptual representations.
+4. Generalizing concepts beyond individual experiences.
+5. Retrieving concepts through different input modalities.
+6. Reconstructing relevant embodied information when needed.
+7. Adapting conceptual knowledge to context.
+8. Improving its representations through continued learning.
+
+**My recommendation for a Python implementation:** Keep the modality-specific networks, ATL hub, semantic control, and learning mechanisms as separate but communicating components. This will allow you to experiment with grounded representations and abstract representations independently, while preserving their biological interaction in one integrated architecture.
+
+The most important feature to preserve is bidirectional communication: the distributed spokes must contribute to the ATL, and the ATL must be able to reactivate the spokes. Without both directions, the implementation would capture only part of the hybrid theory.
+
+---
+
+[ASSISTANT]
+---
+
+# 5. Example: Complete processing of the concept GUITAR
+
+Let's execute the algorithm from beginning to end using three different ways of encountering the same concept.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Input A — Visual access**
+  <row align="center" gap={3}>
+    <AsyncImage query="acoustic guitar isolated front view white background" aspectRatio="5:4" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **Stimulus:** Photograph of a guitar.
+
+      <text color="secondary" size="xs">Visual processing extracts its body, strings, neck, and shape.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  **Input B — Auditory access**
+  <row align="center" gap={3}>
+    <AsyncImage query="acoustic guitar being played closeup strings sound performance" aspectRatio="5:4" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **Stimulus:** Sound of a guitar being played.
+
+      <text color="secondary" size="xs">Auditory processing extracts timbre, pitch, rhythm, and acoustic properties.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  **Input C — Linguistic access**
+  <row align="center" gap={3}>
+    <box background="surface-secondary" radius="md" size="112px" justify="center" align="center">
+      <title size="xl">GUITAR</title>
+    </box>
+    <box flex="1" gap={1}>
+      **Stimulus:** Reading or hearing the word "guitar".
+
+      <text color="secondary" size="xs">Language processing activates lexical and semantic associations.</text>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <box background="rgba(34,160,110,0.10)" padding={3} radius="md" gap={1}>
+    **Convergent conceptual outcome**
+
+    <title size="2xl" color="success" textAlign="center">GUITAR</title>
+    <text color="secondary" size="sm" textAlign="center">A coherent conceptual representation accessible through different modalities.</text>
+  </box>
+</box>
+
+The important distinction is that the three input methods do not need to produce identical sensory activity.
+
+Instead, they can activate sufficiently overlapping semantic representations.
+
+For example:
+
+\[
+H_{\text{visual}}\approx H_{\text{auditory}}\approx H_{\text{linguistic}}
+\]
+
+This is a conceptual approximation, not a claim that the brain produces exactly identical neural activation patterns.
+
+The resulting conceptual knowledge can then activate different spokes depending on the question.
+
+| Question | Information emphasized |
+|---|---|
+| What does it look like? | Visual |
+| What does it sound like? | Auditory |
+| How is it played? | Motor |
+| What does it feel like? | Somatosensory |
+| Is it a musical instrument? | Shared conceptual knowledge |
+| What is its market value? | Contextual, linguistic, and learned knowledge |
+
+This demonstrates the central advantage of the hybrid architecture: **a common conceptual identity with flexible access to distributed embodied information.**
+
+---
+
+# 6. The complete information-processing architecture
+
+The algorithm can also be understood as four interacting computational subsystems.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    <badge color="info">Subsystem A</badge>
+    **Embodied feature-processing subsystem**
+
+    Performs stimulus acquisition, feature extraction, modality-specific encoding, and retrieval of sensory and motor information.
+
+    <text color="secondary" size="xs">HEC-01.01 – HEC-01.07</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="success">Subsystem B</badge>
+    **Cross-modal integration subsystem**
+
+    Projects modality-specific knowledge into the ATL, integrates features, and develops generalizable conceptual representations.
+
+    <text color="secondary" size="xs">HEC-01.08 – HEC-01.12</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="discovery">Subsystem C</badge>
+    **Semantic abstraction and reconstruction subsystem**
+
+    Performs categorization, generalization, contextual adaptation, top-down simulation, and predictive completion.
+
+    <text color="secondary" size="xs">HEC-01.13 – HEC-01.16</text>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="warning">Subsystem D</badge>
+    **Control, feedback, and learning subsystem**
+
+    Selects appropriate responses, evaluates results, corrects representations, and updates learned associations.
+
+    <text color="secondary" size="xs">HEC-01.17 – HEC-01.19</text>
+  </box>
+</box>
+
+## 7. Biological and mathematical mechanisms summary
+
+The following table consolidates the mathematical operations that could be represented in a computational implementation.
+
+| Mathematical operation | Functional purpose | Biological interpretation |
+|---|---|---|
+| Weighted summation | Combine incoming signals | Synaptic integration |
+| Nonlinear activation | Produce selective responses | Neuronal firing dynamics |
+| Vector representation | Describe population activity | Population coding |
+| Attention weighting | Prioritize relevant features | Gain modulation |
+| Similarity calculation | Compare representations | Distributed pattern matching |
+| Temporal integration | Combine information over time | Recurrent neural activity |
+| Hebbian association | Learn co-occurring features | Synaptic plasticity |
+| Reliability weighting | Adjust modality contributions | Confidence-sensitive integration |
+| Recurrent updating | Refine conceptual representations | Recurrent excitation and inhibition |
+| Dimensional projection | Transform information between systems | Population-level transformations |
+| Probabilistic inference | Interpret ambiguous information | Bayesian computational description |
+| Prediction error | Detect discrepancies | Predictive and error-sensitive processing |
+| Pattern completion | Recover missing information | Associative retrieval |
+| Representation reconstruction | Reactivate embodied information | Top-down neural signaling |
+| Competitive selection | Select relevant representations | Excitation, inhibition, and control |
+
+## 8. Important scientific considerations
+
+There are three distinctions worth preserving when turning this algorithm into an actual neurocomputational architecture.
+
+**A. The ATL does not necessarily contain the entire concept independently.**
+
+The hub-and-spoke framework proposes that conceptual knowledge depends on both the ATL and distributed cortical representations. Damage to particular spokes can impair particular types of conceptual information, while ATL damage can produce broader semantic difficulties. <Cite refs={["turn533772search5","turn533772search3"]}/>
+
+**B. Abstraction does not mean eliminating embodiment.**
+
+The brain can access shared conceptual information without completely reconstructing the original sensory experience. However, sensory, motor, emotional, and linguistic systems can contribute when their information is relevant.
+
+For instance, abstract concepts may depend more heavily on linguistic, emotional, social, and introspective associations than on direct physical experiences. A 2025 fMRI study also found ventral ATL involvement in processing several types of abstract verbs, alongside graded differences across ATL regions. <Cite refs={["turn705258search0","turn705258search2"]}/>
+
+**C. The stages are a computational decomposition, not a proven biological timetable.**
+
+The brain does not necessarily finish Stage 3 before starting Stage 4, or finish every embodied operation before activating the ATL. The systems interact continuously.
+
+The algorithm's ordering describes functional dependencies, not a rigid sequence of independent neural events.
+
+---
+
+## 9. Final architectural principle
+
+The most important mathematical idea underlying this entire model is the combination of shared and modality-specific representations:
+
+\[
+\boxed{
+\text{Conceptual Knowledge}
+=
+\text{Integrated Semantic Representation}
++
+\text{Distributed Embodied Information}
+}
+\]
+
+With the additional property:
+
+\[
+\boxed{
+\text{Conceptual Retrieval}
+=
+\text{Bottom-Up Activation}
++
+\text{Top-Down Reconstruction}
++
+\text{Contextual Control}
+}
+\]
+
+Together, these principles describe a system capable of:
+
+1. Learning concepts through sensory, motor, linguistic, and emotional experiences.
+2. Integrating information from different experiences.
+3. Developing shared conceptual representations.
+4. Generalizing concepts beyond individual experiences.
+5. Retrieving concepts through different input modalities.
+6. Reconstructing relevant embodied information when needed.
+7. Adapting conceptual knowledge to context.
+8. Improving its representations through continued learning.
+
+**My recommendation for a Python implementation:** Keep the modality-specific networks, ATL hub, semantic control, and learning mechanisms as separate but communicating components. This will allow you to experiment with grounded representations and abstract representations independently, while preserving their biological interaction in one integrated architecture.
+
+The most important feature to preserve is bidirectional communication: the distributed spokes must contribute to the ATL, and the ATL must be able to reactivate the spokes. Without both directions, the implementation would capture only part of the hybrid theory.

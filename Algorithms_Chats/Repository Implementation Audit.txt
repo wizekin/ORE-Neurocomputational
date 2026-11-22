@@ -1,0 +1,309 @@
+Title: Repository Implementation Audit
+Conversation ID: 6afacf4b-8598-83ea-986c-e0c24f75d1cf
+
+---
+
+[USER]
+I want you to check whether the following brain related operations are implemented in my Github ORE-Neurocomputational repo:
+Disentangling processes:
+Lexical access: retrieval of a word’s meaning or concept (the content of musician, tuned, instrument individually). It accesses semantic memory but does not yet form a sentence-level meaning.
+Syntactic composition: application of grammar rules to assemble words into a structure (e.g. subject-verb-object). This determines roles (musician=tuner, instrument=thing tuned) but not full conceptual interpretation.
+Semantic integration: binding the meanings of words (the concepts) together in the given syntactic frame, using world knowledge (e.g. that musicians tune instruments, not microwaves). This yields the unified proposition (a person preparing a musical instrument).
+Inference/discourse integration: drawing further conclusions beyond the sentence (e.g. the purpose of tuning, the upcoming concert). This uses extra-sentential context or pragmatic knowledge on top of sentence-level meaning.
+
+---
+
+[ASSISTANT]
+# ORE-Neurocomputational implementation audit
+
+<badge color="success">All four processes have implementations</badge> <badge color="warning">End-to-end integration is incomplete</badge>
+
+I inspected the repository's `main` branch, including the implementation modules, operation registries, integration code, and relevant test files.
+
+**The four processes are represented by real executable Python subsystems.** They are not merely described in documentation. However, there is an important distinction between having each subsystem implemented and having all four automatically operate together as one continuous comprehension pipeline.
+
+## 1. Lexical access
+
+<badge color="success">Implemented</badge>
+
+**Main implementation:** [`ore_lexical_access/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_lexical_access/pipeline.py)
+
+This subsystem has a 36-operation registry, `BLA-001` through `BLA-036`.
+
+It implements:
+
+- Retrieval of candidate word identities from a supplied lexical inventory.
+- Retrieval of individual meanings associated with each word.
+- Retrieval of semantic feature vectors for those meanings.
+- Calculation of meaning priors and contextual compatibility.
+- Posterior probabilities for competing meanings.
+- Preservation of ambiguity when several meanings remain plausible.
+
+For example, its tests create two different entries for *bank*: a river bank and a financial bank. Both meanings are retrieved, and contextual evidence favoring rivers ranks the river-bank interpretation higher.
+
+Evidence: [`tests/test_lexical_access.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_lexical_access.py).
+
+**Assessment:** This matches your definition of lexical access. The processor retrieves individual word meanings without constructing a sentence-level proposition.
+
+One limitation: it relies on supplied lexical entries and meaning inventories. It does not contain comprehensive knowledge of every word.
+
+## 2. Syntactic composition
+
+<badge color="success">Implemented</badge>
+
+**Main implementation:** [`ore_syntax/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_syntax/pipeline.py)
+
+The syntax subsystem has 58 registered operations, `SYN-001` through `SYN-058`, distributed across nine stages.
+
+It implements:
+
+- Part-of-speech identification.
+- Phrase detection.
+- Dependency parsing.
+- Constituency parsing.
+- Hierarchical syntax representation.
+- Subject and object assignment.
+- Agent and patient role hypotheses.
+- Syntactic ambiguity resolution.
+- Long-distance dependency processing.
+
+An important implementation is `_subject_object_assignment()`.
+
+It identifies subjects through dependency relations such as `nsubj`, objects through `obj` and `dobj`, and handles passive constructions by changing the provisional roles.
+
+For example, the tests verify that:
+
+> The cake was eaten by John.
+
+produces the cake as the grammatical subject but the patient, and John as the agent.
+
+Evidence: [`ore_syntax/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_syntax/pipeline.py#L658) · [`tests/test_syntax.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_syntax.py).
+
+**Assessment:** Your syntactic composition process is implemented. It constructs grammatical structures and assigns grammatical and provisional thematic roles.
+
+An important distinction: syntactic role assignment does not itself guarantee a correct conceptual interpretation. The system can use semantic features to refine role assignments, but that evidence is optional.
+
+## 3. Semantic integration
+
+<badge color="success">Implemented</badge>
+
+**Main implementation:** [`ore_semantic_composition/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py)
+
+This is particularly relevant to your description because the repository has a dedicated sentence-level semantic composition subsystem, separate from individual word-meaning retrieval.
+
+It has 54 registered operations, `SMC-001` through `SMC-054`, across nine stages.
+
+The main stages are:
+
+| Stage | Implementation responsibility |
+|---|---|
+| 1 | Retrieve individual word concepts |
+| 2 | Combine individual meanings into a composition workspace |
+| 3 | Retrieve predicates and construct argument frames |
+| 4 | Assign thematic roles using syntactic and semantic evidence |
+| 5 | Construct sentence-level propositions |
+| 6 | Integrate negation and modality |
+| 7 | Integrate quantifier scope |
+| 8 | Identify explicit causal relations |
+| 9 | Construct and validate a sentence-level semantic graph |
+
+The important code is:
+
+- [`_stage_one_retrieve_concepts()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L269)
+- [`_stage_two_combine_meanings()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L426)
+- [`_stage_three_predicate_arguments()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L523)
+- [`_stage_four_thematic_roles()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L682)
+- [`_stage_five_propositions()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L786)
+- [`_stage_nine_sentence_representation()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/pipeline.py#L1235)
+
+### How this matches your musician example
+
+Imagine these concepts:
+
+- `musician`: HUMAN, PERSON, MUSICIAN.
+- `instrument`: MUSICAL_INSTRUMENT, OBJECT.
+- `microwave`: APPLIANCE, OBJECT.
+- `tune`: an event with expected participant roles.
+
+The composition subsystem can use a predicate frame containing selectional preferences, along with the concepts' semantic features, to evaluate the compatibility of participants with the predicate's roles.
+
+The resulting representation can bind the musician to an Agent role and the instrument to a Patient or Theme role, then construct a proposition.
+
+There is one important qualification: **the repository provides the mechanism, but the relevant world knowledge must be supplied.** Its concept inventory and predicate frames must encode the expected features of musicians, instruments, microwaves, and tuning. It is not yet a comprehensive commonsense knowledge engine that independently knows every real-world relationship.
+
+The tests verify syntax-dependent argument assignment and proposition construction, including Agent and Patient bindings.
+
+Evidence: [`tests/test_semantic_composition.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_semantic_composition.py).
+
+## 4. Inference and discourse integration
+
+<badge color="warning">Implemented, with bounded inference</badge>
+
+**Main implementation:** [`ore_discourse/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py)
+
+The discourse subsystem has 39 registered operations, `DC-001` through `DC-039`, distributed across eight stages.
+
+| Stage | Implemented responsibility |
+|---|---|
+| 1 | Maintain discourse context |
+| 2 | Integrate consecutive sentence propositions |
+| 3 | Infer speaker intentions |
+| 4 | Interpret indirect requests |
+| 5 | Interpret irony |
+| 6 | Construct situation models |
+| 7 | Track temporal relations |
+| 8 | Maintain topic and narrative coherence |
+
+Some particularly relevant functions:
+
+**Discourse context:** [`_stage_context()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L411) maintains prior turns, episodic context, common ground, entities, and coreference hypotheses.
+
+**Proposition integration:** [`_stage_propositions()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L545) connects propositions using entity overlap, topic similarity, and explicit connectives.
+
+**Speaker intention:** [`_stage_intentions()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L606) estimates communicative acts and goal hypotheses.
+
+**Situation model:** [`_stage_situation()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L827) constructs events, participants, states, motivations, and causal relations.
+
+**Narrative coherence:** [`_stage_coherence()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L1053) evaluates topic continuity, entity continuity, narrative progression, and explicit contradictions.
+
+The tests also verify coreference, common ground, indirect requests, irony, and temporal relationships.
+
+Evidence: [`tests/test_discourse.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_discourse.py).
+
+### What about inferring an upcoming concert?
+
+This is where the implementation is less complete than your conceptual description.
+
+The system can use supplied prior conversations, goals, common-ground facts, and propositions to construct a situation model. However, it does not independently infer arbitrary hidden purposes or future events from a sentence.
+
+For example, inferring that a musician is tuning an instrument *because an upcoming concert is approaching* would require relevant contextual evidence, such as a supplied concert event, a declared goal, or previous discourse.
+
+The current inference system is therefore a functional but bounded discourse model, rather than a general-purpose pragmatic and commonsense reasoning engine.
+
+---
+
+## 5. The important architectural finding: are all four connected?
+
+ORE has an additional controller:
+
+[`ore_n9/pipeline.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/pipeline.py)
+
+It contains a 120-operation integrated controller intended to coordinate lexical, syntactic, semantic, contextual, and other processing stages.
+
+The relevant sections are:
+
+- Operations 49–60: lexical and phonological interfaces.
+- Operations 61–72: syntax and semantic composition.
+- Operations 73–84: discourse and situation modelling.
+- Operations 85–96: top-down feedback.
+- Operations 97 onward: global integration and decision-making.
+
+However, the controller uses optional, dependency-injected adapters.
+
+The `N9Adapters` contract declares optional `n6`, `syntax`, `n7`, and `n8` components. If they are not supplied, their stages can be marked unavailable or use explicit fallback behavior.
+
+There are two particularly important details:
+
+1. The existing [`DiscourseN7Adapter`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_discourse/pipeline.py#L1174) provides a real connection between the discourse subsystem and N9.
+
+2. The existing [`SemanticN8Adapter`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic/adapters.py#L70) connects semantic cognition to N9, but explicitly returns concept nodes only. It does not construct sentence propositions or thematic-role relationships.
+
+The sentence-level `SemanticCompositionProcessor` is not yet supplied with a dedicated ready-made N9 adapter. Its existing [`composition_request_from_results()`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_semantic_composition/adapters.py#L20) instead helps connect syntax and semantic results to the composition subsystem.
+
+The N9 tests explicitly verify that the default configuration can complete its operation trace while leaving the semantic graph empty. They separately test that injected adapters are called.
+
+Evidence: [`ore_n9/contracts.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/contracts.py) · [`tests/test_n9.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_n9.py).
+
+## Final implementation matrix
+
+| Brain-related process | Standalone implementation | Integrated into N9 by default |
+|---|---|---|
+| Lexical access | <badge color="success">Yes</badge> | <badge color="warning">Needs adapter</badge> |
+| Syntactic composition | <badge color="success">Yes</badge> | <badge color="warning">Needs adapter</badge> |
+| Semantic integration | <badge color="success">Yes</badge> | <badge color="warning">Needs a sentence-composition adapter</badge> |
+| Inference/discourse integration | <badge color="success">Yes</badge> | <badge color="warning">Needs adapter configuration</badge> |
+
+**My overall conclusion:** You have implemented the four main computational functions in ORE. The most significant remaining gap is not the absence of these algorithms. It is making the specialized modules work together through one verified end-to-end processing sequence, while ensuring that semantic composition uses actual predicate frames and world knowledge rather than generic fallback assumptions.
+
+One scientific qualification: the operation registries, mathematical models, and optional LIF simulations are computational hypotheses. Their software tests do not establish that the human brain performs those exact computations.
+
+I inspected the source code and test definitions, but did not execute the repository's test suite during this audit.
+
+**Recommended next step:** Implement the missing N9 adapters and add one end-to-end test using your musician–tunes–instrument example, including a competing microwave interpretation.
+
+<SuggestAutomation label="Complete N9 stage integration" emoji="🔧"/>
+
+---
+
+[USER]
+Implement the missing N9 adapters and add one end-to-end test
+
+---
+
+[ASSISTANT]
+<badge color="success">Implementation complete</badge> <badge color="success">Full pytest passed</badge>
+
+I implemented the missing N9 adapters and added the end-to-end regression test in your GitHub repository.
+
+## 1. What was implemented
+
+| Component | New implementation |
+|---|---|
+| N6 | `LexicalAccessN6Adapter` |
+| Syntax | `SyntaxN9Adapter` |
+| N8 | `SemanticCompositionN8Adapter` |
+| N7 | Reuses existing `DiscourseN7Adapter` |
+| Integration | `build_n9_language_adapters()` |
+
+The new adapters connect the existing processors rather than duplicating their algorithms.
+
+The integration factory also preserves your existing N1–N5 adapters.
+
+## 2. End-to-end test
+
+New file: [`tests/test_n9_language_adapters.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/integrate-n9-language-adapters/tests/test_n9_language_adapters.py)
+
+The test processes two sentences:
+
+**Case A**
+> musician tunes instrument
+
+**Case B**
+> musician tunes microwave
+
+It verifies that:
+
+- N9 executes its complete 120-operation pipeline.
+- Lexical access retrieves the individual concepts.
+- Syntax identifies the predicate and its arguments.
+- Semantic composition binds the Agent and Patient roles.
+- Predicate selectional preferences distinguish the instrument from the microwave.
+- Discourse integration constructs a situation model.
+
+The test uses an explicitly supplied predicate frame and semantic features. It does not rely on invented commonsense knowledge.
+
+## 3. GitHub status
+
+<box border radius="lg" padding={3} gap={2}>
+  <row align="center" justify="between">
+    **Pull request #19**
+    <badge color="success">Checks passed</badge>
+  </row>
+  [Integrate lexical, syntax, semantic and discourse adapters into N9](https://github.com/wizekin/ORE-Neurocomputational/pull/19)
+
+  Branch: `integrate-n9-language-adapters`
+
+  Both PR-triggered GitHub Actions workflows completed successfully, including the full pytest suite.
+
+  <divider color="subtle"/>
+  **The pull request is open, not merged.**
+  It is ready for your review.
+</box>
+
+The main implementation files are:
+
+- [`ore_n9/adapters.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/integrate-n9-language-adapters/ore_n9/adapters.py)
+- [`ore_n9/__init__.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/integrate-n9-language-adapters/ore_n9/__init__.py)
+- [`README.md`](https://github.com/wizekin/ORE-Neurocomputational/blob/integrate-n9-language-adapters/README.md)
+
+**Important architectural result:** N9 now has a ready-made way to connect individual lexical meaning retrieval, syntactic composition, sentence-level semantic integration, and discourse inference into one processing pipeline. The underlying knowledge inventories and predicate frames remain configurable rather than hardcoded into the controller.

@@ -1,0 +1,2770 @@
+Title: Implement N6 Algorithm
+Conversation ID: 6af7e459-734c-83e9-bfaa-6f61ab083593
+
+---
+
+[USER]
+related to our previous chat "Implement N5 Algorithm", Auto implement the steps of the N6 algorithm in python and ignore the previous n0-n7 implementation. you can use github through github plugin to implement N6 complete 60 algorithm operations. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin
+
+---
+
+[ASSISTANT]
+The existing N5 implementation establishes the foundation for N6: a separately versioned model with verified grapheme-learning experiences, fast and slow prototype banks, and forward/reverse transition memories.
+
+I’m building N6 as an independent **60-operation hierarchical orthographic sequence and lexical-access architecture**. It will use N4's attention-gated probabilities and N5's learned model without modifying either upstream stage.
+
+The implementation will preserve uncertain grapheme alternatives, perform sequence decoding, identify word boundaries, and retrieve matching entries from a provenance-checked orthographic lexicon.
+
+<badge color="success">Implementation complete</badge> <badge color="success">Full CI passed</badge>
+
+## N6 implementation delivered
+
+<box border radius="lg" padding={3} gap={2}>
+  **ORE N6 — 60-operation hierarchical orthographic access**
+
+  <title size="2xl" color="success" tabularNums>60 / 60</title>
+  <text color="secondary" size="xs">Named, implemented, and traceable algorithmic operations</text>
+  <divider color="subtle"/>
+  | Operations | Implemented function |
+  |---|---|
+  | 1–8 | Input contracts and upstream integrity |
+  | 9–16 | N5 model validation and alignment |
+  | 17–25 | Transition learning and evidence calibration |
+  | 26–42 | Bidirectional context and recurrent sequence decoding |
+  | 43–49 | Lexicon validation and boundary estimation |
+  | 50–57 | K-best segmentation and lexical access |
+  | 58–60 | Integrity checks, diagnostics, and output |
+</box>
+
+### Repository changes
+
+Implemented nine changed files:
+
+- `ore_n6/` — configuration, contracts, numerical functions, and complete processing pipeline.
+- `tests/test_n6.py` — 12 focused tests.
+- `docs/N6_ARCHITECTURE.md` — full algorithm and mathematical explanations.
+- `README.md` — updated N1–N6 overview.
+- `pyproject.toml` — includes N6 in package discovery.
+
+### Verification
+
+<row align="center" gap={2}>
+  <icon name="check-circle-filled" color="success" size="lg"/>
+  **12/12 focused N6 tests passed locally**
+</row>
+<row align="center" gap={2}>
+  <icon name="check-circle-filled" color="success" size="lg"/>
+  **Full repository pytest suite passed on GitHub Actions**
+</row>
+<row align="center" gap={2}>
+  <icon name="check-circle-filled" color="success" size="lg"/>
+  **N5 parent-model immutability verified**
+</row>
+
+### GitHub status
+
+<box border radius="lg" padding={3} gap={2}>
+  <row align="center" justify="between">
+    **Pull request #3**
+    <badge color="success">Open · Mergeable</badge>
+  </row>
+  [Review N6 implementation on GitHub](https://github.com/wizekin/ORE-Neurocomputational/pull/3)
+
+  Branch: `n6-complete-60-operations`
+
+  Base: `n5-complete-52-operations`
+
+  Commit: `c6560fb0b83dc2107d9a0028f3e333217e8e0aaf`
+
+  <text color="secondary" size="xs">Two commits, nine changed files. Not merged.</text>
+</box>
+
+**Important dependency:** N6 currently targets the N5 branch because the repository's `main` branch does not yet contain the N5 implementation. This avoids integrating N6 against a missing dependency.
+
+The next useful step is to integrate N5 and N6 into the main development line in dependency order. N6 is an algorithmic approximation, not yet evidence that the human brain's complete orthographic or lexical mechanisms have been reproduced.
+
+Would you like me to monitor the N5 prerequisite and notify you when N6 can be integrated into `main`?
+
+<SuggestAutomation label="Monitor N5 merge for N6 integration" emoji="🔄"/>
+
+---
+
+[USER]
+related to our previous chat "Request Stage A Output", I want you to turn the sequence of "ORE Neurocomputational Development Roadmap: Phase N7   Predictive and contextual processing" into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step
+
+---
+
+[ASSISTANT]
+# ORE Neurocomputational Development — Phase N7
+## Predictive and contextual processing: complete algorithmic specification
+
+There is an important distinction to establish before designing this phase.
+
+I recovered the saved **ORE Neurocomputational Development Roadmap v1.0** and the ORE Formal Specification v1.0.
+
+The saved roadmap calls N7 the *Stage A bridge and repeatable demo*, while the earlier formal specification explicitly excludes a complete predictive-processing architecture for language comprehension. It identifies predictive processing, lexical access, and contextual interpretation as extensions requiring separate investigation. <FileCite ref_id="turn57file6"/> <FileCite ref_id="turn57file7"/>
+
+Your current N7 title therefore represents an expanded development direction. I'll use your requested definition: **N7 becomes the predictive and contextual processing phase**, building on the N1–N6 architecture rather than repeating their operations.
+
+## 1. N7's position in the ORE architecture
+
+N7 should answer a question that N1–N6 have not fully answered:
+
+> Given what the visual system has recognized, what should the brain expect next, how should surrounding linguistic context influence interpretation, and how should the system react when its expectations disagree with incoming evidence?
+
+The main architectural transition is from recognizing an orthographic sequence to continuously predicting and interpreting that sequence in context.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">ORE processing hierarchy</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **N1 — Early visual processing**
+
+      Edges, contrast, orientation and visual features.
+    </list-item>
+    <list-item>
+      **N2 — Distributed visual representations**
+
+      Grapheme-selective feature populations.
+    </list-item>
+    <list-item>
+      **N3 — Recurrent orthographic prediction**
+
+      Grapheme alternatives, neighboring relationships and prediction errors.
+    </list-item>
+    <list-item>
+      **N4 — Attention and precision gating**
+
+      Allocation of attention and reliability-sensitive evidence.
+    </list-item>
+    <list-item>
+      **N5 — Experience-dependent plasticity**
+
+      Learned prototypes, exposure, and transition statistics.
+    </list-item>
+    <list-item>
+      **N6 — Hierarchical orthographic access**
+
+      Sequence decoding, word boundaries, and lexical candidates.
+    </list-item>
+    <list-item>
+      <badge color="success">New phase</badge>
+      **N7 — Predictive and contextual processing**
+
+      Hierarchical expectations, linguistic context, prediction errors, contextual inference, and belief revision.
+    </list-item>
+  </list>
+</box>
+
+N7 must preserve a critical distinction throughout the architecture:
+
+- Visual evidence: what the image actually supports.
+- Orthographic evidence: what the learned written-form system supports.
+- Contextual evidence: what surrounding language and discourse suggest.
+- Final belief: the combination of these signals, with their uncertainty retained.
+
+Context must never silently overwrite visual evidence.
+
+## 2. What N7 should actually predict
+
+N7 should not be a single prediction algorithm. It should contain several interacting predictive systems.
+
+<box border radius="lg" gap={2} padding={3}>
+  **Six predictive levels**
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **1. Orthographic prediction**
+
+    Which graphemes, letter combinations and written forms are expected?
+  </box>
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **2. Lexical prediction**
+
+    Which words or lexical entries are likely to occur?
+  </box>
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **3. Syntactic prediction**
+
+    Which grammatical categories and structural relationships are expected?
+  </box>
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **4. Semantic prediction**
+
+    Which meanings, attributes, roles and relationships are compatible with the current message?
+  </box>
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **5. Discourse prediction**
+
+    Which entities, topics, events and references are likely to remain relevant?
+  </box>
+  <box background="rgba(59,130,246,0.07)" radius="md" padding={2} gap={1}>
+    **6. Goal and situation prediction**
+
+    What information is relevant to the current task, and what kind of information should be expected next?
+  </box>
+</box>
+
+These levels should not be treated as six isolated neural organs. They are computational levels representing interacting information sources.
+
+There is research support for graded anticipation at multiple representational levels, rather than predicting only one exact upcoming word. The 2025 review by Wong, Reichle and Veldre discusses this flexible character of prediction during reading. <Cite refs={["turn221898view2","turn113636search9"]}/>
+
+### The most important mathematical distinction
+
+N7 needs to calculate three different quantities.
+
+**A. Prediction**
+
+What does the current context lead us to expect?
+
+\[
+P(w_t\mid C_t)
+\]
+
+**B. Incoming evidence**
+
+How strongly does the N6 recognition result support a particular word?
+
+\[
+P_{\mathrm{N6}}(w_t\mid V_t)
+\]
+
+**C. Updated belief**
+
+How should the two sources influence the final interpretation?
+
+\[
+P_{\mathrm{N7}}(w_t)
+\]
+
+A useful Bayesian formulation, when the visual likelihood is separately available, is:
+
+\[
+P(w_t\mid V_t,C_t)
+=
+\frac{
+P(V_t\mid w_t)P(w_t\mid C_t)
+}{
+\sum_j P(V_t\mid w_j)P(w_j\mid C_t)
+}
+\]
+
+There is an important implementation detail here: N6 already uses learned orthographic transition information. Its posterior must not be mistaken for a completely independent visual likelihood, or N7 could count some prior information twice.
+
+For the initial N7 implementation, I recommend a configurable log-opinion pool:
+
+\[
+\boxed{
+q_{\mathrm{N7}}(w)
+=
+\frac{
+q_{\mathrm{N6}}(w)^{1-\lambda}
+P_{\mathrm{context}}(w)^\lambda
+}{
+\sum_j
+q_{\mathrm{N6}}(w_j)^{1-\lambda}
+P_{\mathrm{context}}(w_j)^\lambda
+}
+}
+\]
+
+Here, \(\lambda\) controls contextual influence.
+
+This is an engineering approximation, not an exact Bayesian identity. It has the advantage of keeping both contributions visible and independently adjustable.
+
+---
+
+## 3. The proposed N7 processing cycle
+
+N7 should operate incrementally, not just process an entire sentence once.
+
+For every new recognized word or orthographic unit:
+
+<box border radius="lg" padding={3} gap={2} align="center">
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Existing N6 result**
+
+    Visual and orthographic alternatives
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Context-state construction**
+
+    Discourse, language, syntax, memory and goals
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Top-down predictions**
+
+    Candidate words, graphemes, structures and meanings
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Prediction-error computation**
+
+    Compare expectations with incoming evidence
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Precision-weighted inference**
+
+    Revise competing interpretations
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Updated interpretation**
+
+    Preserve uncertainty and alternative explanations
+  </box>
+  <icon name="arrow-down" color="secondary" size="lg"/>
+  <box background="rgba(34,197,94,0.09)" radius="md" padding={3} width="100%" align="center">
+    **Update contextual memory**
+
+    Prepare predictions for the next unit
+  </box>
+  <text color="secondary" size="xs">Repeat for the next word or sequence unit.</text>
+</box>
+
+This organization is consistent with the predictive-coding family of models, which describes higher-level predictions and lower-level mismatch signals. However, the precise neural implementation and interpretation of these signals remain debated. The 2026 Annual Review of Neuroscience explicitly emphasizes this uncertainty. <Cite refs={["turn221898view0","turn113636search12"]}/>
+
+# 4. N7 — Complete 72-operation algorithm
+
+I propose a 72-operation architecture, organized into eight computational subsystems. The number is an architectural design choice, not a count of biological neural operations.
+
+Each operation specifies:
+- What the algorithm must do.
+- The brain-inspired mechanism it approximates.
+- Possible mathematical operations for implementing it.
+
+## Subsystem A — Input reception and evidence separation
+
+<badge color="info">Operations 1–9</badge>
+
+**Objective:** Receive N6 output and establish a reliable initial state without losing information or allowing contextual knowledge to contaminate visual evidence.
+
+### 1. Validate the N7 processing request
+
+Receive an N7 request containing the N6 result, contextual information, model references, and configuration.
+
+Check:
+- Sequence identity.
+- Valid input structures.
+- Required fields.
+- Numerical finiteness.
+- Compatible model versions.
+
+**Possible mathematics:**
+
+For every numerical input \(x\):
+
+\[
+\operatorname{Valid}(x)=
+\begin{cases}
+1 & \text{if all values are finite and within range}\\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+This is primarily computational validation, not a proposed neural computation.
+
+### 2. Validate the N6 recognition interface
+
+Inspect the N6 output and ensure it exposes:
+
+- Grapheme probabilities.
+- Recognized grapheme alternatives.
+- Word segmentation alternatives.
+- Lexical matches.
+- Confidence estimates.
+- Processing provenance.
+
+Reject incompatible schemas rather than silently interpreting missing data.
+
+**Possible mathematics:**
+
+\[
+\dim(Q_{\mathrm{N6}})=N_{\mathrm{patches}}\times N_{\mathrm{graphemes}}
+\]
+
+Check that every patch has an aligned probability vector.
+
+### 3. Reconstruct the competing orthographic hypotheses
+
+Retrieve all viable sequences and word segmentations from N6, rather than using only the highest-ranked result.
+
+For example:
+
+| Hypothesis | Probability |
+|---|---:|
+| Candidate A | 0.55 |
+| Candidate B | 0.30 |
+| Candidate C | 0.15 |
+
+Keep these alternatives separate.
+
+**Possible mathematics:**
+
+\[
+\sum_{k=1}^{K}P(H_k)=1
+\]
+
+This preserves a probability distribution over hypotheses.
+
+### 4. Separate the evidence channels
+
+Create independent data structures for:
+
+1. Visual evidence.
+2. Orthographic evidence.
+3. Lexical evidence.
+4. Contextual predictions.
+5. Semantic hypotheses.
+6. Final posterior beliefs.
+
+Never replace one channel with another.
+
+**Possible mathematics:**
+
+Represent the state as:
+
+\[
+S_t=
+\{V_t,O_t,L_t,C_t,M_t,B_t\}
+\]
+
+where \(B_t\) is the current integrated belief.
+
+Each component retains its own values and provenance.
+
+### 5. Establish script-aware linguistic normalization
+
+Determine the script profile before processing contextual information.
+
+This is especially important for Arabic, where:
+- The reading direction is right to left.
+- One perceived grapheme may contain multiple Unicode code points.
+- Diacritics can change interpretation.
+- Letter shapes can depend on their position in a word.
+- Ligatures and normalization can influence representation.
+
+For Latin, the profile may instead include case mapping and accent handling.
+
+**Possible mathematics:**
+
+Normalization can be represented as a transformation:
+
+\[
+x'=T_s(x)
+\]
+
+where \(T_s\) is the normalization transformation for script \(s\).
+
+It must preserve distinctions required by the particular recognition task.
+
+### 6. Collect contextual information
+
+Collect available context from separate providers:
+
+- Previous words and sentences.
+- Previous N7 interpretations.
+- Lexical relationships.
+- Grammatical constraints.
+- Semantic knowledge.
+- Topic and domain information.
+- Document structure.
+- User or task goals, when explicitly provided.
+
+Each provider must return its own evidence rather than a single unexplained contextual score.
+
+### 7. Validate contextual sources and provenance
+
+Verify that contextual knowledge has a known source and reliability.
+
+For example, a dictionary entry, an authenticated document context and a speculative prediction should not receive identical treatment.
+
+**Possible mathematics:**
+
+For each source \(j\), maintain:
+
+\[
+R_j\in[0,1]
+\]
+
+where \(R_j\) is a calibrated reliability estimate.
+
+Track the source's prediction accuracy separately from its frequency of use.
+
+### 8. Establish the processing mode
+
+N7 should support two processing modes.
+
+**Online mode:** Only previously received context is available. This approximates normal incremental reading.
+
+**Offline mode:** Both preceding and following context can be used when the entire passage is already available.
+
+The system must never use future text in an online experiment.
+
+**Possible mathematics:**
+
+\[
+C_t^{online}=X_{1:t-1}
+\]
+
+\[
+C_t^{offline}=X_{1:t-1}\cup X_{t+1:n}
+\]
+
+### 9. Initialize an immutable processing snapshot
+
+Take snapshots of the N6 result, N5 model, context sources and configuration.
+
+N7 must not modify N5's learned prototypes or N6's original recognition result.
+
+**Possible mathematics:**
+
+\[
+H_{\mathrm{snapshot}}=
+SHA256(\operatorname{Serialize}(S))
+\]
+
+Recompute hashes after processing to detect unintended modifications.
+
+---
+
+## Subsystem B — Construction of contextual state
+
+<badge color="info">Operations 10–18</badge>
+
+**Objective:** Reconstruct what the current text means in relation to previous information, linguistic structure and the current situation.
+
+This is important because a word cannot always be interpreted independently of what came before it.
+
+### 10. Construct the recent linguistic context window
+
+Collect the previous \(n\) recognized words or linguistic units.
+
+For example:
+
+"The researcher examined the sample under the..."
+
+At this point, the system has a partially constructed sentence.
+
+The recent words provide local grammatical and lexical information.
+
+**Possible mathematics:**
+
+\[
+C_t^{local}=(w_{t-n},\ldots,w_{t-1})
+\]
+
+### 11. Weight context according to recency
+
+Recent words usually deserve greater weight than remote words when estimating immediate local expectations.
+
+Use an exponential recency function:
+
+\[
+r_k=e^{-\lambda(t-k)}
+\]
+
+where:
+
+- \(t\) is the current position.
+- \(k\) is the historical position.
+- \(\lambda\) is the decay parameter.
+
+Normalize the weights:
+
+\[
+\hat r_k=\frac{r_k}{\sum_j r_j}
+\]
+
+This creates a computational model of recency-sensitive memory, not an exact model of biological working-memory decay.
+
+### 12. Construct local orthographic and lexical context
+
+Retrieve the preceding grapheme and word patterns.
+
+Evaluate:
+
+- Frequent letter combinations.
+- Frequently encountered word sequences.
+- Learned word relationships.
+- Previously encountered orthographic chunks.
+- Candidate transitions.
+
+N5's learned transition statistics can contribute here.
+
+**Possible mathematics:**
+
+\[
+P(w_t\mid w_{t-1})
+\]
+
+and, for richer context:
+
+\[
+P(w_t\mid w_{t-1},w_{t-2})
+\]
+
+N-gram probabilities can be implemented initially, with more expressive contextual models introduced later.
+
+### 13. Construct the syntactic context state
+
+Estimate the current grammatical structure.
+
+For example, after:
+
+"The scientist discovered..."
+
+The system may expect a noun phrase or another syntactically permissible continuation.
+
+Possible grammatical signals include:
+
+- Part of speech.
+- Subject and object roles.
+- Agreement.
+- Verb argument structure.
+- Dependency relationships.
+
+**Possible mathematics:**
+
+\[
+P(T_t\mid T_{1:t-1})
+\]
+
+where \(T_t\) is the current syntactic state.
+
+A syntactic grammar can be represented using categorical transition probabilities or weighted grammatical rules.
+
+### 14. Construct the semantic context representation
+
+Estimate the semantic properties of the recognized words.
+
+For example:
+
+- scientist → human, researcher, professional.
+- examined → investigation, observation, inspection.
+- microscope → scientific instrument.
+
+The purpose is not simply to associate words with definitions. It is to establish relationships between the concepts activated by the surrounding text.
+
+**Possible mathematics:**
+
+Represent a concept as a vector:
+
+\[
+\mathbf{s}(w)\in\mathbb{R}^{d}
+\]
+
+Then calculate semantic similarity:
+
+\[
+\operatorname{sim}(a,b)=
+\frac{\mathbf{s}(a)\cdot\mathbf{s}(b)}
+{\|\mathbf{s}(a)\|\|\mathbf{s}(b)\|}
+\]
+
+This is a computational representation of semantic relationships, not a claim that the brain stores concepts as ordinary numeric vectors.
+
+### 15. Estimate the current topic and domain
+
+Determine the likely domain of the passage.
+
+Examples:
+
+- Medicine.
+- Biology.
+- Programming.
+- Physics.
+- Education.
+- Everyday conversation.
+
+The topic should be inferred from multiple contextual cues, rather than a single keyword.
+
+**Possible mathematics:**
+
+\[
+P(D\mid C_t)\propto P(C_t\mid D)P(D)
+\]
+
+where \(D\) represents a candidate domain.
+
+A topic distribution should be maintained when multiple domains remain plausible.
+
+### 16. Construct an entity and reference register
+
+Identify previously introduced entities.
+
+For example:
+
+"The researcher placed the sample under the microscope. It was then examined."
+
+The system must retain a representation of what "it" may refer to.
+
+**Possible mathematics:**
+
+For each candidate referent \(e_i\):
+
+\[
+S(e_i)=
+\alpha S_{\mathrm{recency}}
++\beta S_{\mathrm{grammatical}}
++\gamma S_{\mathrm{semantic}}
+\]
+
+Normalize scores to obtain referent probabilities.
+
+This approximates referential inference through competition among possible entities.
+
+### 17. Integrate goals and situational context
+
+Determine whether the current processing task changes the usefulness of particular interpretations.
+
+For example, reading a scientific paragraph may prioritize technical terminology, whereas reading a conversation may prioritize conversational references.
+
+Possible signals:
+
+- Task type.
+- Current objective.
+- Known document purpose.
+- Explicitly supplied audience or communication setting.
+
+**Possible mathematics:**
+
+\[
+P(w\mid C,G)
+\]
+
+where \(G\) represents the task or goal state.
+
+Task relevance must not be confused with factual evidence about what was written.
+
+### 18. Build the complete contextual state vector
+
+Combine the preceding contextual representations while preserving their individual channels.
+
+Define:
+
+\[
+C_t=
+[
+C_{\mathrm{local}},
+C_{\mathrm{syntax}},
+C_{\mathrm{semantic}},
+C_{\mathrm{domain}},
+C_{\mathrm{entity}},
+C_{\mathrm{goal}}
+]
+\]
+
+Calculate its uncertainty and retain the confidence of each source.
+
+The result becomes the input for the predictive hierarchy.
+
+---
+
+## Subsystem C — Hierarchical generative-model construction
+
+<badge color="info">Operations 19–27</badge>
+
+**Objective:** Construct the internal model that can generate predictions at several levels rather than producing a single next-word guess.
+
+### 19. Establish hierarchical latent variables
+
+Define hidden-state variables representing:
+
+- Grapheme identity.
+- Word identity.
+- Syntactic category.
+- Grammatical structure.
+- Semantic properties.
+- Discourse entities.
+- Topic and task.
+
+Represent the full latent state as:
+
+\[
+Z_t=(Z_g,Z_w,Z_s,Z_m,Z_d,Z_e,Z_{\mathrm{goal}})
+\]
+
+These are computational state variables. Their correspondence to specific biological populations remains a research hypothesis.
+
+### 20. Establish dependencies between predictive levels
+
+Create connections showing which information can influence other information levels.
+
+For example:
+
+- Semantic context influences likely lexical candidates.
+- Syntax constrains word classes.
+- Word identity predicts possible grapheme sequences.
+- Grapheme evidence constrains which words remain plausible.
+- Discourse state influences semantic interpretations.
+
+**Possible mathematics:**
+
+Factorize the joint probability:
+
+\[
+P(Z,O\mid C)
+=
+\prod_l P(Z_l\mid Pa(Z_l))
+\prod_j P(O_j\mid Z_j)
+\]
+
+Here, \(Pa(Z_l)\) denotes the parent variables connected to a latent level.
+
+This factorization is a modeling proposal, not a known literal neural architecture.
+
+### 21. Establish baseline predictive priors
+
+Initialize predictions from the relevant learned knowledge sources.
+
+Use:
+- N5 orthographic transition statistics.
+- Lexical frequencies.
+- Grammatical statistics.
+- Semantic relationships.
+- Previously established discourse state.
+
+Do not treat high frequency as proof of correctness.
+
+**Possible mathematics:**
+
+\[
+P_0(w)=
+\frac{N(w)+\alpha}
+{\sum_j N(w_j)+\alpha |V|}
+\]
+
+where \(N(w)\) is an exposure count and \(\alpha\) is a smoothing parameter.
+
+### 22. Generate candidate representations from the knowledge providers
+
+Query the relevant lexical, grammatical, morphological and semantic resources.
+
+Build a candidate set that includes:
+
+- Known words.
+- Unfamiliar but orthographically plausible forms.
+- Names.
+- Loanwords.
+- Technical terms.
+- Unlexicalized possibilities.
+
+This prevents context from simply eliminating unfamiliar words.
+
+### 23. Calculate lexical predictions
+
+Estimate the probability distribution over candidate words given the current context.
+
+**Possible mathematics:**
+
+\[
+P(w_t\mid C_t)
+=
+\operatorname{softmax}
+\left(
+f_{\mathrm{lexical}}(C_t)
+\right)
+\]
+
+The function can initially combine n-gram statistics, lexical associations and explicit contextual features.
+
+### 24. Calculate syntactic predictions
+
+Predict which grammatical categories and constructions are plausible next.
+
+For example:
+
+If the current structure is:
+
+"The machine produces..."
+
+possible continuations may include nouns or other grammatically licensed structures.
+
+**Possible mathematics:**
+
+\[
+P(\mathrm{POS}_t\mid C_t)
+\]
+
+Use a categorical probability distribution rather than committing to one grammatical category.
+
+### 25. Calculate semantic predictions
+
+Generate a distribution over likely semantic features.
+
+For example, if the subject is a physician and the verb describes examination, possible next-word features may include:
+
+- Human patient.
+- Medical instrument.
+- Body part.
+- Diagnostic result.
+
+**Possible mathematics:**
+
+\[
+P(\mathbf{m}_t\mid C_t)
+\]
+
+where \(\mathbf{m}_t\) is a vector of semantic attributes.
+
+### 26. Calculate event and entity predictions
+
+Predict likely relationships between the current event, its participants and previously established entities.
+
+For example:
+
+A sentence about a researcher conducting an experiment may predict relationships involving an investigator, an instrument, an experiment and an observation.
+
+**Possible mathematics:**
+
+\[
+P(E_t,R_t\mid C_t)
+\]
+
+where \(E_t\) represents event hypotheses and \(R_t\) their participant relationships.
+
+### 27. Construct the integrated predictive hypothesis space
+
+Combine the predictions from all levels.
+
+Do not yet select the final word.
+
+Create a structured candidate object containing:
+
+- Candidate identity.
+- Expected spelling.
+- Grammatical category.
+- Semantic attributes.
+- Expected contextual relationships.
+- Predictive probability.
+- Source provenance.
+
+This becomes the top-down prediction space for the next subsystem.
+
+## Subsystem D — Multi-level top-down prediction generation
+
+<badge color="info">Operations 28–36</badge>
+
+**Objective:** Convert high-level contextual expectations into predictions that can be compared with the N6 recognition result.
+
+This is the first stage where information from meaning, grammar and discourse flows back toward orthographic representations.
+
+### 28. Predict the next lexical unit
+
+Generate a probability distribution over the words that could reasonably occur next.
+
+For example:
+
+"The doctor examined the patient using a..."
+
+Possible predictions:
+
+| Candidate | Illustrative probability |
+|---|---:|
+| microscope | 0.50 |
+| instrument | 0.25 |
+| scanner | 0.15 |
+| device | 0.10 |
+
+**Possible mathematics:**
+
+\[
+P(w_{t+1}\mid C_t)
+\]
+
+This prediction must retain several candidates.
+
+### 29. Generate word-level preactivation
+
+Activate the representations of likely words before their complete visual evidence arrives.
+
+A word can receive partial activation because it is:
+- Contextually relevant.
+- Frequently encountered.
+- Semantically associated with the current subject.
+- Grammatically appropriate.
+
+**Possible mathematics:**
+
+\[
+a_w=
+f\left(
+\sum_j \omega_j C_j
+\right)
+\]
+
+where \(a_w\) is candidate activation and \(f\) is an activation function such as a sigmoid.
+
+This is an approximation to anticipatory activation, not a measured neural firing equation.
+
+### 30. Predict grammatical category and structure
+
+Generate expectations about the grammatical role of the upcoming unit.
+
+For example, after "the researcher examined", a noun phrase is plausible.
+
+The model should retain alternative constructions if the grammatical context is ambiguous.
+
+**Possible mathematics:**
+
+\[
+P(T_{t+1}\mid T_t,C_t)
+\]
+
+For multiple grammatical categories:
+
+\[
+\mathbf{p}_{syntax}=
+[p(\mathrm{noun}),p(\mathrm{verb}),p(\mathrm{adjective}),\ldots]
+\]
+
+### 31. Predict grammatical dependencies
+
+Predict relationships between upcoming words and existing sentence constituents.
+
+Potential relationships include:
+
+- Subject–verb.
+- Verb–object.
+- Modifier–noun.
+- Preposition–complement.
+- Determiner–noun.
+
+**Possible mathematics:**
+
+\[
+P(r_{ij}\mid w_i,w_j,C_t)
+\]
+
+The model can represent these relations as edges in a weighted dependency graph.
+
+### 32. Predict semantic roles
+
+Predict which kinds of entities are likely to participate in the current event.
+
+For instance:
+
+- Who performs the action?
+- What is affected?
+- What instrument is used?
+- Where does the action occur?
+
+**Possible mathematics:**
+
+\[
+P(\mathrm{Role}_i\mid E_t,C_t)
+\]
+
+A semantic-role graph can preserve several possible role assignments.
+
+### 33. Predict morphological properties
+
+Generate expected morphological features when the language requires them.
+
+For Arabic, this may include:
+
+- Gender.
+- Number.
+- Person.
+- Tense or aspect.
+- Prefixes and suffixes.
+- Agreement with surrounding words.
+
+For Latin, the relevant features may include plural, tense, person or case, depending on the language and construction.
+
+**Possible mathematics:**
+
+\[
+P(M_t\mid w_t,C_t)
+\]
+
+where \(M_t\) is the morphological feature vector.
+
+Morphological predictions must use script- and language-specific rules.
+
+### 34. Convert word predictions into orthographic predictions
+
+This operation is particularly important for ORE.
+
+For every candidate word, retrieve its possible grapheme sequence.
+
+For example:
+
+\[
+w=\text{science}
+\]
+
+generates:
+
+\[
+G(w)=(s,c,i,e,n,c,e)
+\]
+
+The model then maps word probabilities into expected grapheme activations.
+
+**Possible mathematics:**
+
+\[
+P_{\mathrm{ctx}}(g_i=g)
+=
+\sum_w P(w\mid C_t)
+\mathbb{1}[G_i(w)=g]
+\]
+
+This is a marginalization operation: multiple word hypotheses contribute to the expected grapheme at a position.
+
+For variable-length words and uncertain segmentation, use an alignment lattice rather than assuming that all candidates have the same length.
+
+### 35. Predict word boundaries and punctuation
+
+Use grammatical, lexical and discourse context to estimate:
+
+- Whether a word is likely to end.
+- Whether a phrase is likely to end.
+- Whether punctuation is expected.
+- Whether the next unit begins a new clause or sentence.
+
+**Possible mathematics:**
+
+\[
+P(B_i=1\mid C_t)
+=
+\sigma(f_{\mathrm{boundary}}(C_t))
+\]
+
+where \(B_i\) indicates a potential boundary.
+
+### 36. Construct the integrated top-down prediction lattice
+
+Merge the predictions from operations 28–35 into a common structure.
+
+Each candidate should preserve its own:
+- Predicted lexical identity.
+- Grapheme sequence.
+- Syntax.
+- Semantic features.
+- Morphology.
+- Word-boundary structure.
+- Probability and source.
+
+The output is a predictive lattice, not a single predicted sentence.
+
+This is important because different contextual levels may agree about a word's meaning while disagreeing about its exact spelling or grammatical form.
+
+---
+
+## Subsystem E — Uncertainty estimation and precision control
+
+<badge color="info">Operations 37–45</badge>
+
+**Objective:** Determine how much influence contextual predictions should receive relative to the available recognition evidence.
+
+This subsystem is essential. Without it, contextual processing can create confidently incorrect interpretations.
+
+### 37. Estimate visual reliability
+
+Read the N6 confidence information and determine whether the input is visually clear or ambiguous.
+
+Possible indicators:
+- Top candidate probability.
+- Difference between the top two candidates.
+- Grapheme posterior entropy.
+- Segmentation confidence.
+- Image quality, where available.
+
+**Possible mathematics:**
+
+For a distribution \(q_i\):
+
+\[
+H(q_i)=-\sum_c q_i(c)\log q_i(c)
+\]
+
+Normalized uncertainty:
+
+\[
+U_i=\frac{H(q_i)}{\log |C|}
+\]
+
+A high entropy indicates greater ambiguity.
+
+### 38. Estimate orthographic uncertainty
+
+Determine whether the ambiguity comes from the written sequence itself.
+
+For example, similar letter combinations or uncertain word boundaries may produce competing orthographic candidates.
+
+**Possible mathematics:**
+
+\[
+U_{\mathrm{orth}}=
+H(P_{\mathrm{N6}}(G\mid V))
+\]
+
+This should be retained separately from contextual uncertainty.
+
+### 39. Estimate contextual uncertainty
+
+Measure how concentrated or dispersed the contextual predictions are.
+
+If all context sources favor one candidate, uncertainty may be relatively low.
+
+If several candidates have similar probabilities, contextual uncertainty is high.
+
+**Possible mathematics:**
+
+\[
+H(C)=-\sum_w P(w\mid C)\log P(w\mid C)
+\]
+
+Importantly, high contextual confidence does not automatically mean that context is correct.
+
+### 40. Estimate reliability of each contextual source
+
+Evaluate each source independently.
+
+For example:
+
+- A calibrated grammatical model.
+- A lexical frequency table.
+- A domain-specific knowledge source.
+- A discourse memory.
+- An external semantic model.
+
+Use held-out prediction accuracy and calibration to establish reliability.
+
+**Possible mathematics:**
+
+\[
+R_j=1-\operatorname{CalibratedError}_j
+\]
+
+The particular error measure must be selected for the source and tested on independent data.
+
+### 41. Convert uncertainty into precision estimates
+
+In predictive-coding-inspired models, precision is associated with the inverse of uncertainty or variance.
+
+For a source with estimated variance \(\sigma_j^2\):
+
+\[
+\boxed{
+\Pi_j=\frac{1}{\sigma_j^2+\epsilon}
+}
+\]
+
+The model should distinguish an actual calibrated variance from a heuristic confidence score.
+
+Do not assume that a neural system calculates a literal reciprocal in every case. This is a useful mathematical approximation of reliability-sensitive weighting.
+
+### 42. Calculate attentional relevance
+
+Determine which contextual signals are relevant to the current task.
+
+For example, a technical document should give more attention to the relevant technical vocabulary than to unrelated everyday associations.
+
+**Possible mathematics:**
+
+\[
+A_j=
+\frac{\exp(s_j/T)}
+{\sum_k\exp(s_k/T)}
+\]
+
+where \(s_j\) represents the relevance score of a source.
+
+### 43. Compute adaptive precision gates
+
+Combine reliability and relevance.
+
+**Possible mathematics:**
+
+\[
+G_j=A_jR_j\Pi_j
+\]
+
+Normalize the gates:
+
+\[
+\hat G_j=\frac{G_j}{\sum_kG_k+\epsilon}
+\]
+
+These gates determine each source's contribution to the predictive model.
+
+### 44. Limit contextual dominance
+
+Create a safeguard against strong contextual expectations overpowering strong visual evidence.
+
+For instance, when N6 recognizes a clear but unusual name, N7 must not replace it with a more common word simply because the common word better fits the sentence.
+
+One possible control is:
+
+\[
+\lambda_i=
+\operatorname{clip}
+\left(
+\lambda_{\max}
+\frac{\Pi_{\mathrm{ctx}}}
+{\Pi_{\mathrm{ctx}}+\Pi_{\mathrm{visual}}+\epsilon}
+U_i,\,
+0,\lambda_{\max}
+\right)
+\]
+
+Here:
+
+- \(U_i\) is visual uncertainty.
+- \(\Pi_{\mathrm{ctx}}\) is contextual precision.
+- \(\Pi_{\mathrm{visual}}\) is visual precision.
+- \(\lambda_{\max}\) is a configurable upper limit.
+
+This makes contextual influence stronger when visual evidence is unreliable and weaker when visual evidence is clear.
+
+The exact parameters must be learned or calibrated through controlled experiments.
+
+### 45. Construct the precision-weighted contextual prior
+
+Combine the different contextual prediction sources.
+
+**Possible mathematics:**
+
+\[
+\log P_{\mathrm{ctx}}(w)
+=
+\sum_j\hat G_j\log(P_j(w)+\epsilon)
+\]
+
+Normalize afterward:
+
+\[
+P_{\mathrm{ctx}}(w)=
+\operatorname{softmax}
+(\log P_{\mathrm{ctx}}(w))
+\]
+
+The resulting distribution becomes the contextual prior supplied to the inference subsystem.
+
+---
+
+## Subsystem F — Prediction-error generation
+
+<badge color="info">Operations 46–54</badge>
+
+**Objective:** Compare the expectations generated by N7 with the information received from N6.
+
+This subsystem is one of the most important parts of the proposed architecture.
+
+A prediction is useful only when the system can determine whether it agrees with incoming evidence.
+
+### 46. Calculate orthographic prediction error
+
+Compare the predicted grapheme distribution with the distribution received from N6.
+
+For each position \(i\):
+
+\[
+\epsilon_i^{g}=
+q_{\mathrm{N6}}(g_i)
+-
+q_{\mathrm{ctx}}(g_i)
+\]
+
+A large discrepancy indicates that the incoming orthographic evidence differs from what context predicted.
+
+Retain the direction of the discrepancy, not only its magnitude.
+
+### 47. Calculate lexical prediction error
+
+Compare the expected word distribution with the actual N6 lexical candidates.
+
+**Possible mathematics:**
+
+\[
+E_{\mathrm{lex}}=
+D_{\mathrm{KL}}
+\left(
+q_{\mathrm{observed}}(w)
+\parallel
+p_{\mathrm{predicted}}(w)
+\right)
+\]
+
+where:
+
+\[
+D_{\mathrm{KL}}(q\parallel p)
+=
+\sum_w q(w)\log\frac{q(w)}{p(w)}
+\]
+
+This measures how different the observed distribution is from the predicted distribution.
+
+### 48. Calculate syntactic prediction error
+
+Compare the predicted grammatical categories and relationships with the actual recognized sequence.
+
+For example, a predicted noun followed by a grammatical structure that strongly supports a verb may generate a mismatch.
+
+**Possible mathematics:**
+
+\[
+E_{\mathrm{syntax}}
+=
+-\sum_t
+\log P(T_t^{observed}\mid C_t)
+\]
+
+This calculates the negative log probability of the observed grammatical structure.
+
+### 49. Calculate semantic prediction error
+
+Compare the semantic features of the newly recognized word with the expected semantic features.
+
+For example:
+
+"The researcher looked through the..."
+
+A word that does not fit the expected event may produce a semantic discrepancy.
+
+**Possible mathematics:**
+
+For continuous semantic features:
+
+\[
+\epsilon_m=\mathbf{m}_{observed}-\mathbf{m}_{predicted}
+\]
+
+A weighted quadratic error:
+
+\[
+E_m=\frac12\epsilon_m^T\Pi_m\epsilon_m
+\]
+
+### 50. Calculate referential and discourse prediction error
+
+Check whether newly recognized words agree with existing discourse references.
+
+For example, if the context refers to one previously introduced object, a later pronoun may be inconsistent with the candidate referent.
+
+**Possible mathematics:**
+
+\[
+E_{\mathrm{reference}}=
+-\log P(e_{\mathrm{observed}}\mid C_t)
+\]
+
+### 51. Calculate contextual surprise
+
+Determine how unexpected the observed word is given the preceding context.
+
+**Possible mathematics:**
+
+\[
+\boxed{
+S(w_t)=-\log P(w_t\mid C_t)
+}
+\]
+
+This is called surprisal in information-theoretic language processing.
+
+A highly unexpected word generates greater surprise than an expected one.
+
+Surprisal is not identical to every form of neural prediction error, but it is a useful, measurable computational quantity.
+
+### 52. Apply precision weighting to prediction errors
+
+Combine error signals according to their estimated reliability.
+
+**Possible mathematics:**
+
+\[
+\boldsymbol{\epsilon}_{weighted}
+=
+\Pi\boldsymbol{\epsilon}
+\]
+
+For continuous errors:
+
+\[
+E=\frac12
+\boldsymbol{\epsilon}^{T}
+\Pi
+\boldsymbol{\epsilon}
+\]
+
+For categorical signals, use calibrated divergence or cross-entropy terms.
+
+The intention is to prevent unreliable signals from controlling the entire inference process.
+
+### 53. Separate prediction-error categories
+
+Do not collapse every discrepancy into one scalar.
+
+N7 should maintain separate error channels:
+
+\[
+E=
+\{
+E_{\mathrm{orth}},
+E_{\mathrm{lex}},
+E_{\mathrm{syntax}},
+E_{\mathrm{semantic}},
+E_{\mathrm{discourse}}
+\}
+\]
+
+This separation matters because two different problems can produce similar overall error scores.
+
+A visually ambiguous letter and an unexpected semantic interpretation should not trigger the same correction mechanism.
+
+### 54. Propagate prediction errors to appropriate higher levels
+
+Pass the different errors to the corresponding contextual levels.
+
+For example:
+
+- Orthographic mismatch influences word-form hypotheses.
+- Lexical mismatch influences word identity.
+- Syntactic mismatch influences grammatical hypotheses.
+- Semantic mismatch influences concept and event hypotheses.
+- Discourse mismatch influences entity and topic hypotheses.
+
+**Possible mathematics:**
+
+\[
+\delta^{(l+1)}
+=
+W_l\delta^{(l)}
+\]
+
+where \(W_l\) represents the learned or configured relationship between error channels at adjacent levels.
+
+These are proposed message-passing operations, not established anatomical wiring diagrams.
+
+The objective is selective error propagation: do not make an error at one level unnecessarily invalidate every other level.
+
+## Subsystem G — Hierarchical belief revision and contextual inference
+
+<badge color="info">Operations 55–63</badge>
+
+**Objective:** Use prediction errors to update competing interpretations until the system has a stable, evidence-supported interpretation.
+
+This subsystem is where N7 actually resolves ambiguity.
+
+### 55. Initialize the joint hypothesis state
+
+Create a joint representation of possible interpretations.
+
+For example, if three lexical candidates exist, initialize each with its N6 evidence and its contextual support.
+
+**Possible mathematics:**
+
+\[
+Q_0(H)=Q_{\mathrm{N6}}(H)
+\]
+
+Here \(H\) represents a complete candidate interpretation or a structured set of linked hypotheses.
+
+### 56. Fuse incoming recognition and context
+
+Combine the N6 recognition result with the N7 contextual prior.
+
+Use the precision-controlled log-opinion pool:
+
+\[
+Q_1(H)\propto
+Q_{\mathrm{N6}}(H)^{1-\lambda}
+P_{\mathrm{ctx}}(H)^\lambda
+\]
+
+Normalize across all candidates.
+
+Where the N6 implementation provides separately calibrated likelihoods and reference priors, a likelihood-ratio correction can instead be applied to avoid double-counting its existing priors.
+
+### 57. Perform iterative variational belief updates
+
+Instead of calculating the final answer in one operation, repeatedly update the different levels of belief.
+
+A possible objective is:
+
+\[
+\mathcal F(Q)=
+\mathbb E_Q[-\log P(O,Z\mid C)]
++
+D_{\mathrm{KL}}(Q(Z)\parallel P(Z\mid C))
+\]
+
+Where:
+
+- \(O\) represents observations.
+- \(Z\) represents latent hypotheses.
+- \(C\) represents contextual information.
+- \(\mathcal F\) is a variational free-energy objective.
+
+One possible update is:
+
+\[
+Q_{k+1}
+=
+\operatorname{softmax}
+\left(
+\log Q_k-\eta\nabla_Q\mathcal F
+\right)
+\]
+
+Use damping or controlled step sizes to avoid unstable updates.
+
+This is a proposed implementation of approximate inference, not a claim that the brain literally evaluates this exact objective.
+
+### 58. Implement lateral competition between interpretations
+
+Allow competing candidates to influence each other's activation.
+
+For example, candidates representing mutually exclusive word identities should compete for support.
+
+**Possible mathematics:**
+
+\[
+a_i^{new}
+=
+\phi\left(
+s_i-\alpha\sum_{j\ne i}W_{ij}a_j
+\right)
+\]
+
+Where:
+
+- \(s_i\) is the candidate's combined evidence.
+- \(W_{ij}\) represents inhibitory competition.
+- \(\alpha\) controls inhibition.
+- \(\phi\) is an activation function.
+
+This approximates competitive population activity and lateral inhibition.
+
+### 59. Implement top-down explain-away operations
+
+When a higher-level interpretation successfully predicts some of the incoming information, the system can reduce the amount of unexplained evidence.
+
+For example, once a word candidate explains a likely grapheme sequence, those expected graphemes receive additional predictive support.
+
+**Possible mathematics:**
+
+\[
+\epsilon_g=
+q_{\mathrm{observed}}(g)-
+q_{\mathrm{predicted}}(g)
+\]
+
+Then:
+
+\[
+q_{\mathrm{updated}}(g)
+\propto
+q_{\mathrm{observed}}(g)
+\exp\left(
+\beta\log(q_{\mathrm{predicted}}(g)+\epsilon)
+\right)
+\]
+
+The result is normalized.
+
+**Important limitation:** With the existing N6 output, this operation applies to symbolic grapheme and lexical distributions. It cannot yet remove predictable information from the original pixels or N1 feature maps. That would require a future visual-feedback interface and a genuinely generative visual model.
+
+### 60. Resolve visual/contextual conflicts
+
+Apply explicit rules when contextual and visual evidence disagree.
+
+Consider:
+
+"The doctor examined the patient using a [visually ambiguous word]."
+
+The context may strongly predict a medical instrument. However, the visual evidence could support an unfamiliar technical word.
+
+N7 should:
+
+1. Inspect visual reliability.
+2. Inspect contextual reliability.
+3. Inspect the candidate's orthographic likelihood.
+4. Calculate the precision-weighted discrepancy.
+5. Adjust contextual influence.
+6. Preserve the original visual candidate if it remains plausible.
+
+**Possible mathematics:**
+
+\[
+S(H)=
+w_vS_v(H)+
+w_oS_o(H)+
+w_cS_c(H)
+\]
+
+The weights depend on calibrated precision.
+
+The system must not automatically choose the candidate with the highest semantic plausibility.
+
+### 61. Preserve multiple interpretations
+
+If two or more candidates remain plausible, maintain them.
+
+**Possible mathematics:**
+
+Use a beam of the best \(K\) hypotheses:
+
+\[
+\mathcal B_t=
+\operatorname{TopK}
+\{Q_t(H_1),\ldots,Q_t(H_n)\}
+\]
+
+Retain an uncertainty estimate for the beam.
+
+Do not eliminate unusual names, technical words or unfamiliar strings merely because they have low contextual frequency.
+
+### 62. Check inference convergence and stability
+
+Determine whether repeated inference is producing meaningful improvements or merely oscillating between hypotheses.
+
+**Possible mathematics:**
+
+\[
+\Delta_k=
+\frac1N
+\sum_i
+\left|
+Q_{k+1}(H_i)-Q_k(H_i)
+\right|
+\]
+
+Stop if:
+
+\[
+\Delta_k<\tau
+\]
+
+Alternatively, stop when the free-energy change becomes negligible.
+
+Include a maximum iteration limit and oscillation detection.
+
+### 63. Determine final confidence and abstention
+
+Evaluate whether the available evidence supports a sufficiently stable interpretation.
+
+Consider:
+
+- Posterior probability.
+- Top-two candidate margin.
+- Normalized entropy.
+- Contextual disagreement.
+- Visual confidence.
+- Prediction-error magnitude.
+
+A possible confidence criterion is:
+
+\[
+P(H_{\max})>\theta_c
+\]
+
+together with:
+
+\[
+P(H_{\max})-P(H_{\mathrm{second}})>\theta_m
+\]
+
+If these conditions are not met, return an ambiguous result rather than forcing a decision.
+
+---
+
+## Subsystem H — Contextual memory, continuous updating and output
+
+<badge color="info">Operations 64–72</badge>
+
+**Objective:** Use the updated interpretation to maintain the context needed for subsequent processing.
+
+### 64. Commit the selected interpretation to the current processing sequence
+
+Determine which candidate can be provisionally accepted into the current text representation.
+
+Use the output of operation 63.
+
+There should be three possible outcomes:
+
+- Accepted: sufficiently supported.
+- Provisional: plausible but uncertain.
+- Unresolved: preserve alternatives.
+
+Only sufficiently reliable interpretations should become strong contextual facts.
+
+**Possible mathematics:**
+
+\[
+c_t=P(H_{\max})
+\]
+
+A confidence-dependent commitment gate can be:
+
+\[
+g_t=\sigma(k(c_t-\theta))
+\]
+
+### 65. Update the local discourse representation
+
+Add the new accepted or provisional information to the current discourse state.
+
+The contextual state now represents a larger portion of the passage.
+
+**Possible mathematics:**
+
+\[
+M_t=
+\rho M_{t-1}+
+(1-\rho)g_t\phi(H_t)
+\]
+
+Where:
+
+- \(M_t\) is the updated context state.
+- \(\rho\) controls retention.
+- \(\phi(H_t)\) is a representation of the new information.
+
+This approximates recency-sensitive integration with confidence-weighted updates.
+
+### 66. Update the entity and reference graph
+
+Add new entities and relationships.
+
+For example:
+
+- Researcher → performs → experiment.
+- Experiment → uses → instrument.
+- Instrument → measures → sample.
+
+Maintain links between the current and previously mentioned entities.
+
+**Possible mathematics:**
+
+Represent the graph as:
+
+\[
+G_t=(V_t,E_t)
+\]
+
+where vertices represent entities and edges represent relationships.
+
+An edge can carry a probability or evidence weight:
+
+\[
+P(r_{ij}\mid C_t)
+\]
+
+### 67. Update the semantic event representation
+
+Integrate the new word or phrase into the current event and situation model.
+
+For example, recognizing that a previously mentioned instrument is now being used changes the inferred state of the event.
+
+**Possible mathematics:**
+
+\[
+Z_{\mathrm{event},t}
+=
+f(Z_{\mathrm{event},t-1},H_t)
+\]
+
+A structured event model can retain:
+
+- Participants.
+- Actions.
+- Objects.
+- Relationships.
+- Locations.
+- Temporal ordering.
+
+### 68. Apply temporal decay to contextual memory
+
+Older contextual evidence should not necessarily retain the same influence indefinitely.
+
+Use different retention rates for different memory types.
+
+For example:
+
+- Immediate lexical context: relatively fast decay.
+- Current sentence structure: medium retention.
+- Paragraph topic: slower decay.
+- Established long-term knowledge: maintained separately.
+
+**Possible mathematics:**
+
+\[
+M_j(t+\Delta t)
+=
+M_j(t)e^{-\Delta t/\tau_j}
+\]
+
+Different memory components have different time constants \(\tau_j\).
+
+These time constants must be empirically selected.
+
+### 69. Generate predictions for the next processing unit
+
+Use the newly updated context to predict the next word or linguistic unit.
+
+This operation closes the predictive cycle.
+
+**Possible mathematics:**
+
+\[
+P(w_{t+1}\mid M_t,Z_t)
+\]
+
+Generate:
+- Lexical alternatives.
+- Expected graphemes.
+- Syntactic alternatives.
+- Semantic expectations.
+- Likely referential relationships.
+
+### 70. Separate temporary contextual adaptation from long-term learning
+
+This is particularly important for ORE's architecture.
+
+N7 may update its temporary discourse state as it reads a passage, but it must not automatically change N5's long-term learned parameters.
+
+There should be two distinct operations:
+
+**Temporary adaptation:** Updating working context and document-specific state.
+
+**Long-term learning:** Updating persistent orthographic or linguistic models through a separate, explicitly authorized learning process.
+
+**Possible mathematics:**
+
+Temporary adaptation:
+
+\[
+M_{t+1}=f(M_t,H_t)
+\]
+
+Long-term learning:
+
+\[
+\theta_{new}=
+\theta_{old}-\eta\nabla_\theta L
+\]
+
+The second operation must use appropriate independent verification, provenance and authorization.
+
+### 71. Generate the complete processing trace
+
+Record why the system selected or rejected candidate interpretations.
+
+For each processed unit, save:
+
+- Original N6 probabilities.
+- Contextual predictions.
+- Context source reliability.
+- Precision estimates.
+- Prediction errors.
+- Intermediate belief states.
+- Final alternatives.
+- Accepted or unresolved interpretation.
+- Context-memory changes.
+
+This makes N7's decisions experimentally inspectable.
+
+### 72. Validate and return the N7 result
+
+Validate the final state.
+
+Check:
+
+- Numerical finiteness.
+- Probability normalization.
+- Preservation of candidate alternatives.
+- Proper alignment with the original N6 sequence.
+- Consistency of contextual state.
+- N5 model immutability.
+- Complete operation trace.
+- Provenance and serialization.
+
+Return a structured result with separate visual, orthographic, contextual and integrated beliefs.
+
+<badge color="success">N7 algorithm: 72 operations specified</badge>
+
+# 5. The mathematical core of N7
+
+The 72 operations can be understood through five families of mathematical operations.
+
+## 5.1 Hierarchical probability estimation
+
+The system estimates predictions at several levels:
+
+\[
+P(G,W,T,M,D\mid C)
+\]
+
+Where:
+
+- \(G\): grapheme sequence.
+- \(W\): word identity.
+- \(T\): syntactic state.
+- \(M\): semantic state.
+- \(D\): discourse state.
+- \(C\): contextual information.
+
+The joint model must preserve dependencies. For example, a syntactic category influences word probability, but the word's visual evidence must also influence its identity.
+
+## 5.2 Predictive feedback
+
+Higher-level representations generate expectations for lower-level representations.
+
+\[
+\text{Semantic expectation}
+\rightarrow
+\text{Word expectation}
+\rightarrow
+\text{Grapheme expectation}
+\]
+
+The lower level compares the prediction with its observation:
+
+\[
+\epsilon_l=O_l-\hat O_l
+\]
+
+The mismatch can then influence the higher-level hypotheses.
+
+This is the central mathematical motif of predictive coding. There is experimental and computational research supporting orthographic prediction-error models in visual word processing, including a study reporting relevant effects in V4 before 200 ms after word onset. <Cite refs={["turn221898view3","turn113636search6"]}/>
+
+However, N7 should initially perform symbolic prediction and comparison. A later version could add a generative visual hierarchy that predicts N2 feature maps or N1 visual activity.
+
+## 5.3 Precision-weighted error
+
+A discrepancy should not have the same importance under every condition.
+
+For continuous representations:
+
+\[
+E_l=\frac12\epsilon_l^T\Pi_l\epsilon_l
+\]
+
+A reliable observation receives more influence than an unreliable one.
+
+This gives N7 a mechanism for dealing with conflicting visual and contextual information.
+
+## 5.4 Recurrent inference
+
+Beliefs are continuously revised rather than finalized immediately.
+
+\[
+Q^{(k+1)}
+=
+(1-\rho)Q^{(k)}
++
+\rho\hat Q^{(k+1)}
+\]
+
+Here, \(\rho\) is a damping factor.
+
+The algorithm can perform several rounds of updating until its hypotheses stabilize.
+
+## 5.5 Contextual memory
+
+The new interpretation modifies the context available for subsequent predictions.
+
+\[
+M_{t+1}=\rho_m M_t+(1-\rho_m)\phi(H_t)
+\]
+
+The next prediction depends on the updated state:
+
+\[
+P(w_{t+1}\mid M_{t+1})
+\]
+
+This closes the interaction between recognition, prediction, error correction and memory.
+
+---
+
+# 6. How N7 relates to possible biological mechanisms
+
+The following table maps the proposed computational operations to plausible biological mechanisms. These are hypotheses about correspondence, not proof that the nervous system uses these exact numerical calculations.
+
+| N7 computational mechanism | Possible biological counterpart | Proposed mathematical approximation |
+|---|---|---|
+| Predictive activation | Recurrent excitation and feedback projections | Weighted recurrent activation |
+| Candidate competition | Local inhibitory interactions and competitive populations | Lateral inhibition |
+| Contextual priming | Prior experience and distributed associative activation | Bayesian priors |
+| Prediction error | Differences between expected and incoming neural activity | Residual vectors and KL divergence |
+| Precision control | Reliability-sensitive modulation of neural response gain | Inverse variance |
+| Hierarchical inference | Recurrent communication between cortical processing levels | Variational message passing |
+| Semantic integration | Distributed language and association networks | Vector and graph integration |
+| Working context | Short-term maintenance and updating of representations | Recurrent state equations |
+| Long-term adaptation | Experience-dependent synaptic plasticity | Hebbian-style or gradient-based updates |
+
+The relationship between prediction, attention and error signals remains an active scientific question. The 2026 review by Furutachi and Hofer emphasizes that apparently similar neural prediction-error responses may reflect different underlying computations. <Cite refs={["turn221898view0","turn113636search12"]}/>
+
+For this reason, ORE should make each mechanism switchable and experimentally distinguishable.
+
+### Research observations particularly relevant to N7
+
+<box gap={3}>
+  <row align=start gap={3}>
+    <AsyncImage query="human brain visual word recognition ventral occipitotemporal cortex scientific brain illustration" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Orthographic prediction**
+
+      Gagl and colleagues proposed that prior visual-orthographic knowledge can explain away predictable elements of a word's visual representation, leaving informative discrepancies. This is a useful model for the feedback direction between N7 and earlier ORE stages. <Cite refs={["turn221898view3"]}/>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="EEG N400 event related potential waveform scientific neuroscience graph" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Semantic prediction error**
+
+      The N400 is an experimentally studied brain response associated with processing meaningful linguistic input and its contextual relationships. A predictive-coding model of the N400 has been proposed, but N7's numerical semantic error must not be described as a measurement or simulation of the actual N400. <Cite refs={["turn113636search7","turn113636search2"]}/>
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="human brain EEG eye tracking reading research experiment" aspectRatio="1:1" maxWidth="104px"/>
+    <box flex="1" gap={1}>
+      **Graded linguistic prediction**
+
+      Research on reading supports flexible prediction, including anticipation of multiple possible word properties. Eye tracking and brain measurements are important for determining which predictive mechanisms operate in particular circumstances. <Cite refs={["turn221898view2","turn113636search5"]}/>
+    </box>
+  </row>
+</box>
+
+# 7. N7 input and output architecture
+
+We need to define the data exchanged between Python modules before implementation.
+
+## 7.1 N7 input contract
+
+Proposed input object:
+
+`N7Input`
+
+| Field | Meaning | Required? |
+|---|---|---|
+| `n6_result` | Existing N6 output | Yes |
+| `context_state` | Previous text and discourse memory | Yes, may be empty |
+| `script_profile` | Language and script configuration | Yes |
+| `lexical_provider` | Lexical candidate source | Optional |
+| `syntax_provider` | Grammatical predictions | Optional |
+| `semantic_provider` | Semantic relationships | Optional |
+| `discourse_provider` | Entity and discourse context | Optional |
+| `task_context` | Current processing objective | Optional |
+| `processing_mode` | Online or offline inference | Yes |
+| `calibration_config` | Precision and confidence settings | Yes |
+
+Each external provider must return its predicted alternatives, probabilities, reliability, and provenance. N7 must not invent context when no provider supplies it.
+
+## 7.2 N7 output contract
+
+Proposed output object:
+
+`N7Result`
+
+| Output | Contents |
+|---|---|
+| `original_evidence` | Unmodified N6 evidence |
+| `contextual_state` | Context before and after processing |
+| `orthographic_predictions` | Expected grapheme distributions |
+| `lexical_predictions` | Expected word distributions |
+| `syntactic_predictions` | Grammatical alternatives |
+| `semantic_predictions` | Semantic attributes and relationships |
+| `discourse_predictions` | Entities and referential hypotheses |
+| `precision_values` | Reliability estimates and gates |
+| `prediction_errors` | Separate mismatch channels |
+| `posterior_beliefs` | Updated interpretations |
+| `ranked_hypotheses` | Alternative interpretations |
+| `operation_trace` | All 72 operation records |
+| `diagnostics` | Numerical and integrity validation |
+| `metadata` | Model versions and provenance |
+
+A critical interface improvement is needed in N6 before N7 coding: N6 should expose the reference priors and candidate-level visual/orthographic evidence separately. Its current decoded posterior already incorporates N5 statistics. Separating those channels prevents accidentally counting the same orthographic prior twice.
+
+## 7.3 Proposed Python package structure
+
+I recommend a separate package rather than adding predictive processing to the existing N6 pipeline.
+
+This decomposition makes it possible to disable individual mechanisms and compare them experimentally.
+
+---
+
+# 8. Complete N7 execution algorithm
+
+The following pseudocode represents how all eight subsystems interact.
+
+<CodeBlock language="python" editable>
+def process_n7(request, config):
+    # A. Receive and preserve N6 information
+    validate_n7_request(request)
+    validate_n6_result(request.n6_result)
+    evidence = preserve_original_evidence(request.n6_result)
+
+    # Establish script, context and source provenance
+    script = validate_script_profile(request.script_profile)
+    providers = validate_context_providers(request)
+    memory = snapshot_context(request.context_state)
+
+    results = []
+
+    # Process recognized units incrementally
+    for unit in evidence.units:
+
+        # B. Construct contextual state
+        context = build_context(
+            memory=memory,
+            task=request.task_context,
+            mode=request.processing_mode,
+        )
+
+        # C. Construct hierarchical hypotheses
+        hypotheses = initialize_hypothesis_levels(
+            unit=unit,
+            context=context,
+            providers=providers,
+        )
+
+        # D. Generate top-down predictions
+        predictions = predict_hierarchical_levels(
+            hypotheses=hypotheses,
+            context=context,
+            script=script,
+        )
+
+        # E. Estimate uncertainty and precision
+        uncertainty = estimate_uncertainty(
+            evidence=unit,
+            predictions=predictions,
+        )
+
+        precision = calculate_precision(
+            uncertainty=uncertainty,
+            source_reliability=providers,
+        )
+
+        # F. Calculate prediction errors
+        errors = calculate_all_prediction_errors(
+            evidence=unit,
+            predictions=predictions,
+            precision=precision,
+        )
+
+        # G. Iteratively revise beliefs
+        beliefs = initialize_joint_beliefs(
+            evidence=unit,
+            predictions=predictions,
+        )
+
+        for iteration in range(config.max_iterations):
+            updated = revise_hierarchical_beliefs(
+                beliefs=beliefs,
+                predictions=predictions,
+                errors=errors,
+                precision=precision,
+            )
+
+            updated = apply_competitive_dynamics(updated)
+
+            if converged(beliefs, updated, config.tolerance):
+                beliefs = updated
+                break
+
+            beliefs = damped_update(
+                old=beliefs,
+                new=updated,
+                damping=config.damping,
+            )
+
+        # Determine acceptance and preserve alternatives
+        decision = evaluate_confidence_and_abstention(
+            beliefs=beliefs,
+            threshold=config.confidence_threshold,
+        )
+
+        # H. Update temporary contextual memory
+        memory = update_context_state(
+            memory=memory,
+            decision=decision,
+            confidence=decision.confidence,
+        )
+
+        results.append({
+            "predictions": predictions,
+            "errors": errors,
+            "precision": precision,
+            "beliefs": beliefs,
+            "decision": decision,
+            "context_after": memory,
+        })
+
+    # Validate provenance, traces and immutability
+    diagnostics = validate_n7_outputs(
+        original_evidence=evidence,
+        results=results,
+        context=memory,
+    )
+
+    return build_n7_result(
+        original_evidence=evidence,
+        results=results,
+        final_context=memory,
+        diagnostics=diagnostics,
+    )
+</CodeBlock>
+
+This is a control-flow specification, not finished executable code. The detailed numerical operations are those defined in the 72 steps above.
+
+# 9. Example of N7 in operation
+
+Consider the following sentence:
+
+> The scientist examined the cells under the ...
+
+Suppose the visual evidence for the final word is ambiguous.
+
+N6 provides two candidates:
+
+<box border radius="lg" padding={3} gap={3}>
+  **N6 incoming evidence**
+  <row align="center" justify="between">
+    Candidate: microscope
+
+    <title size="xl" color="success" tabularNums>0.55</title>
+  </row>
+  <box background="surface-tertiary" height="9px" radius="full" clip>
+    <box background="#16A34A" height="9px" width="55%" radius="full"/>
+  </box>
+  <row align="center" justify="between">
+    Candidate: micro... (alternative)
+
+    <title size="xl" tabularNums>0.45</title>
+  </row>
+  <box background="surface-tertiary" height="9px" radius="full" clip>
+    <box background="#D97706" height="9px" width="45%" radius="full"/>
+  </box>
+  <divider color="subtle"/>
+  **N7 contextual predictions**
+
+  | Signal | Expected interpretation |
+  |---|---|
+  | Domain | Biology |
+  | Subject | Cells |
+  | Action | Examination |
+  | Semantic context | Scientific observation |
+  | Lexical expectation | Microscope |
+  <divider color="subtle"/>
+  **N7 revised beliefs**
+
+  <badge color="success">Illustrative result</badge>
+
+  | Candidate | Updated probability |
+  |---|---:|
+  | microscope | 0.75 |
+  | alternative | 0.25 |
+
+  <text color="secondary" size="xs">Illustrative probabilities, not measured biological values or an empirical N7 result.</text>
+</box>
+
+Now consider a different situation.
+
+The visual evidence strongly supports a rare scientific word, but the context favors a common word.
+
+In this situation, N7 must preserve the rare word because visual reliability is high.
+
+This illustrates the central objective of N7:
+
+**Context should resolve genuine uncertainty, not manufacture a different visual observation.**
+
+---
+
+# 10. Testing and scientific acceptance
+
+N7 should have its own acceptance criteria, separate from the existing N1–N6 tests.
+
+## 10.1 Software tests
+
+| Test | Expected result |
+|---|---|
+| N6 input without contextual sources | Valid processing with neutral contextual influence |
+| Ambiguous visual word with useful context | Context can improve candidate ranking |
+| Clear visual word conflicting with context | Strong visual evidence remains influential |
+| Multiple semantic interpretations | Multiple hypotheses preserved |
+| Unknown word or proper name | No forced replacement with a common word |
+| Incorrect contextual source | Reduced influence according to calibrated reliability |
+| Long discourse | Previous context influences subsequent interpretations |
+| Context decay | Remote information has adjustable influence |
+| Online mode | No future-text leakage |
+| Arabic input | Correct reading direction and grapheme handling |
+| Repeated identical experiment | Reproducible results |
+| N5/N6 integrity | Original models and recognition evidence unchanged |
+
+## 10.2 Experimental comparisons
+
+Run the following conditions on identical samples:
+
+<box border radius="lg" padding={3} gap={2}>
+  **N7 experimental conditions**
+
+  <row align="center" justify="between">
+    **Experiment A — N6 alone**
+    <badge>Baseline</badge>
+  </row>
+  Visual and orthographic recognition without N7 context.
+
+  <divider color="subtle"/>
+  **Experiment B — N7 lexical context**
+
+  Add word-frequency and local lexical predictions.
+
+  <divider color="subtle"/>
+  **Experiment C — N7 syntactic context**
+
+  Add grammatical predictions.
+
+  <divider color="subtle"/>
+  **Experiment D — N7 semantic context**
+
+  Add semantic attributes and relationships.
+
+  <divider color="subtle"/>
+  **Experiment E — N7 complete hierarchy**
+
+  Integrate all available contextual channels.
+
+  <divider color="subtle"/>
+  **Experiment F — N7 without precision control**
+
+  Determine whether removing precision modulation causes excessive contextual correction.
+
+  <divider color="subtle"/>
+  **Experiment G — N7 without prediction-error feedback**
+
+  Determine whether iterative error-based revision adds an improvement beyond simple contextual reranking.
+</box>
+
+## 10.3 Metrics
+
+Measure:
+
+- Character error rate (CER).
+- Word error rate (WER).
+- Top-1 and top-k recognition accuracy.
+- Negative log-likelihood.
+- Brier score.
+- Expected calibration error.
+- False contextual correction rate.
+- Accuracy under visual degradation.
+- Confidence versus actual accuracy.
+- Performance on unfamiliar words.
+- Processing time.
+
+Especially important is the **false contextual correction rate**:
+
+\[
+FCR=
+\frac{
+\text{correct visual interpretations changed incorrectly by context}
+}{
+\text{correct visual interpretations exposed to contextual influence}
+}
+\]
+
+This metric should be measured separately under high- and low-quality visual conditions.
+
+## 10.4 Biological validation
+
+Software success is not biological validation.
+
+To establish correspondence with brain mechanisms, N7 would eventually need independently designed experiments involving behavioral measurements and, where possible, EEG, MEG, fMRI or other appropriate neural data.
+
+For example, an N400-inspired prediction-error variable should be compared with actual EEG measurements rather than simply assigned an N400 label.
+
+A useful additional requirement comes from the September 2026 work on testable predictive-processing explanations: every predictive mechanism should specify what it predicts, its timescale, its measurable error signal, its uncertainty model, its information pathway and a result that could distinguish it from alternative explanations. <Cite refs={["turn113636search12","turn221898view0"]}/>
+
+---
+
+# 11. Final N7 architecture and its boundaries
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">ORE N7 — Predictive and contextual processing</title>
+  <title size="2xl" color="success" tabularNums>72 operations</title>
+  <text color="secondary" size="xs">Proposed architectural specification</text>
+  <divider color="subtle"/>
+  | Subsystem | Operations |
+  |---|---:|
+  | A. Input and evidence separation | 1–9 |
+  | B. Contextual state | 10–18 |
+  | C. Hierarchical generative model | 19–27 |
+  | D. Top-down prediction | 28–36 |
+  | E. Uncertainty and precision | 37–45 |
+  | F. Prediction-error generation | 46–54 |
+  | G. Belief revision | 55–63 |
+  | H. Memory and output | 64–72 |
+</box>
+
+### What N7 will add to ORE
+
+After implementation, the intended architectural capabilities would be:
+
+1. Recognition informed by preceding and surrounding linguistic context.
+2. Predictive activation of possible upcoming words and graphemes.
+3. Hierarchical integration of lexical, syntactic, semantic and discourse information.
+4. Multiple prediction-error channels.
+5. Reliability-sensitive contextual influence.
+6. Iterative belief revision and competitive hypothesis selection.
+7. Contextual memory that changes as text is processed.
+8. Explicit uncertainty and interpretable processing traces.
+
+### What N7 will not automatically accomplish
+
+It will not, simply by implementing these 72 operations:
+
+- Reproduce all cortical predictive-coding mechanisms.
+- Simulate the full biological reading network.
+- Achieve general language understanding.
+- Establish that the brain calculates exact Bayesian or free-energy equations.
+- Guarantee that contextual interpretations are correct.
+
+Those are separate scientific objectives.
+
+### One important roadmap adjustment
+
+Your saved roadmap currently identifies N7 as the Stage A bridge and repeatable demo, and N8 as independent scientific validation. <FileCite ref_id="turn57file6"/>
+
+With your new definition, I recommend treating the existing Stage A bridge as a separate integration adapter, preserving its work, and making predictive/contextual processing the new N7. N8 should remain the independent validation phase.
+
+**My recommended development direction:** Do not begin by implementing all 72 operations as one enormous Python file. Implement the eight subsystems as independently testable modules, with a shared N7 controller and a complete operation trace. This will make it possible to discover which predictive mechanisms genuinely improve ORE rather than merely making its outputs look more plausible.
+
+The result is an N7 architecture that attempts to move ORE from recognizing written sequences to continuously predicting, comparing, revising and contextualizing their interpretation.
+
+---
+
+[ASSISTANT]
+# 9. Example of N7 in operation
+
+Consider the following sentence:
+
+> The scientist examined the cells under the ...
+
+Suppose the visual evidence for the final word is ambiguous.
+
+N6 provides two candidates:
+
+<box border radius="lg" padding={3} gap={3}>
+  **N6 incoming evidence**
+  <row align="center" justify="between">
+    Candidate: microscope
+
+    <title size="xl" color="success" tabularNums>0.55</title>
+  </row>
+  <box background="surface-tertiary" height="9px" radius="full" clip>
+    <box background="#16A34A" height="9px" width="55%" radius="full"/>
+  </box>
+  <row align="center" justify="between">
+    Candidate: micro... (alternative)
+
+    <title size="xl" tabularNums>0.45</title>
+  </row>
+  <box background="surface-tertiary" height="9px" radius="full" clip>
+    <box background="#D97706" height="9px" width="45%" radius="full"/>
+  </box>
+  <divider color="subtle"/>
+  **N7 contextual predictions**
+
+  | Signal | Expected interpretation |
+  |---|---|
+  | Domain | Biology |
+  | Subject | Cells |
+  | Action | Examination |
+  | Semantic context | Scientific observation |
+  | Lexical expectation | Microscope |
+  <divider color="subtle"/>
+  **N7 revised beliefs**
+
+  <badge color="success">Illustrative result</badge>
+
+  | Candidate | Updated probability |
+  |---|---:|
+  | microscope | 0.75 |
+  | alternative | 0.25 |
+
+  <text color="secondary" size="xs">Illustrative probabilities, not measured biological values or an empirical N7 result.</text>
+</box>
+
+Now consider a different situation.
+
+The visual evidence strongly supports a rare scientific word, but the context favors a common word.
+
+In this situation, N7 must preserve the rare word because visual reliability is high.
+
+This illustrates the central objective of N7:
+
+**Context should resolve genuine uncertainty, not manufacture a different visual observation.**
+
+---
+
+# 10. Testing and scientific acceptance
+
+N7 should have its own acceptance criteria, separate from the existing N1–N6 tests.
+
+## 10.1 Software tests
+
+| Test | Expected result |
+|---|---|
+| N6 input without contextual sources | Valid processing with neutral contextual influence |
+| Ambiguous visual word with useful context | Context can improve candidate ranking |
+| Clear visual word conflicting with context | Strong visual evidence remains influential |
+| Multiple semantic interpretations | Multiple hypotheses preserved |
+| Unknown word or proper name | No forced replacement with a common word |
+| Incorrect contextual source | Reduced influence according to calibrated reliability |
+| Long discourse | Previous context influences subsequent interpretations |
+| Context decay | Remote information has adjustable influence |
+| Online mode | No future-text leakage |
+| Arabic input | Correct reading direction and grapheme handling |
+| Repeated identical experiment | Reproducible results |
+| N5/N6 integrity | Original models and recognition evidence unchanged |
+
+## 10.2 Experimental comparisons
+
+Run the following conditions on identical samples:
+
+<box border radius="lg" padding={3} gap={2}>
+  **N7 experimental conditions**
+
+  <row align="center" justify="between">
+    **Experiment A — N6 alone**
+    <badge>Baseline</badge>
+  </row>
+  Visual and orthographic recognition without N7 context.
+
+  <divider color="subtle"/>
+  **Experiment B — N7 lexical context**
+
+  Add word-frequency and local lexical predictions.
+
+  <divider color="subtle"/>
+  **Experiment C — N7 syntactic context**
+
+  Add grammatical predictions.
+
+  <divider color="subtle"/>
+  **Experiment D — N7 semantic context**
+
+  Add semantic attributes and relationships.
+
+  <divider color="subtle"/>
+  **Experiment E — N7 complete hierarchy**
+
+  Integrate all available contextual channels.
+
+  <divider color="subtle"/>
+  **Experiment F — N7 without precision control**
+
+  Determine whether removing precision modulation causes excessive contextual correction.
+
+  <divider color="subtle"/>
+  **Experiment G — N7 without prediction-error feedback**
+
+  Determine whether iterative error-based revision adds an improvement beyond simple contextual reranking.
+</box>
+
+## 10.3 Metrics
+
+Measure:
+
+- Character error rate (CER).
+- Word error rate (WER).
+- Top-1 and top-k recognition accuracy.
+- Negative log-likelihood.
+- Brier score.
+- Expected calibration error.
+- False contextual correction rate.
+- Accuracy under visual degradation.
+- Confidence versus actual accuracy.
+- Performance on unfamiliar words.
+- Processing time.
+
+Especially important is the **false contextual correction rate**:
+
+\[
+FCR=
+\frac{
+\text{correct visual interpretations changed incorrectly by context}
+}{
+\text{correct visual interpretations exposed to contextual influence}
+}
+\]
+
+This metric should be measured separately under high- and low-quality visual conditions.
+
+## 10.4 Biological validation
+
+Software success is not biological validation.
+
+To establish correspondence with brain mechanisms, N7 would eventually need independently designed experiments involving behavioral measurements and, where possible, EEG, MEG, fMRI or other appropriate neural data.
+
+For example, an N400-inspired prediction-error variable should be compared with actual EEG measurements rather than simply assigned an N400 label.
+
+A useful additional requirement comes from the September 2026 work on testable predictive-processing explanations: every predictive mechanism should specify what it predicts, its timescale, its measurable error signal, its uncertainty model, its information pathway and a result that could distinguish it from alternative explanations. <Cite refs={["turn113636search12","turn221898view0"]}/>
+
+---
+
+# 11. Final N7 architecture and its boundaries
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">ORE N7 — Predictive and contextual processing</title>
+  <title size="2xl" color="success" tabularNums>72 operations</title>
+  <text color="secondary" size="xs">Proposed architectural specification</text>
+  <divider color="subtle"/>
+  | Subsystem | Operations |
+  |---|---:|
+  | A. Input and evidence separation | 1–9 |
+  | B. Contextual state | 10–18 |
+  | C. Hierarchical generative model | 19–27 |
+  | D. Top-down prediction | 28–36 |
+  | E. Uncertainty and precision | 37–45 |
+  | F. Prediction-error generation | 46–54 |
+  | G. Belief revision | 55–63 |
+  | H. Memory and output | 64–72 |
+</box>
+
+### What N7 will add to ORE
+
+After implementation, the intended architectural capabilities would be:
+
+1. Recognition informed by preceding and surrounding linguistic context.
+2. Predictive activation of possible upcoming words and graphemes.
+3. Hierarchical integration of lexical, syntactic, semantic and discourse information.
+4. Multiple prediction-error channels.
+5. Reliability-sensitive contextual influence.
+6. Iterative belief revision and competitive hypothesis selection.
+7. Contextual memory that changes as text is processed.
+8. Explicit uncertainty and interpretable processing traces.
+
+### What N7 will not automatically accomplish
+
+It will not, simply by implementing these 72 operations:
+
+- Reproduce all cortical predictive-coding mechanisms.
+- Simulate the full biological reading network.
+- Achieve general language understanding.
+- Establish that the brain calculates exact Bayesian or free-energy equations.
+- Guarantee that contextual interpretations are correct.
+
+Those are separate scientific objectives.
+
+### One important roadmap adjustment
+
+Your saved roadmap currently identifies N7 as the Stage A bridge and repeatable demo, and N8 as independent scientific validation. <FileCite ref_id="turn57file6"/>
+
+With your new definition, I recommend treating the existing Stage A bridge as a separate integration adapter, preserving its work, and making predictive/contextual processing the new N7. N8 should remain the independent validation phase.
+
+**My recommended development direction:** Do not begin by implementing all 72 operations as one enormous Python file. Implement the eight subsystems as independently testable modules, with a shared N7 controller and a complete operation trace. This will make it possible to discover which predictive mechanisms genuinely improve ORE rather than merely making its outputs look more plausible.
+
+The result is an N7 architecture that attempts to move ORE from recognizing written sequences to continuously predicting, comparing, revising and contextualizing their interpretation.

@@ -1,0 +1,1108 @@
+Title: ORE Resource Coordination Algorithm
+Conversation ID: 6aff315c-d8a0-83ea-919c-f3d3134fe2ed
+
+---
+
+[USER]
+Create an algorithm for implementing the following task from our previous chat "ORE Integration Plan." [https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416](https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416): &#x20;
+
+## **Task 7. Teach the brain to coordinate its own resources**
+
+Priority 7
+
+This is an advanced but important capability.
+
+Not every cognitive structure should participate in every task.
+
+For example:
+
+When recognizing a familiar word, ORE might need only visual recognition and lexical access.
+
+When interpreting a complex metaphor, it might require:
+
+- Lexical access.
+- Semantic composition.
+- Contextual interpretation.
+- Analogical transfer.
+- Semantic memory.
+- Working memory.
+- Cognitive control.
+
+The coordinator should select modules based on:
+
+- Task requirements.
+- Uncertainty.
+- Information availability.
+- Computational cost.
+- Previous processing failures.
+- Expected information gain.
+
+This is comparable to attention and resource allocation in biological systems.
+
+It prevents unnecessary processing and reduces the computational burden.
+
+---
+
+[ASSISTANT]
+# Task 7 — Teach ORE to coordinate its own cognitive resources
+
+<badge color="info">Priority 7</badge> <badge color="success">Implementation algorithm designed</badge>
+
+## 1. Objective
+
+The objective is to give ORE the ability to decide:
+
+1. Which cognitive modules are needed for the current task?
+2. Which modules should remain inactive?
+3. Which modules should receive information first?
+4. When should additional modules be recruited?
+5. When should processing stop?
+6. How should previous successes and failures influence future module selection?
+
+The central idea is to transform ORE from a system in which modules are simply connected into a system that **dynamically organizes its own computational resources according to the problem it is solving.**
+
+For example:
+
+<box border radius="lg" gap={3} padding={3}>
+  **Task A: Recognize a familiar word**
+
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Visual processing
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Orthographic recognition
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Lexical access
+  </row>
+  <divider color="subtle"/>
+  <row align="center" gap={2}>
+    <badge color="secondary">Not needed</badge>
+    Analogical reasoning
+  </row>
+  <row align="center" gap={2}>
+    <badge color="secondary">Not needed</badge>
+    Mentalizing
+  </row>
+  <row align="center" gap={2}>
+    <badge color="secondary">Not needed</badge>
+    Complex semantic reasoning
+  </row>
+  <text color="secondary" size="xs">The coordinator stops when the recognition objective is satisfied.</text>
+</box>
+<box border radius="lg" gap={3} padding={3}>
+  **Task B: Interpret a complex metaphor**
+
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Lexical access
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Semantic composition
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Contextual interpretation
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Analogical reasoning
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Semantic memory
+  </row>
+  <row align="center" gap={2}>
+    <badge color="success">Activated</badge>
+    Working memory
+  </row>
+  <row align="center" gap={2}>
+    <badge color="warning">Conditional</badge>
+    Executive control
+  </row>
+  <text color="secondary" size="xs">Executive control is recruited according to ambiguity, uncertainty and competing interpretations.</text>
+</box>
+
+The system should not have one permanently activated collection of modules. Its active network should change with the task.
+
+---
+
+# 2. Architectural placement in ORE
+
+I inspected the current repository architecture, particularly the following existing components:
+
+| Existing component | Responsibility |
+|---|---|
+| `ModuleRegistry` | Registers modules, capabilities and executable backends |
+| `ModuleManifest` | Describes module inputs, outputs, dependencies and capabilities |
+| `CompatibilityValidator` | Checks whether module connections are compatible |
+| `OREModuleProtocol` | Defines the standardized module execution interface |
+| `ModuleResult` | Standardizes module execution results |
+| `RunContext` | Supplies execution mode, deterministic seed and computational budget |
+| `CanonicalOREController` | Coordinates canonical functional, biological and hybrid execution |
+| `SQLiteModuleEventLogger` | Records registry events in the existing SQLite logging infrastructure |
+
+These are valuable foundations.
+
+Relevant source files:
+
+- [`ore_contracts/module_registry.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_registry.py)
+- [`ore_contracts/module_manifest.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_manifest.py)
+- [`ore_contracts/module_compatibility.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_compatibility.py)
+- [`ore_contracts/module_protocol.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_protocol.py)
+- [`ore_contracts/integration.py`](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/integration.py)
+
+There is, however, an important missing capability.
+
+The existing `ModuleRegistry` can identify which modules possess a capability and whether their backends are runnable. It does not itself determine which combination of capabilities is appropriate for a particular cognitive task.
+
+Similarly, the existing `CanonicalOREController` handles explicit execution modes, including sequential canonical biological-phase execution. It is not yet an adaptive, task-specific resource scheduler.
+
+**Task 7 should introduce an adaptive resource coordinator on top of the existing module infrastructure.**
+
+Proposed architecture:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **Cognitive Task / External Request**
+    <text color="secondary" size="xs">What does ORE need to accomplish?</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box border={{size:1,color:"#3984D6"}} radius="md" padding={3} gap={2}>
+    **Adaptive Resource Coordinator**
+    <text color="secondary" size="xs">New component proposed by Task 7</text>
+    <grid columns={2} gap={2}>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2}>
+          <text weight="medium" size="sm" textAlign="center">Task analysis</text>
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2}>
+          <text weight="medium" size="sm" textAlign="center">Uncertainty estimation</text>
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2}>
+          <text weight="medium" size="sm" textAlign="center">Capability discovery</text>
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2}>
+          <text weight="medium" size="sm" textAlign="center">Cost estimation</text>
+        </box>
+      </grid-item>
+      <grid-item span={2}>
+        <box background="surface-secondary" radius="md" padding={2}>
+          <text weight="medium" size="sm" textAlign="center">Dynamic module selection and scheduling</text>
+        </box>
+      </grid-item>
+    </grid>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **Existing ORE Module Registry**
+    <text color="secondary" size="xs">Finds and validates executable modules</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box border radius="md" padding={3} gap={2}>
+    **Selected Cognitive Modules**
+    <grid columns={2} gap={2}>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2} align="center">
+          Vision
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2} align="center">
+          Language
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2} align="center">
+          Memory
+        </box>
+      </grid-item>
+      <grid-item>
+        <box background="surface-secondary" radius="md" padding={2} align="center">
+          Reasoning
+        </box>
+      </grid-item>
+    </grid>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **Shared Workspace**
+    <text color="secondary" size="xs">Exchange validated artifacts and intermediate results</text>
+  </box>
+  <box align="center">
+    <icon name="refresh-cw" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(234,179,8,0.09)" radius="md" padding={3} align="center">
+    **Feedback to Coordinator**
+    <text color="secondary" size="xs">Evaluate progress, update uncertainty and recruit additional resources when necessary</text>
+  </box>
+</box>
+
+The coordinator should not replace the existing processors or canonical B-N9 controller. It should organize their available capabilities without changing their internal algorithms.
+
+---
+
+# 3. New data structures
+
+Before implementing the algorithm, introduce several small data structures.
+
+### 3.1 TaskProfile
+
+Describes what the current task requires.
+
+Example task profile:
+
+This is only an illustrative profile. Actual capability identifiers must correspond to registered ORE capabilities.
+
+### 3.2 ModuleResourceEstimate
+
+Describes the estimated computational cost and expected usefulness of a module.
+
+The source field is important.
+
+An estimate can come from:
+
+- Previous measured executions.
+- Explicit backend estimates.
+- An initial engineering assumption.
+
+ORE must distinguish measured information from assumptions.
+
+### 3.3 ResourceDecision
+
+Records why the coordinator selected or rejected a module.
+
+### 3.4 ResourceExecutionPlan
+
+Represents the resulting execution plan.
+
+These structures provide the coordinator with an explicit representation of its decisions rather than leaving module selection hidden inside execution code.
+
+---
+
+# 4. The main algorithm
+
+I recommend implementing Task 7 through twelve operations.
+
+## Operation 1. Understand the current task
+
+**Purpose:** Determine what ORE is trying to achieve before activating any modules.
+
+Input:
+
+- User request or internal cognitive objective.
+- Existing task context.
+- Available information.
+- Current execution mode.
+
+Procedure:
+
+1. Receive the task.
+2. Identify its task family.
+3. Identify the expected output.
+4. Retrieve its capability requirements from a task-profile registry.
+5. Assign priorities to those requirements.
+6. Determine which requirements are mandatory.
+7. Identify the conditions under which the task is considered complete.
+
+For example:
+
+The coordinator does not have to discover these requirements from scratch every time. It can initially retrieve predefined task templates and later improve them using execution history.
+
+**Output:** `TaskProfile`.
+
+## Operation 2. Inspect the shared cognitive workspace
+
+**Purpose:** Determine which information and representations are already available.
+
+ORE should not activate modules simply to reproduce information that another module has already generated.
+
+The coordinator examines the shared workspace for:
+
+- Validated input artifacts.
+- Previous module outputs.
+- Current interpretations.
+- Available memory representations.
+- Their provenance.
+- Their confidence or uncertainty.
+- Their contract compatibility.
+- Their timestamps and relevance to the current task.
+
+For every task capability, estimate its present support.
+
+Define:
+
+\[
+S_c \in [0,1]
+\]
+
+Where \(S_c\) represents the current confidence or support for capability \(c\).
+
+For example:
+
+| Capability | Current support |
+|---|---:|
+| Visual recognition | 0.99 |
+| Lexical access | 0.96 |
+| Semantic composition | 0.00 |
+| Contextual interpretation | 0.00 |
+| Analogical transfer | 0.00 |
+
+This indicates that activating another visual recognition module is probably unnecessary.
+
+**Output:** Current cognitive state and available artifact inventory.
+
+## Operation 3. Calculate unmet cognitive requirements
+
+**Purpose:** Determine which capabilities still need computational support.
+
+For each capability, compare its current support with its required confidence.
+
+Define:
+
+\[
+D_c=w_c\max(0,T_c-S_c)
+\]
+
+Where:
+
+- \(D_c\): remaining demand.
+- \(w_c\): task priority.
+- \(T_c\): target confidence.
+- \(S_c\): current support.
+
+The coordinator prioritizes capabilities with larger remaining demand.
+
+Example:
+
+| Capability | Target | Current | Priority | Remaining demand |
+|---|---:|---:|---:|---:|
+| Lexical access | 0.90 | 0.96 | 0.9 | 0 |
+| Semantic composition | 0.90 | 0.40 | 1.0 | 0.50 |
+| Context interpretation | 0.85 | 0.20 | 0.9 | 0.585 |
+| Analogical transfer | 0.80 | 0.10 | 0.8 | 0.56 |
+
+Semantic composition, contextual interpretation and analogical transfer deserve attention.
+
+Lexical access does not need to be repeated.
+
+**Output:** Prioritized list of unmet cognitive capabilities.
+
+## Operation 4. Discover suitable modules
+
+**Purpose:** Find modules capable of satisfying the unmet requirements.
+
+This is where ORE's existing `ModuleRegistry` becomes particularly useful.
+
+For each unmet capability:
+
+1. Call `ModuleRegistry.find_by_capability()`.
+2. Retrieve the corresponding manifests.
+3. Check whether a backend is bound.
+4. Check whether it has passed binding validation.
+5. Check whether it is enabled.
+6. Check its required dependencies.
+7. Verify that its execution mode is compatible with the current `RunContext`.
+
+A candidate must not be considered executable simply because its manifest declares a capability.
+
+It must have a validated, available backend.
+
+The coordinator then uses the `CompatibilityValidator` to determine whether the required input artifacts can actually be supplied to that module.
+
+Possible candidate statuses:
+
+Explicit contract converters may be used when necessary. The coordinator must never assume that two similarly named data structures are interchangeable.
+
+**Output:** Executable candidate-module collection.
+
+## Operation 5. Estimate uncertainty and information needs
+
+**Purpose:** Determine whether the current cognitive state needs additional processing.
+
+An important feature of this algorithm is that uncertainty should influence module recruitment.
+
+Suppose ORE receives two interpretations:
+
+The interpretations compete closely.
+
+However:
+
+The decision is much less uncertain.
+
+For a probability distribution containing \(K\) candidates, normalized entropy is:
+
+\[
+H(P)=
+\frac{-\sum_{i=1}^{K}p_i\ln(p_i)}
+{\ln K}
+\]
+
+Where:
+
+\[
+0\leq H(P)\leq1
+\]
+
+Higher entropy means greater uncertainty.
+
+The coordinator should examine uncertainty in individual representations rather than relying exclusively on one global confidence score.
+
+For example:
+
+- Visual uncertainty may require additional visual processing.
+- Lexical uncertainty may require lexical alternatives.
+- Semantic uncertainty may require conceptual retrieval.
+- Contextual uncertainty may require discourse analysis.
+- Interpretive conflict may require executive control.
+
+This is important because the system should recruit the module that can address the particular uncertainty, not simply activate more modules.
+
+**Output:** Uncertainty profile and prioritized information needs.
+
+## Operation 6. Estimate the expected information gain of each candidate
+
+**Purpose:** Predict how much useful information a module can contribute.
+
+The theoretical measure is expected information gain:
+
+\[
+EIG(m)=H(B)-
+\mathbb{E}_{o\sim P(o|m,B)}
+[H(B|o,m)]
+\]
+
+Where:
+
+- \(B\): current cognitive beliefs.
+- \(m\): candidate module.
+- \(o\): possible module output.
+- \(H(B)\): current uncertainty.
+- \(H(B|o,m)\): expected uncertainty after receiving the module's output.
+
+A module is attractive when its expected output is likely to reduce relevant uncertainty.
+
+However, there is an important implementation distinction.
+
+ORE does not necessarily have calibrated outcome distributions for every module. Therefore:
+
+**Version 1:** Estimate information gain using historical results, capability relevance and measured uncertainty reduction.
+
+**Later versions:** Introduce calibrated predictive models capable of estimating actual expected information gain.
+
+Every estimate must record its source so that a heuristic estimate is never presented as measured or mathematically established information gain.
+
+Example:
+
+| Candidate module | Expected information gain |
+|---|---:|
+| Another visual recognition module | 0.03 |
+| Semantic retrieval | 0.72 |
+| Analogical reasoning | 0.85 |
+| Unrelated phonological analysis | 0.04 |
+
+The coordinator should favor semantic retrieval or analogy in this example.
+
+**Output:** Expected information gain for each candidate.
+
+## Operation 7. Estimate computational costs
+
+**Purpose:** Avoid wasting computational resources.
+
+For each candidate, estimate:
+
+- Processing time.
+- Memory consumption.
+- CPU requirements.
+- Expected number of recurrent iterations.
+- Additional modules required by its dependencies.
+
+Use previous executions to build cost estimates.
+
+A simple moving-average update is:
+
+\[
+C_{new}=
+\alpha C_{measured}
++(1-\alpha)C_{previous}
+\]
+
+Where:
+
+\[
+0<\alpha\leq1
+\]
+
+For example:
+
+- Previous execution estimate: 200 ms.
+- New measured execution: 300 ms.
+- Learning rate: 0.2.
+
+Then:
+
+\[
+C_{new}=0.2(300)+0.8(200)=220\text{ ms}
+\]
+
+The coordinator can use the updated estimate for subsequent decisions.
+
+When no historical measurements exist, it should use a conservative declared estimate rather than treating unknown costs as zero.
+
+The existing `ComputeBudget` within ORE's `RunContext` should supply the main execution constraints.
+
+**Output:** Updated cost estimate for every candidate.
+
+## Operation 8. Calculate module-selection scores
+
+**Purpose:** Rank candidate modules according to their expected value.
+
+This is the central mathematical operation of Task 7.
+
+Define the following variables for candidate module \(m\):
+
+| Variable | Meaning |
+|---|---|
+| \(G_m\) | Expected reduction in unmet cognitive requirements |
+| \(I_m\) | Expected information gain |
+| \(P_m\) | Estimated probability of successful execution |
+| \(C_m\) | Normalized computational cost |
+| \(F_m\) | Penalty from relevant previous failures |
+
+First calculate expected utility:
+
+\[
+U_m=
+P_m(G_m+\lambda_I I_m)
+\]
+
+Then calculate the final selection score:
+
+\[
+\boxed{
+Score_m=
+\frac{U_m}{\epsilon+C_m}
+-\lambda_F F_m
+}
+\]
+
+Where:
+
+- \(\lambda_I\): Importance of information gain.
+- \(\lambda_F\): Importance of previous failures.
+- \(\epsilon\): Small positive constant to avoid division by zero.
+
+The score favors modules that:
+
+1. Address important unmet requirements.
+2. Are likely to provide useful new information.
+3. Have historically reliable execution.
+4. Have relatively low computational costs.
+5. Have not repeatedly failed on comparable tasks.
+
+### Estimating previous reliability
+
+A useful first approach is a Beta-Bernoulli model.
+
+Initialize each module with:
+
+\[
+\alpha=2,\qquad\beta=2
+\]
+
+For each successful execution:
+
+\[
+\alpha\leftarrow\alpha+1
+\]
+
+For each failed execution:
+
+\[
+\beta\leftarrow\beta+1
+\]
+
+The estimated success probability becomes:
+
+\[
+P_m=\frac{\alpha}{\alpha+\beta}
+\]
+
+This gives ORE a simple mechanism for learning which modules are reliable.
+
+Statistics should be maintained separately for relevant task families and backend versions where sufficient observations exist.
+
+Repeated failures can additionally trigger a temporary circuit breaker, preventing repeated expensive attempts.
+
+**Output:** Ranked candidate modules with explanations.
+
+## Operation 9. Select the optimal module combination
+
+**Purpose:** Select a sufficient combination of modules rather than activating every high-scoring candidate.
+
+Selecting modules independently is insufficient.
+
+For example:
+
+- Module A provides contextual retrieval.
+- Module B provides semantic composition.
+- Module C provides analogical transfer.
+- Module D duplicates the same contextual retrieval as A.
+
+Selecting A and D may waste resources.
+
+Therefore, the coordinator should use a greedy marginal-utility selection algorithm.
+
+Procedure:
+
+1. Start with an empty selected-module set.
+2. Identify all unmet cognitive requirements.
+3. Calculate each candidate's marginal contribution to those requirements.
+4. Estimate dependency costs.
+5. Reject candidates that exceed the remaining resource budget.
+6. Select the candidate with the highest marginal utility per cost.
+7. Update the remaining requirements.
+8. Recalculate candidate scores.
+9. Repeat until the stopping conditions are satisfied.
+
+This avoids selecting two modules that offer almost identical information when one is sufficient.
+
+### Dependency handling
+
+If a selected module requires another module, the coordinator must include that dependency when constructing the execution plan.
+
+Use the existing manifest dependency information and the compatibility validator to establish executable connections.
+
+Create a directed acyclic execution graph where possible.
+
+For example:
+
+Independent modules can potentially execute concurrently, but parallel execution should only be permitted when their backends are explicitly considered safe for concurrent execution.
+
+**Output:** Selected module combination and execution graph.
+
+## Operation 10. Execute the selected modules
+
+**Purpose:** Carry out the plan while preserving communication and evidence integrity.
+
+For each scheduled module:
+
+1. Retrieve its registered backend.
+2. Gather required artifacts from the shared workspace.
+3. Validate input contracts.
+4. Supply the current `RunContext`.
+5. Execute through `OREModuleProtocol.execute()`.
+6. Receive a standardized `ModuleResult`.
+7. Validate produced artifacts.
+8. Preserve provenance and content hashes.
+9. Publish successful outputs into the shared workspace.
+10. Update the execution trace.
+
+The coordinator must recognize the existing module-result statuses:
+
+For example, an unavailable analogical-reasoning module should not cause ORE to pretend that analogical processing occurred.
+
+It should record the missing capability and evaluate whether another available module can provide an acceptable alternative.
+
+**Output:** Validated module results and updated cognitive workspace.
+
+## Operation 11. Evaluate progress and recruit additional resources
+
+**Purpose:** Give ORE the ability to change its own execution plan based on intermediate results.
+
+After each execution stage:
+
+1. Retrieve new artifacts.
+2. Recalculate relevant uncertainty.
+3. Update capability support.
+4. Check whether required task objectives have been satisfied.
+5. Check whether additional processing would provide useful information.
+6. Check remaining computational resources.
+
+For example:
+
+The coordinator stops after analogical transfer.
+
+It does not activate additional reasoning modules because the task's acceptance criteria have been achieved.
+
+If a module fails, it updates the reliability statistics and searches for another compatible implementation.
+
+The system must also impose a maximum retry count to prevent endless recruitment cycles.
+
+**Output:** Updated execution plan or completed task.
+
+## Operation 12. Consolidate resource-selection experience
+
+**Purpose:** Make ORE progressively better at selecting its resources.
+
+At the end of each task, record:
+
+- Task family.
+- Task requirements.
+- Available modules.
+- Selected modules.
+- Rejected modules.
+- Selection scores.
+- Estimated costs.
+- Actual costs.
+- Execution results.
+- Uncertainty before and after execution.
+- Whether the task succeeded.
+- Whether module recruitment was useful.
+
+These records can be used to update the coordinator's resource estimates and selection policy.
+
+For example:
+
+Future metaphor tasks can benefit from these observations.
+
+Importantly, this learning concerns resource-allocation decisions. It does not authorize the coordinator to modify the underlying cognitive modules or their learned models.
+
+Learning and model modification must continue to obey ORE's existing governance and authorization rules.
+
+**Output:** Updated resource-selection history.
+
+---
+
+# 5. Complete algorithm pseudocode
+
+The twelve operations can now be assembled into one algorithm.
+
+This is architectural pseudocode rather than a drop-in implementation. The individual methods need concrete contracts and exception handling during development.
+
+---
+
+# 6. How the coordinator should make decisions
+
+Consider two different tasks.
+
+<text weight="semibold" size="sm">Scenario A — Recognizing the word "Apple"</text>
+
+<box border radius="lg" padding={3} gap={2}>
+  <text color="secondary" size="xs">SIMULATED INITIAL STATE</text>
+  <title size="2xl" color="success" tabularNums>0.96</title>
+  <text color="secondary" size="xs">Lexical recognition confidence</text>
+  <divider color="subtle"/>
+  <text weight="medium" size="sm">Coordinator decisions</text>
+  <row justify="between">
+    Visual processing
+
+    <badge color="success">Select</badge>
+  </row>
+  <row justify="between">
+    Orthographic recognition
+
+    <badge color="success">Select</badge>
+  </row>
+  <row justify="between">
+    Lexical access
+
+    <badge color="success">Select</badge>
+  </row>
+  <row justify="between">
+    Semantic memory
+
+    <badge color="secondary">Skip</badge>
+  </row>
+  <row justify="between">
+    Analogical reasoning
+
+    <badge color="secondary">Skip</badge>
+  </row>
+  <row justify="between">
+    Complex contextual reasoning
+
+    <badge color="secondary">Skip</badge>
+  </row>
+  <divider color="subtle"/>
+  <badge color="success">Task completed</badge>
+  <text color="secondary" size="xs">A familiar-word recognition task does not automatically require deeper interpretation.</text>
+</box>
+
+<text weight="semibold" size="sm">Scenario B — Understanding "Time is a thief"</text>
+
+<box border radius="lg" padding={3} gap={2}>
+  **Initial interpretation**
+
+  Time is literally being treated as a person who steals.
+
+  <divider color="subtle"/>
+  **Coordinator evaluates uncertainty**
+
+  The literal interpretation does not adequately explain the expression.
+
+  <badge color="warning">Additional processing required</badge>
+  **New modules recruited**
+
+  <row align="center" justify="between">
+    Semantic composition
+    <badge color="success">Select</badge>
+  </row>
+  <row align="center" justify="between">
+    Contextual interpretation
+    <badge color="success">Select</badge>
+  </row>
+  <row align="center" justify="between">
+    Semantic memory
+    <badge color="success">Select</badge>
+  </row>
+  <row align="center" justify="between">
+    Analogical transfer
+    <badge color="success">Select</badge>
+  </row>
+  <row align="center" justify="between">
+    Working memory
+    <badge color="success">Select</badge>
+  </row>
+  <divider color="subtle"/>
+  **Updated interpretation**
+
+  Time consumes opportunities and removes experiences without literally stealing.
+
+  <badge color="success">Task completed</badge>
+</box>
+
+The important distinction is that the second task recruits additional resources because its initial interpretation is insufficient.
+
+---
+
+# 7. Proposed Python implementation structure
+
+I recommend introducing a new file rather than modifying all existing processors.
+
+<box border radius="lg" padding={3} gap={2}>
+  **Proposed repository structure**
+
+  <row align="center" gap={2}>
+    <icon name="folder" color="#D6A343"/>
+    **ore_contracts/**
+  </row>
+  <box padding={{left:4}} gap={2}>
+    <row align="center" gap={2}>
+      <icon name="file-code" color="#3984D6"/>
+      resource_coordination.py
+      <badge color="success">New</badge>
+    </row>
+    <text color="secondary" size="xs">Main adaptive coordinator and twelve operations.</text>
+    <row align="center" gap={2}>
+      <icon name="file-code" color="#3984D6"/>
+      resource_profiles.py
+      <badge color="success">New</badge>
+    </row>
+    <text color="secondary" size="xs">Task requirements, resource estimates and selection decisions.</text>
+    <row align="center" gap={2}>
+      <icon name="file-code"/>
+      module_registry.py
+      <badge color="info">Reuse</badge>
+    </row>
+    <row align="center" gap={2}>
+      <icon name="file-code"/>
+      module_compatibility.py
+      <badge color="info">Reuse</badge>
+    </row>
+    <row align="center" gap={2}>
+      <icon name="file-code"/>
+      module_protocol.py
+      <badge color="info">Reuse</badge>
+    </row>
+    <row align="center" gap={2}>
+      <icon name="file-code"/>
+      module_logging.py
+      <badge color="info">Reuse</badge>
+    </row>
+  </box>
+  <divider color="subtle"/>
+  <row align="center" gap={2}>
+    <icon name="folder" color="#D6A343"/>
+    **tests/**
+  </row>
+  <box padding={{left:4}}>
+    <row align="center" gap={2}>
+      <icon name="file-code" color="#3984D6"/>
+      test_resource_coordination.py
+      <badge color="success">New</badge>
+    </row>
+  </box>
+</box>
+
+### Proposed classes
+
+| Class | Responsibility |
+|---|---|
+| `AdaptiveResourceCoordinator` | Main decision-making system |
+| `TaskProfileRegistry` | Stores task requirements |
+| `CapabilityDemand` | Describes required capabilities |
+| `ModuleResourceEstimator` | Estimates execution cost |
+| `InformationGainEstimator` | Estimates potential uncertainty reduction |
+| `ModuleReliabilityTracker` | Learns module success/failure statistics |
+| `ResourceScorer` | Calculates selection scores |
+| `ExecutionPlanBuilder` | Builds dependency-aware execution plans |
+| `CoordinationResult` | Stores final decisions and results |
+
+### SQLite integration
+
+Reuse the existing `ore_logger` database:
+
+`ore_logs/ore_logger.sqlite3`
+
+All newly introduced classes, functions and methods should be registered in the existing `ore_logger.annotations` table.
+
+Each coordination run should also produce auditable events recording:
+
+- Candidate discovery.
+- Selection and rejection decisions.
+- Selection-score components.
+- Estimated and actual computational costs.
+- Module execution status.
+- Changes in uncertainty.
+- Recruitment and stopping decisions.
+
+Do not create another independent annotation database.
+
+---
+
+# 8. Testing algorithm
+
+The most important aspect is verifying that ORE does not simply execute more modules. It must choose the appropriate modules.
+
+I recommend the following acceptance tests.
+
+| Test | Expected behavior |
+|---|---|
+| Simple familiar-word recognition | Select only necessary recognition and lexical modules |
+| Complex metaphor | Recruit semantic, contextual and analogical capabilities |
+| High visual uncertainty | Prioritize appropriate visual-processing modules |
+| High semantic uncertainty | Prioritize semantic resources |
+| Module unavailable | Select a compatible alternative if available |
+| Module repeatedly fails | Reduce its priority or activate its circuit breaker |
+| High computational cost | Prefer a more efficient alternative |
+| Information already available | Avoid redundant module activation |
+| Required dependency missing | Reject or explicitly block the dependent execution |
+| Low expected information gain | Do not recruit unnecessary modules |
+| Budget exhausted | Stop without exceeding the defined budget |
+| Successful interpretation | Stop additional processing |
+
+Additional mathematical tests should verify:
+
+1. Entropy remains within its valid bounds.
+2. Selection scores remain finite.
+3. Reliability estimates remain between zero and one.
+4. Repeated failures influence future selection.
+5. Resource estimates respond correctly to measured costs.
+6. Identical deterministic inputs and history produce identical selection decisions.
+
+---
+
+# 9. Recommended implementation sequence
+
+Do not implement all twelve operations simultaneously. They should be introduced incrementally.
+
+<list connector="solid" marker="number" gap={2}>
+  <list-item>
+    **Phase 1 — Capability-based task requirements**
+
+    Create `TaskProfileRegistry` and the capability-demand data structures. Connect them to the existing `ModuleRegistry`.
+  </list-item>
+  <list-item>
+    **Phase 2 — Availability and compatibility filtering**
+
+    Implement discovery, backend availability checks, dependency checks and input-contract verification.
+  </list-item>
+  <list-item>
+    **Phase 3 — Uncertainty estimation**
+
+    Implement capability support and normalized entropy measurements.
+  </list-item>
+  <list-item>
+    **Phase 4 — Resource and reliability estimation**
+
+    Measure execution costs and maintain module-performance statistics.
+  </list-item>
+  <list-item>
+    **Phase 5 — Adaptive selection**
+
+    Implement expected information gain estimates, the selection score and greedy marginal-utility selection.
+  </list-item>
+  <list-item>
+    **Phase 6 — Dynamic execution**
+
+    Implement dependency-aware execution, workspace integration, intermediate evaluation and conditional module recruitment.
+  </list-item>
+  <list-item>
+    **Phase 7 — Learning and validation**
+
+    Add SQLite decision logging, historical resource updates, circuit breakers and the complete acceptance tests.
+  </list-item>
+</list>
+
+## 10. Important architectural safeguards
+
+There are five things I would preserve throughout implementation.
+
+**1. Never confuse capability declaration with actual availability.**
+
+A module may advertise a capability while having no executable backend. ORE must recognize that distinction.
+
+**2. Never fabricate information.**
+
+An unavailable semantic memory module cannot be treated as having supplied semantic knowledge.
+
+**3. Do not equate repeated activation with increased confidence.**
+
+A module should increase confidence only when its output contributes valid evidence.
+
+**4. Do not let resource selection bypass learning governance.**
+
+Selecting a learning-capable module does not authorize it to modify durable models.
+
+**5. Preserve the canonical biological architecture.**
+
+The adaptive coordinator should initially organize generic registered cognitive modules without silently skipping obligatory canonical B-N1–B-N7 processing steps or altering B-N8 validation and B-N9 governance.
+
+---
+
+## 11. Final expected result
+
+After implementing Task 7, ORE should have a new capability:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Adaptive cognitive resource allocation</title>
+  <text color="secondary" size="sm">The system continuously determines what additional processing, if any, is necessary.</text>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>Understand the problem.</list-item>
+    <list-item>Inspect available cognitive information.</list-item>
+    <list-item>Identify missing capabilities.</list-item>
+    <list-item>Find suitable available modules.</list-item>
+    <list-item>Estimate information gain and computational costs.</list-item>
+    <list-item>Select the most useful combination of resources.</list-item>
+    <list-item>Execute and exchange intermediate results.</list-item>
+    <list-item>Monitor uncertainty and processing outcomes.</list-item>
+    <list-item>Recruit additional modules when needed.</list-item>
+    <list-item>Stop when the cognitive objective is sufficiently satisfied.</list-item>
+    <list-item>Learn from previous resource-allocation outcomes.</list-item>
+  </list>
+  <divider color="subtle"/>
+  **The intended architectural change**
+
+  ORE progresses from a collection of connected cognitive modules toward a system capable of dynamically organizing its available cognitive resources.
+</box>
+
+**My strongest recommendation:** Implement the first version using deterministic task profiles, capability discovery, contract validation, resource-cost estimates and greedy module selection. Introduce more sophisticated predictive information-gain models only after ORE has collected enough execution history. This provides a testable foundation without prematurely introducing reinforcement learning or an unnecessarily complicated neural controller.

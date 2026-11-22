@@ -1,0 +1,387 @@
+Title: Processed Headwords Count
+Conversation ID: 6b00e69f-ab04-83e9-a534-44945c85e441
+
+---
+
+[USER]
+What is the total number of the processed headwords in USG-Workbench. Short answer
+
+---
+
+[ASSISTANT]
+<text color="success" weight="semibold"><title size="xl">870,602 headwords</title></text>
+
+<caption>Processed out of 1,396,111 total headwords (checkpoint recorded on November 20, 2026).</caption>
+
+<MemoryCite />
+
+---
+
+[USER]
+how many processed headwords did "USG External Lexical Completion Launcher" add so far. Short answer
+
+---
+
+[ASSISTANT]
+The launcher started from **870,602 processed headwords**, but I don't have a verified post-launch count yet to determine how many it has added.
+
+---
+
+[USER]
+if it started from **870,602 headwords**  and the current count is **870,602 headwords** then it added nothing, why
+
+---
+
+[ASSISTANT]
+You're right. If the launcher started from **870,602** and the current count is still **870,602**, then it has added **0 headwords** so far.
+
+The launcher was designed to continue in batches, with a five-hour session limit, automatic continuation, and safety stops. So the unchanged count suggests it may not have actually started crawling, may have stalled, or may have exited before publishing new checkpoint data.It shouldn't have added zero if it was actually running successfully. The likely causes are:
+
+- **Workflow never started** or failed during initialization.
+- **Continuation controller exited** before starting a crawl batch.
+- **Crawler failed** (e.g., source/API errors or rate limits).
+- **Checkpoint wasn't updated**, even if some work occurred.
+
+The five-hour runtime configuration doesn't guarantee the crawler is actively processing. **The actual GitHub Actions run logs need to be inspected to determine the cause.**
+
+---
+
+[USER]
+inspect the logs to find out the reason
+
+---
+
+[ASSISTANT]
+I attempted to locate the launcher in `wizekin/ORE-Neurocomputational`, but the connected GitHub tools available here don't expose a direct listing of recent Actions runs, and my searches didn't locate the run.
+
+You can open the repository's Actions page directly:
+
+<text><Link url="https://github.com/wizekin/ORE-Neurocomputational/actions">ORE-Neurocomputational — GitHub Actions</Link></text>
+
+Open the **USG External Lexical Completion Launcher** run, and send me its logs (or the failed-step log). I'll identify exactly why it processed zero headwords.
+
+---
+
+[USER]
+## Annotations
+
+[crawl               ](https://github.com/wizekin/USG-Workbench/actions/runs/44790299467/job/136475884487#logs)            &#x20;
+
+&#x20;    succeeded     1 hour ago in 4h 55m 18s                 &#x20;
+
+&#x20;            svg                                                                                                                 &#x20;
+
+1s
+
+&#x20;            svg                                                                                                                 &#x20;
+
+4s
+
+&#x20;            svg                                                                                                                 &#x20;
+
+0s
+
+&#x20;            svg                                                                                                                 &#x20;
+
+0s
+
+&#x20;            svg                                                                                                                 &#x20;
+
+4h 55m 7s
+
+&#x20;            svg                                                                                                                 &#x20;
+
+1s
+
+Run python -m tools.usg_external_lexical_v0_1_0 audit-remote --repository "${GITHUB_REPOSITORY}" --branch "${USG_LEXICAL_DATA_BRANCH}"     &#x20;
+
+python -m tools.usg_external_lexical_v0_1_0 audit-remote --repository "${GITHUB_REPOSITORY}" --branch "${USG_LEXICAL_DATA_BRANCH}"     &#x20;
+
+shell: /usr/bin/bash -e {0}     &#x20;
+
+env:     &#x20;
+
+&#x20; GITHUB_TOKEN: \*\*\*     &#x20;
+
+&#x20; USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data     &#x20;
+
+&#x20; pythonLocation: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib/pkgconfig     &#x20;
+
+&#x20; Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib     &#x20;
+
+{     &#x20;
+
+&#x20; "audit_version": "usg-external-lexical-state-audit/0.1.0",     &#x20;
+
+&#x20; "status": "passed_with_warnings",     &#x20;
+
+&#x20; "checks": {     &#x20;
+
+&#x20;   "shard_file_count": 40,     &#x20;
+
+&#x20;   "logical_batch_count": 39,     &#x20;
+
+&#x20;   "duplicate_physical_copy_count": 1,     &#x20;
+
+&#x20;   "physical_stored_bytes": 246310489,     &#x20;
+
+&#x20;   "checkpoint_batch_number": 39,     &#x20;
+
+&#x20;   "manifest_batch_count": 39,     &#x20;
+
+&#x20;   "retry_queue_length": 0,     &#x20;
+
+&#x20;   "duplicate_batches": [     &#x20;
+
+&#x20;     {     &#x20;
+
+&#x20;       "batch_number": 2,     &#x20;
+
+&#x20;       "paths": [     &#x20;
+
+&#x20;         "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43093479847-1.jsonl.gz",     &#x20;
+
+&#x20;         "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43094020466-1.jsonl.gz"     &#x20;
+
+&#x20;       ],     &#x20;
+
+&#x20;       "identical_blob": true,     &#x20;
+
+&#x20;       "physical_copy_count": 2     &#x20;
+
+&#x20;     }     &#x20;
+
+&#x20;   ]     &#x20;
+
+&#x20; },     &#x20;
+
+&#x20; "errors": [],     &#x20;
+
+&#x20; "warnings": [     &#x20;
+
+&#x20;   "duplicate physical shard copies for batch 000002"     &#x20;
+
+&#x20; ],     &#x20;
+
+&#x20; "mutated_data": false,     &#x20;
+
+&#x20; "limitations": [     &#x20;
+
+&#x20;   "This audit reconciles metadata and Git blob inventory; it does not decompress or linguistically validate shard records.",     &#x20;
+
+&#x20;   "Identical duplicate blobs remain in append-only storage and physical byte accounting, but count as one logical batch for manifest reconciliation and must be deduplicated for lexical evaluation."     &#x20;
+
+&#x20; ],     &#x20;
+
+&#x20; "source": {     &#x20;
+
+&#x20;   "repository": "wizekin/USG-Workbench",     &#x20;
+
+&#x20;   "branch": "usg-external-lexical-data",     &#x20;
+
+&#x20;   "snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",     &#x20;
+
+&#x20;   "checkpoint_blob_sha": "6a6341e7c8e156493cc3b133722c1200da326b5e",     &#x20;
+
+&#x20;   "manifest_blob_sha": "2ba44846647c6cce9d50b34336fabc947d34c1cc",     &#x20;
+
+&#x20;   "shard_inventory_count": 40,     &#x20;
+
+&#x20;   "tree_sha": "511b20a60b807884e5a5c6edbe750afd4ad7c6ec"     &#x20;
+
+&#x20; }     &#x20;
+
+}     &#x20;
+
+&#x20;            svg                                                                                                                 &#x20;
+
+0s
+
+Run {     &#x20;
+
+{     &#x20;
+
+&#x20; echo ""     &#x20;
+
+&#x20; echo "Durable lexical state remains on branch: usg-external-lexical-data."     &#x20;
+
+&#x20; echo "The completion launcher enforces a hard 700 MiB compressed-shard budget."     &#x20;
+
+&#x20; echo "An incomplete but healthy session queues one continuation workflow run."     &#x20;
+
+} >> "$GITHUB_STEP_SUMMARY"     &#x20;
+
+shell: /usr/bin/bash -e {0}     &#x20;
+
+env:     &#x20;
+
+&#x20; GITHUB_TOKEN: \*\*\*     &#x20;
+
+&#x20; USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data     &#x20;
+
+&#x20; pythonLocation: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib/pkgconfig     &#x20;
+
+&#x20; Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64     &#x20;
+
+&#x20; LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib     &#x20;
+
+&#x20;            svg
+
+---
+
+[ASSISTANT]
+The log you provided shows that the **4h 55m 18s workflow succeeded**, but the final step was an **audit**, not a headword-crawling step.
+
+### What the log confirms
+
+- <text color="success" weight="medium">Audit passed with warnings</text> — the remote lexical data repository was successfully audited.
+- **39 logical batches** — the manifest and checkpoint reconcile to 39 batches.
+- **40 physical shard files** — one is a duplicate copy of batch 2.
+- **246,310,489 bytes** — stored compressed shard data.
+- **Retry queue: 0** — no pending retry items in the audited state.
+- <text color="warning" weight="medium">No evidence of new headwords being processed</text> — this audit doesn't report newly crawled headwords or the crawl's progress.
+
+### Why the headword count may remain unchanged
+
+The launcher stores lexical crawl data on a separate branch:
+
+`usg-external-lexical-data`
+
+That means the **39 batches may contain collected lexical data without increasing the main USG-Workbench processed-headword counter**. The audit alone cannot confirm how many headwords the 4h 55m crawl actually collected.
+
+<text weight="medium">So, the run was not necessarily wasted.</text> We need the earlier `crawl` step's output (the step that ran for 4h 55m 7s), not just the final audit step, to determine how much new data it collected.
+
+If you share that section of the logs, I can calculate what the launcher actually accomplished.
+
+---
+
+[USER]
+Run set -euo pipefail
+  set -euo pipefail
+  args=()
+  if [[ "$CONTINUE_UNTIL_TARGET" == "true" ]]; then
+    args+=(--continue-chain)
+  fi
+  python -m tools.usg_external_lexical_v0_1_0.manual_crawl \
+    --target-total "$TARGET_TOTAL" \
+    --batch-headwords "$BATCH_HEADWORDS" \
+    --max-session-runtime-seconds 18000 \
+    --reserve-seconds 300 \
+    --run-id "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+    "${args[@]}"
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    GITHUB_TOKEN: ***
+    USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
+    pythonLocation: /opt/hostedtoolcache/Python/3.11.18/x64
+    PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib/pkgconfig
+    Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.18/x64
+    LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.18/x64/lib
+    TARGET_TOTAL: 1396111
+    BATCH_HEADWORDS: 30000
+    CONTINUE_UNTIL_TARGET: true
+{
+  "status": "continuation_dispatched",
+  "target_total": 1396111,
+  "initial_processed_headwords": 905102,
+  "final_processed_headwords": 939271,
+  "session_processed_headwords": 34169,
+  "remaining_headwords": 456840,
+  "stored_bytes": 237552571,
+  "storage_budget_bytes": 734003200,
+  "storage_budget_mib": 700,
+  "snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
+  "batch_count": 2,
+  "batches": [
+    {
+      "status": "in_progress",
+      "stop_reason": "headword_limit",
+      "headwords": 30000,
+      "entries": 31776,
+      "senses": 37048,
+      "compressed_bytes": 7406516,
+      "shard_path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000036-44742715557-1-part-0001.jsonl.gz",
+      "commit_sha": "84550426d9eb5c30bc6813623171f66344818d03"
+    },
+    {
+      "status": "in_progress",
+      "stop_reason": "time_budget",
+      "headwords": 4169,
+      "entries": 4496,
+      "senses": 5836,
+      "compressed_bytes": 1094370,
+      "shard_path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000037-44742715557-1-part-0002.jsonl.gz",
+      "commit_sha": "992b946c16786335a037461a35575c47227e46c6"
+    }
+  ],
+  "elapsed_seconds": 17705.41,
+  "continuation_dispatched": true
+}
+
+---
+
+[ASSISTANT]
+The launcher **successfully processed 34,169 additional headwords** in this run.
+
+<box border radius="lg" padding={3} gap={2}>
+  <row justify="between">
+    **Initial processed headwords**
+    <title size="lg" tabularNums>905,102</title>
+  </row>
+  <row justify="between">
+    **Final processed headwords**
+    <title size="2xl" color="success" tabularNums>939,271</title>
+  </row>
+  <divider color="subtle"/>
+  <row justify="between">
+    **Newly processed**
+    <title size="xl" color="success" tabularNums>+34,169</title>
+  </row>
+  <row justify="between">
+    **Remaining to target**
+    **456,840**
+  </row>
+</box>
+
+### What happened?
+
+- Batch 36: 30,000 headwords processed.
+- Batch 37: 4,169 headwords processed before the time limit.
+- Total: 34,169 headwords.
+- Runtime: 17,705 seconds (about 4 hours 55 minutes).
+- Storage used: 237.6 MB of the 700 MiB budget.
+- Status: `continuation_dispatched`.
+
+**Conclusion:** The launcher did work. It increased the counter from 905,102 to 939,271, and automatically dispatched another workflow run to continue toward the target of 1,396,111.
+
+One important correction: the earlier figure of 870,602 was an older checkpoint. The initial count in this run was already 905,102.
+
+---
+
+[USER]
+did it need the whole 4 hours 55 minutes to get the 30,000 headwords
+
+---
+
+[ASSISTANT]
+No. It processed the first **30,000 headwords** before reaching the time limit, then continued processing another **4,169 headwords**.
+
+The full 4 hours 55 minutes (17,705 seconds) covered both batches.
+
+The log does not show the exact time spent on the first 30,000 alone. It only tells us that the second batch stopped because the remaining time budget was exhausted.

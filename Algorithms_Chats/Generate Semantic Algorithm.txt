@@ -1,0 +1,4064 @@
+Title: Generate Semantic Algorithm
+Conversation ID: 6afbaf97-1db8-83ea-b494-e1d4124ed8f4
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Lesion and Neurodegeneration: Semantic dementia (SD), the poster child for hub-and-spoke,
+selectively atrophies bilateral ATLs and causes profound, modality-general semantic loss
+. Patients gradually lose specific knowledge (calling a “zebra” simply
+“animal”) while other functions (syntax, episodic memory) remain relatively intact.
+This double dissociation strongly implicates ATL in conceptual representation. More subtle evidence
+comes from epilepsy surgery: Lambon Ralph et al. (2012) tested patients with unilateral ATL
+resection for temporal lobe epilepsy. These patients appear normal on everyday tasks, but difficult
+semantic tests (naming low-frequency items, judging subtle conceptual features) revealed deficits in
+every case. Crucially, speeded measures showed slower semantic processing
+relative to non-semantic controls. Thus even one ATL, long compromised by epileptic foci, is
+important for fine-grained semantics.
+Noninvasive Stimulation (rTMS): Pobric et al. (2007) delivered low-frequency rTMS to the ATL in
+healthy adults to “mimic” semantic dementia. Temporarily perturbing ATL activity selectively slowed
+picture naming and word comprehension (semantic tasks) without affecting phonological or non-
+semantic tasks. This causal manipulation duplicated key aspects of SD in normals,
+confirming ATL’s necessity for semantic representation.
+EEG/MEG Timing: Electrophysiology has traced the time-course of semantic integration. The classic
+N400 ERP (peaking ~400ms) indexes context-based semantic processing. Words
+incongruent with prior context or world knowledge produce larger (more negative) N400s, showing
+that integration difficulty (and prediction) modulate processing. Intracranial EEG and MEG also
+
+CommentHighlight
+highlight ATL’s role in compositional semantics: Pylkkänen and colleagues find left ATL activity ~200–
+250ms after noun onset during adjective–noun composition tasks, with effects modulated by
+conceptual specificity. Law et al. (2026) similarly reported early ATL responses for
+composing adjective-noun phrases, irrespective of concreteness. Thus, ATL
+participates rapidly in building phrase meaning.
+fMRI of Composition: The angular gyrus (AG) and posterior temporal regions often co-activate with
+ATL during sentence-level semantics. For instance, combined fMRI analyses (Kuhnke et al., 2023)
+show that AG activity differentiates semantic from non-semantic tasks above and beyond task
+difficulty (Figure 1). This suggests AG (part of the default-mode
+network) supports combinatorial meaning. The inferior frontal gyrus (IFG) also lights up when
+semantic control is needed (e.g. resolving ambiguity).
+Computational Modeling: Connectionist models illustrate how a hub can emerge. Rogers and
+McClelland’s neural-network simulations of word learning produce distributed representations that
+converge on an ATL-like hidden layer; lesioning that hub in the model causes SD-like semantic loss
+. Other modern models (e.g. Hoffman et al., 2018) train networks to predict words
+and sensory features over sequences, yielding context-sensitive semantic representations that
+integrate multimodal knowledge. Vector-space algorithms (e.g. word2vec)
+capture word co-occurrence statistics and can be extended to phrase meaning by simple operations
+(addition, tensor products), paralleling human semantic
+similarity judgments. Though these models do not directly map to neural hubs, they show that
+context and co-occurrence can “compose” meaning probabilistically, echoing the brain’s predictive
+integration.
+Figure 1. Angular gyrus (AG) activation varies with semantic demand and task difficulty. In
+fMRI data aggregated from five studies, semantic tasks yield higher AG responses (darker lines) than nonsemantic
+tasks (lighter lines), especially in left AG subregions. Increasing task difficulty
+(x-axis: z-scored RT) suppresses AG activation (negative percent signal change) for both conditions. These results
+indicate that left AG activity correlates with semantic processing beyond general effort.
+
+Semantic Composition and Integration Mechanisms
+Combining words into meaning involves multiple operations:
+Feature Binding: Concepts carry features across modalities. For “instrument,” the listener binds
+acoustic expectations (sound of instrument), motor expectations (how to hold/play it), and
+categorical knowledge (violins are strings, drums are percussion). The ATL hub is thought to bind
+these modality-specific features into a unified concept (e.g. any kind of instrument).
+ Similarly, when musician and instrument co-occur, their linked attributes (a person
+and an object for music) align to form a plausible scenario. This feature integration relies on
+associative learning in semantic memory: knowledge that musicians usually interact with
+instruments provides the glue.
+
+Thematic Roles and Event Semantics: Semantic integration assigns roles (agent, patient,
+instrument) in events. Sentences like “The musician tuned the instrument” implicitly specify an event
+of tuning. Comprehenders use selectional restrictions (“musician” can tune an instrument but rarely
+a sandwich) and world knowledge to fill roles. Psycholinguistic studies (e.g. Altmann & Kamide) show
+that verbs (like tuned) immediately narrow expectations for plausible objects (anticipating instrument
+rather than cake). EEG/MEG markers reflect this: if a verb-object combination violates typical roles
+(e.g. “She tuned the engine”), an increased N400 or late positivity often arises. Computationally,
+sentence meaning can be seen as a probabilistic event model: each incoming word updates beliefs
+about who did what to whom (e.g. Bayesian or expectation-based accounts).
+Selectional Restrictions and Plausibility: Semantic fit between words (often called selectional
+preference) is crucial. A semantically incompatible phrase (e.g. “The clown tuned the calculator”) is
+nonsensical. Psycholinguistic data show that semantic anomalies are detected rapidly: anomalous
+verbs or objects elicit larger N400s (meaning integration difficulty) even when syntax is correct.
+Constraint-based models posit that lexical semantics from each word concurrently activates possible
+interpretations, and only consistent interpretations survive. For example, tuned strongly constrains
+its object to something musical, so encountering an incompatible object generates conflict. The left
+IFG (pars triangularis) is implicated in resolving such competition: fMRI finds it more active when a
+context forces selection among multiple meanings.
+Ambiguity and Polysemy: Semantic integration must handle words with multiple meanings.
+Ambiguous words (e.g. “bark” as tree or dog) rely on context or preceding content to select the right
+concept. ERP studies show that when context resolves ambiguity, IFG is engaged (facilitating
+selection). When context is neutral (e.g. “She painted the bark”), processing suffers
+(enhanced N400/P600). Advanced models treat ambiguity via competition in semantic networks or
+hidden Markov models of meaning.
+Context Effects and Prediction: Rich context allows prediction of upcoming concepts. The classic
+example is using sentential context to pre-activate likely continuations (e.g. for the concert after She
+tuned her violin). ERP experiments (e.g. Kutas & Federmeier 2011) show that expected words elicit
+smaller N400 amplitudes. This demonstrates that integration is partly anticipatory:
+comprehenders continually update a probabilistic model of discourse. Computationally, modern
+contextual embeddings (ELMo, BERT) operate similarly by generating dynamic word representations
+conditioned on full sentence context. These models capture how meaning
+“accrues” over time rather than being static for each word.
+Brain Networks and Time Course
+Semantic integration recruits a distributed but interconnected network:
+Anterior Temporal Lobes (ATL): As noted, bilateral ATL is crucial. MEG/EEG place its activity very
+early (~200–300 ms) after word onset during composition.
+Source localization in ERP and intracranial recordings finds semantic N400 generators in temporal
+lobe regions (mid and inferior temporal gyri) as well as inferior prefrontal areas. ATL is thought to
+converge inputs from modality-specific cortices (visual, auditory, motor) via rich long-range
+connections.
+
+Angular Gyrus (AG) and Posterior Temporal Cortex: Left AG (posterior inferior parietal lobule) is
+consistently implicated in combinatorial semantics. It lies in the
+default-mode network (DMN) and is relatively deactivated at rest, yet increases activity for semantic
+tasks (Figure 1). Current theories (e.g. Binder & Desai, 2011) suggest AG integrates information over
+larger contexts and supports automatic semantic association. The Kuhnke et al. meta-findings
+emphasize that AG cannot be reduced to task difficulty alone; its activation profile reflects semantic
+content (higher in semantic conditions). Posterior middle
+temporal gyrus (pMTG) also acts as a “spoke” for language-related semantics and helps link verb-
+argument relations.
+Inferior Frontal Gyrus (IFG): Left IFG (especially BA45/47) is part of the semantic control network. It
+is more active when tasks require controlled retrieval or selection (e.g. judging less frequent or
+abstract words, resolving ambiguity). ERP/fMRI studies show IFG engages when context supplies
+enough cues to select one meaning among competitors, or when semantic tasks
+become more demanding. Notably, IFG also plays a role in syntactic unification,
+reflecting the interplay of syntax and semantics in natural sentences.
+Other Regions and Networks: Conceptual processing also taps medial temporal lobe (e.g.
+hippocampus for linking concepts to episodic memory), ventromedial prefrontal cortex (valuation or
+schema-based inference), and the broader DMN during narrative comprehension. The Default-Mode
+Network, which includes AG and precuneus, has been linked to integrating information over long
+timescales and may support discourse-level semantics and prediction. The fronto-parietal executive
+network interacts with the semantic network under effortful conditions.
+Time Course: ERP studies show a characteristic N400 (negative deflection ~400ms) to words that
+violate semantic expectations. This component reflects the ease or difficulty of integrating word
+meaning with context. The N400 is not localized to a single region but likely arises
+from a network including temporal and frontal cortex. If a sentence is syntactically correct but
+semantically odd, N400 is the primary effect. Later effects (P600) sometimes appear for reanalysis or
+meta-linguistic processing. In sum, semantic integration unfolds rapidly: initial lexical access occurs
+~100–200ms, composition processes by ~200–300ms (left ATL, IFG), and integration effects peak
+around 400ms (N400) before later reevaluations.
+Development, Aging, and Individual Differences
+Development: Even infants have rudimentary semantic networks, but conceptual integration
+matures with experience and language acquisition. Young children rely heavily on concrete features
+(grounded knowledge) and gradualy acquire abstract combinatorial skills (syntax+semantics). For
+example, early vocab learning engages sensorimotor associations, while mastery of grammar
+improves ability to form complex propositions. Genetic imaging (Zhu et al., 2025) suggests that
+functional subdivisions of the ATL (ventrolateral, dorsolateral) are present at birth and become
+specialized for semantic processing. Over childhood, connectivity between ATL
+“hubs” and sensory spokes strengthens, enabling more efficient integration.
+Aging: Normal aging produces quantitative slowdowns but not wholesale conceptual loss. ERP
+studies show that older adults have smaller and delayed N400 effects. Kutas & Iragui (1998) 
+found that semantic congruity effects are “slower and smaller” with age, indicating
+slower integration. These changes likely reflect reduced processing speed and perhaps
+compensatory recruitment of extra brain networks. Crucially, older adults retain broad semantic
+knowledge (vocabulary even grows), but take longer to access specific details.
+
+Bilingualism and Education: Multilingual individuals build overlapping but partially distinct
+semantic networks for each language. Bilingualism often increases semantic control demands (to
+select the appropriate language concept), which may enhance frontal control mechanisms.
+Educational strategies that engage multiple modalities (visual, auditory, motor) in teaching word
+meanings exploit the brain’s multimodal semantics. For example, linking new vocabulary to images
+or actions taps additional “spokes,” strengthening integration. Individual differences in integration
+skill also arise from working memory, executive function, and exposure: people with more
+knowledge and better cognitive control achieve deeper integration and prediction.
+Clinical and Applied Implications
+Semantic Dementia / FTD: As noted, bilateral ATL degeneration (semantic variant frontotemporal
+dementia) causes profound integration deficits. Patients with SD often have fluent but empty speech
+and cannot describe common items beyond generic terms. This shows the ATL hub’s importance for
+concrete knowledge and integration. Therapy for SD focuses on preserving remaining knowledge
+and using cues, but integration remains impaired.
+Aphasia: Stroke or injury in temporo-parietal cortex (Wernicke’s area) can also yield semantic
+comprehension deficits, though typically more for verbal input and context. Patients with semantic
+aphasia (often due to left IFG or pMTG lesions) can store concepts but struggle to flexibly use them
+(e.g. they know what apple is, but can’t pick among competing uses when asked). Rehabilitation
+often targets semantic control, teaching strategies to narrow choices.
+Other Disorders: Mild impairments in semantic integration appear in various conditions. For
+instance, some individuals with autism spectrum disorder show reduced use of context and world
+knowledge in language, leading to more literal interpretation. While core conceptual knowledge is
+usually intact, integrating it flexibly can be challenging (e.g. understanding metaphors or jokes).
+Similarly, Alzheimer’s disease typically affects episodic memory first, but later stages can involve
+semantic degradation. Understanding the neural basis of semantics also informs assessments (e.g.
+the Pyramids and Palm Trees test, vocabulary tests) and educational tools for language learning.
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Distributed Neural Semantic Composition and Integration
+
+**A biologically inspired algorithm for constructing, combining, predicting, controlling, and understanding meaning in the human brain.**
+
+The algorithm below combines the neurological evidence, semantic representation mechanisms, language-composition mechanisms, brain-network interactions, developmental factors, and clinical observations in your material into one sequential computational architecture.
+
+The objective is to describe how the brain moves from receiving a word or other stimulus to constructing a complete conceptual representation, understanding its relationship with other concepts, integrating it into an event or sentence, and updating its knowledge using context and previous experience.
+
+We will treat the brain as a distributed computational system in which different neural regions perform specialized but interconnected operations.
+
+## Part 1 — Overall architecture
+
+### 1.1. The central computational principle
+
+The brain does not simply retrieve a dictionary definition for every word.
+
+Instead, it performs several interacting operations:
+
+1. Receives information through different sensory and linguistic pathways.
+2. Identifies candidate words, objects, actions, and other concepts.
+3. Activates associated knowledge distributed across different brain regions.
+4. Combines modality-specific information into unified conceptual representations.
+5. Connects concepts using semantic relationships.
+6. Constructs larger meanings through compositional operations.
+7. Assigns participants to events and establishes their relationships.
+8. Predicts upcoming concepts using context and previous experience.
+9. Detects semantic incompatibilities.
+10. Resolves competition between possible interpretations.
+11. Integrates the resulting meaning into the current sentence and broader discourse.
+12. Updates semantic memory using the newly acquired information.
+
+The architecture can be represented as follows:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Global semantic-processing architecture</title>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **Stage A — Input and perception**
+
+    <text color="secondary" size="sm">Visual · Auditory · Linguistic · Contextual input</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **Stage B — Lexical and conceptual activation**
+
+    <text color="secondary" size="sm">Word recognition · Concept retrieval · Candidate activation</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.10)" radius="md" padding={3} align="center">
+    **Stage C — Multimodal semantic representation**
+
+    <text color="secondary" size="sm">ATL hub · Sensory spokes · Feature binding · Concept convergence</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.10)" radius="md" padding={3} align="center">
+    **Stage D — Semantic composition**
+
+    <text color="secondary" size="sm">Feature combination · Phrase meaning · Relational integration</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={3} align="center">
+    **Stage E — Event construction and prediction**
+
+    <text color="secondary" size="sm">Thematic roles · Selectional restrictions · Bayesian prediction</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={3} align="center">
+    **Stage F — Semantic control and conflict resolution**
+
+    <text color="secondary" size="sm">IFG · Candidate competition · Contextual selection · Reanalysis</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={3} align="center">
+    **Stage G — Integrated meaning and discourse**
+
+    <text color="secondary" size="sm">Angular gyrus · Posterior temporal cortex · DMN · Memory networks</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={3} align="center">
+    **Stage H — Learning and semantic-memory updating**
+
+    <text color="secondary" size="sm">Experience accumulation · Association strengthening · Concept refinement</text>
+  </box>
+  <text color="secondary" size="xs" textAlign="center">Feedback connections operate between stages; this is not a strictly one-directional neural pathway.</text>
+</box>
+
+### 1.2. Important biological distinction
+
+There are three different levels of description throughout this algorithm:
+
+- **Established observation:** An experimentally observed relationship, such as the selective slowing of semantic tasks after ATL stimulation.
+- **Neuroscientific interpretation:** A proposed explanation of the neural computation, such as the ATL integrating multimodal conceptual features.
+- **Computational abstraction:** A mathematical operation used to reproduce that proposed computation, such as vector addition, weighted aggregation, Bayesian inference, or competitive selection.
+
+These levels must not be confused. For example, the brain's neurons do not literally execute a Python vector-addition instruction. Vector addition is a useful mathematical approximation of certain population-level computations.
+
+The proposed architecture is therefore a computational interpretation of brain function, not a claim that every neural operation has already been identified exactly.
+
+---
+
+# Part 2 — The master algorithm
+
+## Stage 1. Multimodal input acquisition
+
+**Primary function:** Receive information from the environment and prepare it for semantic processing.
+
+The brain receives information through multiple pathways. A concept can originate from a spoken word, written word, image, sound, action, or combination of these.
+
+For example, the concept *violin* might be activated through:
+
+- Hearing someone say "violin".
+- Seeing a photograph of a violin.
+- Hearing the sound produced by a violin.
+- Watching someone play it.
+- Physically holding or playing one.
+
+The different inputs provide different types of information about the same underlying concept.
+
+**Biological components:**
+
+- Primary visual cortex and visual association areas.
+- Auditory cortex and auditory association areas.
+- Somatosensory cortex.
+- Motor and premotor regions.
+- Language-related temporal regions.
+
+**Possible mathematical operations:**
+
+Represent each sensory channel as a vector:
+
+\[
+X_v \in \mathbb{R}^{n_v}
+\]
+
+\[
+X_a \in \mathbb{R}^{n_a}
+\]
+
+\[
+X_m \in \mathbb{R}^{n_m}
+\]
+
+Where:
+
+- \(X_v\): visual input.
+- \(X_a\): auditory input.
+- \(X_m\): motor-related input.
+
+Each input can be transformed into a common computational space:
+
+\[
+H_i=f_i(X_i;\theta_i)
+\]
+
+Here, \(f_i\) represents the processing of a particular sensory pathway.
+
+The different transformations do not need to produce identical vectors. They need to preserve enough information for later convergence.
+
+**Algorithmic operations:**
+
+1. Detect incoming sensory signals.
+2. Identify which modalities are involved.
+3. Extract relevant properties.
+4. Generate feature representations.
+5. Preserve the source modality of each feature.
+6. Transmit the resulting representations to associated semantic networks.
+
+**Output:** Modality-specific feature representations.
+
+---
+
+## Stage 2. Linguistic and lexical identification
+
+**Primary function:** Identify the words or linguistic units that correspond to the incoming signal.
+
+When someone hears:
+
+"The musician tuned the instrument."
+
+The auditory system must identify the individual words before their meanings can be fully integrated.
+
+The process includes acoustic or orthographic analysis, identification of linguistic units, and access to possible lexical entries.
+
+**Biological components:**
+
+- Auditory and visual association cortices.
+- Superior and middle temporal regions.
+- Phonological and language-processing networks.
+- Posterior temporal language areas.
+
+**Possible mathematical operations:**
+
+Let \(x\) be the incoming linguistic signal and \(w_i\) a possible word.
+
+The brain can be computationally approximated as evaluating:
+
+\[
+P(w_i\mid x)
+\]
+
+Using Bayes' rule:
+
+\[
+P(w_i\mid x)=
+\frac{P(x\mid w_i)P(w_i)}
+{P(x)}
+\]
+
+Where:
+
+- \(P(x\mid w_i)\): compatibility between the signal and the candidate word.
+- \(P(w_i)\): prior probability of the word.
+- \(P(w_i\mid x)\): posterior probability that the word was perceived.
+
+For example, if the sound is ambiguous between two words, acoustic evidence and preceding context jointly influence the candidate probabilities.
+
+**Algorithmic operations:**
+
+1. Detect acoustic or visual linguistic patterns.
+2. Segment the signal into candidate linguistic units.
+3. Compare the signal with learned lexical representations.
+4. Activate matching candidates.
+5. Calculate their relative compatibility.
+6. Resolve sufficiently clear candidates while preserving ambiguity when necessary.
+7. Forward the identified lexical units to semantic processing.
+
+**Output:** One or more identified lexical candidates, with confidence values.
+
+---
+
+## Stage 3. Initial activation of conceptual candidates
+
+**Primary function:** Activate the conceptual knowledge associated with each recognized word.
+
+Recognizing the word *instrument* is not the same as understanding it.
+
+The word activates a network containing different types of knowledge:
+
+- An instrument is an object.
+- It produces sound.
+- It can be played.
+- It may require particular physical movements.
+- It belongs to a category of musical objects.
+- Different instruments have different structures and functions.
+
+The brain activates these associated representations in parallel.
+
+**Biological components:**
+
+- Middle and inferior temporal cortices.
+- Anterior temporal lobes.
+- Visual and auditory association regions.
+- Motor association regions.
+
+**Possible mathematical operations:**
+
+Represent each candidate concept using an activation vector:
+
+\[
+C_i=(c_1,c_2,\ldots,c_n)
+\]
+
+The initial activation of a feature can depend on the strength of the association between a word and that feature:
+
+\[
+a_j=w_{ij}s_i
+\]
+
+Where:
+
+- \(s_i\): activation of the recognized word.
+- \(w_{ij}\): learned association between word \(i\) and feature \(j\).
+- \(a_j\): resulting feature activation.
+
+Activation may spread through the semantic network:
+
+\[
+A_{t+1}=f(WA_t+I_t)
+\]
+
+Where:
+
+- \(W\): learned association matrix.
+- \(A_t\): current activation state.
+- \(I_t\): new input.
+- \(f\): nonlinear neuronal activation function.
+
+A biological network would have richer dynamics, including excitation, inhibition, recurrent interactions, and temporal delays.
+
+**Algorithmic operations:**
+
+1. Retrieve candidate conceptual representations.
+2. Activate their associated features.
+3. Spread activation through learned semantic connections.
+4. Preserve competing or overlapping meanings.
+5. Estimate the strength of each activated representation.
+6. Pass the activated features to multimodal integration.
+
+**Output:** A distributed pattern of activated conceptual knowledge.
+
+---
+
+## Stage 4. Retrieval of modality-specific semantic features
+
+**Primary function:** Retrieve the individual sensory, motor, functional, and categorical features associated with each concept.
+
+Consider the concept *violin*.
+
+Its semantic representation may include:
+
+| Modality | Example features |
+|---|---|
+| Visual | Wooden body, strings, bow |
+| Auditory | Characteristic musical sound |
+| Motor | Holding, fingering, bowing |
+| Functional | Produces musical notes |
+| Categorical | String instrument |
+| Relational | Used by musicians |
+| Contextual | Orchestra, concert, music |
+
+The brain retrieves these features from distributed cortical networks.
+
+**Biological components:**
+
+- Visual association cortex.
+- Auditory association cortex.
+- Motor and premotor cortex.
+- Somatosensory cortex.
+- Temporal semantic networks.
+
+**Possible mathematical operations:**
+
+Represent the concept as separate feature groups:
+
+\[
+C=
+\{F_v,F_a,F_m,F_f,F_c,F_r\}
+\]
+
+Where:
+
+- \(F_v\): visual features.
+- \(F_a\): auditory features.
+- \(F_m\): motor features.
+- \(F_f\): functional features.
+- \(F_c\): categorical features.
+- \(F_r\): relational features.
+
+Each feature receives an activation level:
+
+\[
+a_j=\sigma(z_j)
+\]
+
+Where \(\sigma\) is an activation function, for example:
+
+\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]
+
+A feature's activation may also depend on the current task:
+
+\[
+a_j^{*}=a_j q_j
+\]
+
+Where \(q_j\) represents the relevance of that feature to the current situation.
+
+For example, auditory features become especially relevant when someone asks:
+
+"What does a violin sound like?"
+
+**Algorithmic operations:**
+
+1. Identify the modality to which each feature belongs.
+2. Retrieve associated features.
+3. Estimate their relevance.
+4. Activate features according to context.
+5. Preserve relationships between features.
+6. Make the feature representations available to the ATL convergence system.
+
+**Output:** A structured multimodal feature representation.
+
+---
+
+## Stage 5. Cross-modal feature association
+
+**Primary function:** Establish relationships between features belonging to different sensory modalities.
+
+This operation is essential because the brain needs to recognize that different experiences may refer to the same concept.
+
+For example:
+
+- A photograph of a violin.
+- The sound of a violin.
+- The action of playing a violin.
+
+These are different experiences, but they can all activate related parts of the same semantic representation.
+
+**Biological components:**
+
+- Association cortices.
+- Long-range temporal connections.
+- Anterior temporal lobes.
+- Connections between sensory and semantic networks.
+
+**Possible mathematical operations:**
+
+Define associations between modality-specific features.
+
+For example:
+
+\[
+S_{va}=F_v^T W_{va}F_a
+\]
+
+Where:
+
+- \(F_v\): visual features.
+- \(F_a\): auditory features.
+- \(W_{va}\): learned visual-auditory association weights.
+- \(S_{va}\): cross-modal compatibility.
+
+Similarly:
+
+\[
+S_{am}=F_a^T W_{am}F_m
+\]
+
+This permits the algorithm to assess whether different modalities provide mutually compatible information.
+
+The associations can be learned through experience:
+
+\[
+W_{t+1}=W_t+\eta XY^T
+\]
+
+Here, \(X\) and \(Y\) represent co-occurring representations, and \(\eta\) is a learning rate. This is a simplified Hebbian-style learning rule.
+
+**Algorithmic operations:**
+
+1. Compare features originating from different modalities.
+2. Identify frequently co-occurring feature combinations.
+3. Estimate cross-modal associations.
+4. Reinforce consistent associations.
+5. Reduce the influence of unrelated associations.
+6. Send the associated features to the conceptual convergence mechanism.
+
+**Output:** A cross-modally connected feature network.
+
+---
+
+## Stage 6. Multimodal semantic convergence in the anterior temporal lobes
+
+**Primary function:** Construct an integrated conceptual representation from information distributed across different modalities.
+
+This is one of the most important stages in the architecture.
+
+The anterior temporal lobes (ATLs) are considered a central component of the semantic hub-and-spoke system.
+
+The spokes provide modality-specific information, while the ATL is proposed to help integrate this information into representations that capture conceptual identity beyond any individual sensory modality.
+
+For example, the concept *violin* must remain recognizable whether the input is:
+
+- A spoken word.
+- A photograph.
+- A characteristic sound.
+- An action involving a violin.
+
+The representation should not depend exclusively on any single input modality.
+
+**Biological components:**
+
+- Left anterior temporal lobe.
+- Right anterior temporal lobe.
+- Long-range connections with modality-specific association cortices.
+- Temporal semantic networks.
+
+**Possible mathematical operations:**
+
+First, transform each modality-specific representation into a common semantic feature space:
+
+\[
+H_v=f_v(F_v)
+\]
+
+\[
+H_a=f_a(F_a)
+\]
+
+\[
+H_m=f_m(F_m)
+\]
+
+The ATL-like convergence mechanism can then calculate an integrated representation:
+
+\[
+Z=\sum_{i=1}^{M}\alpha_iH_i
+\]
+
+Where:
+
+- \(M\): number of available modalities.
+- \(H_i\): transformed representation from modality \(i\).
+- \(\alpha_i\): contribution of each modality.
+- \(Z\): integrated conceptual representation.
+
+The contributions may depend on input quality, learning history, and context.
+
+A more expressive model uses nonlinear interactions:
+
+\[
+Z=f\left(
+\sum_i W_iH_i+
+\sum_{i<j}H_i^TW_{ij}H_j
+\right)
+\]
+
+The second term captures relationships between modalities rather than merely adding them together.
+
+A related operation is the extraction of cross-modal invariant information:
+
+\[
+Z_{\text{shared}}=
+\operatorname{CommonFeatures}
+(H_v,H_a,H_m,\ldots)
+\]
+
+This is a computational abstraction of the proposed convergence of information into conceptual representations.
+
+**Algorithmic operations:**
+
+1. Receive modality-specific feature representations.
+2. Project them into a compatible representational space.
+3. Compare their common properties.
+4. Identify relationships between modalities.
+5. Combine compatible information.
+6. Preserve distinctive properties that help differentiate concepts.
+7. Produce an integrated conceptual representation.
+8. Maintain connections with the original modality-specific representations.
+
+**Output:** A multimodal conceptual representation that can be accessed through different input modalities.
+
+**Experimental justification:**
+
+The causal evidence is particularly important here. Pobric, Jefferies, and Lambon Ralph demonstrated that temporarily disrupting ATL processing produced selective slowing in picture naming and word comprehension, without equivalent effects on nonsemantic control tasks. This supports a necessary contribution of the ATL to semantic processing, rather than merely an incidental association with it. <Cite refs={["turn243095search1","turn243095search2"]}/>
+
+---
+
+## Stage 7. Conceptual abstraction and semantic generalization
+
+**Primary function:** Extract shared conceptual properties while preserving distinctions between specific concepts.
+
+The brain must understand both specific concepts and their broader categories.
+
+For example:
+
+\[
+\text{Violin}\rightarrow\text{String instrument}
+\]
+
+\[
+\text{Guitar}\rightarrow\text{String instrument}
+\]
+
+\[
+\text{Drum}\rightarrow\text{Percussion instrument}
+\]
+
+The brain needs to recognize that violins and guitars share certain properties without confusing them.
+
+This requires two complementary computations:
+
+- Generalization: extracting shared properties.
+- Differentiation: preserving distinctive properties.
+
+**Biological components:**
+
+- Anterior temporal lobes.
+- Distributed semantic association cortex.
+- Sensory and functional spokes.
+- Bilateral temporal semantic networks.
+
+**Possible mathematical operations:**
+
+Suppose several concepts have feature representations:
+
+\[
+C_1,C_2,\ldots,C_n
+\]
+
+The system can extract their common features:
+
+\[
+F_{\text{common}}=
+\bigcap_{i=1}^{n}F(C_i)
+\]
+
+In a continuous representation, the same operation can be approximated by a weighted prototype:
+
+\[
+P=
+\frac{\sum_{i=1}^{n}w_iC_i}
+{\sum_{i=1}^{n}w_i}
+\]
+
+Where \(P\) represents a generalized category prototype.
+
+A concept's distinctive properties can be calculated relative to that prototype:
+
+\[
+D_i=C_i-P
+\]
+
+This is a useful abstraction for representing both shared and differentiating information.
+
+The algorithm can also estimate conceptual similarity:
+
+\[
+\operatorname{Similarity}(C_i,C_j)=
+\frac{C_i\cdot C_j}
+{\|C_i\|\|C_j\|}
+\]
+
+**Algorithmic operations:**
+
+1. Retrieve related conceptual representations.
+2. Identify shared features.
+3. Identify distinctive features.
+4. Estimate conceptual similarity.
+5. Construct broader category representations.
+6. Preserve specific features for subordinate categories.
+7. Organize concepts into a hierarchy of general and specific meanings.
+
+**Output:** A hierarchical conceptual representation containing both general categories and specific concepts.
+
+**Why this stage matters clinically:**
+
+Semantic dementia demonstrates what can happen when the bilateral ATLs progressively deteriorate. Patients may lose detailed conceptual knowledge and retreat toward increasingly generic categories. For example, they may identify a zebra only as an animal.
+
+The resulting pattern is consistent with a loss of detailed semantic representations and increasingly poor conceptual differentiation.
+
+In the algorithm, we can simulate this by progressively reducing the fidelity of the shared semantic representation and its distinctive feature information.
+
+---
+
+## Stage 8. Associative semantic network construction
+
+**Primary function:** Connect concepts using learned relationships.
+
+Concepts do not exist independently.
+
+For instance:
+
+- Musician → instrument.
+- Violin → orchestra.
+- Musician → performance.
+- Violin → strings.
+- Orchestra → conductor.
+
+These connections help the brain construct meaningful relationships between separate concepts.
+
+An important distinction is that association is not necessarily the same as composition.
+
+The fact that *musician* and *violin* are associated does not automatically mean the system has understood a particular relationship between them. It must still determine what the musician is doing with the violin.
+
+**Biological components:**
+
+- Anterior temporal semantic system.
+- Middle temporal gyrus.
+- Angular gyrus.
+- Distributed association cortex.
+
+**Possible mathematical operations:**
+
+Represent the semantic network as a weighted graph:
+
+\[
+G=(V,E,W)
+\]
+
+Where:
+
+- \(V\): conceptual nodes.
+- \(E\): relationships between concepts.
+- \(W\): association strengths.
+
+For two concepts \(C_i\) and \(C_j\):
+
+\[
+A_{ij}=w_{ij}
+\]
+
+The strength of an association may be updated through experience:
+
+\[
+w_{ij}^{t+1}
+=
+w_{ij}^{t}
++\eta\Delta w_{ij}
+\]
+
+One possible learning approximation is:
+
+\[
+\Delta w_{ij}=a_i a_j
+\]
+
+Where \(a_i\) and \(a_j\) represent the activation of two co-occurring concepts.
+
+However, not all co-occurrence establishes a meaningful semantic relationship. A realistic model must distinguish repeated coincidence from functional, causal, thematic, and categorical relationships.
+
+**Algorithmic operations:**
+
+1. Identify activated concepts.
+2. Retrieve their existing semantic associations.
+3. Calculate association strengths.
+4. Determine whether the associations are relevant to the current context.
+5. Activate related concepts.
+6. Strengthen useful connections through learning.
+7. Maintain distinct relationship types.
+8. Forward the resulting network to compositional processing.
+
+**Output:** A context-sensitive network of associated concepts.
+
+---
+
+## Stage 9. Linguistic structure and relational-frame construction
+
+**Primary function:** Establish the structural arrangement in which words will be combined.
+
+Consider:
+
+"The musician tuned the instrument."
+
+The brain must identify more than three independent concepts.
+
+It must establish that:
+
+- *Musician* occupies the subject position.
+- *Tuned* is the principal action.
+- *Instrument* occupies the object position.
+
+The syntactic structure helps constrain how the semantic representations can be combined.
+
+**Biological components:**
+
+- Left inferior frontal gyrus.
+- Posterior temporal cortex.
+- Temporal language networks.
+- Frontal-temporal connectivity.
+
+**Possible mathematical operations:**
+
+Represent the structural organization as a graph:
+
+\[
+G_s=(V_s,E_s)
+\]
+
+Where:
+
+- \(V_s\): linguistic units.
+- \(E_s\): structural relationships.
+
+For example:
+
+\[
+\text{Musician}
+\xrightarrow{\text{subject-of}}
+\text{Tuned}
+\]
+
+\[
+\text{Instrument}
+\xrightarrow{\text{object-of}}
+\text{Tuned}
+\]
+
+A syntactic parser could also assign structural probabilities:
+
+\[
+P(G_s\mid W)
+\]
+
+Where \(W\) is the observed word sequence.
+
+The semantic system receives this structure as a constraint, not necessarily as a completed interpretation.
+
+**Algorithmic operations:**
+
+1. Identify linguistic units.
+2. Retrieve their grammatical information.
+3. Detect structural relationships.
+4. Determine candidate phrase boundaries.
+5. Establish possible subject, object, modifier, and predicate relations.
+6. Preserve alternative structures when ambiguity exists.
+7. Supply the resulting structural frame to semantic composition.
+
+**Output:** A provisional structural representation that constrains the combination of meanings.
+
+---
+
+## Stage 10. Early semantic composition in the ATL
+
+**Primary function:** Combine two or more conceptual representations into an initial larger meaning.
+
+This is different from simply activating associated concepts.
+
+Consider:
+
+"Musical instrument."
+
+The brain must combine the meaning of *musical* with the meaning of *instrument*.
+
+It constructs a more specific conceptual representation.
+
+Similarly:
+
+"Red violin."
+
+The resulting representation is not merely a red concept plus a violin concept. It is a violin constrained by the property of being red.
+
+**Biological components:**
+
+- Left anterior temporal lobe.
+- Right anterior temporal lobe.
+- Frontal-temporal language networks.
+
+**Possible mathematical operations:**
+
+One possible approximation is feature-wise modification:
+
+\[
+C_{\text{phrase}}=
+C_{\text{noun}}\odot M_{\text{modifier}}
+\]
+
+Where:
+
+- \(C_{\text{noun}}\): noun representation.
+- \(M_{\text{modifier}}\): modifier representation.
+- \(\odot\): element-wise interaction.
+
+Alternatively, use a learned composition function:
+
+\[
+C_{\text{phrase}}=
+f_{\text{compose}}(C_1,C_2)
+\]
+
+This may involve:
+
+- Feature intersection.
+- Feature weighting.
+- Attribute modification.
+- Relationship encoding.
+- Context-dependent transformation.
+
+For example:
+
+\[
+C_{\text{red violin}}=
+f(C_{\text{red}},C_{\text{violin}})
+\]
+
+A simple intersection model might be:
+
+\[
+F_{\text{phrase}}=
+F_{\text{red}}\cap F_{\text{violin}}
+\]
+
+But a real computational model should not depend solely on set intersection, because a modifier often changes the interpretation of a concept instead of merely retaining existing shared features.
+
+**Algorithmic operations:**
+
+1. Receive the current conceptual representation.
+2. Retrieve the preceding modifier or related concept.
+3. Determine the relevant compositional relationship.
+4. Identify which features are modified.
+5. Identify which features remain unchanged.
+6. Apply the compositional transformation.
+7. Construct a provisional phrase-level representation.
+8. Forward the representation to broader semantic integration.
+
+**Time-course consideration:**
+
+MEG research has repeatedly found early left ATL responses around 200–250 ms after noun onset in certain adjective–noun composition tasks. The precise effect depends on the construction and conceptual properties involved; it should not be interpreted as a universal deadline for every type of semantic composition. <Cite refs={["turn260821search0","turn260821search2","turn260821search3"]}/>
+
+---
+
+## Stage 11. Thematic-role identification
+
+**Primary function:** Determine who performs an action, what receives the action, and what other participants contribute to an event.
+
+This is one of the most important mechanisms of sentence comprehension.
+
+Consider:
+
+"The musician tuned the instrument."
+
+The system must construct:
+
+| Element | Semantic role |
+|---|---|
+| Musician | Agent |
+| Tuned | Action or event |
+| Instrument | Patient/theme |
+
+A slightly more complex example:
+
+"The musician tuned the instrument with a device."
+
+Now the algorithm must also represent an instrument role in the event-theoretic sense: the device is the means used to perform the action.
+
+Note that *instrument* as a semantic category and *instrument* as a thematic role are two different things.
+
+**Biological components:**
+
+- Posterior middle temporal gyrus.
+- Anterior temporal lobes.
+- Inferior frontal gyrus.
+- Angular gyrus.
+- Frontal-temporal language networks.
+
+**Possible mathematical operations:**
+
+Represent the event as a structured object:
+
+\[
+E=(V,A,P,I,L,T)
+\]
+
+Where:
+
+- \(V\): event or verb.
+- \(A\): agent.
+- \(P\): patient or theme.
+- \(I\): instrument or means.
+- \(L\): location.
+- \(T\): time.
+
+The system must determine the probability of assigning a concept to a particular role:
+
+\[
+P(r_j\mid C_i,V,\text{Context})
+\]
+
+For example:
+
+\[
+P(\text{Agent}=\text{musician}\mid
+\text{tune},\text{context})
+\]
+
+The most plausible assignments can be determined by optimizing a joint compatibility function:
+
+\[
+E^*=
+\arg\max_E
+\sum_j
+\phi_j(E,\text{Context})
+\]
+
+Here, \(\phi_j\) represents the compatibility of each role assignment with the event.
+
+**Algorithmic operations:**
+
+1. Identify the event or action.
+2. Retrieve its possible participant roles.
+3. Identify available concepts.
+4. Calculate the suitability of each concept for each role.
+5. Establish agent, patient, instrument, recipient, and other relationships.
+6. Construct a structured event representation.
+7. Preserve uncertainty when more than one interpretation is possible.
+
+**Output:** An event representation containing concepts and their thematic roles.
+
+---
+
+## Stage 12. Selectional restrictions and semantic compatibility
+
+**Primary function:** Determine whether the concepts participating in an event are semantically compatible.
+
+For example:
+
+"The musician tuned the violin."
+
+This is highly plausible.
+
+"The musician tuned the sandwich."
+
+This is syntactically valid but semantically anomalous.
+
+The word *tuned* activates expectations for objects that can be tuned. When the system receives *sandwich*, the resulting combination conflicts with typical semantic expectations.
+
+**Biological components:**
+
+- Middle temporal semantic regions.
+- Anterior temporal lobes.
+- Left inferior frontal gyrus.
+- Semantic control network.
+
+**Possible mathematical operations:**
+
+Define a compatibility function:
+
+\[
+S(V,O)
+\]
+
+Where:
+
+- \(V\): verb or action.
+- \(O\): candidate object.
+
+A more detailed conditional probability is:
+
+\[
+P(O\mid V,\text{Context})
+\]
+
+For example:
+
+\[
+P(\text{violin}\mid\text{tuned})
+>
+P(\text{sandwich}\mid\text{tuned})
+\]
+
+The semantic compatibility score can be computed using:
+
+\[
+S(V,O)=
+\frac{V\cdot O}{\|V\|\|O\|}
+\]
+
+Alternatively, the model can use a learned selectional-preference function:
+
+\[
+S(V,O)=f_\theta(V,O)
+\]
+
+The anomaly score could be:
+
+\[
+A=-\log P(O\mid V,\text{Context})
+\]
+
+A high anomaly score indicates that the observed object was unexpected.
+
+**Algorithmic operations:**
+
+1. Retrieve the selectional preferences of the action.
+2. Activate candidate objects.
+3. Estimate the suitability of each object.
+4. Compare the actual object with expected objects.
+5. Calculate compatibility.
+6. Identify anomalous combinations.
+7. Send significant conflicts to the semantic-control system.
+8. Preserve the original input instead of automatically discarding an unusual combination.
+
+The last operation is important. An unusual sentence may be metaphorical, humorous, or technically meaningful.
+
+For example:
+
+"The musician tuned the engine."
+
+This could be unusual in a musical context but meaningful in an automotive context.
+
+The system must distinguish semantic anomaly from contextually unusual but legitimate usage.
+
+**Output:** A compatibility score and possible anomaly signals.
+
+---
+
+## Stage 13. Contextual activation and anticipatory prediction
+
+**Primary function:** Predict which concepts are likely to appear next, based on the current context.
+
+Semantic comprehension is not exclusively reactive.
+
+The brain can activate likely upcoming concepts before they are actually presented.
+
+Consider:
+
+"She tuned her violin before the concert."
+
+Before hearing the word *concert*, the preceding words can activate concepts related to:
+
+- Music.
+- Performances.
+- Audiences.
+- Orchestras.
+- Musical instruments.
+
+These concepts become more accessible because of their relationship with the preceding context.
+
+**Biological components:**
+
+- Anterior temporal semantic system.
+- Left and right temporal association regions.
+- Angular gyrus.
+- Medial temporal memory system.
+- Default-mode network.
+- Inferior frontal gyrus under demanding conditions.
+
+**Possible mathematical operations:**
+
+Maintain a contextual state:
+
+\[
+H_t=\text{Current semantic context}
+\]
+
+Predict the next concept:
+
+\[
+P(C_{t+1}\mid H_t)
+\]
+
+The predicted representation can be calculated as:
+
+\[
+\hat{C}_{t+1}=
+\sum_{i=1}^{n}
+P(C_i\mid H_t)C_i
+\]
+
+Where each candidate contributes according to its predicted probability.
+
+For example:
+
+\[
+P(\text{concert}\mid
+\text{She tuned her violin}) 
+\]
+
+may be higher than:
+
+\[
+P(\text{sandwich}\mid
+\text{She tuned her violin})
+\]
+
+The system can also calculate predictive uncertainty:
+
+\[
+H(P)=-\sum_i P(C_i)\log P(C_i)
+\]
+
+Where \(H(P)\) is entropy.
+
+Low entropy means that the system has a relatively concentrated prediction.
+
+High entropy means that several possible continuations remain plausible.
+
+**Algorithmic operations:**
+
+1. Retrieve the current contextual representation.
+2. Identify concepts already mentioned.
+3. Retrieve associations from semantic memory.
+4. Combine these associations with event expectations.
+5. Generate candidate upcoming concepts.
+6. Calculate their probabilities.
+7. Activate likely conceptual representations.
+8. Preserve alternative candidates.
+9. Update predictions whenever new information arrives.
+
+**Output:** A probabilistic prediction distribution over upcoming concepts.
+
+---
+
+## Stage 14. Dynamic context-dependent concept interpretation
+
+**Primary function:** Modify the interpretation of a word according to the context in which it occurs.
+
+A concept does not always activate exactly the same features.
+
+For example, consider the word *bark*.
+
+In:
+
+"The dog started barking."
+
+The system should activate the vocalization meaning.
+
+In:
+
+"The tree has damaged bark."
+
+The system should activate the outer-layer meaning.
+
+The physical word is identical, but its interpretation depends on contextual information.
+
+**Biological components:**
+
+- Bilateral anterior temporal lobes.
+- Middle temporal regions.
+- Inferior frontal semantic-control network.
+- Angular gyrus.
+- Distributed language networks.
+
+**Possible mathematical operations:**
+
+Represent the initial lexical representation as:
+
+\[
+C_{\text{word}}
+\]
+
+Represent the context as:
+
+\[
+H_{\text{context}}
+\]
+
+Calculate the context-conditioned concept:
+
+\[
+C_{\text{conditioned}}=
+f(C_{\text{word}},H_{\text{context}})
+\]
+
+One implementation could be a gating operation:
+
+\[
+g=\sigma(W_gH_{\text{context}}+b_g)
+\]
+
+\[
+C_{\text{conditioned}}=
+g\odot C_{\text{word}}
+\]
+
+Here, \(g\) determines which features receive more or less influence from the context.
+
+The model can also use Bayesian interpretation:
+
+\[
+P(M_i\mid W,C)=
+\frac{P(C\mid M_i,W)P(M_i\mid W)}
+{\sum_jP(C\mid M_j,W)P(M_j\mid W)}
+\]
+
+Where:
+
+- \(W\): observed word.
+- \(M_i\): one possible meaning.
+- \(C\): contextual information.
+
+**Algorithmic operations:**
+
+1. Identify the word's possible meanings.
+2. Retrieve their conceptual representations.
+3. Retrieve the current contextual representation.
+4. Compare each interpretation with context.
+5. Calculate the posterior probability of each meaning.
+6. Increase the activation of compatible interpretations.
+7. Reduce the activation of incompatible interpretations.
+8. Send unresolved competition to semantic control.
+
+**Output:** A context-conditioned conceptual representation.
+
+---
+
+## Stage 15. Semantic ambiguity and polysemy competition
+
+**Primary function:** Manage multiple possible meanings when a word or expression supports different interpretations.
+
+This stage is closely related to contextual interpretation, but its specific purpose is to maintain and resolve competing meanings.
+
+For example:
+
+"She painted the bark."
+
+The word *bark* can initially activate different meanings.
+
+The system must determine which interpretation best fits the surrounding sentence and world knowledge.
+
+A similar situation occurs with polysemous words whose meanings are related rather than completely unrelated.
+
+**Biological components:**
+
+- Temporal semantic networks.
+- Left inferior frontal gyrus.
+- Anterior temporal lobes.
+- Semantic control network.
+
+**Possible mathematical operations:**
+
+Represent each interpretation as a candidate:
+
+\[
+M=\{M_1,M_2,\ldots,M_n\}
+\]
+
+Calculate an activation score:
+
+\[
+A_i=
+\lambda_1L_i+
+\lambda_2C_i+
+\lambda_3W_i+
+\lambda_4P_i
+\]
+
+Where:
+
+- \(L_i\): lexical compatibility.
+- \(C_i\): contextual compatibility.
+- \(W_i\): world-knowledge compatibility.
+- \(P_i\): predictive compatibility.
+
+Candidate competition can be modeled using a softmax distribution:
+
+\[
+P(M_i)=
+\frac{e^{A_i/T}}
+{\sum_j e^{A_j/T}}
+\]
+
+Where \(T\) controls the sharpness of selection.
+
+The system should not necessarily commit to one interpretation immediately.
+
+When evidence is insufficient, it should preserve uncertainty.
+
+**Algorithmic operations:**
+
+1. Detect multiple candidate meanings.
+2. Activate their corresponding semantic representations.
+3. Retrieve contextual evidence.
+4. Calculate the compatibility of each candidate.
+5. Estimate competition between interpretations.
+6. Maintain candidate probabilities.
+7. Select a sufficiently supported interpretation when appropriate.
+8. Request further contextual information when uncertainty remains.
+
+**Output:** A selected interpretation or an unresolved distribution of possible meanings.
+
+---
+
+## Stage 16. Semantic control and competitive selection
+
+**Primary function:** Control the retrieval and selection of relevant semantic information when several candidates compete.
+
+The brain sometimes needs to retrieve an unusual or less accessible meaning.
+
+For example:
+
+"Name an instrument used in a medical examination."
+
+The concept *instrument* activates many possible objects.
+
+However, the context requires a specific subset.
+
+The semantic-control network helps constrain retrieval and suppress irrelevant competitors.
+
+This is not the same as storing the semantic knowledge itself.
+
+A useful distinction is:
+
+- ATL: contributes to semantic representation.
+- Spokes: provide modality-specific information.
+- IFG and related control regions: help regulate retrieval and selection.
+- AG and posterior temporal regions: participate in combining and integrating semantic information.
+
+**Biological components:**
+
+- Left inferior frontal gyrus, particularly BA45/47.
+- Posterior middle temporal gyrus.
+- Frontotemporal connections.
+- Broader frontoparietal executive network.
+
+**Possible mathematical operations:**
+
+Suppose the system has several candidates:
+
+\[
+C=\{C_1,C_2,\ldots,C_n\}
+\]
+
+Calculate the relevance of each candidate:
+
+\[
+R_i=
+\lambda_c C_i^{\text{context}}
++\lambda_t C_i^{\text{task}}
++\lambda_s C_i^{\text{semantic}}
+\]
+
+Then calculate a selection probability:
+
+\[
+P(C_i)=
+\frac{e^{R_i}}
+{\sum_j e^{R_j}}
+\]
+
+An inhibition component can reduce irrelevant activation:
+
+\[
+A_i'=A_i-\beta I_i
+\]
+
+Where:
+
+- \(A_i\): original activation.
+- \(I_i\): estimated inhibition directed at an irrelevant candidate.
+- \(\beta\): inhibition strength.
+
+A more sophisticated control system can use a relevance-dependent gate:
+
+\[
+G_i=\sigma(R_i-\tau)
+\]
+
+\[
+A_i^{*}=G_iA_i
+\]
+
+Where \(\tau\) is the selection threshold.
+
+**Algorithmic operations:**
+
+1. Detect excessive candidate competition.
+2. Estimate the difficulty of identifying the relevant meaning.
+3. Retrieve task requirements.
+4. Evaluate the relevance of competing representations.
+5. Increase the influence of relevant candidates.
+6. Suppress irrelevant or misleading candidates.
+7. Re-evaluate the remaining candidates.
+8. Return the selected information to compositional processing.
+9. Repeat when another ambiguity or conflict appears.
+
+**Output:** A controlled, task-relevant semantic representation.
+
+---
+
+## Stage 17. Angular gyrus and posterior temporal integration
+
+**Primary function:** Integrate semantic information across concepts and over larger linguistic structures.
+
+The angular gyrus is particularly interesting because its contribution cannot be reduced simply to retrieving individual word meanings.
+
+It has been proposed to help integrate semantic information across multiple concepts, facilitating access to combined and contextualized meaning.
+
+For example:
+
+"The musician carefully tuned the violin before performing."
+
+The system must combine:
+
+- The person.
+- The action.
+- The object.
+- The manner.
+- The temporal relationship.
+- The relationship with the later performance.
+
+This requires a larger representation than simply combining two adjacent words.
+
+**Biological components:**
+
+- Left angular gyrus.
+- Posterior inferior parietal cortex.
+- Posterior middle temporal gyrus.
+- Temporal-parietal association networks.
+- Default-mode network.
+
+**Possible mathematical operations:**
+
+Represent each processed semantic unit as:
+
+\[
+C_1,C_2,\ldots,C_n
+\]
+
+Calculate the integrated contextual representation:
+
+\[
+G_t=f_{\text{AG}}(C_1,C_2,\ldots,C_n,H_t)
+\]
+
+One simplified model uses weighted integration:
+
+\[
+G_t=\sum_{i=1}^{n}\alpha_iC_i
+\]
+
+However, this would lose information about the roles and relationships between concepts.
+
+A more useful formulation is:
+
+\[
+G_t=
+f\left(
+\sum_iW_iC_i+
+\sum_{i,j}W_{ij}\phi(C_i,C_j)
+\right)
+\]
+
+Where:
+
+- \(W_i\): contribution of each concept.
+- \(W_{ij}\): contribution of relationships between concepts.
+- \(\phi(C_i,C_j)\): relational representation.
+
+This permits the system to distinguish between merely mentioning two concepts and integrating them into one meaningful structure.
+
+**Algorithmic operations:**
+
+1. Receive phrase-level and event-level representations.
+2. Retrieve relevant relationships between concepts.
+3. Integrate information across multiple linguistic units.
+4. Preserve relational information.
+5. Combine local meanings into larger contextual structures.
+6. Maintain connections with the broader discourse representation.
+7. Forward the result to the next integration stage.
+
+**Output:** A larger contextual semantic representation.
+
+**Important experimental consideration:**
+
+The synthesis of five fMRI studies by Kuhnke and colleagues found separable contributions of semantic processing demand and task difficulty to angular-gyrus responses. This supports treating semantic processing and general effort as distinguishable computational factors, rather than assuming that every AG response simply reflects task difficulty. <Cite refs={["turn243095search3","turn243095search4"]}/>
+
+---
+
+## Stage 18. Posterior temporal relational integration
+
+**Primary function:** Refine the relationships between linguistic concepts, particularly verbs and their arguments.
+
+Consider:
+
+"The musician gave the violin to the student."
+
+The system must understand:
+
+- Who performed the action?
+- What was transferred?
+- Who received it?
+
+The posterior middle temporal gyrus has been implicated in semantic processing and verb-argument relationships.
+
+It can be modeled as contributing to the integration of linguistic and relational information.
+
+**Biological components:**
+
+- Posterior middle temporal gyrus.
+- Posterior temporal association cortex.
+- Anterior temporal lobes.
+- Inferior frontal gyrus.
+
+**Possible mathematical operations:**
+
+Construct a relation matrix:
+
+\[
+R_{ij}=f(C_i,C_j,V)
+\]
+
+Where \(V\) is the action or relational predicate.
+
+A more explicit representation is a typed relationship:
+
+\[
+R=(C_{\text{source}},V,C_{\text{theme}},C_{\text{recipient}})
+\]
+
+For example:
+
+\[
+R=(\text{musician},\text{give},\text{violin},\text{student})
+\]
+
+A relationship can be assigned a confidence:
+
+\[
+P(R\mid C_1,C_2,\ldots,V)
+\]
+
+**Algorithmic operations:**
+
+1. Identify predicates and their possible argument structures.
+2. Retrieve possible semantic participants.
+3. Identify relationships between participants.
+4. Calculate compatibility.
+5. Organize the relationships into a relational structure.
+6. Integrate the structure with the current event model.
+
+**Output:** A refined representation of relationships between concepts.
+
+---
+
+## Stage 19. Semantic prediction-error calculation
+
+**Primary function:** Compare incoming semantic information with the system's previous predictions.
+
+Prediction is useful only if the brain can compare the prediction with what actually arrives.
+
+Suppose the system predicts:
+
+"She tuned her violin before the concert."
+
+But the next word is:
+
+"Sandwich."
+
+The system detects a discrepancy between the predicted continuation and the received information.
+
+**Biological components:**
+
+- Temporal semantic networks.
+- Inferior frontal regions.
+- Distributed cortical networks associated with semantic integration.
+- Networks associated with the N400 response.
+
+**Possible mathematical operations:**
+
+Let the predicted representation be:
+
+\[
+\hat{C}_t
+\]
+
+And the actual representation be:
+
+\[
+C_t
+\]
+
+The prediction error can be calculated as:
+
+\[
+E_t=C_t-\hat{C}_t
+\]
+
+Its magnitude can be calculated using:
+
+\[
+\epsilon_t=\|C_t-\hat{C}_t\|
+\]
+
+Alternatively, when the prediction is probabilistic:
+
+\[
+PE_t=-\log P(C_t\mid H_t)
+\]
+
+The second formulation measures the surprise of the observed concept under the contextual model.
+
+The system can then update its expectations:
+
+\[
+H_{t+1}=H_t+\eta f(E_t)
+\]
+
+This represents a simplified predictive-update operation.
+
+**Algorithmic operations:**
+
+1. Retrieve the predicted conceptual representation.
+2. Receive the actual conceptual representation.
+3. Compare the two.
+4. Calculate the discrepancy.
+5. Identify which semantic expectations were violated.
+6. Determine whether the discrepancy is meaningful.
+7. Update the current contextual interpretation.
+8. Send large or unresolved discrepancies for further integration or control.
+
+**Output:** A prediction-error representation.
+
+---
+
+## Stage 20. N400-related semantic integration and evaluation
+
+**Primary function:** Reflect the relative difficulty of accessing and integrating a concept within its current semantic context.
+
+The N400 is an electrophysiological response associated with semantic processing.
+
+Words that are unexpected or difficult to integrate into context tend to produce larger negative-going N400 responses.
+
+For example:
+
+"The musician played the violin."
+
+This is highly expected.
+
+"The musician played the refrigerator."
+
+This is less semantically expected.
+
+The brain must process the incoming word and evaluate its relationship with the existing context.
+
+**Biological components:**
+
+- Middle and inferior temporal cortical regions.
+- Temporal association networks.
+- Inferior prefrontal regions.
+- Distributed cortical generators.
+
+**Possible mathematical operations:**
+
+A simplified computational model of integration difficulty could be:
+
+\[
+D_{\text{semantic}}=
+-\log P(C_t\mid H_t)
+\]
+
+The magnitude of a simulated N400-related signal could be:
+
+\[
+N400_t=
+-\alpha D_{\text{semantic}}
+\]
+
+Here, \(\alpha\) is a scaling factor.
+
+This equation is illustrative, not an established neural equation for generating the N400.
+
+More generally:
+
+\[
+N400=f(
+\text{lexical accessibility},
+\text{contextual expectancy},
+\text{semantic compatibility},
+\text{integration demands}
+)
+\]
+
+Importantly, the N400 does not simply indicate that a sentence is incorrect. It is sensitive to the relationship between incoming information and contextual expectations.
+
+**Algorithmic operations:**
+
+1. Receive the incoming concept.
+2. Retrieve its lexical and conceptual representations.
+3. Retrieve the existing contextual model.
+4. Estimate semantic expectancy.
+5. Evaluate contextual compatibility.
+6. Estimate integration difficulty.
+7. Generate an N400-related response signal.
+8. Update the contextual representation.
+
+**Output:** An integration-difficulty signal and an updated semantic state.
+
+---
+
+## Stage 21. Late semantic reanalysis and reinterpretation
+
+**Primary function:** Reconsider the current interpretation when initial processing does not produce a satisfactory result.
+
+Sometimes the brain must revise an earlier interpretation.
+
+For example:
+
+"The musician tuned the instrument that was broken."
+
+The system initially integrates *instrument* with the tuning action. It must subsequently incorporate the additional relative clause.
+
+In other cases, the system encounters an ambiguity or semantic anomaly and must reconsider its earlier interpretation.
+
+**Biological components:**
+
+- Inferior frontal gyrus.
+- Posterior temporal cortex.
+- Distributed language networks.
+- Frontal executive systems.
+
+**Possible mathematical operations:**
+
+Maintain an initial interpretation:
+
+\[
+I_0
+\]
+
+New evidence arrives:
+
+\[
+E_{\text{new}}
+\]
+
+The revised interpretation can be calculated using:
+
+\[
+P(I\mid E_{\text{new}},H)
+\]
+
+Alternatively, the system can evaluate candidate interpretations using an optimization function:
+
+\[
+I^*=
+\arg\max_I
+\left[
+S_{\text{semantic}}(I)+
+S_{\text{syntactic}}(I)+
+S_{\text{context}}(I)
+\right]
+\]
+
+A computational reanalysis operation can compare the previous interpretation with the revised one:
+
+\[
+\Delta I=I^*-I_0
+\]
+
+**Algorithmic operations:**
+
+1. Detect unresolved semantic or structural conflicts.
+2. Retrieve alternative interpretations.
+3. Reassess the earlier structural and conceptual decisions.
+4. Incorporate newly available evidence.
+5. Recalculate the plausibility of alternative interpretations.
+6. Select or retain the most appropriate interpretation.
+7. Update the integrated semantic representation.
+
+**Output:** A revised interpretation and a record of the semantic changes.
+
+A late positivity such as the P600 can sometimes accompany reanalysis, but it is not an exclusive or universal indicator of semantic reinterpretation.
+
+---
+
+# Part 3 — Memory, long-term integration, and adaptive learning
+
+## Stage 22. Episodic memory association
+
+**Primary function:** Connect the currently processed concepts with previously experienced events.
+
+Semantic memory provides general knowledge, whereas episodic memory helps the brain retrieve specific experiences.
+
+For example, someone hearing the word *violin* might retrieve:
+
+- General knowledge about violins.
+- A particular concert they attended.
+- A person they previously watched playing a violin.
+- An occasion when they personally played one.
+
+The hippocampal memory system helps bind the elements of specific experiences.
+
+**Biological components:**
+
+- Hippocampus.
+- Medial temporal lobe.
+- Entorhinal cortex.
+- Distributed cortical memory networks.
+- Anterior temporal semantic system.
+
+**Possible mathematical operations:**
+
+Represent an experience as:
+
+\[
+E_i=(C_i,A_i,T_i,L_i,K_i)
+\]
+
+Where:
+
+- \(C_i\): concepts involved.
+- \(A_i\): actions.
+- \(T_i\): temporal information.
+- \(L_i\): location.
+- \(K_i\): contextual information.
+
+Calculate the similarity between the current representation and a stored experience:
+
+\[
+S(E_i,H_t)=
+\frac{E_i\cdot H_t}
+{\|E_i\|\|H_t\|}
+\]
+
+The system can retrieve candidate memories according to their similarity and contextual relevance:
+
+\[
+P(E_i\mid H_t)
+\]
+
+A simplified associative retrieval model is:
+
+\[
+R=\sum_i w_iE_i
+\]
+
+Where \(w_i\) represents the retrieval strength of each stored experience.
+
+**Algorithmic operations:**
+
+1. Receive the current semantic representation.
+2. Identify concepts and relationships that may be associated with previous experiences.
+3. Generate retrieval cues.
+4. Search episodic memory.
+5. Estimate the similarity of retrieved experiences.
+6. Retrieve relevant contextual information.
+7. Bind relevant episodic information to the current interpretation.
+8. Preserve the distinction between general knowledge and a specific past experience.
+
+**Output:** A semantic representation enriched with relevant episodic information.
+
+---
+
+## Stage 23. Schema activation and knowledge-based inference
+
+**Primary function:** Use previously learned structures of knowledge to infer information that has not been explicitly stated.
+
+Consider:
+
+"The musician entered the stage, adjusted the violin, and raised the bow."
+
+The brain may infer that a musical performance is about to begin.
+
+The word *performance* does not necessarily need to appear.
+
+The system uses previously learned event structures to complete the interpretation.
+
+**Biological components:**
+
+- Ventromedial prefrontal cortex.
+- Medial temporal memory system.
+- Anterior temporal semantic networks.
+- Angular gyrus.
+- Default-mode network.
+
+**Possible mathematical operations:**
+
+Represent a learned schema as:
+
+\[
+S=(C,R,A,E)
+\]
+
+Where:
+
+- \(C\): typical concepts.
+- \(R\): relationships.
+- \(A\): typical actions.
+- \(E\): expected event structure.
+
+When a partial situation is received, calculate:
+
+\[
+P(S\mid H_t)
+\]
+
+Then use the selected schema to infer missing information:
+
+\[
+\hat{X}=
+\arg\max_X P(X\mid S,H_t)
+\]
+
+This allows the system to predict reasonable but unstated information.
+
+However, inferred information must remain distinguishable from explicitly observed or communicated information.
+
+**Algorithmic operations:**
+
+1. Retrieve the current integrated representation.
+2. Identify familiar conceptual arrangements.
+3. Search for matching stored schemas.
+4. Calculate schema compatibility.
+5. Retrieve expected relationships and events.
+6. Infer missing information.
+7. Assign confidence to every inference.
+8. Integrate sufficiently supported inferences into the contextual model.
+
+**Output:** An interpretation enriched with knowledge-based inferences.
+
+---
+
+## Stage 24. Discourse-level semantic integration
+
+**Primary function:** Combine information across multiple sentences to maintain a coherent understanding of an extended conversation or narrative.
+
+Consider:
+
+"John bought a violin yesterday. He had wanted one for several years. Today he took it to a music school."
+
+The system must understand that:
+
+- John is the same person in all three sentences.
+- The pronoun *he* refers to John.
+- *One* refers to a violin.
+- *It* also refers to the previously mentioned violin.
+- The current sentence continues the earlier situation.
+
+This is substantially more complex than combining two words.
+
+**Biological components:**
+
+- Angular gyrus.
+- Precuneus.
+- Posterior cingulate cortex.
+- Medial prefrontal cortex.
+- Anterior temporal lobes.
+- Default-mode network.
+- Hippocampal system.
+
+**Possible mathematical operations:**
+
+Maintain a discourse state:
+
+\[
+D_t=(C_t,R_t,E_t,M_t)
+\]
+
+Where:
+
+- \(C_t\): active concepts.
+- \(R_t\): relationships.
+- \(E_t\): event structure.
+- \(M_t\): relevant memories.
+
+When a new sentence arrives:
+
+\[
+D_{t+1}=f(D_t,S_{t+1})
+\]
+
+The system must resolve references:
+
+\[
+P(\text{Referent}=C_i\mid
+\text{Pronoun},D_t)
+\]
+
+It must also preserve event relationships over time.
+
+A simplified recurrent update is:
+
+\[
+H_t=\phi(W_xX_t+W_hH_{t-1})
+\]
+
+Where:
+
+- \(X_t\): new sentence representation.
+- \(H_{t-1}\): previous discourse state.
+- \(H_t\): updated discourse representation.
+
+**Algorithmic operations:**
+
+1. Retrieve the previous discourse representation.
+2. Receive the newly integrated sentence.
+3. Identify references to previously mentioned concepts.
+4. Resolve pronouns and repeated conceptual references.
+5. Connect new events with existing events.
+6. Update temporal and causal relationships.
+7. Identify changes in the participants or situation.
+8. Preserve the evolving discourse representation.
+9. Update the global contextual state.
+
+**Output:** A coherent representation of the conversation or narrative.
+
+---
+
+## Stage 25. Executive modulation of semantic processing
+
+**Primary function:** Adjust semantic processing according to task requirements, cognitive effort, attention, and available resources.
+
+Not all comprehension tasks require the same degree of processing.
+
+Compare:
+
+1. Recognizing a familiar object.
+2. Explaining an abstract concept.
+3. Selecting an unusual interpretation of an ambiguous word.
+4. Understanding an unfamiliar metaphor.
+5. Identifying subtle differences between two similar objects.
+
+The fifth task may require more detailed semantic discrimination than the first.
+
+The brain can adjust the amount of control and processing allocated to a task.
+
+**Biological components:**
+
+- Frontoparietal executive network.
+- Inferior frontal gyrus.
+- Posterior parietal cortex.
+- Anterior cingulate and associated control networks.
+- Semantic association networks.
+
+**Possible mathematical operations:**
+
+Define task demand:
+
+\[
+Q_t=
+f(
+\text{ambiguity},
+\text{semantic uncertainty},
+\text{specificity},
+\text{competition}
+)
+\]
+
+Define available processing resources:
+
+\[
+R_t
+\]
+
+Then calculate an allocation factor:
+
+\[
+A_t=
+\frac{R_t}{Q_t+\epsilon}
+\]
+
+This is a simplified resource-allocation model, not a measured neural equation.
+
+The system can distribute available resources between processing components:
+
+\[
+R_t=\sum_i r_i
+\]
+
+Where \(r_i\) represents the resources allocated to a particular computational subsystem.
+
+The allocation policy can be:
+
+\[
+r_i^*=
+\arg\max_{r_i}
+U(r_i,Q_t)
+\]
+
+Where \(U\) is the expected processing utility.
+
+**Algorithmic operations:**
+
+1. Detect the current task.
+2. Estimate semantic complexity.
+3. Estimate ambiguity and uncertainty.
+4. Determine whether controlled retrieval is necessary.
+5. Allocate additional resources when needed.
+6. Adjust the influence of the IFG and related control mechanisms.
+7. Avoid unnecessary controlled processing when automatic comprehension is sufficient.
+8. Re-evaluate resource allocation as the task develops.
+
+**Output:** An adaptive semantic-processing configuration.
+
+An important distinction here concerns angular-gyrus activity. The five-study synthesis discussed earlier found that both task difficulty and semantic demand contribute independently to its response profile. Therefore, a computational model should represent them as separate variables rather than combining them into a single generic effort score. <Cite refs={["turn243095search3","turn243095search5"]}/>
+
+---
+
+## Stage 26. Semantic knowledge updating and associative learning
+
+**Primary function:** Incorporate new information into long-term semantic knowledge.
+
+Suppose someone learns for the first time that a particular musical instrument has an unusual playing technique.
+
+The system must:
+
+1. Incorporate the new feature.
+2. Associate it with the correct concept.
+3. Connect it with related knowledge.
+4. Update the existing conceptual representation.
+5. Preserve previously established knowledge that remains valid.
+
+**Biological components:**
+
+- Anterior temporal semantic networks.
+- Modality-specific association cortex.
+- Hippocampus and medial temporal memory structures.
+- Distributed cortical plasticity mechanisms.
+
+**Possible mathematical operations:**
+
+Let:
+
+\[
+C_t
+\]
+
+be the existing conceptual representation and:
+
+\[
+X_t
+\]
+
+be the newly acquired information.
+
+A simplified update rule is:
+
+\[
+C_{t+1}=
+C_t+\eta(X_t-C_t)
+\]
+
+Where \(\eta\) is the learning rate.
+
+For associative connections:
+
+\[
+W_{t+1}=W_t+\eta\Delta W
+\]
+
+A possible error-driven learning rule is:
+
+\[
+\Delta W=
+\delta_t X_t^T
+\]
+
+Where \(\delta_t\) represents the discrepancy between expected and actual information.
+
+The learning system should also distinguish reliable knowledge from isolated or unreliable experiences.
+
+A possible confidence update is:
+
+\[
+K_{t+1}=
+(1-\eta)K_t+\eta E_t
+\]
+
+Where \(E_t\) represents the evidential support provided by new experience.
+
+**Algorithmic operations:**
+
+1. Identify newly acquired information.
+2. Determine its relationship to existing concepts.
+3. Compare it with stored semantic knowledge.
+4. Detect contradictions or previously unknown features.
+5. Estimate the reliability of the new information.
+6. Update relevant conceptual representations.
+7. Adjust associative connection strengths.
+8. Preserve the provenance of episodic information when necessary.
+9. Consolidate repeated and sufficiently supported knowledge.
+
+**Output:** An updated semantic knowledge network.
+
+---
+
+# Part 4 — Biological adaptation and individual differences
+
+The previous stages describe the central mechanisms of semantic processing. The brain also changes how these mechanisms operate depending on development, age, language experience, and cognitive condition.
+
+These are not necessarily additional serial operations in every comprehension episode. They are adaptive mechanisms that modify the parameters and efficiency of the main algorithm.
+
+## Stage 27. Developmental maturation of semantic networks
+
+**Primary function:** Gradually develop more sophisticated conceptual representations and compositional abilities through experience and learning.
+
+Children initially acquire many concepts through direct experiences.
+
+For example, learning the word *apple* may involve:
+
+- Seeing an apple.
+- Touching it.
+- Tasting it.
+- Hearing its name.
+- Learning how it differs from other fruits.
+
+As knowledge accumulates, concepts become connected to larger semantic categories, functional relationships, and linguistic structures.
+
+**Biological components:**
+
+- Anterior temporal lobes.
+- Visual and auditory association areas.
+- Motor association cortex.
+- Angular gyrus.
+- Frontal language networks.
+- Long-range cortical connections.
+
+**Possible mathematical operations:**
+
+Represent network connectivity at developmental time \(t\):
+
+\[
+W(t)
+\]
+
+Learning gradually modifies the semantic network:
+
+\[
+W(t+1)=W(t)+\Delta W(t)
+\]
+
+The efficiency of a learned representation can increase through repeated exposure:
+
+\[
+\eta_{\text{integration}}(t)
+=
+f(\text{experience},\text{connectivity},\text{learning})
+\]
+
+Conceptual complexity can be modeled as an increasing capacity to represent combinations and hierarchical relationships:
+
+\[
+C_{\text{complexity}}=
+f(N_{\text{features}},N_{\text{relations}},N_{\text{levels}})
+\]
+
+These are computational abstractions, not validated developmental equations.
+
+**Algorithmic operations:**
+
+1. Receive repeated sensory and linguistic experiences.
+2. Establish initial concept-feature associations.
+3. Learn relationships between concepts.
+4. Strengthen connections between semantic hubs and modality-specific spokes.
+5. Develop hierarchical categories.
+6. Acquire increasingly complex compositional rules.
+7. Improve the ability to understand abstract and relational concepts.
+8. Refine semantic predictions through experience.
+
+**Output:** A progressively more differentiated and interconnected semantic network.
+
+---
+
+## Stage 28. Aging-related adaptation
+
+**Primary function:** Maintain semantic knowledge while adapting to reduced processing speed and potentially altered network efficiency.
+
+Normal aging does not necessarily mean the loss of previously acquired conceptual knowledge.
+
+A person may retain an extensive vocabulary and general knowledge but require more time to retrieve specific information or integrate difficult sentences.
+
+**Biological components:**
+
+- Temporal semantic networks.
+- Frontal control networks.
+- Memory systems.
+- Distributed association cortex.
+
+**Possible mathematical operations:**
+
+Represent processing time as:
+
+\[
+T_{\text{total}}=
+T_{\text{access}}+
+T_{\text{composition}}+
+T_{\text{integration}}+
+T_{\text{control}}
+\]
+
+Age-related changes may increase one or more processing-time components.
+
+We can represent processing efficiency as:
+
+\[
+E_{\text{processing}}=
+\frac{Q_{\text{correct}}}{T_{\text{total}}}
+\]
+
+Where \(Q_{\text{correct}}\) measures the quality of semantic processing.
+
+A compensatory mechanism can be modeled as additional activation:
+
+\[
+A_{\text{compensation}}=
+f(\text{task demand},\text{available resources})
+\]
+
+**Algorithmic operations:**
+
+1. Retrieve existing semantic knowledge.
+2. Detect increased retrieval or integration demands.
+3. Adjust processing duration.
+4. Recruit additional control mechanisms where possible.
+5. Maintain conceptual accuracy.
+6. Preserve previously acquired knowledge.
+7. Use contextual information to support slower retrieval.
+
+**Output:** An adapted semantic-processing strategy.
+
+---
+
+## Stage 29. Bilingual and multilingual semantic control
+
+**Primary function:** Select the appropriate linguistic representation while maintaining access to shared conceptual knowledge.
+
+A multilingual person may know the same concept through multiple linguistic forms.
+
+For example, the concept *water* may be activated through different language-specific lexical representations.
+
+The underlying conceptual knowledge can overlap, but lexical access and control requirements depend on the language being used.
+
+**Biological components:**
+
+- Temporal semantic networks.
+- Inferior frontal gyrus.
+- Language-control networks.
+- Anterior temporal lobes.
+
+**Possible mathematical operations:**
+
+Let:
+
+\[
+C
+\]
+
+be the underlying conceptual representation.
+
+Let the lexical mappings be:
+
+\[
+W_1,W_2,\ldots,W_n
+\]
+
+For a selected language \(L_k\):
+
+\[
+P(W_i\mid C,L_k)
+\]
+
+The system can calculate the appropriate lexical candidate according to the intended language:
+
+\[
+W^*=
+\arg\max_i P(W_i\mid C,L_k)
+\]
+
+A language-control mechanism can reduce activation of competing language-specific lexical forms.
+
+**Algorithmic operations:**
+
+1. Retrieve the underlying concept.
+2. Detect the language currently required.
+3. Activate the corresponding lexical representation.
+4. Estimate competing lexical activation in other languages.
+5. Suppress inappropriate lexical candidates where needed.
+6. Preserve shared semantic knowledge.
+7. Produce the appropriate language-specific representation.
+
+**Output:** A conceptually appropriate interpretation expressed through the selected language.
+
+---
+
+## Stage 30. Multimodal semantic learning and educational reinforcement
+
+**Primary function:** Strengthen conceptual representations by associating new knowledge with multiple forms of experience.
+
+Consider teaching the concept *violin*.
+
+A learning system can present:
+
+- The written word.
+- A photograph.
+- The sound.
+- A video of someone playing it.
+- An explanation of its function.
+- An opportunity to interact with the instrument.
+
+These different experiences can establish multiple connections to the same conceptual representation.
+
+**Biological components:**
+
+- ATL hub.
+- Visual association cortex.
+- Auditory association cortex.
+- Motor association cortex.
+- Hippocampus.
+- Distributed semantic memory network.
+
+**Possible mathematical operations:**
+
+Represent each educational input:
+
+\[
+X=\{X_v,X_a,X_m,X_l\}
+\]
+
+Combine their contributions:
+
+\[
+C_{\text{learned}}=
+\sum_i\alpha_i f_i(X_i)
+\]
+
+Repeated exposures can strengthen relevant associations:
+
+\[
+W_{t+1}=W_t+\eta\sum_i X_iX_i^T
+\]
+
+This is an illustrative learning model, not a claim that repeated multimodal presentation automatically guarantees better learning. The quality of the information, attention, prior knowledge, and degree of meaningful integration also matter.
+
+**Algorithmic operations:**
+
+1. Present the target concept.
+2. Provide multiple informative modalities.
+3. Activate modality-specific representations.
+4. Connect their common conceptual properties.
+5. Establish functional and relational associations.
+6. Test recognition through different modalities.
+7. Retrieve the concept after a delay.
+8. Strengthen weak or missing connections.
+9. Update the integrated semantic representation.
+
+**Output:** A more accessible multimodal conceptual representation.
+
+---
+
+# Part 5 — Clinical evidence as algorithmic validation and fault modeling
+
+An important design decision is that neurological disorders and experimental interventions should not be treated as additional steps in normal semantic processing.
+
+Instead, they provide ways to test the architecture and simulate what happens when particular mechanisms are weakened or disrupted.
+
+## Stage 31. Bilateral ATL degradation simulation
+
+**Clinical reference:** Semantic dementia.
+
+**Primary function:** Test the dependence of detailed conceptual knowledge on anterior temporal semantic representations.
+
+In semantic dementia, bilateral ATL degeneration is associated with progressive, modality-general semantic impairment.
+
+The system gradually loses its ability to retrieve detailed conceptual information across different input modalities.
+
+**Possible mathematical operations:**
+
+Let the normal conceptual representation be:
+
+\[
+C=f(H_v,H_a,H_m,\ldots)
+\]
+
+Introduce a degradation parameter:
+
+\[
+0\leq d\leq1
+\]
+
+Then:
+
+\[
+C_{\text{impaired}}=(1-d)C+dC_{\text{generic}}
+\]
+
+This equation illustrates a gradual loss of concept-specific information and an increased reliance on generic category representations.
+
+For example:
+
+\[
+\text{Zebra}\rightarrow\text{Animal}
+\]
+
+Rather than maintaining the detailed zebra representation.
+
+The model can also reduce the weights of distinctive semantic features:
+
+\[
+W_{\text{specific}}'=
+(1-d)W_{\text{specific}}
+\]
+
+**Algorithmic operations:**
+
+1. Initialize the normal semantic network.
+2. Identify ATL-dependent convergence parameters.
+3. Gradually reduce their effectiveness.
+4. Measure the accessibility of individual concepts.
+5. Measure cross-modal conceptual consistency.
+6. Evaluate category-level generalization.
+7. Evaluate the ability to distinguish similar concepts.
+8. Record the emergence of generic responses.
+9. Compare degradation patterns across modalities.
+
+**Expected model behavior:**
+
+- Decreased fine-grained conceptual knowledge.
+- Reduced naming accuracy.
+- Weaker conceptual differentiation.
+- Difficulty accessing distinctive semantic features.
+- Greater reliance on broad categories.
+
+The simulation should not automatically damage syntax or episodic memory to the same degree, because those systems are not identical to the ATL semantic representation mechanism.
+
+---
+
+## Stage 32. Unilateral ATL damage simulation
+
+**Clinical reference:** Temporal lobe resection.
+
+**Primary function:** Evaluate the contribution of each ATL and the system's capacity to compensate when one side is compromised.
+
+The bilateral architecture allows the model to study different levels of contribution from the left and right ATLs.
+
+Represent their contributions as:
+
+\[
+C_{\text{bilateral}}=
+\alpha_LC_L+\alpha_RC_R
+\]
+
+Introduce a unilateral lesion:
+
+\[
+\alpha_L'=0
+\]
+
+or:
+
+\[
+\alpha_R'=0
+\]
+
+The remaining system must rely more heavily on its intact ATL and connections to the distributed semantic network.
+
+**Algorithmic operations:**
+
+1. Initialize bilateral conceptual processing.
+2. Disable or weaken one ATL.
+3. Measure remaining semantic access.
+4. Test high-frequency and low-frequency concepts.
+5. Measure response time.
+6. Evaluate subtle feature discrimination.
+7. Test compensatory processing through remaining connections.
+
+**Expected model behavior:**
+
+A person may perform normally on everyday semantic tasks but show difficulties with low-frequency concepts, subtle feature judgments, and speeded semantic processing.
+
+The model should therefore distinguish accuracy from processing speed.
+
+---
+
+## Stage 33. Temporary ATL perturbation simulation
+
+**Clinical reference:** Repetitive transcranial magnetic stimulation.
+
+**Primary function:** Simulate a temporary reduction in the effectiveness of semantic representations.
+
+Unlike progressive neurodegeneration, temporary stimulation-induced disruption does not represent permanent loss of conceptual knowledge.
+
+Mathematically:
+
+\[
+Z_t'=(1-p_t)Z_t
+\]
+
+Where \(p_t\) is a temporary perturbation factor.
+
+When stimulation effects subside:
+
+\[
+p_t\rightarrow0
+\]
+
+The system returns toward its original processing capacity.
+
+**Algorithmic operations:**
+
+1. Initialize normal semantic processing.
+2. Introduce a temporary reduction in ATL effectiveness.
+3. Perform picture-naming tasks.
+4. Perform word-comprehension tasks.
+5. Perform phonological control tasks.
+6. Compare semantic and nonsemantic performance.
+7. Restore normal ATL processing.
+8. Measure recovery.
+
+**Expected model behavior:**
+
+Selective slowing of semantic tasks, rather than an equivalent slowing of all cognitive operations.
+
+The Pobric et al. 2007 study is a particularly relevant causal validation of this type of manipulation. <Cite refs={["turn243095search1","turn243095search48"]}/>
+
+---
+
+## Stage 34. Semantic-control impairment simulation
+
+**Clinical reference:** Semantic aphasia and impaired semantic control.
+
+**Primary function:** Differentiate impaired semantic representations from impaired access to otherwise preserved knowledge.
+
+A person may know the meaning of *apple* but have difficulty selecting the appropriate feature or interpretation in a demanding task.
+
+For instance, when asked to identify an object's function among competing alternatives, the individual may struggle to retrieve the relevant information.
+
+**Possible mathematical operations:**
+
+Keep the conceptual representation intact:
+
+\[
+C'=C
+\]
+
+But weaken the selection mechanism:
+
+\[
+G'=\gamma G
+\]
+
+Where:
+
+\[
+0\leq\gamma<1
+\]
+
+This reduces the effectiveness of controlled retrieval without necessarily destroying stored conceptual knowledge.
+
+**Algorithmic operations:**
+
+1. Preserve the existing semantic network.
+2. Reduce semantic-control effectiveness.
+3. Introduce competing candidate meanings.
+4. Test flexible retrieval.
+5. Test ambiguity resolution.
+6. Test retrieval of low-dominance associations.
+7. Compare performance with the undamaged model.
+
+**Expected model behavior:**
+
+- Relatively preserved basic conceptual knowledge.
+- Increased competition.
+- Difficulty selecting task-relevant information.
+- Inconsistent use of context.
+- Poorer flexible retrieval.
+
+---
+
+## Stage 35. Multimodal integration impairment simulation
+
+**Clinical reference:** Distributed semantic impairment.
+
+**Primary function:** Investigate what happens when modality-specific representations cannot be effectively integrated.
+
+Instead of damaging the central semantic representation, this simulation weakens the connections between semantic knowledge and individual sensory systems.
+
+For example:
+
+\[
+W_{ATL,v}'=\gamma_vW_{ATL,v}
+\]
+
+\[
+W_{ATL,a}'=\gamma_aW_{ATL,a}
+\]
+
+Different connection strengths can produce different impairment profiles.
+
+**Algorithmic operations:**
+
+1. Initialize modality-specific semantic spokes.
+2. Reduce selected interregional connection strengths.
+3. Test visual-to-verbal access.
+4. Test auditory-to-concept access.
+5. Test action-to-concept access.
+6. Compare semantic performance across modalities.
+7. Determine whether the impairment is modality-specific or general.
+
+**Output:** A profile distinguishing impaired modality-specific access from impairment of a more central conceptual representation.
+
+---
+
+## Stage 36. Semantic processing assessment and performance evaluation
+
+**Primary function:** Evaluate the complete algorithm using behavioral and neuropsychological-style tests.
+
+The model should not be considered successful merely because it can combine word vectors.
+
+It should demonstrate different forms of semantic competence.
+
+**Assessment tasks:**
+
+| Test | Capability being evaluated |
+|---|---|
+| Picture naming | Conceptual retrieval |
+| Word comprehension | Linguistic-to-concept access |
+| Feature verification | Feature retrieval |
+| Category judgment | Conceptual abstraction |
+| Semantic similarity | Conceptual relationships |
+| Ambiguity resolution | Contextual selection |
+| Anomaly detection | Semantic compatibility |
+| Sentence comprehension | Compositional semantics |
+| Event-role assignment | Thematic structure |
+| Discourse interpretation | Extended contextual integration |
+| Cross-modal matching | Multimodal convergence |
+| Speeded semantic judgment | Processing efficiency |
+
+**Possible mathematical operations:**
+
+Accuracy:
+
+\[
+Accuracy=
+\frac{\text{Correct responses}}
+{\text{Total responses}}
+\]
+
+Processing speed:
+
+\[
+Speed=\frac{1}{RT}
+\]
+
+Semantic similarity:
+
+\[
+S(C_i,C_j)=
+\frac{C_i\cdot C_j}
+{\|C_i\|\|C_j\|}
+\]
+
+Cross-modal consistency:
+
+\[
+Consistency=
+\frac{\sum_i S(H_i,Z)}
+{M}
+\]
+
+Prediction error:
+
+\[
+PE=-\log P(C_t\mid H_t)
+\]
+
+Semantic differentiation:
+
+\[
+D=
+S(C_i,C_j)-S(C_i,C_k)
+\]
+
+Where \(C_j\) is a close alternative to concept \(C_i\), and \(C_k\) is a less related concept.
+
+**Algorithmic operations:**
+
+1. Run the complete semantic-processing architecture.
+2. Generate conceptual and relational representations.
+3. Test the representations using independent assessment tasks.
+4. Calculate accuracy.
+5. Calculate processing time.
+6. Measure the quality of compositional relationships.
+7. Measure the effectiveness of contextual prediction.
+8. Evaluate cross-modal consistency.
+9. Simulate different neurological impairments.
+10. Compare the resulting profiles with expected behavioral patterns.
+
+**Output:** A complete semantic-processing performance profile.
+
+---
+
+---
+
+# Part 6 — The complete master algorithm in executable-style pseudocode
+
+The following pseudocode connects all 36 stages into one computational procedure.
+
+It describes the overall processing sequence rather than pretending that all brain regions operate serially. The important feature is that several operations happen in parallel, communicate continuously, and send information backward when necessary.
+
+## 6.1. Main algorithm
+
+<CodeBlock language="python" editable>
+def MASTER_SEMANTIC_PROCESSING(input_signal, context, memory, task):
+
+    # ==========================================
+    # A. INPUT AND LEXICAL PROCESSING
+    # ==========================================
+
+    sensory_inputs = acquire_multimodal_input(input_signal)
+
+    lexical_candidates = identify_lexical_units(
+        sensory_inputs,
+        context
+    )
+
+    activated_concepts = activate_conceptual_candidates(
+        lexical_candidates,
+        memory.semantic_memory
+    )
+
+    # ==========================================
+    # B. DISTRIBUTED FEATURE PROCESSING
+    # ==========================================
+
+    modality_features = retrieve_modality_features(
+        activated_concepts,
+        sensory_inputs
+    )
+
+    cross_modal_features = establish_cross_modal_associations(
+        modality_features,
+        memory.association_network
+    )
+
+    # ==========================================
+    # C. ATL CONCEPTUAL CONVERGENCE
+    # ==========================================
+
+    integrated_concepts = bilateral_atl_convergence(
+        cross_modal_features
+    )
+
+    abstract_concepts = extract_shared_and_specific_features(
+        integrated_concepts
+    )
+
+    semantic_network = activate_associated_concepts(
+        abstract_concepts,
+        memory.association_network
+    )
+
+    # ==========================================
+    # D. LINGUISTIC STRUCTURE
+    # ==========================================
+
+    syntactic_structure = construct_structural_frame(
+        lexical_candidates
+    )
+
+    # ==========================================
+    # E. COMPOSITIONAL PROCESSING
+    # ==========================================
+
+    phrase_representations = semantic_composition(
+        integrated_concepts,
+        syntactic_structure
+    )
+
+    event_structure = assign_thematic_roles(
+        phrase_representations
+    )
+
+    compatibility = calculate_selectional_compatibility(
+        event_structure,
+        memory.semantic_memory
+    )
+
+    # ==========================================
+    # F. PREDICTION AND CONTEXT
+    # ==========================================
+
+    predictions = predict_upcoming_concepts(
+        context,
+        semantic_network,
+        event_structure
+    )
+
+    conditioned_concepts = interpret_using_context(
+        phrase_representations,
+        predictions,
+        context
+    )
+
+    candidate_meanings = generate_ambiguous_interpretations(
+        conditioned_concepts
+    )
+
+    # ==========================================
+    # G. SEMANTIC CONTROL
+    # ==========================================
+
+    competition = calculate_semantic_competition(
+        candidate_meanings,
+        compatibility
+    )
+
+    if competition.requires_control:
+
+        selected_meanings = semantic_control_selection(
+            candidate_meanings,
+            context,
+            task
+        )
+
+    else:
+
+        selected_meanings = retain_automatic_interpretation(
+            candidate_meanings
+        )
+
+    # ==========================================
+    # H. INTEGRATION AND RELATIONAL PROCESSING
+    # ==========================================
+
+    integrated_meaning = angular_gyrus_integration(
+        selected_meanings,
+        event_structure,
+        context
+    )
+
+    relational_meaning = posterior_temporal_integration(
+        integrated_meaning,
+        event_structure
+    )
+
+    # ==========================================
+    # I. PREDICTION ERROR AND REANALYSIS
+    # ==========================================
+
+    prediction_error = calculate_prediction_error(
+        predictions,
+        relational_meaning
+    )
+
+    n400_estimate = estimate_semantic_integration_difficulty(
+        prediction_error,
+        compatibility,
+        context
+    )
+
+    if requires_reanalysis(prediction_error, compatibility):
+
+        integrated_meaning = semantic_reanalysis(
+            relational_meaning,
+            context,
+            memory.semantic_memory
+        )
+
+    # ==========================================
+    # J. MEMORY AND LONG-TERM INTEGRATION
+    # ==========================================
+
+    episodic_context = retrieve_episodic_associations(
+        integrated_meaning,
+        memory.episodic_memory
+    )
+
+    schema_inferences = activate_knowledge_schemas(
+        integrated_meaning,
+        episodic_context
+    )
+
+    discourse_state = integrate_into_discourse(
+        context,
+        integrated_meaning,
+        schema_inferences
+    )
+
+    # ==========================================
+    # K. ADAPTIVE PROCESSING
+    # ==========================================
+
+    processing_allocation = allocate_semantic_resources(
+        task,
+        competition,
+        prediction_error
+    )
+
+    # ==========================================
+    # L. LEARNING AND KNOWLEDGE UPDATING
+    # ==========================================
+
+    memory = update_semantic_knowledge(
+        memory,
+        integrated_meaning,
+        discourse_state
+    )
+
+    # ==========================================
+    # M. VALIDATION AND OUTPUT
+    # ==========================================
+
+    evaluation = evaluate_semantic_processing(
+        integrated_meaning,
+        event_structure,
+        prediction_error,
+        n400_estimate
+    )
+
+    return {
+        "meaning": integrated_meaning,
+        "events": event_structure,
+        "relationships": relational_meaning,
+        "discourse": discourse_state,
+        "predictions": predictions,
+        "prediction_error": prediction_error,
+        "integration_difficulty": n400_estimate,
+        "memory": memory,
+        "evaluation": evaluation
+    }
+</CodeBlock>
+
+## 6.2. The feedback loops
+
+The pseudocode represents the major processing stages, but a biological implementation needs feedback connections.
+
+There are five particularly important feedback loops.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Loop 1 — Conceptual feedback**
+
+  <row align="center" justify="center">
+    <box background="rgba(16,185,129,0.12)" radius="md" padding={2} flex="1" align="center">
+      **ATL**
+
+      <text color="secondary" size="xs">Conceptual convergence</text>
+    </box>
+    <icon name="arrow-left-right" color="secondary" size="xl"/>
+    <box background="rgba(59,130,246,0.12)" radius="md" padding={2} flex="1" align="center">
+      **Sensory spokes**
+
+      <text color="secondary" size="xs">Feature information</text>
+    </box>
+  </row>
+  <text color="secondary" size="sm">New contextual information can reactivate modality-specific features, which can subsequently refine the conceptual representation.</text>
+  <divider color="subtle"/>
+  **Loop 2 — Predictive feedback**
+
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={2} align="center">
+    **Context and memory**
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **Current conceptual interpretation**
+  </box>
+  <text color="secondary" size="sm">The current interpretation updates predictions, while predictions influence the interpretation of upcoming words.</text>
+  <divider color="subtle"/>
+  **Loop 3 — Semantic-control feedback**
+
+  <row align="center" justify="center">
+    <box background="rgba(139,92,246,0.10)" radius="md" padding={2} flex="1" align="center">
+      **IFG**
+
+      <text color="secondary" size="xs">Selection and control</text>
+    </box>
+    <icon name="arrow-left-right" color="secondary" size="xl"/>
+    <box background="rgba(16,185,129,0.10)" radius="md" padding={2} flex="1" align="center">
+      **Semantic network**
+
+      <text color="secondary" size="xs">Candidate meanings</text>
+    </box>
+  </row>
+  <text color="secondary" size="sm">Competing meanings are evaluated, selected, and returned to the semantic integration system.</text>
+  <divider color="subtle"/>
+  **Loop 4 — Event integration feedback**
+
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **Phrase and sentence composition**
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={2} align="center">
+    **Event and world-knowledge model**
+  </box>
+  <text color="secondary" size="sm">An event interpretation constrains its individual concepts, while individual concepts help refine the event.</text>
+  <divider color="subtle"/>
+  **Loop 5 — Learning feedback**
+
+  <box background="rgba(16,185,129,0.10)" radius="md" padding={2} align="center">
+    **Current semantic processing**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={2} align="center">
+    **Long-term semantic and episodic memory**
+  </box>
+  <box align="center">
+    <icon name="arrow-up" color="secondary" size="lg"/>
+  </box>
+  <text color="secondary" size="sm">Experience modifies future semantic retrieval, association strengths, and contextual predictions.</text>
+</box>
+
+---
+
+# Part 7 — Consolidated mathematical operation registry
+
+Now we can identify the mathematical families underlying the entire algorithm.
+
+This is important because it gives us a mathematical foundation for subsequently implementing the architecture in Python.
+
+| No. | Mathematical operation | Purpose |
+|---:|---|---|
+| 1 | Vector representation | Encode conceptual features |
+| 2 | Matrix multiplication | Transform neural representations |
+| 3 | Weighted summation | Combine different information sources |
+| 4 | Nonlinear activation | Model nonlinear neural responses |
+| 5 | Element-wise multiplication | Modulate conceptual features |
+| 6 | Tensor interactions | Model relationships between features |
+| 7 | Cosine similarity | Compare conceptual representations |
+| 8 | Graph propagation | Spread semantic activation |
+| 9 | Hebbian learning | Strengthen associative relationships |
+| 10 | Bayesian inference | Interpret concepts under uncertainty |
+| 11 | Softmax | Estimate relative candidate probabilities |
+| 12 | Entropy | Measure predictive uncertainty |
+| 13 | Argmax optimization | Select the most plausible interpretation |
+| 14 | Competitive inhibition | Reduce irrelevant candidate activation |
+| 15 | Feature intersection | Identify shared conceptual properties |
+| 16 | Hierarchical abstraction | Construct general and specific concepts |
+| 17 | Conditional probability | Model contextual expectations |
+| 18 | Prediction error | Compare expected and received information |
+| 19 | Recurrent state updating | Maintain evolving contextual meaning |
+| 20 | Relational graph construction | Represent thematic and conceptual relationships |
+| 21 | Temporal integration | Preserve relationships across sentence sequences |
+| 22 | Parameter adaptation | Model learning, development, and aging |
+| 23 | Perturbation and degradation | Simulate neurological impairments |
+| 24 | Statistical evaluation | Measure behavioral and computational performance |
+
+A particularly important point is that these operations are not necessarily independent. A single neural population can participate in several computations, and one computational operation can involve multiple brain regions.
+
+## Part 8 — How we should distinguish the mathematical mechanisms
+
+For a serious brain-inspired computational architecture, I would divide the mathematics into five subsystems.
+
+<box border radius="lg" padding={3} gap={3}>
+  **1. Representation mathematics**
+
+  <badge color="info">Information representation</badge>
+  - Vectors.
+  - Matrices.
+  - Tensors.
+  - Feature transformations.
+  - Similarity measures.
+
+  **Responsible for:** Representing concepts and their properties.
+
+  <divider color="subtle"/>
+  **2. Association mathematics**
+
+  <badge color="info">Knowledge connectivity</badge>
+  - Graphs.
+  - Weighted edges.
+  - Activation propagation.
+  - Hebbian learning.
+  - Associative retrieval.
+
+  **Responsible for:** Connecting concepts and retrieving related knowledge.
+
+  <divider color="subtle"/>
+  **3. Integration and inference mathematics**
+
+  <badge color="success">Meaning construction</badge>
+  - Bayesian inference.
+  - Conditional probability.
+  - Tensor interactions.
+  - Relational composition.
+  - Event-structure optimization.
+
+  **Responsible for:** Building phrase, sentence, and event meanings.
+
+  <divider color="subtle"/>
+  **4. Control and prediction mathematics**
+
+  <badge color="success">Dynamic processing</badge>
+  - Softmax.
+  - Competitive selection.
+  - Inhibition.
+  - Entropy.
+  - Prediction error.
+  - Recurrent updates.
+
+  **Responsible for:** Managing ambiguity, prediction, and contextual adaptation.
+
+  <divider color="subtle"/>
+  **5. Learning and adaptation mathematics**
+
+  <badge color="discovery">Long-term adaptation</badge>
+  - Weight updates.
+  - Plasticity.
+  - Parameter adaptation.
+  - Memory consolidation models.
+  - Statistical evaluation.
+
+  **Responsible for:** Developing and modifying semantic knowledge.
+</box>
+
+---
+
+# Part 9 — Final architectural conclusions
+
+There are several important conclusions from converting the neurological material into this algorithm.
+
+**1. Semantic representation and semantic control must be separate.**
+
+The system needs to distinguish the knowledge it possesses from its ability to retrieve the appropriate knowledge under particular circumstances.
+
+This distinction is fundamental to simulating the difference between semantic dementia and semantic aphasia.
+
+**2. The ATL should not be modeled as a conventional dictionary.**
+
+Its proposed role is much closer to a convergence mechanism that supports integrated conceptual representations from distributed modality-specific information.
+
+**3. Semantic composition must operate at multiple levels.**
+
+There is a difference between:
+
+- Combining two features.
+- Combining an adjective and noun.
+- Combining a verb and its arguments.
+- Constructing an event.
+- Integrating an entire sentence.
+- Integrating an extended discourse.
+
+One universal composition function might be insufficient. Different levels may need related but specialized operations.
+
+**4. Prediction must operate continuously.**
+
+Semantic interpretation should not wait until a sentence is completed.
+
+The system should continuously update its expectations using incoming information and existing contextual knowledge.
+
+**5. The AG and IFG should have different computational responsibilities.**
+
+The architecture should not treat them as interchangeable:
+
+- AG: proposed contribution to multimodal and larger-scale semantic integration.
+- IFG: controlled retrieval, selection, and resolution of semantic competition.
+
+**6. Clinical impairment should be modeled through selective damage.**
+
+An important test of whether this architecture is genuinely brain-inspired is whether it can reproduce different impairment profiles without destroying the entire system whenever one component is damaged.
+
+---
+
+# Part 10 — Recommended implementation architecture in Python
+
+For eventual implementation, I recommend dividing the algorithm into specialized modules rather than implementing all 36 stages inside one enormous function.
+
+| Python module | Main responsibilities |
+|---|---|
+| `sensory_input` | Stage 1 |
+| `lexical_processing` | Stage 2 |
+| `concept_activation` | Stage 3 |
+| `feature_extraction` | Stage 4 |
+| `cross_modal_binding` | Stage 5 |
+| `atl_hub` | Stages 6–7 |
+| `semantic_network` | Stage 8 |
+| `syntactic_processing` | Stage 9 |
+| `semantic_composition` | Stage 10 |
+| `thematic_roles` | Stage 11 |
+| `selectional_preferences` | Stage 12 |
+| `semantic_prediction` | Stage 13 |
+| `contextual_interpretation` | Stages 14–15 |
+| `semantic_control` | Stage 16 |
+| `angular_gyrus` | Stage 17 |
+| `posterior_temporal` | Stage 18 |
+| `prediction_error` | Stage 19 |
+| `n400_model` | Stage 20 |
+| `semantic_reanalysis` | Stage 21 |
+| `episodic_memory` | Stage 22 |
+| `schema_inference` | Stage 23 |
+| `discourse_integration` | Stage 24 |
+| `executive_modulation` | Stage 25 |
+| `semantic_learning` | Stage 26 |
+| `developmental_adaptation` | Stage 27 |
+| `aging_adaptation` | Stage 28 |
+| `language_control` | Stage 29 |
+| `multimodal_learning` | Stage 30 |
+| `lesion_simulation` | Stages 31–35 |
+| `semantic_evaluation` | Stage 36 |
+
+These modules would communicate through shared, explicitly defined semantic representations and message structures.
+
+**One important scientific qualification:** The exact equations proposed here are candidate computational models, not equations directly discovered inside the human brain. Likewise, the precise functional interpretation of some regional contributions remains debated. The early ATL composition findings, causal ATL perturbation results, and AG semantic-demand findings provide useful experimental constraints for the implementation. <Cite refs={["turn260821search0","turn243095search1","turn243095search3"]}/> The particular Law et al. (2026) and Zhu et al. (2025) references in your supplied material would need their complete bibliographic details checked separately.
+
+**My recommendation:** Preserve this as a 36-stage master operation registry. When implementing it, every stage should have its own inputs, outputs, mathematical operations, biological interpretation, and validation tests. That will allow us to improve individual computations without breaking the entire architecture.
+
+The ultimate objective is to build a system that does not merely recognize words or associate vectors, but can construct, differentiate, combine, predict, and revise conceptual meaning through interacting computational mechanisms.
+
+---
+
+[ASSISTANT]
+---
+
+# Part 6 — The complete master algorithm in executable-style pseudocode
+
+The following pseudocode connects all 36 stages into one computational procedure.
+
+It describes the overall processing sequence rather than pretending that all brain regions operate serially. The important feature is that several operations happen in parallel, communicate continuously, and send information backward when necessary.
+
+## 6.1. Main algorithm
+
+<CodeBlock language="python" editable>
+def MASTER_SEMANTIC_PROCESSING(input_signal, context, memory, task):
+
+    # ==========================================
+    # A. INPUT AND LEXICAL PROCESSING
+    # ==========================================
+
+    sensory_inputs = acquire_multimodal_input(input_signal)
+
+    lexical_candidates = identify_lexical_units(
+        sensory_inputs,
+        context
+    )
+
+    activated_concepts = activate_conceptual_candidates(
+        lexical_candidates,
+        memory.semantic_memory
+    )
+
+    # ==========================================
+    # B. DISTRIBUTED FEATURE PROCESSING
+    # ==========================================
+
+    modality_features = retrieve_modality_features(
+        activated_concepts,
+        sensory_inputs
+    )
+
+    cross_modal_features = establish_cross_modal_associations(
+        modality_features,
+        memory.association_network
+    )
+
+    # ==========================================
+    # C. ATL CONCEPTUAL CONVERGENCE
+    # ==========================================
+
+    integrated_concepts = bilateral_atl_convergence(
+        cross_modal_features
+    )
+
+    abstract_concepts = extract_shared_and_specific_features(
+        integrated_concepts
+    )
+
+    semantic_network = activate_associated_concepts(
+        abstract_concepts,
+        memory.association_network
+    )
+
+    # ==========================================
+    # D. LINGUISTIC STRUCTURE
+    # ==========================================
+
+    syntactic_structure = construct_structural_frame(
+        lexical_candidates
+    )
+
+    # ==========================================
+    # E. COMPOSITIONAL PROCESSING
+    # ==========================================
+
+    phrase_representations = semantic_composition(
+        integrated_concepts,
+        syntactic_structure
+    )
+
+    event_structure = assign_thematic_roles(
+        phrase_representations
+    )
+
+    compatibility = calculate_selectional_compatibility(
+        event_structure,
+        memory.semantic_memory
+    )
+
+    # ==========================================
+    # F. PREDICTION AND CONTEXT
+    # ==========================================
+
+    predictions = predict_upcoming_concepts(
+        context,
+        semantic_network,
+        event_structure
+    )
+
+    conditioned_concepts = interpret_using_context(
+        phrase_representations,
+        predictions,
+        context
+    )
+
+    candidate_meanings = generate_ambiguous_interpretations(
+        conditioned_concepts
+    )
+
+    # ==========================================
+    # G. SEMANTIC CONTROL
+    # ==========================================
+
+    competition = calculate_semantic_competition(
+        candidate_meanings,
+        compatibility
+    )
+
+    if competition.requires_control:
+
+        selected_meanings = semantic_control_selection(
+            candidate_meanings,
+            context,
+            task
+        )
+
+    else:
+
+        selected_meanings = retain_automatic_interpretation(
+            candidate_meanings
+        )
+
+    # ==========================================
+    # H. INTEGRATION AND RELATIONAL PROCESSING
+    # ==========================================
+
+    integrated_meaning = angular_gyrus_integration(
+        selected_meanings,
+        event_structure,
+        context
+    )
+
+    relational_meaning = posterior_temporal_integration(
+        integrated_meaning,
+        event_structure
+    )
+
+    # ==========================================
+    # I. PREDICTION ERROR AND REANALYSIS
+    # ==========================================
+
+    prediction_error = calculate_prediction_error(
+        predictions,
+        relational_meaning
+    )
+
+    n400_estimate = estimate_semantic_integration_difficulty(
+        prediction_error,
+        compatibility,
+        context
+    )
+
+    if requires_reanalysis(prediction_error, compatibility):
+
+        integrated_meaning = semantic_reanalysis(
+            relational_meaning,
+            context,
+            memory.semantic_memory
+        )
+
+    # ==========================================
+    # J. MEMORY AND LONG-TERM INTEGRATION
+    # ==========================================
+
+    episodic_context = retrieve_episodic_associations(
+        integrated_meaning,
+        memory.episodic_memory
+    )
+
+    schema_inferences = activate_knowledge_schemas(
+        integrated_meaning,
+        episodic_context
+    )
+
+    discourse_state = integrate_into_discourse(
+        context,
+        integrated_meaning,
+        schema_inferences
+    )
+
+    # ==========================================
+    # K. ADAPTIVE PROCESSING
+    # ==========================================
+
+    processing_allocation = allocate_semantic_resources(
+        task,
+        competition,
+        prediction_error
+    )
+
+    # ==========================================
+    # L. LEARNING AND KNOWLEDGE UPDATING
+    # ==========================================
+
+    memory = update_semantic_knowledge(
+        memory,
+        integrated_meaning,
+        discourse_state
+    )
+
+    # ==========================================
+    # M. VALIDATION AND OUTPUT
+    # ==========================================
+
+    evaluation = evaluate_semantic_processing(
+        integrated_meaning,
+        event_structure,
+        prediction_error,
+        n400_estimate
+    )
+
+    return {
+        "meaning": integrated_meaning,
+        "events": event_structure,
+        "relationships": relational_meaning,
+        "discourse": discourse_state,
+        "predictions": predictions,
+        "prediction_error": prediction_error,
+        "integration_difficulty": n400_estimate,
+        "memory": memory,
+        "evaluation": evaluation
+    }
+</CodeBlock>
+
+## 6.2. The feedback loops
+
+The pseudocode represents the major processing stages, but a biological implementation needs feedback connections.
+
+There are five particularly important feedback loops.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Loop 1 — Conceptual feedback**
+
+  <row align="center" justify="center">
+    <box background="rgba(16,185,129,0.12)" radius="md" padding={2} flex="1" align="center">
+      **ATL**
+
+      <text color="secondary" size="xs">Conceptual convergence</text>
+    </box>
+    <icon name="arrow-left-right" color="secondary" size="xl"/>
+    <box background="rgba(59,130,246,0.12)" radius="md" padding={2} flex="1" align="center">
+      **Sensory spokes**
+
+      <text color="secondary" size="xs">Feature information</text>
+    </box>
+  </row>
+  <text color="secondary" size="sm">New contextual information can reactivate modality-specific features, which can subsequently refine the conceptual representation.</text>
+  <divider color="subtle"/>
+  **Loop 2 — Predictive feedback**
+
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={2} align="center">
+    **Context and memory**
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **Current conceptual interpretation**
+  </box>
+  <text color="secondary" size="sm">The current interpretation updates predictions, while predictions influence the interpretation of upcoming words.</text>
+  <divider color="subtle"/>
+  **Loop 3 — Semantic-control feedback**
+
+  <row align="center" justify="center">
+    <box background="rgba(139,92,246,0.10)" radius="md" padding={2} flex="1" align="center">
+      **IFG**
+
+      <text color="secondary" size="xs">Selection and control</text>
+    </box>
+    <icon name="arrow-left-right" color="secondary" size="xl"/>
+    <box background="rgba(16,185,129,0.10)" radius="md" padding={2} flex="1" align="center">
+      **Semantic network**
+
+      <text color="secondary" size="xs">Candidate meanings</text>
+    </box>
+  </row>
+  <text color="secondary" size="sm">Competing meanings are evaluated, selected, and returned to the semantic integration system.</text>
+  <divider color="subtle"/>
+  **Loop 4 — Event integration feedback**
+
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={2} align="center">
+    **Phrase and sentence composition**
+  </box>
+  <box align="center">
+    <icon name="arrow-down-up" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.10)" radius="md" padding={2} align="center">
+    **Event and world-knowledge model**
+  </box>
+  <text color="secondary" size="sm">An event interpretation constrains its individual concepts, while individual concepts help refine the event.</text>
+  <divider color="subtle"/>
+  **Loop 5 — Learning feedback**
+
+  <box background="rgba(16,185,129,0.10)" radius="md" padding={2} align="center">
+    **Current semantic processing**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(139,92,246,0.10)" radius="md" padding={2} align="center">
+    **Long-term semantic and episodic memory**
+  </box>
+  <box align="center">
+    <icon name="arrow-up" color="secondary" size="lg"/>
+  </box>
+  <text color="secondary" size="sm">Experience modifies future semantic retrieval, association strengths, and contextual predictions.</text>
+</box>
+
+---
+
+# Part 7 — Consolidated mathematical operation registry
+
+Now we can identify the mathematical families underlying the entire algorithm.
+
+This is important because it gives us a mathematical foundation for subsequently implementing the architecture in Python.
+
+| No. | Mathematical operation | Purpose |
+|---:|---|---|
+| 1 | Vector representation | Encode conceptual features |
+| 2 | Matrix multiplication | Transform neural representations |
+| 3 | Weighted summation | Combine different information sources |
+| 4 | Nonlinear activation | Model nonlinear neural responses |
+| 5 | Element-wise multiplication | Modulate conceptual features |
+| 6 | Tensor interactions | Model relationships between features |
+| 7 | Cosine similarity | Compare conceptual representations |
+| 8 | Graph propagation | Spread semantic activation |
+| 9 | Hebbian learning | Strengthen associative relationships |
+| 10 | Bayesian inference | Interpret concepts under uncertainty |
+| 11 | Softmax | Estimate relative candidate probabilities |
+| 12 | Entropy | Measure predictive uncertainty |
+| 13 | Argmax optimization | Select the most plausible interpretation |
+| 14 | Competitive inhibition | Reduce irrelevant candidate activation |
+| 15 | Feature intersection | Identify shared conceptual properties |
+| 16 | Hierarchical abstraction | Construct general and specific concepts |
+| 17 | Conditional probability | Model contextual expectations |
+| 18 | Prediction error | Compare expected and received information |
+| 19 | Recurrent state updating | Maintain evolving contextual meaning |
+| 20 | Relational graph construction | Represent thematic and conceptual relationships |
+| 21 | Temporal integration | Preserve relationships across sentence sequences |
+| 22 | Parameter adaptation | Model learning, development, and aging |
+| 23 | Perturbation and degradation | Simulate neurological impairments |
+| 24 | Statistical evaluation | Measure behavioral and computational performance |
+
+A particularly important point is that these operations are not necessarily independent. A single neural population can participate in several computations, and one computational operation can involve multiple brain regions.
+
+## Part 8 — How we should distinguish the mathematical mechanisms
+
+For a serious brain-inspired computational architecture, I would divide the mathematics into five subsystems.
+
+<box border radius="lg" padding={3} gap={3}>
+  **1. Representation mathematics**
+
+  <badge color="info">Information representation</badge>
+  - Vectors.
+  - Matrices.
+  - Tensors.
+  - Feature transformations.
+  - Similarity measures.
+
+  **Responsible for:** Representing concepts and their properties.
+
+  <divider color="subtle"/>
+  **2. Association mathematics**
+
+  <badge color="info">Knowledge connectivity</badge>
+  - Graphs.
+  - Weighted edges.
+  - Activation propagation.
+  - Hebbian learning.
+  - Associative retrieval.
+
+  **Responsible for:** Connecting concepts and retrieving related knowledge.
+
+  <divider color="subtle"/>
+  **3. Integration and inference mathematics**
+
+  <badge color="success">Meaning construction</badge>
+  - Bayesian inference.
+  - Conditional probability.
+  - Tensor interactions.
+  - Relational composition.
+  - Event-structure optimization.
+
+  **Responsible for:** Building phrase, sentence, and event meanings.
+
+  <divider color="subtle"/>
+  **4. Control and prediction mathematics**
+
+  <badge color="success">Dynamic processing</badge>
+  - Softmax.
+  - Competitive selection.
+  - Inhibition.
+  - Entropy.
+  - Prediction error.
+  - Recurrent updates.
+
+  **Responsible for:** Managing ambiguity, prediction, and contextual adaptation.
+
+  <divider color="subtle"/>
+  **5. Learning and adaptation mathematics**
+
+  <badge color="discovery">Long-term adaptation</badge>
+  - Weight updates.
+  - Plasticity.
+  - Parameter adaptation.
+  - Memory consolidation models.
+  - Statistical evaluation.
+
+  **Responsible for:** Developing and modifying semantic knowledge.
+</box>
+
+---
+
+# Part 9 — Final architectural conclusions
+
+There are several important conclusions from converting the neurological material into this algorithm.
+
+**1. Semantic representation and semantic control must be separate.**
+
+The system needs to distinguish the knowledge it possesses from its ability to retrieve the appropriate knowledge under particular circumstances.
+
+This distinction is fundamental to simulating the difference between semantic dementia and semantic aphasia.
+
+**2. The ATL should not be modeled as a conventional dictionary.**
+
+Its proposed role is much closer to a convergence mechanism that supports integrated conceptual representations from distributed modality-specific information.
+
+**3. Semantic composition must operate at multiple levels.**
+
+There is a difference between:
+
+- Combining two features.
+- Combining an adjective and noun.
+- Combining a verb and its arguments.
+- Constructing an event.
+- Integrating an entire sentence.
+- Integrating an extended discourse.
+
+One universal composition function might be insufficient. Different levels may need related but specialized operations.
+
+**4. Prediction must operate continuously.**
+
+Semantic interpretation should not wait until a sentence is completed.
+
+The system should continuously update its expectations using incoming information and existing contextual knowledge.
+
+**5. The AG and IFG should have different computational responsibilities.**
+
+The architecture should not treat them as interchangeable:
+
+- AG: proposed contribution to multimodal and larger-scale semantic integration.
+- IFG: controlled retrieval, selection, and resolution of semantic competition.
+
+**6. Clinical impairment should be modeled through selective damage.**
+
+An important test of whether this architecture is genuinely brain-inspired is whether it can reproduce different impairment profiles without destroying the entire system whenever one component is damaged.
+
+---
+
+# Part 10 — Recommended implementation architecture in Python
+
+For eventual implementation, I recommend dividing the algorithm into specialized modules rather than implementing all 36 stages inside one enormous function.
+
+| Python module | Main responsibilities |
+|---|---|
+| `sensory_input` | Stage 1 |
+| `lexical_processing` | Stage 2 |
+| `concept_activation` | Stage 3 |
+| `feature_extraction` | Stage 4 |
+| `cross_modal_binding` | Stage 5 |
+| `atl_hub` | Stages 6–7 |
+| `semantic_network` | Stage 8 |
+| `syntactic_processing` | Stage 9 |
+| `semantic_composition` | Stage 10 |
+| `thematic_roles` | Stage 11 |
+| `selectional_preferences` | Stage 12 |
+| `semantic_prediction` | Stage 13 |
+| `contextual_interpretation` | Stages 14–15 |
+| `semantic_control` | Stage 16 |
+| `angular_gyrus` | Stage 17 |
+| `posterior_temporal` | Stage 18 |
+| `prediction_error` | Stage 19 |
+| `n400_model` | Stage 20 |
+| `semantic_reanalysis` | Stage 21 |
+| `episodic_memory` | Stage 22 |
+| `schema_inference` | Stage 23 |
+| `discourse_integration` | Stage 24 |
+| `executive_modulation` | Stage 25 |
+| `semantic_learning` | Stage 26 |
+| `developmental_adaptation` | Stage 27 |
+| `aging_adaptation` | Stage 28 |
+| `language_control` | Stage 29 |
+| `multimodal_learning` | Stage 30 |
+| `lesion_simulation` | Stages 31–35 |
+| `semantic_evaluation` | Stage 36 |
+
+These modules would communicate through shared, explicitly defined semantic representations and message structures.
+
+**One important scientific qualification:** The exact equations proposed here are candidate computational models, not equations directly discovered inside the human brain. Likewise, the precise functional interpretation of some regional contributions remains debated. The early ATL composition findings, causal ATL perturbation results, and AG semantic-demand findings provide useful experimental constraints for the implementation. <Cite refs={["turn260821search0","turn243095search1","turn243095search3"]}/> The particular Law et al. (2026) and Zhu et al. (2025) references in your supplied material would need their complete bibliographic details checked separately.
+
+**My recommendation:** Preserve this as a 36-stage master operation registry. When implementing it, every stage should have its own inputs, outputs, mathematical operations, biological interpretation, and validation tests. That will allow us to improve individual computations without breaking the entire architecture.
+
+The ultimate objective is to build a system that does not merely recognize words or associate vectors, but can construct, differentiate, combine, predict, and revise conceptual meaning through interacting computational mechanisms.

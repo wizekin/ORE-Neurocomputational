@@ -1,0 +1,1154 @@
+Title: Create Coordinator Algorithm
+Conversation ID: 6aff288f-3aa4-83e9-950e-08b834ef036e
+
+---
+
+[USER]
+Create an algorithm for implementing the following task from our previous chat "ORE Integration Plan." [https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416](https://chatgpt.com/c/6afeffcd-f84c-83ea-9948-2ef5ba2ca416):  &#x20;
+
+## **Task 3. Create the main brain coordinator**
+
+Priority 3
+
+Biological analogy: large-scale coordination between brain networks, including executive-control and attentional systems.
+
+Software equivalent: a dependency-aware task coordinator.
+
+The coordinator should:
+
+1. Receive a cognitive task.
+2. Identify which modules can contribute.
+3. Inspect their availability.
+4. Determine what information each module requires.
+5. Schedule execution.
+6. Publish results into the shared workspace.
+7. Detect missing information and conflicts.
+8. Request additional processing where necessary.
+9. Combine the results.
+10. Return a decision with appropriate uncertainty.
+
+I recommend building on:
+
+`ore_contracts.CanonicalOREController`
+
+and using the existing N9 functional processor through its `LegacyN9FunctionalBackend` bridge.
+
+This would give ORE two clearly separated levels:
+
+**Level 1 — Global coordinator**
+
+`CanonicalOREController`
+
+Controls execution modes, module registration, provenance, validation and overall execution.
+
+**Level 2 — Specialized cognitive networks**
+
+- N9 recognition and comprehension
+- Working-memory network
+- Semantic-memory network
+- Contextual reasoning network
+- Learning and feedback network
+
+**Level 3 — Individual structures**
+
+Existing 62 ORE packages.
+
+Each retains its internal architecture and specialized algorithms.
+
+The coordinator should not perform all the cognitive computations itself.
+
+Its responsibility is to make sure the appropriate structures cooperate.
+
+---
+
+[ASSISTANT]
+# Task 3 — Create the Main Brain Coordinator
+
+**Priority:** 3
+
+**Objective:** Build a central coordination system that allows ORE's specialized cognitive networks and individual structures to cooperate to solve complex cognitive tasks.
+
+**Proposed implementation:** Extend `ore_contracts.CanonicalOREController` with a dependency-aware cognitive task execution system, while preserving the existing N9 processor and shared workspace architecture.
+
+Repository: [wizekin/ORE-Neurocomputational](https://github.com/wizekin/ORE-Neurocomputational)
+
+## 1. First, understand the existing architecture
+
+I inspected the repository's current `main` branch. Several components already exist that should be reused rather than reinvented.
+
+| Existing component | Current responsibility | How Task 3 uses it |
+|---|---|---|
+| `CanonicalOREController` | Global execution-mode coordination | Main coordinator entry point |
+| `CanonicalBackendRegistry` | Functional and biological backend registration | Execution backend management |
+| `LegacyN9FunctionalBackend` | Connects canonical execution to N9 | Recognition and comprehension |
+| `ModuleRegistry` | Module manifests, capabilities and backend availability | Module discovery |
+| `ModuleManifest` | Defines inputs, outputs, capabilities and dependencies | Dependency planning |
+| `OREModuleProtocol` | Standard module execution interface | Uniform communication |
+| `ContractArtifact` | Typed outputs with provenance and hashing | Information exchange |
+| `SharedWorkspace` | Shared cognitive state | Results and information storage |
+| `ModuleScheduler` | Bounded event-driven activation | Subsequent processing |
+
+The relevant implementations are:
+
+- [Canonical controller and N9 bridge](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/integration.py)
+- [Module registry](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_registry.py)
+- [Module manifests](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_manifest.py)
+- [Module communication protocol](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_protocol.py)
+- [Module adapters](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_contracts/module_adapters.py)
+- [Shared workspace](https://github.com/wizekin/ORE-Neurocomputational/tree/main/ore_workspace)
+- [N9 processor](https://github.com/wizekin/ORE-Neurocomputational/blob/main/ore_n9/pipeline.py)
+
+There is an important architectural distinction.
+
+The current `CanonicalOREController.run()` already coordinates functional and biological execution modes, but it executes biological phases using a predefined sequence. It does not yet implement a general-purpose dependency-aware scheduler for all registered cognitive modules.
+
+Therefore, I recommend keeping its existing execution behavior intact and adding a dedicated task coordination layer.
+
+## 2. Proposed architecture
+
+<box border radius="xl" padding={3} gap={3}>
+  <box background="#173B5C" theme="dark" radius="lg" padding={3} align="center" gap={1}>
+    **LEVEL 1 — GLOBAL BRAIN COORDINATION**
+    <title color="#FFFFFF" size="xl">CanonicalOREController</title>
+    <text color="#D9E9F7" size="xs">Execution modes · Global decisions · Provenance · Validation</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary" size="lg"/>
+    <text color="secondary" size="xs">Delegates cognitive task execution</text>
+  </box>
+  <box background="surface" border radius="lg" padding={3} align="center" gap={1}>
+    **DEPENDENCY-AWARE COORDINATION**
+    <title size="xl">CognitiveTaskCoordinator</title>
+    <text color="secondary" size="xs">Task analysis · Module selection · Dependency graph · Scheduling · Result integration</text>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(30,130,180,0.10)" border radius="lg" padding={2} align="center" gap={1}>
+        **ModuleRegistry**
+        <text color="secondary" size="xs">Capabilities and availability</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(30,130,180,0.10)" border radius="lg" padding={2} align="center" gap={1}>
+        **SharedWorkspace**
+        <text color="secondary" size="xs">Shared information and evidence</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(30,130,180,0.10)" border radius="lg" padding={2} align="center" gap={1}>
+        **ArtifactLedger**
+        <text color="secondary" size="xs">Typed information and lineage</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(30,130,180,0.10)" border radius="lg" padding={2} align="center" gap={1}>
+        **ModuleScheduler**
+        <text color="secondary" size="xs">Execution and feedback</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" size="lg" color="secondary"/>
+    <text color="secondary" size="xs">Coordinates specialized cognitive networks</text>
+  </box>
+  <box border radius="lg" padding={3} gap={2}>
+    **LEVEL 2 — SPECIALIZED COGNITIVE NETWORKS**
+    <grid columns={2} gap={2}>
+      {#each [{n:"N9",d:"Recognition and comprehension"},{n:"Working memory",d:"Temporary information maintenance"},{n:"Semantic memory",d:"Concepts and relationships"},{n:"Contextual reasoning",d:"Interpretation and relationships"},{n:"Learning and feedback",d:"Adaptation and correction"}] as item}
+        <grid-item>
+          <box background="surface-secondary" radius="md" padding={2} gap={1}>
+            **{item.n}**
+            <text size="xs" color="secondary">{item.d}</text>
+          </box>
+        </grid-item>
+      {/each}
+    </grid>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" size="lg" color="secondary"/>
+    <text color="secondary" size="xs">Each network coordinates its own structures</text>
+  </box>
+  <box background="surface-secondary" border radius="lg" padding={3} gap={1}>
+    **LEVEL 3 — INDIVIDUAL ORE STRUCTURES**
+    <title size="lg">Existing 62 packages</title>
+    <text color="secondary" size="xs">Each package retains its specialized algorithms, internal state and biological implementation.</text>
+  </box>
+</box>
+
+The key design principle is that the global coordinator should not execute every cognitive algorithm.
+
+It should determine which structures need to work together, what information they need, and when their results can be used by other structures.
+
+---
+
+# 3. Detailed implementation algorithm
+
+I divide the algorithm into 12 major phases.
+
+## Phase 1 — Initialize the brain coordinator
+
+**Purpose:** Initialize the global coordination environment without modifying existing specialist implementations.
+
+### Algorithmic steps
+
+1. Initialize `CanonicalOREController`.
+2. Initialize or retrieve its existing `CanonicalBackendRegistry`.
+3. Initialize `ModuleRegistry` connected to the existing `ContractCatalog`.
+4. Register existing contracts using `register_existing_contracts()`.
+5. Initialize the shared workspace manager.
+6. Initialize an artifact storage mechanism for typed `ContractArtifact` objects.
+7. Initialize the bounded execution scheduler.
+8. Initialize the execution logger.
+9. Construct a unique task execution context.
+
+Proposed new module:
+
+`ore_contracts/coordinator.py`
+
+Proposed classes:
+
+The global controller should expose a new method:
+
+This method delegates the actual task planning and execution to `CognitiveTaskCoordinator`.
+
+The existing `CanonicalOREController.run()` must remain backward compatible.
+
+### Mathematical operations
+
+Assign each execution a unique identifier.
+
+Generate reproducible input fingerprints:
+
+\[
+H_{input} = SHA256(\operatorname{CanonicalJSON}(input))
+\]
+
+Use the fingerprint to identify identical inputs and avoid accidentally executing the same operation twice.
+
+Create an execution context containing:
+
+- Run ID.
+- Operation mode.
+- Random seed.
+- Compute budget.
+- Per-module timeout limits.
+- Model references.
+- Execution settings.
+
+Reuse the existing `RunContext` and `ComputeBudget` classes.
+
+---
+
+## Phase 2 — Receive and understand the cognitive task
+
+**Purpose:** Transform an incoming request into an explicit computational objective.
+
+The coordinator receives a `CognitiveTask`.
+
+Proposed data structure:
+
+For example, imagine that ORE receives:
+
+> Understand this sentence, identify its meaning, compare it with relevant stored knowledge, and determine whether its meaning is consistent with previous information.
+
+The task should be decomposed into requirements:
+
+| Requirement | Required capability |
+|---|---|
+| Recognize the input | Language recognition |
+| Maintain intermediate information | Working memory |
+| Retrieve relevant concepts | Semantic memory |
+| Interpret the meaning | Semantic composition |
+| Evaluate surrounding information | Contextual reasoning |
+| Check inconsistencies | Conflict detection |
+
+These capability identifiers are examples of proposed manifest entries, not claims that all corresponding capabilities are already registered.
+
+### Mathematical operations
+
+Represent the task as a vector of requirements:
+
+\[
+T = [r_1,r_2,\ldots,r_n]
+\]
+
+Each \(r_i\) represents a required cognitive operation.
+
+A task can also contain optional operations:
+
+\[
+T = T_{\text{required}} \cup T_{\text{optional}}
+\]
+
+**Important:** Initially, the decomposition should rely on explicit task requirements and deterministic routing rules. A general-purpose cognitive task interpreter can be developed later rather than assuming the current system already has one.
+
+---
+
+## Phase 3 — Identify suitable cognitive modules
+
+**Purpose:** Find which modules can contribute to the task.
+
+Use the existing `ModuleRegistry`.
+
+For each required capability:
+
+1. Query `find_by_capability()`.
+2. Retrieve the corresponding module manifests.
+3. Identify all modules declaring that capability.
+4. Retrieve their module identities and versions.
+5. Identify their declared input and output ports.
+6. Identify their dependencies.
+7. Distinguish modules that are registered from modules that actually have executable backends.
+
+Example:
+
+The important distinction is between:
+
+- A module that exists.
+- A module that has been registered.
+- A module that has an executable backend.
+- A module whose backend has been validated.
+- A module that is actually available to execute.
+
+The repository already distinguishes several of these states through `CapabilityRecord`.
+
+### Mathematical operations
+
+Calculate capability coverage:
+
+\[
+C_{\text{coverage}} =
+\frac{\text{number of matched required capabilities}}
+{\text{total required capabilities}}
+\]
+
+For selecting between multiple providers of the same capability, introduce a ranking score:
+
+\[
+S_i =
+\alpha R_i +
+\beta Q_i +
+\gamma D_i -
+\lambda L_i
+\]
+
+Where:
+
+- \(R_i\): relevance to the current task.
+- \(Q_i\): observed module reliability.
+- \(D_i\): dependency readiness.
+- \(L_i\): resource consumption or current load.
+- \(\alpha,\beta,\gamma,\lambda\): configurable weights.
+
+These scores should be based on actual measured information. Unknown availability or reliability must not be replaced with invented values.
+
+---
+
+## Phase 4 — Inspect the information required by each module
+
+**Purpose:** Determine exactly what information each selected structure needs before execution.
+
+This phase is particularly important because two cognitive structures may require completely different representations of the same information.
+
+For every selected module:
+
+1. Retrieve its `ModuleManifest`.
+2. Inspect its `input_ports`.
+3. Identify required and optional inputs.
+4. Identify the expected contract IDs.
+5. Identify accepted contract versions.
+6. Identify whether multiple artifacts are accepted.
+7. Identify validation requirements.
+8. Identify dependencies on other modules.
+9. Search the shared workspace and artifact ledger for compatible information.
+
+For example:
+
+| Module | Required information |
+|---|---|
+| Working memory | Current task, relevant intermediate findings |
+| Semantic memory | Concept or semantic retrieval query |
+| Contextual reasoning | Semantic hypotheses and discourse context |
+| Learning and feedback | Prediction errors and verified feedback |
+| N9 | Valid `N9Request` and its localized input patches |
+
+The coordinator should construct an input plan for each module.
+
+Example:
+
+The exact module identifier is illustrative.
+
+### Mathematical operations
+
+For each required information item \(x_j\), define:
+
+\[
+A_{ij} =
+\begin{cases}
+1 & \text{if module }i\text{ accepts information }j\\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+This produces an input compatibility matrix:
+
+\[
+A =
+\begin{bmatrix}
+A_{11} & A_{12} & \cdots\\
+A_{21} & A_{22} & \cdots\\
+\vdots & \vdots & \ddots
+\end{bmatrix}
+\]
+
+A module can execute only when all its mandatory input requirements are satisfied.
+
+Contract compatibility must use exact registered schema versions. No implicit conversion should occur.
+
+**Additional implementation requirement:** The existing shared workspace stores JSON-compatible findings, while cognitive modules exchange typed `ContractArtifact` objects. Introduce an `ArtifactLedger` to preserve typed artifacts and publish their references, hashes and provenance into the workspace. This provides the missing bridge between the two systems.
+
+---
+
+## Phase 5 — Construct the dependency graph
+
+<badge color="success">Core algorithm</badge>
+
+**Purpose:** Determine the order in which cognitive structures must execute.
+
+A module should not execute merely because it is available. It should execute when the information it needs has become available.
+
+Represent the selected modules as a directed graph:
+
+\[
+G=(V,E)
+\]
+
+Where:
+
+- \(V\) = selected cognitive modules.
+- \(E\) = dependencies between those modules.
+
+An edge:
+
+\[
+M_i \rightarrow M_j
+\]
+
+means that module \(M_j\) needs information or successful completion from module \(M_i\).
+
+Example:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(30,130,180,0.10)" radius="md" padding={2} align="center">
+    **N9 Recognition and Comprehension**
+    <text size="xs" color="secondary">Produces recognition and comprehension evidence</text>
+  </box>
+  <grid columns={2} gap={3}>
+    <grid-item align="center">
+      <icon name="arrow-down-right" color="secondary" size="lg"/>
+      <box background="surface-secondary" radius="md" padding={2} width="100%" align="center">
+        **Working Memory**
+      </box>
+    </grid-item>
+    <grid-item align="center">
+      <icon name="arrow-down-left" color="secondary" size="lg"/>
+      <box background="surface-secondary" radius="md" padding={2} width="100%" align="center">
+        **Semantic Memory**
+      </box>
+    </grid-item>
+  </grid>
+  <grid columns={2} gap={3}>
+    <grid-item align="center">
+      <icon name="arrow-down" color="secondary" size="lg"/>
+    </grid-item>
+    <grid-item align="center">
+      <icon name="arrow-down" color="secondary" size="lg"/>
+    </grid-item>
+  </grid>
+  <box background="rgba(30,130,180,0.10)" radius="md" padding={2} align="center">
+    **Contextual Reasoning**
+    <text size="xs" color="secondary">Combines compatible information from both networks</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="surface-secondary" radius="md" padding={2} align="center">
+    **Conflict Detection and Decision**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(22,128,90,0.10)" radius="md" padding={2} align="center">
+    **Final Cognitive Result**
+  </box>
+</box>
+
+This is an example execution graph, not a fixed sequence that every task must follow.
+
+### Algorithm
+
+1. Create one graph node per selected module.
+2. Add edges from declared required dependencies.
+3. Add information-flow edges when one module's output contract satisfies another module's required input port.
+4. Automatically include necessary upstream modules that were not initially selected.
+5. Validate all mandatory dependencies.
+6. Detect circular dependencies.
+7. Reject or replan invalid graphs.
+8. Calculate execution layers using topological sorting.
+
+Use Kahn's algorithm for topological sorting.
+
+At each iteration:
+
+- Find nodes with zero remaining incoming edges.
+- Place them in the current execution layer.
+- Remove their outgoing edges.
+- Repeat until all nodes are scheduled.
+
+If nodes remain but no node has zero incoming edges, a dependency cycle exists.
+
+### Result
+
+The coordinator obtains execution layers:
+
+\[
+L_1,L_2,\ldots,L_k
+\]
+
+All independent modules within one layer can potentially execute concurrently.
+
+A module in \(L_{i+1}\) must wait for its required upstream outputs from earlier layers.
+
+One essential distinction: the registry's current dependency diagnostics check backend readiness, not whether a dependency has actually produced successful artifacts in the current task. The new scheduler must enforce both conditions.
+
+---
+
+## Phase 6 — Schedule execution using priority and resource availability
+
+**Purpose:** Ensure that the appropriate modules execute at the appropriate time without overloading the system.
+
+Not every available module needs to execute immediately.
+
+The coordinator should consider:
+
+- Required versus optional modules.
+- Number of downstream modules waiting for their outputs.
+- Task urgency.
+- Estimated execution time.
+- Memory consumption.
+- Current worker availability.
+- Historical performance.
+
+### Mathematical scheduling score
+
+Define:
+
+\[
+P_i =
+\alpha R_i+
+\beta K_i+
+\gamma U_i+
+\delta Q_i-
+\lambda C_i
+\]
+
+Where:
+
+| Variable | Meaning |
+|---|---|
+| \(R_i\) | Task relevance |
+| \(K_i\) | Downstream dependency importance |
+| \(U_i\) | Task urgency |
+| \(Q_i\) | Historical reliability |
+| \(C_i\) | Resource cost and load |
+
+All inputs should be normalized to comparable scales.
+
+### Scheduling algorithm
+
+1. Obtain the current execution layer.
+2. Inspect the available worker slots.
+3. Calculate the priority of every ready module.
+4. Sort modules by priority.
+5. Start independent modules concurrently.
+6. Assign each module a timeout.
+7. Track memory and compute consumption.
+8. Collect completed results.
+9. Release execution resources.
+10. Move to the next dependency layer when its requirements are fulfilled.
+
+Use the existing `ModuleScheduler` for reactive, event-driven activation following workspace updates. The initial dependency-graph execution should remain controlled by the task coordinator because event subscriptions alone do not implement the complete task DAG.
+
+The repository's existing scheduler already supports bounded worker counts, execution timeouts and activation limits.
+
+---
+
+## Phase 7 — Execute modules and publish their results
+
+**Purpose:** Make information generated by one cognitive structure available to other structures.
+
+Each module must communicate using the existing `OREModuleProtocol`.
+
+The coordinator supplies:
+
+The expected output is a `ModuleResult`.
+
+The result can have one of these statuses:
+
+| Status | Meaning |
+|---|---|
+| SUCCESS | Completed successfully |
+| PARTIAL | Produced incomplete results |
+| ABSTAINED | Could not make a supported decision |
+| UNAVAILABLE | Could not execute |
+| FAILED | Execution failed |
+
+### Output validation
+
+Before accepting outputs:
+
+1. Check module identity and version.
+2. Check the output contract IDs.
+3. Check the schema versions.
+4. Validate each `ContractArtifact` against `ContractCatalog`.
+5. Verify provenance.
+6. Verify artifact hashes.
+7. Check parent artifact references.
+8. Check that the outputs belong to declared output ports.
+
+Reject invalid outputs rather than allowing them to contaminate shared cognitive state.
+
+### Publishing into the shared workspace
+
+For every valid result:
+
+1. Store the typed artifact in `ArtifactLedger`.
+2. Generate an immutable artifact reference.
+3. Construct a workspace `Finding`.
+4. Include the producer module identity.
+5. Include its provenance and source evidence.
+6. Include the base workspace revision.
+7. Include accepted upstream finding dependencies.
+8. Submit through `SharedWorkspace.publish()`.
+
+The workspace publication system should decide whether the finding is:
+
+- Accepted.
+- Merged.
+- Conflicting.
+- Deferred.
+- Rejected.
+- Duplicate.
+
+The coordinator must respect these decisions.
+
+**Important:** The existing workspace has field-level write permissions. New specialist modules must receive explicit permissions for their intended workspace fields. They should never modify shared state directly.
+
+For example:
+
+- Working memory publishes to `working_memory`.
+- Semantic processing publishes to `semantic_hypotheses`.
+- Contextual processing publishes to `discourse_context`.
+- Cognitive control publishes to `unresolved_questions` and `module_status`.
+
+An explicit output-to-workspace-field mapping should connect each module's output ports to the appropriate writable fields.
+
+---
+
+## Phase 8 — Detect missing information
+
+**Purpose:** Identify when a module cannot perform its task because necessary information is missing.
+
+Consider this situation:
+
+The semantic memory module receives a request but cannot find the concept representation required to retrieve related knowledge.
+
+The coordinator must not simply terminate the entire cognitive operation.
+
+### Algorithm
+
+1. Inspect the failed or partial module result.
+2. Determine which required input is missing.
+3. Identify its contract ID and accepted versions.
+4. Search the artifact ledger for compatible artifacts.
+5. Search ModuleRegistry for modules that can produce the missing information.
+6. Check whether those modules are available.
+7. Add suitable producer modules to the execution graph.
+8. Recalculate dependencies.
+9. Reschedule affected modules.
+
+If no suitable module exists, create a structured unresolved-information request.
+
+For example:
+
+The coordinator can also determine whether missing information must be obtained from the task input rather than computed by another module.
+
+### Mathematical operations
+
+Calculate missing-input coverage:
+
+\[
+M_i =
+\frac{\text{available required inputs}}
+{\text{total required inputs}}
+\]
+
+When:
+
+\[
+M_i=1
+\]
+
+the module has all mandatory inputs.
+
+When:
+
+\[
+M_i<1
+\]
+
+the coordinator must resolve the missing requirements or explicitly mark the module blocked.
+
+Optional input absence should not automatically block execution.
+
+---
+
+## Phase 9 — Detect conflicts and request additional processing
+
+<badge color="success">Critical feedback mechanism</badge>
+
+**Purpose:** Allow cognitive structures to challenge and correct each other's results.
+
+Imagine:
+
+- N9 identifies a word as candidate A.
+- Semantic memory strongly supports candidate B.
+- Contextual reasoning supports candidate B.
+- Previous knowledge supports candidate A.
+
+The coordinator must detect the disagreement rather than silently select one result.
+
+### Algorithm
+
+1. Collect all findings associated with the same cognitive question.
+2. Match hypotheses using their semantic targets.
+3. Identify contradictory findings.
+4. Consult workspace conflict records.
+5. Preserve both hypotheses and their evidence.
+6. Identify which additional processing could resolve the disagreement.
+7. Create a new targeted processing task.
+8. Schedule only the relevant modules.
+9. Compare the new evidence with the existing evidence.
+10. Update the decision when sufficient evidence becomes available.
+
+For example, the coordinator may request:
+
+- N9 to reconsider a particular recognition hypothesis.
+- Semantic memory to retrieve additional associations.
+- Contextual reasoning to reassess sentence-level compatibility.
+- Learning and feedback modules to inspect a prediction error.
+
+### Mathematical operations
+
+Suppose the system has \(K\) competing hypotheses with probabilities \(p_1,\ldots,p_K\).
+
+Calculate normalized uncertainty using entropy:
+
+\[
+H_N =
+\frac{-\sum_{j=1}^{K}p_j\log(p_j+\epsilon)}
+{\log K}
+\]
+
+For \(K>1\):
+
+- Low entropy indicates that evidence concentrates around a small number of hypotheses.
+- High entropy indicates that evidence remains distributed across alternatives.
+
+Calculate disagreement between comparable module scores:
+
+\[
+\bar{s} =
+\frac{\sum_i w_i s_i}{\sum_i w_i}
+\]
+
+\[
+D =
+\frac{\sum_i w_i(s_i-\bar{s})^2}
+{\sum_i w_i}
+\]
+
+Here, \(w_i\) represents evidence reliability, calibration and provenance quality.
+
+These calculations are useful only when the module outputs represent comparable quantities. Uncalibrated scores must not be treated as probabilities.
+
+### Prevent infinite feedback
+
+Introduce:
+
+- Maximum processing attempts.
+- Maximum execution time.
+- Maximum additional modules.
+- A minimum improvement threshold.
+- A convergence condition.
+
+Stop when one of these conditions is reached:
+
+1. The required evidence is sufficient.
+2. Additional processing produces negligible improvement.
+3. The task's resource budget is exhausted.
+4. The coordinator determines that the available modules cannot resolve the uncertainty.
+
+The existing `ModuleScheduler` can support bounded event-driven feedback.
+
+---
+
+## Phase 10 — Combine the results
+
+**Purpose:** Construct one integrated cognitive result without losing individual evidence.
+
+The coordinator collects:
+
+- N9 recognition and comprehension results.
+- Working-memory contents.
+- Retrieved semantic information.
+- Contextual interpretation.
+- Conflict-resolution results.
+- Learning and feedback information, when applicable.
+
+The result should retain the origin of every important conclusion.
+
+For example:
+
+### Evidence integration
+
+The coordinator should distinguish three situations:
+
+**Agreement:** Multiple independent modules support the same hypothesis.
+
+**Complementary evidence:** Different modules supply different pieces of information that collectively satisfy the task.
+
+**Contradiction:** Modules provide incompatible hypotheses.
+
+Agreement should not automatically mean truth. Modules sharing the same upstream evidence must not be counted as independent confirmations.
+
+The result-combination policy should account for:
+
+- Evidence quality.
+- Source reliability.
+- Calibration.
+- Dependency relationships.
+- Information completeness.
+- Remaining conflicts.
+
+For a task requiring a definitive answer, uncertainty must be retained rather than artificially eliminated.
+
+---
+
+## Phase 11 — Make the final decision with uncertainty
+
+**Purpose:** Determine whether the cognitive task has actually been completed.
+
+Introduce a final result structure:
+
+Possible decision statuses:
+
+| Status | Meaning |
+|---|---|
+| RESOLVED | Requirements satisfied and evidence supports a conclusion |
+| PARTIAL | Some requirements satisfied |
+| AMBIGUOUS | Multiple plausible interpretations remain |
+| ABSTAINED | Insufficient evidence for a supported answer |
+| BLOCKED | Mandatory module or input unavailable |
+| FAILED | Execution could not complete |
+
+Use the existing workspace goal evaluator to assess whether the requested goal has been satisfied.
+
+The final decision should be based on:
+
+\[
+\text{Decision} =
+f(
+\text{Goal Coverage},
+\text{Evidence Quality},
+\text{Conflicts},
+\text{Uncertainty},
+\text{Module Status}
+)
+\]
+
+Do not convert every numerical score into a probability. A numeric confidence should only be returned as calibrated confidence when appropriate calibration evidence exists.
+
+---
+
+## Phase 12 — Record provenance and finalize execution
+
+**Purpose:** Preserve a complete account of how the cognitive task was solved.
+
+The coordinator records:
+
+- Original task.
+- Selected modules.
+- Rejected or unavailable modules.
+- Input requirements.
+- Dependency graph.
+- Execution order.
+- Module execution times.
+- Produced artifacts.
+- Publication decisions.
+- Conflicts.
+- Reprocessing requests.
+- Final decision.
+- Remaining uncertainty.
+
+Use the existing `TraceEvent` mechanism where appropriate.
+
+For the SQLite logger, introduce method-linked annotations for every new class, function and method in `ore_contracts/coordinator.py`.
+
+The execution log should be linked to the corresponding entries in the existing annotation database using `ore_logger`.
+
+Each new coordination event should record at least:
+
+Avoid storing unnecessarily large cognitive payloads in event logs; use artifact references and hashes.
+
+Finally:
+
+1. Verify all expected dependencies.
+2. Verify output contract validity.
+3. Verify artifact lineage.
+4. Verify workspace publication.
+5. Verify the decision and uncertainty metadata.
+6. Finalize the execution trace.
+7. Return `CognitiveTaskResult`.
+
+Learning must remain subject to the existing explicit authorization and governance mechanisms.
+
+---
+
+# 4. Complete execution pseudocode
+
+The following algorithm combines all 12 phases.
+
+The pseudocode describes the orchestration logic. The actual implementation must also handle deferred workspace findings, failed upstream dependencies, execution timeouts and bounded replanning explicitly.
+
+---
+
+# 5. Recommended implementation file structure
+
+I recommend the following additions and integrations.
+
+| File | Responsibility |
+|---|---|
+| `ore_contracts/coordinator.py` | Main cognitive task coordinator |
+| `ore_contracts/task_models.py` | Task, execution plan and decision contracts |
+| `ore_contracts/dependency_graph.py` | Dependency graph and topological sorting |
+| `ore_contracts/availability.py` | Module readiness and resource monitoring |
+| `ore_contracts/artifact_ledger.py` | Typed artifact references and lineage |
+| `ore_contracts/coordinator_logging.py` | SQLite coordination events and annotations |
+| `ore_contracts/integration.py` | Add `run_cognitive_task()` to the existing controller |
+| `ore_contracts/module_registry.py` | Reuse registry and dependency diagnostics |
+| `ore_workspace/workspace.py` | Reuse the existing shared workspace |
+| `ore_workspace/scheduler.py` | Reuse bounded reactive scheduling |
+
+The following existing files should be reused without unnecessarily changing their internal algorithms:
+
+- `ore_n9/pipeline.py`
+- `ore_n9/contracts.py`
+- `ore_working_memory/`
+- `ore_semantic/`
+- `ore_context_dependent_interpretation/`
+
+## 6. Critical N9 integration algorithm
+
+There is one particularly important implementation detail.
+
+The existing `LegacyN9FunctionalBackend` expects an `ore_n9.N9Request` and calls:
+
+It does not directly implement `OREModuleProtocol`, which requires `describe()` and `execute()`.
+
+Fortunately, the repository already provides `CanonicalControllerAdapter`, specifically for exposing the canonical controller through the universal module interface.
+
+Therefore, use this integration:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="surface-secondary" radius="md" padding={2} align="center">
+    **CognitiveTaskCoordinator**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="surface-secondary" radius="md" padding={2} align="center">
+    **ModuleRegistry**
+    <text size="xs" color="secondary">N9 network manifest and backend binding</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box border radius="md" padding={2} align="center">
+    **CanonicalControllerAdapter**
+    <text size="xs" color="secondary">Universal module interface</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(30,130,180,0.10)" radius="md" padding={2} align="center">
+    **CanonicalOREController**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="surface-secondary" radius="md" padding={2} align="center">
+    **LegacyN9FunctionalBackend**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="surface" border radius="md" padding={2} align="center">
+    **N9Processor**
+    <text size="xs" color="secondary">Existing 120-operation cognitive processing system</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(22,128,90,0.10)" radius="md" padding={2} align="center">
+    **ContractArtifact outputs**
+  </box>
+</box>
+
+The adapter can translate its canonical controller output into declared artifacts and return a standardized `ModuleResult`.
+
+One restriction must be preserved: N9 requires a valid `N9Request` containing at least one localized `N9Patch`. The coordinator must not assume it can pass arbitrary plain-text tasks directly to the existing N9 processor.
+
+---
+
+# 7. Testing algorithm
+
+Before integrating this coordinator with all existing ORE packages, test the coordination mechanism independently.
+
+| Test | Expected behavior |
+|---|---|
+| Module discovery | Finds modules declaring required capabilities |
+| Missing backend | Marks module unavailable |
+| Disabled module | Excludes it from execution |
+| Missing input | Prevents premature execution |
+| Contract mismatch | Rejects invalid information |
+| Dependency ordering | Executes modules in the correct order |
+| Independent modules | Executes concurrently |
+| Circular dependencies | Detects and rejects cycles |
+| Failed upstream module | Blocks dependent operations |
+| Partial output | Preserves incomplete status |
+| Workspace publication | Uses controlled publication |
+| Conflicting findings | Preserves both competing hypotheses |
+| Additional processing | Executes targeted reprocessing |
+| Infinite feedback | Stops at configured limits |
+| N9 integration | Executes existing N9 through its bridge |
+| Provenance | Retains the full execution history |
+| Uncertainty | Does not invent calibrated confidence |
+
+### Integration tests
+
+The most important test should demonstrate an entire cognitive operation:
+
+1. Submit a valid recognition request.
+2. Execute N9.
+3. Publish its recognition and comprehension evidence.
+4. Activate working memory.
+5. Activate semantic memory.
+6. Send the combined evidence to contextual reasoning.
+7. Generate a competing hypothesis deliberately.
+8. Detect the conflict.
+9. Request additional processing.
+10. Integrate the additional evidence.
+11. Return the final decision with uncertainty.
+12. Verify that every operation has a trace and provenance record.
+
+Run all reproducible Python tests locally before pushing changes. Preserve the existing automated testing configuration.
+
+---
+
+# 8. Recommended implementation order
+
+Do not attempt to connect all 62 packages simultaneously. Build the coordination mechanism incrementally.
+
+<list connector="solid" marker="number" gap={2}>
+  <list-item>
+    **Build the task and decision contracts**
+
+    Create `CognitiveTask`, `CognitiveTaskResult`, and their supporting models.
+  </list-item>
+  <list-item>
+    **Build module discovery**
+
+    Connect the coordinator to `ModuleRegistry` and implement capability selection.
+  </list-item>
+  <list-item>
+    **Build the dependency graph planner**
+
+    Implement input inspection, dependency validation, cycle detection and topological sorting.
+  </list-item>
+  <list-item>
+    **Build module availability monitoring**
+
+    Combine registry readiness with actual execution capacity, timeouts and resource limits.
+  </list-item>
+  <list-item>
+    **Build artifact exchange**
+
+    Implement the `ArtifactLedger` and workspace publication mechanism.
+  </list-item>
+  <list-item>
+    **Build dependency-aware execution**
+
+    Execute independent modules concurrently and block dependent modules until their required outputs are available.
+  </list-item>
+  <list-item>
+    **Implement missing-information detection and feedback**
+
+    Add bounded replanning and targeted module reactivation.
+  </list-item>
+  <list-item>
+    **Implement conflict detection and evidence integration**
+
+    Preserve competing hypotheses and compute uncertainty.
+  </list-item>
+  <list-item>
+    **Integrate N9**
+
+    Register the N9 network through `CanonicalControllerAdapter` and `LegacyN9FunctionalBackend`.
+  </list-item>
+  <list-item>
+    **Complete testing and integration**
+
+    Test a complete multi-network cognitive task before registering additional networks.
+  </list-item>
+</list>
+
+## 9. What Task 3 will accomplish
+
+After implementation, ORE should have a fundamentally different ability from a collection of independent Python packages.
+
+Consider a task requiring recognition, memory retrieval, reasoning and conflict resolution.
+
+Before Task 3:
+
+- N9 can perform its own processing.
+- Working memory can perform its own processing.
+- Semantic memory can perform its own processing.
+- Other structures can execute their specialized algorithms.
+
+But there is no general task-level mechanism ensuring that they cooperate according to their actual information dependencies.
+
+After Task 3:
+
+- The coordinator determines which structures are necessary.
+- Each structure receives the correct information.
+- Independent structures can work simultaneously.
+- Dependent structures wait for their required inputs.
+- Results become available through shared, validated artifacts.
+- Conflicts trigger additional processing.
+- The coordinator evaluates the combined evidence.
+- The final answer preserves its uncertainty and provenance.
+
+**The most important architectural outcome:** ORE gains a mechanism for coordinated cognition rather than simply accumulating more independent cognitive algorithms.
+
+The next implementation target should be **Phase 1 through Phase 5: initialize the coordinator, define cognitive tasks, discover modules, inspect their inputs, and construct the dependency graph.** This creates the foundation upon which actual cooperative execution can be built.

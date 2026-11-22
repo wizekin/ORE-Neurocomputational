@@ -1,0 +1,1616 @@
+Title: Implement Visual Stages A E
+Conversation ID: 6afa457e-5d38-83e9-96ce-74960d9a9ada
+
+---
+
+[USER]
+from "Visual Processing and OR Algorithm.txt" file in the library , Auto implement stage A-E and their steps both functionally and biologically in python and consider the mathematical operations involved. You can use github through github plugin for the implementation. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin. Create the annotations for every function and classes to be stored in logger's the sqlite database
+
+---
+
+[ASSISTANT]
+The source document defines **five stages covering 16 steps**:
+
+| Stage | Scope | Steps |
+|---|---|---:|
+| A | Visual acquisition and early feature processing | 1–3 |
+| B | Recognition across fonts and visual variations | 4–5 |
+| C | Position-specific letter conjunctions | 6–9 |
+| D | Parallel and recurrent processing | 10–12 |
+| E | Transposition effects and orthographic integration | 13–16 |
+
+I located `wizekin/ORE-Neurocomputational` and confirmed that it already has a repository-wide SQLite execution logger. I’m extending that architecture rather than introducing a competing annotation database.
+
+<badge color="success">Implemented · 239 tests passed</badge>
+
+I implemented **Stages A–E (16 operations)** in `wizekin/ORE-Neurocomputational` on a new feature branch.
+
+**[Open the implementation on GitHub](https://github.com/wizekin/ORE-Neurocomputational/tree/feature/visual-orthography-stages-a-e)**
+
+### What was implemented
+
+| Stage | Implemented functionality |
+|---|---|
+| A | Visual sampling, contrast processing, Gabor feature extraction and candidate glyph representations |
+| B | Letter identity populations, cross-font prototype matching and supervised visual invariance learning |
+| C | Relative letter positions, Gaussian position uncertainty, position-specific conjunctions and open bigrams |
+| D | Parallel letter activation, combined letter/conjunction activity, recurrent feedback and lateral inhibition |
+| E | Transposition similarity, orthographic feature integration, lexical competition and interpretation stabilization |
+
+### Biological implementation
+
+A separate ten-population LIF simulator models interactions among retinal/LGN, V1, V2/V4, VWFA, letter identity, position, conjunction, bigram, orthographic and lexical populations.
+
+It computes membrane voltage, synaptic current, spikes, refractory periods, firing rates and recurrent activity.
+
+These are explicit computational models of biological mechanisms, not claims of an experimentally validated human-brain simulation.
+
+### SQLite annotations
+
+Every class and function in the new package has a descriptive docstring. The package automatically registers them through ORE's existing AST-based logger.
+
+<text color="success" weight="medium" size="sm">Default database</text>
+
+`ore_logs/ore_logger.sqlite3`
+
+Annotations are stored in the existing `annotations` table; no separate annotation database was introduced.
+
+### Files and documentation
+
+- `ore_visual_orthography/` — complete implementation.
+- `ore_visual_orthography/pipeline.py` — integrated A–E processing pipeline.
+- `ore_visual_orthography/biology.py` — LIF population simulation.
+- `ore_visual_orthography/math_ops.py` — mathematical operations.
+- `ore_visual_orthography/registry.py` — all 16 documented operations.
+- `tests/test_visual_orthography.py` — implementation and annotation tests.
+- `docs/VISUAL_ORTHOGRAPHY_STAGES_A_E.md` — equations, explanations and usage instructions.
+
+### Verification
+
+<badge color="success">Passed</badge> GitHub Actions — Python tests: **239 passed in 40.87 seconds**.
+
+[View successful test run](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43778007741)
+
+The second repository test workflow was still running at my last check.
+
+**Important usage limitation:** Image-to-letter recognition requires labelled visual prototypes. The system does not invent text from an unlabelled image. You can also supply an orthographic sequence directly to test the later processing stages.
+
+The changes are committed to the feature branch; they have **not** been merged into `main`.
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Visual Word Form Area (VWFA):
+Early visual feature extraction
+Hierarchical visual populations
+Posterior-to-anterior VWFA specialization
+Whole-word and morpheme-sensitive VWFA representations
+Biological cortical connectivity
+Developmental specialization through literacy
+
+---
+
+[ASSISTANT]
+# The Visual Word Form Area (VWFA): A Complete Biological and Mathematical Algorithm
+
+The objective is to construct a large, interconnected algorithm explaining how the human brain transforms visual information into increasingly complex written-language representations through the **Visual Word Form Area (VWFA)**.
+
+The algorithm will cover the six requested biological components, but expand them into smaller computational operations so that each operation can eventually be implemented independently in Python.
+
+One important principle: the VWFA is not a single homogeneous word-recognition processor. It is part of a distributed network in the left ventral occipitotemporal cortex (VOTC), with different subregions showing different processing properties and connectivity patterns. Research supports a progression from visual feature processing toward increasingly abstract orthographic and language-related representations. <Cite refs={["turn553765search1","turn553765search0","turn703522search1"]}/>
+
+## 1. Overall algorithm architecture
+
+We can organize the complete process into six major stages and 24 algorithmic steps.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">VWFA biological processing architecture</title>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} gap={1}>
+    **Stage A — Early visual feature extraction**
+
+    <text color="secondary" size="sm">Steps 1–4 · Retina, LGN, V1, V2 and V4</text>
+    Extract visual structures from printed symbols.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.08)" radius="md" padding={3} gap={1}>
+    **Stage B — Hierarchical visual populations**
+
+    <text color="secondary" size="sm">Steps 5–8 · Ventral visual pathway</text>
+    Integrate visual features into increasingly complex representations.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.08)" radius="md" padding={3} gap={1}>
+    **Stage C — Posterior-to-anterior VWFA specialization**
+
+    <text color="secondary" size="sm">Steps 9–12 · VWFA-1, intermediate VWFA and VWFA-2</text>
+    Transform visual letter representations into abstract orthographic structures.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.08)" radius="md" padding={3} gap={1}>
+    **Stage D — Whole-word and morpheme-sensitive representations**
+
+    <text color="secondary" size="sm">Steps 13–17 · Orthographic, morphological and lexical processing</text>
+    Activate complete words and their constituent meaningful structures.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(245,158,11,0.08)" radius="md" padding={3} gap={1}>
+    **Stage E — Biological cortical connectivity**
+
+    <text color="secondary" size="sm">Steps 18–21 · Visual, language and attention networks</text>
+    Exchange information between VWFA and distant brain regions.
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(168,85,247,0.08)" radius="md" padding={3} gap={1}>
+    **Stage F — Developmental specialization through literacy**
+
+    <text color="secondary" size="sm">Steps 22–24 · Learning, plasticity and consolidation</text>
+    Gradually specialize the visual system for fluent reading.
+  </box>
+</box>
+
+The six stages should not be interpreted as a strictly serial pipeline. Their activity overlaps, and feedback from higher-level language systems can influence visual processing.
+
+---
+
+# Stage A — Early visual feature extraction
+
+<text color="secondary" size="sm" weight="medium">STEPS 1–4</text>
+
+<AsyncImageGroup query={["human visual pathway retina LGN V1 V2 V4 neuroscience illustration","V1 simple cell orientation selective Gabor receptive fields illustration","human ventral visual stream occipital to fusiform cortex anatomical illustration"]} aspectRatio="5:4" layout="carousel"/>
+
+The VWFA receives information from an already functioning visual system.
+
+Its initial input is not a word as a linguistic concept. It is a visual pattern consisting of luminance differences, edges, contours and spatial relationships.
+
+### Step 1. Acquire and represent the visual input
+
+**Objective:** Convert the image of a printed word into a spatial representation that subsequent neural populations can process.
+
+Consider the word:
+
+`COMPUTER`
+
+The visual system initially receives a pattern of light reflected from the printed characters.
+
+Retinal photoreceptors respond to light, and signals travel through retinal pathways and the lateral geniculate nucleus (LGN) toward the visual cortex.
+
+**Possible mathematical operations**
+
+1. Spatial sampling:
+
+\[
+I(x,y)\rightarrow I[i,j]
+\]
+
+Here, the continuous visual scene is represented by activity distributed over spatial locations.
+
+2. Local luminance estimation:
+
+\[
+\mu_{ij}=
+\frac{1}{N}
+\sum_{(u,v)\in \mathcal N_{ij}} I[u,v]
+\]
+
+This estimates the average luminance surrounding a particular location.
+
+3. Local contrast calculation:
+
+\[
+C(i,j)=I[i,j]-\mu_{ij}
+\]
+
+4. Contrast normalization:
+
+\[
+I_n(i,j)=
+\frac{I[i,j]-\mu_{ij}}
+{\sqrt{\sigma_{ij}^{2}+\epsilon}}
+\]
+
+This adjusts visual sensitivity to differences in the surrounding image.
+
+**Biological interpretation**
+
+Photoreceptors, retinal center-surround pathways and LGN neurons transmit visual information while contributing to contrast-sensitive processing.
+
+**Output:** A spatially organized visual representation.
+
+### Step 2. Extract elementary visual features
+
+**Objective:** Detect the visual structures that compose letters and other written symbols.
+
+Examples include:
+
+- Horizontal lines.
+- Vertical lines.
+- Diagonal lines.
+- Curves.
+- Corners.
+- Intersections.
+- Endpoints.
+- Enclosed regions.
+- Spatial frequencies.
+
+For example, the letter A contains two diagonal strokes and a horizontal crossbar.
+
+A letter is therefore represented by a combination of visual characteristics rather than one isolated feature.
+
+**Possible mathematical operations**
+
+Gabor filters provide one useful computational approximation of orientation-sensitive receptive fields.
+
+\[
+G_{\theta,\lambda}(x,y)=
+\exp\left(
+-\frac{x'^2+\gamma^2y'^2}{2\sigma^2}
+\right)
+\cos\left(
+\frac{2\pi x'}{\lambda}+\phi
+\right)
+\]
+
+Where:
+
+- \(\theta\): preferred orientation.
+- \(\lambda\): spatial wavelength.
+- \(\sigma\): receptive-field size.
+- \(\gamma\): spatial aspect ratio.
+- \(\phi\): phase.
+
+The visual response can be calculated through convolution:
+
+\[
+R_{\theta,\lambda}(x,y)=I*G_{\theta,\lambda}
+\]
+
+A pair of filters with different phases can estimate orientation energy:
+
+\[
+E_{\theta,\lambda}=
+\sqrt{R_{\text{even}}^2+R_{\text{odd}}^2}
+\]
+
+Additional operations:
+
+1. Convolution.
+2. Rectification.
+3. Quadrature energy calculation.
+4. Local feature summation.
+5. Divisive normalization.
+6. Multi-scale filtering.
+
+**Biological interpretation**
+
+V1 contains populations with receptive fields selective for orientations and other visual properties. Gabor filters approximate some of these response characteristics, but are not literal copies of individual biological neurons.
+
+**Output:** A collection of orientation-sensitive and spatial-frequency-sensitive visual feature maps.
+
+### Step 3. Combine visual features into more complex structures
+
+**Objective:** Integrate elementary lines, curves, corners and intersections into candidate visual shapes.
+
+For example, a visual population may respond strongly to the combination:
+
+\[
+\text{Diagonal}_1+
+\text{Diagonal}_2+
+\text{Horizontal crossbar}
+\]
+
+This combination provides evidence for the letter A.
+
+A simplified computational neuron can be represented as:
+
+\[
+a_j=
+f\left(
+\sum_{i=1}^{n}w_{ji}x_i+b_j
+\right)
+\]
+
+Where:
+
+- \(x_i\): incoming visual features.
+- \(w_{ji}\): connection strength.
+- \(b_j\): baseline activity.
+- \(f\): nonlinear activation.
+
+Different populations can encode different combinations.
+
+**Possible mathematical operations**
+
+- Weighted feature integration.
+- Pattern matching.
+- Nonlinear thresholding.
+- Feature conjunction.
+- Competitive activation.
+- Population summation.
+
+**Biological interpretation**
+
+Intermediate visual populations integrate information from simpler receptive fields into more complex visual configurations.
+
+**Output:** Candidate visual shapes with different activation strengths.
+
+### Step 4. Preserve spatial relationships between visual components
+
+**Objective:** Maintain information about where visual elements occur.
+
+The visual system must distinguish between different arrangements of the same elements.
+
+Consider:
+
+- FORM
+- FROM
+
+The letters are nearly identical, but their arrangement differs.
+
+A possible positional representation is:
+
+\[
+r_i=
+\frac{x_i-x_{\min}}
+{x_{\max}-x_{\min}}
+\]
+
+Where \(x_i\) is the position of a visual component.
+
+The system can represent each element as a combination of:
+
+\[
+L_i=(\text{identity},\text{position},\text{visual evidence})
+\]
+
+This is important because the VWFA eventually needs to transform retinal visual information into an ordered representation of written symbols.
+
+Recent research using fMRI and MEG has investigated this transformation from retinotopic visual coding toward abstract ordinal letter-position coding. <Cite refs={["turn743378search9","turn553765search1"]}/>
+
+**Output:** Spatially structured visual information ready for hierarchical processing.
+
+---
+
+# Stage B — Hierarchical visual populations
+
+<text color="secondary" size="sm" weight="medium">STEPS 5–8</text>
+
+<AsyncImageGroup query={["human ventral visual pathway V1 V2 V4 inferior temporal cortex anatomical diagram","ventral visual stream receptive field hierarchy visual complexity neuroscience diagram"]} aspectRatio="5:4"/>
+
+The brain does not represent every visual structure at the same level of complexity.
+
+It uses populations arranged in a hierarchy.
+
+As information moves through the ventral visual pathway, receptive fields and represented features become increasingly complex.
+
+### Step 5. Construct populations of simple visual detectors
+
+**Objective:** Organize individual feature detectors into groups that represent particular visual properties.
+
+For example:
+
+- Population 1: Horizontal edges.
+- Population 2: Vertical edges.
+- Population 3: Curved structures.
+- Population 4: Diagonal edges.
+- Population 5: Intersections.
+
+Represent the activity as:
+
+\[
+\mathbf{x}=
+[x_1,x_2,\ldots,x_n]^T
+\]
+
+Each component describes the activity of a particular feature-sensitive population.
+
+A simple computational model is:
+
+\[
+a_i=f(w_i^Tx+b_i)
+\]
+
+**Possible mathematical operations**
+
+- Vector construction.
+- Weighted summation.
+- Nonlinear activation.
+- Population normalization.
+- Competitive inhibition.
+
+**Biological interpretation**
+
+Neural populations encode different visual properties through distributed activity rather than requiring one neuron to recognize an entire letter.
+
+**Output:** A distributed visual feature representation.
+
+### Step 6. Build increasingly complex receptive-field populations
+
+**Objective:** Combine simpler feature representations into larger patterns.
+
+A hierarchical transformation can be expressed as:
+
+\[
+\mathbf{h}^{(l)}=
+f\left(
+W^{(l)}\mathbf{h}^{(l-1)}
++\mathbf{b}^{(l)}
+\right)
+\]
+
+Where:
+
+- \(l\) represents the processing level.
+- \(\mathbf{h}^{(l-1)}\) contains information from the preceding level.
+- \(W^{(l)}\) contains effective connection weights.
+- \(\mathbf{h}^{(l)}\) represents the newly integrated information.
+
+For example:
+
+\[
+\text{Edges}
+\rightarrow
+\text{Corners}
+\rightarrow
+\text{Contours}
+\rightarrow
+\text{Complex shapes}
+\]
+
+**Possible mathematical operations**
+
+- Matrix multiplication.
+- Feature conjunction.
+- Receptive-field pooling.
+- Nonlinear transformations.
+- Hierarchical feature integration.
+
+**Biological interpretation**
+
+V2 and V4 contribute to increasingly complex visual processing, while further processing along the ventral stream supports higher-level visual recognition.
+
+**Output:** Complex visual representations suitable for written-symbol processing.
+
+### Step 7. Build position-tolerant visual representations
+
+**Objective:** Reduce unnecessary dependence on the exact retinal location of a visual element.
+
+A printed letter should remain recognizable when its position changes slightly.
+
+However, the system should not completely discard its position.
+
+These are two different properties:
+
+1. Identity invariance: recognizing the same letter despite changes in location.
+2. Order preservation: retaining which letter comes before or after another.
+
+One mathematical approximation is spatial pooling:
+
+\[
+P_k=\operatorname{Pool}(R_k)
+\]
+
+Another uses a combination of identity and ordinal position:
+
+\[
+\mathbf{z}_i=
+\alpha\mathbf{z}_{identity}
++
+\beta\mathbf{z}_{position}
+\]
+
+Where \(\alpha\) and \(\beta\) control the contributions of each channel.
+
+**Possible mathematical operations**
+
+- Spatial pooling.
+- Translation-tolerant feature matching.
+- Position normalization.
+- Similarity calculations.
+- Population-vector integration.
+
+**Biological interpretation**
+
+Visual representations gradually become less dependent on precise retinal coordinates, while retaining useful information about letter position.
+
+**Output:** More stable visual-symbol representations.
+
+### Step 8. Establish candidate orthographic representations
+
+**Objective:** Transform complex visual shapes into candidate letter and letter-combination representations.
+
+At this point, the system can begin associating its visual evidence with familiar written symbols.
+
+For example:
+
+\[
+\text{Visual features}
+\rightarrow
+\{C,O,M,P,U,T,E,R\}
+\]
+
+The representation should distinguish between:
+
+- Individual graphemes.
+- Ordered letter combinations.
+- Familiar visual patterns.
+- Less familiar combinations.
+
+A population-style detector can be expressed as:
+
+\[
+A_k=
+\exp\left(
+-\frac{1}{2}
+(\mathbf{x}-\boldsymbol{\mu}_k)^T
+\Sigma_k^{-1}
+(\mathbf{x}-\boldsymbol{\mu}_k)
+\right)
+\]
+
+Where:
+
+- \(\mathbf{x}\): observed feature representation.
+- \(\boldsymbol{\mu}_k\): learned prototype.
+- \(\Sigma_k\): feature variability.
+
+**Possible mathematical operations**
+
+- Distance calculations.
+- Prototype matching.
+- Population tuning.
+- Softmax competition.
+- Experience-dependent association.
+
+**Biological interpretation**
+
+This stage provides increasingly abstract information to the visual word-form system.
+
+**Output:** Candidate orthographic representations.
+
+---
+
+# Stage C — Posterior-to-anterior VWFA specialization
+
+<text color="secondary" size="sm" weight="medium">STEPS 9–12</text>
+
+<AsyncImageGroup query={["VWFA 1 VWFA 2 posterior anterior left ventral occipitotemporal cortex brain anatomy illustration","posterior anterior visual word form area hierarchy letters bigrams words brain diagram","left fusiform gyrus VWFA posterior anterior orthographic specialization fMRI illustration"]} aspectRatio="5:4"/>
+
+This stage is central to understanding how the VWFA functions.
+
+The VWFA should be modeled as a hierarchy of populations rather than one uniform recognition unit.
+
+A well-known experiment by Vinckier and colleagues investigated increasingly complex written structures, including letters, bigrams, quadrigrams and real words. They found a gradient of increasing selectivity toward anterior occipitotemporal regions. <Cite refs={["turn703522search1","turn553765search1"]}/>
+
+### Step 9. Activate posterior VWFA populations
+
+**Objective:** Process visual representations that are still strongly dependent on the physical properties of written symbols.
+
+The posterior VWFA, often called VWFA-1, is relatively sensitive to visual features of text.
+
+It participates in processing information such as:
+
+- Letter shapes.
+- Visual configurations.
+- Local character combinations.
+- Position-sensitive orthographic information.
+
+A computational representation:
+
+\[
+\mathbf{h}_{P}=
+f(W_P\mathbf{h}_{visual}+\mathbf{b}_P)
+\]
+
+The posterior representation should retain considerable information about how the written material actually looks.
+
+**Possible mathematical operations**
+
+- Weighted visual integration.
+- Feature similarity.
+- Population activation.
+- Local spatial pooling.
+- Feature normalization.
+
+**Biological interpretation**
+
+VWFA-1 has stronger functional relationships with visual regions than the more anterior VWFA-2. <Cite refs={["turn553765search0","turn203070view0"]}/>
+
+**Output:** Posterior orthographic feature representations.
+
+### Step 10. Integrate multiple letters into sublexical units
+
+**Objective:** Recognize combinations of letters rather than treating every letter as an independent item.
+
+For example:
+
+\[
+C,O,M,P,U,T,E,R
+\]
+
+Can generate combinations such as:
+
+\[
+CO,\ OM,\ MP,\ PU,\ UT,\ TE,\ ER
+\]
+
+The system can also activate combinations that span non-adjacent positions.
+
+A pairwise representation can be modeled as:
+
+\[
+B_{ab}=
+\sum_{i<j}
+L_i(a)L_j(b)K(j-i)
+\]
+
+Where:
+
+- \(L_i(a)\): activation of letter \(a\) at position \(i\).
+- \(L_j(b)\): activation of letter \(b\) at position \(j\).
+- \(K(j-i)\): positional-distance weighting.
+
+The combinations can become increasingly selective through experience.
+
+**Possible mathematical operations**
+
+- Pairwise multiplication.
+- Ordered-pair generation.
+- N-gram extraction.
+- Distance weighting.
+- Feature aggregation.
+- Statistical frequency estimation.
+
+**Biological interpretation**
+
+Intermediate orthographic populations respond to combinations more complex than individual letters.
+
+**Output:** Sublexical orthographic representations.
+
+### Step 11. Activate anterior VWFA populations
+
+**Objective:** Represent increasingly complex and abstract written structures.
+
+The more anterior VWFA, often called VWFA-2, exhibits relatively greater sensitivity to higher-level linguistic information than the posterior region.
+
+A useful computational progression is:
+
+\[
+\text{Letters}
+\rightarrow
+\text{Bigrams}
+\rightarrow
+\text{Quadrigrams}
+\rightarrow
+\text{Morphemic patterns}
+\rightarrow
+\text{Word forms}
+\]
+
+This is a model of increasing representational complexity, not a claim that every word passes through exactly five anatomically isolated modules.
+
+A simple transformation is:
+
+\[
+\mathbf{h}_{A}=
+f(W_A\mathbf{h}_{intermediate}+\mathbf{b}_A)
+\]
+
+A higher-level detector may become selective for a familiar written sequence.
+
+**Possible mathematical operations**
+
+- Hierarchical feature integration.
+- Pattern similarity.
+- Larger receptive-field integration.
+- Statistical regularity detection.
+- Population competition.
+- Context-sensitive modulation.
+
+**Biological interpretation**
+
+The anterior VWFA shows stronger functional connectivity with frontal and lateral parietal language-related regions compared with the posterior VWFA-1. <Cite refs={["turn203070view0","turn703522search1"]}/>
+
+**Output:** More abstract orthographic representations.
+
+### Step 12. Integrate visual familiarity and orthographic invariance
+
+**Objective:** Recognize written patterns despite differences in font, size, case and visual appearance.
+
+For example:
+
+- COMPUTER
+- Computer
+- computer
+- Different printed fonts of computer.
+
+The physical images differ, but the abstract orthographic sequence can remain equivalent.
+
+A computational model can compare the representations:
+
+\[
+S(X,Y)=
+\frac{X\cdot Y}{\|X\|\|Y\|+\epsilon}
+\]
+
+A learning mechanism can encourage different appearances of the same written sequence to become closer in representation space:
+
+\[
+\mathcal L_{invariance}
+=
+\|h(V_1)-h(V_2)\|^2
+\]
+
+While preserving distinctions between different written sequences:
+
+\[
+\mathcal L=
+\mathcal L_{identity}
++
+\lambda\mathcal L_{invariance}
+\]
+
+**Possible mathematical operations**
+
+- Similarity estimation.
+- Representation alignment.
+- Contrastive learning.
+- Error-dependent plasticity.
+- Statistical generalization.
+
+**Biological interpretation**
+
+Experience gradually strengthens sensitivity to relevant orthographic structure without making the VWFA completely independent of visual experience.
+
+**Output:** A more stable orthographic representation.
+
+---
+
+# Stage D — Whole-word and morpheme-sensitive VWFA representations
+
+<text color="secondary" size="sm" weight="medium">STEPS 13–17</text>
+
+<AsyncImageGroup query={["English morphological decomposition unhappy un happy morpheme diagram","word morphology stem prefix suffix representation neuroscience illustration","visual word recognition whole word versus morpheme decomposition cognitive science diagram"]} aspectRatio="5:4"/>
+
+This stage explains an important property of reading:
+
+The brain does not necessarily recognize a word only by identifying its individual letters one after another.
+
+It can also develop representations of familiar whole words and meaningful word components.
+
+The two processes can operate in parallel.
+
+### Step 13. Generate whole-word representations
+
+**Objective:** Activate stored orthographic patterns corresponding to familiar complete words.
+
+Consider:
+
+`COMPUTER`
+
+After extensive reading experience, the complete written form can activate a familiar word representation rapidly.
+
+The brain does not need to reconstruct every word from isolated letters on every reading occasion.
+
+A simplified mathematical representation is:
+
+\[
+W_j=
+\operatorname{Similarity}(O,T_j)
++
+\lambda\log(1+F_j)
+\]
+
+Where:
+
+- \(O\): observed orthographic representation.
+- \(T_j\): learned word-form representation.
+- \(F_j\): word exposure frequency.
+- \(\lambda\): frequency contribution.
+
+The system can activate multiple word candidates simultaneously:
+
+\[
+P(W_j|O)=
+\frac{\exp(W_j/\tau)}
+{\sum_k\exp(W_k/\tau)}
+\]
+
+**Possible mathematical operations**
+
+1. Whole-pattern matching.
+2. Similarity estimation.
+3. Frequency-sensitive activation.
+4. Competitive normalization.
+5. Probabilistic candidate selection.
+
+**Biological interpretation**
+
+Familiar words can activate increasingly efficient word-form representations in the anterior visual reading system.
+
+**Output:** Candidate whole-word representations.
+
+### Step 14. Detect potential morphological components
+
+**Objective:** Recognize that written words can contain smaller recurring units that carry grammatical or semantic information.
+
+Consider:
+
+`UNHAPPINESS`
+
+Potential decomposition:
+
+\[
+UN + HAPPY + NESS
+\]
+
+Or:
+
+\[
+UN + HAPPI + NESS
+\]
+
+The latter requires understanding the orthographic change involved in forming the word.
+
+Other examples:
+
+| Word | Possible morphological structure |
+|---|---|
+| Cats | CAT + S |
+| Teacher | TEACH + ER |
+| Unkind | UN + KIND |
+| Reusable | RE + USE + ABLE |
+| Disagreement | DIS + AGREE + MENT |
+
+The visual system can become sensitive to recurring letter sequences that correspond to stems, prefixes and suffixes.
+
+An important biological distinction is that early morphological segmentation can be driven by orthographic form, even when a potential decomposition is semantically opaque.
+
+Research on early visual word recognition has found evidence for early morphological decomposition in the visual word-processing pathway, including VWFA-related activity. <Cite refs={["turn904745search1","turn904745search6"]}/>
+
+**Possible mathematical operations**
+
+- Substring detection.
+- Repeated-pattern detection.
+- Boundary estimation.
+- Frequency estimation.
+- Candidate segmentation.
+- Statistical decomposition.
+
+A simplified morphological segmentation model:
+
+\[
+P(M|O)\propto P(O|M)P(M)
+\]
+
+Where:
+
+- \(O\): complete orthographic sequence.
+- \(M\): candidate morphological decomposition.
+- \(P(O|M)\): compatibility of the decomposition with the written form.
+- \(P(M)\): learned probability of the morphological structure.
+
+**Output:** Candidate morphemic boundaries and morphological structures.
+
+### Step 15. Activate morphological representations in parallel with whole words
+
+**Objective:** Allow the brain to maintain both the complete word and its possible constituent morphemes.
+
+For example, when reading:
+
+`TEACHERS`
+
+The system may activate:
+
+- Complete word: TEACHERS.
+- Stem: TEACH.
+- Derivational or inflectional component: ER.
+- Inflectional component: S.
+
+These representations need not wait for one another to finish.
+
+We can model their activity using separate populations:
+
+\[
+\mathbf{A}(t)=
+\begin{bmatrix}
+A_{wholeword}(t)\\
+A_{stem}(t)\\
+A_{prefix}(t)\\
+A_{suffix}(t)
+\end{bmatrix}
+\]
+
+Their combined evidence can be modeled as:
+
+\[
+A_{combined}=
+w_1A_{wholeword}
++w_2A_{stem}
++w_3A_{prefix}
++w_4A_{suffix}
+\]
+
+The weights may change according to experience, familiarity and the properties of the word.
+
+**Possible mathematical operations**
+
+- Parallel activation.
+- Weighted summation.
+- Pattern decomposition.
+- Competing candidate activation.
+- Hierarchical feature integration.
+- Recurrent interaction.
+
+**Biological interpretation**
+
+Whole-word and morpheme-sensitive processing can coexist. It is not necessary to assume that every word must be completely decomposed before it can be recognized.
+
+The exact relationship between whole-word representations, prelexical morphological processing and lexical access remains a subject of investigation.
+
+**Output:** Joint whole-word and morphological activity.
+
+### Step 16. Access the lexical and semantic information associated with morphemes
+
+**Objective:** Connect the recognized morphological forms with their linguistic information.
+
+Consider:
+
+`CATS`
+
+The system needs to establish:
+
+- CAT: a lexical stem.
+- S: a plural grammatical marker.
+- CATS: a plural form of CAT.
+
+The orthographic representation supplies information about written form. The broader language network contributes the lexical, grammatical and conceptual information.
+
+A possible semantic composition:
+
+\[
+\mathbf{M}_{word}=
+f(
+\mathbf{M}_{stem},
+\mathbf{M}_{affix},
+\mathbf{G}
+)
+\]
+
+Where:
+
+- \(\mathbf{M}_{stem}\): stem-related meaning.
+- \(\mathbf{M}_{affix}\): morphological contribution.
+- \(\mathbf{G}\): grammatical information.
+- \(f\): learned compositional transformation.
+
+For example:
+
+\[
+MEANING(CATS)
+=
+MEANING(CAT)
++
+PLURAL
+\]
+
+This is an illustrative conceptual equation, not a literal neural addition.
+
+**Possible mathematical operations**
+
+- Associative retrieval.
+- Vector composition.
+- Feature binding.
+- Semantic integration.
+- Grammatical feature combination.
+- Contextual disambiguation.
+
+**Biological interpretation**
+
+The VWFA is primarily an orthographic component of this process. Morphological meaning and lexical-semantic integration also involve other language regions, including middle and anterior temporal regions and inferior frontal cortex.
+
+It would therefore be inaccurate to assign the complete understanding of a morpheme's meaning exclusively to VWFA neurons. <Cite refs={["turn904745search1","turn904745search0","turn553765search12"]}/>
+
+**Output:** Morphologically and semantically informed lexical representations.
+
+### Step 17. Select and stabilize the appropriate word representation
+
+**Objective:** Resolve competing interpretations and establish a reliable orthographic and lexical representation.
+
+Consider an unfamiliar word that contains a familiar stem and suffix.
+
+The brain may compare:
+
+1. A whole-word candidate.
+2. A decomposed morphological candidate.
+3. Alternative morphological boundaries.
+4. Alternative lexical interpretations.
+
+A recurrent computational model:
+
+\[
+\mathbf a(t+1)=
+f\left(
+W_b\mathbf x+
+W_r\mathbf a(t)+
+W_c\mathbf c-
+W_i\mathbf a(t)
+\right)
+\]
+
+Where:
+
+- \(\mathbf x\): visual evidence.
+- \(\mathbf a(t)\): current orthographic and lexical activity.
+- \(\mathbf c\): contextual information.
+- \(W_b\): bottom-up connections.
+- \(W_r\): recurrent connections.
+- \(W_c\): contextual feedback.
+- \(W_i\): inhibitory interactions.
+
+The system can settle into a stable candidate when the activity changes sufficiently little:
+
+\[
+\|\mathbf a(t+1)-\mathbf a(t)\|<\epsilon
+\]
+
+**Possible mathematical operations**
+
+- Recurrent updating.
+- Competitive normalization.
+- Bayesian evidence integration.
+- Confidence estimation.
+- Temporal accumulation.
+- Convergence detection.
+
+**Biological interpretation**
+
+Visual word recognition is an interactive process involving both bottom-up visual evidence and higher-level linguistic information.
+
+**Output:** A stabilized orthographic and lexical interpretation.
+
+---
+
+# Stage E — Biological cortical connectivity
+
+<text color="secondary" size="sm" weight="medium">STEPS 18–21</text>
+
+<AsyncImageGroup query={["visual word form area brain connectivity inferior frontal gyrus middle temporal gyrus anterior temporal lobe diagram","VWFA white matter tracts inferior longitudinal fasciculus inferior fronto occipital fasciculus vertical occipital fasciculus diagram","brain reading network VWFA angular gyrus superior temporal inferior frontal anatomical illustration"]} aspectRatio="5:4"/>
+
+This stage is especially important.
+
+The VWFA does not perform reading independently. It is embedded in a network of cortical regions connected through white-matter pathways.
+
+Anatomical studies have identified connections and nearby pathways involving the inferior longitudinal fasciculus (ILF), inferior fronto-occipital fasciculus (IFOF) and vertical occipital fasciculus (VOF). Research also identifies connectivity with temporal, frontal and parietal language-related regions. <Cite refs={["turn743378search0","turn743378search5","turn743378search2"]}/>
+
+### Step 18. Establish bottom-up connectivity from visual regions
+
+**Objective:** Transmit visual information toward VWFA populations.
+
+A simplified pathway:
+
+\[
+V1\rightarrow V2/V4\rightarrow VOTC\rightarrow VWFA
+\]
+
+Each successive population receives information from the preceding visual populations.
+
+A simple network model:
+
+\[
+\mathbf h_{VWFA}=
+f(W_{visual}\mathbf h_{visual})
+\]
+
+Where \(W_{visual}\) represents effective connectivity between the visual hierarchy and the VWFA.
+
+**Possible mathematical operations**
+
+- Matrix multiplication.
+- Synaptic signal integration.
+- Population summation.
+- Nonlinear transformation.
+- Temporal signal filtering.
+
+**Biological interpretation**
+
+The VWFA receives information from earlier visual cortical regions and transforms it into more abstract written-language representations.
+
+**Output:** Visual information integrated into orthographic populations.
+
+### Step 19. Establish connectivity with language-related brain regions
+
+**Objective:** Make orthographic information available to other language-processing systems.
+
+Important regions include:
+
+| Brain region | Broad computational contribution |
+|---|---|
+| Inferior frontal gyrus (IFG) | Phonological, lexical, syntactic and controlled language processing |
+| Middle temporal gyrus (MTG) | Lexical and semantic processing |
+| Anterior temporal lobe (ATL) | Conceptual and semantic integration |
+| Superior temporal regions (STG/STS) | Phonological and speech-related processing |
+| Angular gyrus | Language, semantic and multimodal integration |
+| Posterior parietal cortex | Spatial attention and aspects of reading-related control |
+
+A simplified network can be represented as a graph:
+
+\[
+G=(V,E)
+\]
+
+Where:
+
+- \(V\): brain-region populations.
+- \(E\): connections between populations.
+
+For example:
+
+\[
+VWFA\leftrightarrow IFG
+\]
+
+\[
+VWFA\leftrightarrow MTG
+\]
+
+\[
+VWFA\leftrightarrow ATL
+\]
+
+\[
+VWFA\leftrightarrow Parietal\ regions
+\]
+
+The mathematical representation of a connection can use a weight:
+
+\[
+W_{ij}
+\]
+
+This represents the effective influence of region \(j\) on region \(i\).
+
+**Biological interpretation**
+
+The posterior and anterior VWFA subregions have different functional connectivity profiles. The posterior VWFA-1 is more strongly associated with visual regions, while VWFA-2 shows stronger associations with frontal text-selective and lateral parietal regions. <Cite refs={["turn203070view0","turn743378search5"]}/>
+
+**Output:** Distributed visual-language representations.
+
+### Step 20. Integrate top-down and bottom-up information
+
+**Objective:** Allow language and context to influence how visual word forms are interpreted.
+
+For example, a visually ambiguous word may be difficult to identify in isolation but easier to recognize in a meaningful sentence.
+
+The system receives:
+
+- Bottom-up visual evidence.
+- Orthographic evidence.
+- Phonological expectations.
+- Lexical expectations.
+- Semantic context.
+- Attention-related signals.
+
+A computational model:
+
+\[
+\mathbf h(t+1)=
+f\left(
+W_b\mathbf x+
+W_f\mathbf h_{higher}+
+W_r\mathbf h(t)
+\right)
+\]
+
+Where:
+
+- \(W_b\): bottom-up influence.
+- \(W_f\): top-down feedback.
+- \(W_r\): recurrent interactions.
+
+Another useful model comes from predictive processing:
+
+\[
+e(t)=
+\mathbf x(t)-\hat{\mathbf x}(t)
+\]
+
+Where:
+
+- \(\mathbf x(t)\): actual sensory input.
+- \(\hat{\mathbf x}(t)\): predicted sensory input.
+- \(e(t)\): prediction error.
+
+The system can use the discrepancy between prediction and observation to refine its interpretation.
+
+**Possible mathematical operations**
+
+- Feedback propagation.
+- Prediction generation.
+- Prediction-error calculation.
+- Precision-weighted integration.
+- Recurrent state updates.
+- Competitive interpretation.
+
+**Biological interpretation**
+
+Visual word recognition depends on reciprocal interactions between visual and language regions, rather than being a one-way transmission of information. <Cite refs={["turn553765search1","turn553765search12"]}/>
+
+**Output:** Contextually refined orthographic representations.
+
+### Step 21. Coordinate attention and visual-language processing
+
+**Objective:** Coordinate the selection of relevant visual information during reading.
+
+The system must manage:
+
+- Where the eyes are looking.
+- Which word is currently relevant.
+- Which visual features need more processing.
+- Which word requires additional attention.
+- How much processing is necessary before moving forward.
+
+One mathematical representation of attention is:
+
+\[
+\alpha_i=
+\frac{\exp(z_i)}
+{\sum_j\exp(z_j)}
+\]
+
+Where \(\alpha_i\) is the normalized attention weight assigned to location or population \(i\).
+
+The attended representation is:
+
+\[
+\mathbf h_{attended}=
+\sum_i\alpha_i\mathbf h_i
+\]
+
+**Possible mathematical operations**
+
+- Attention weighting.
+- Competitive selection.
+- Spatial normalization.
+- Signal amplification.
+- Eye-position updating.
+- Task-dependent gain modulation.
+
+**Biological interpretation**
+
+The VWFA participates in a network that includes attention-related circuits. Its function is not limited to processing word shapes independently of visual attention. <Cite refs={["turn904745search4","turn743378search2"]}/>
+
+**Output:** An attended and prioritized orthographic representation.
+
+---
+
+# Stage F — Developmental specialization through literacy
+
+<text color="secondary" size="sm" weight="medium">STEPS 22–24</text>
+
+<AsyncImageGroup query={["child learning to read book letters educational neuroscience literacy development","brain neuroplasticity learning reading visual word form area development illustration","visual word form area reading acquisition children brain functional MRI study illustration"]} aspectRatio="5:4"/>
+
+This stage explains something fundamental about the VWFA:
+
+**The human brain is not born with a fully developed reading system.**
+
+Reading is a culturally acquired ability. Literacy gradually modifies pre-existing visual and language circuits.
+
+This is often discussed through the neuronal recycling hypothesis.
+
+Research has demonstrated increases in word-related responses within ventral occipitotemporal cortex as reading develops. <Cite refs={["turn703522search5","turn703522search4"]}/>
+
+### Step 22. Establish initial visual and linguistic learning associations
+
+**Objective:** Begin associating visual symbols with their spoken-language equivalents.
+
+Before learning to read, a child already has:
+
+- Visual recognition systems.
+- Spoken-language representations.
+- Phonological processing.
+- Attention and memory mechanisms.
+- Conceptual knowledge.
+
+Literacy introduces systematic relationships between visual symbols and pre-existing linguistic representations.
+
+For example:
+
+\[
+A\leftrightarrow /eɪ/
+\]
+
+This relationship becomes stronger through learning and repeated exposure, although individual writing systems have different sound-symbol relationships.
+
+**Possible mathematical operations**
+
+A simple associative learning approximation is:
+
+\[
+\Delta w_{ij}=
+\eta x_i y_j
+\]
+
+Where:
+
+- \(x_i\): presynaptic activity.
+- \(y_j\): postsynaptic activity.
+- \(\eta\): learning rate.
+- \(\Delta w_{ij}\): connection-weight change.
+
+A more elaborate model includes prediction error:
+
+\[
+\Delta w_{ij}=
+\eta e_jx_i
+\]
+
+This captures the idea that learning changes when predicted and observed outcomes differ.
+
+**Biological interpretation**
+
+Repeated learning experiences contribute to plasticity in connections between visual and language systems.
+
+**Output:** Emerging visual-orthographic and language associations.
+
+### Step 23. Develop specialized word-sensitive neural populations
+
+**Objective:** Gradually increase sensitivity to written language.
+
+Initially, ventral visual regions already participate in recognizing other visual categories such as faces, objects and places.
+
+Reading experience changes their functional organization.
+
+Over time, repeated exposure to written material can increase the selectivity of certain populations for:
+
+- Letters.
+- Familiar letter combinations.
+- Orthographic structures.
+- Morpheme-related written patterns.
+- Whole words.
+
+A simplified measure of word selectivity:
+
+\[
+S_{word}=
+R_{word}-R_{control}
+\]
+
+Where:
+
+- \(R_{word}\): response to written words.
+- \(R_{control}\): response to appropriate visual control stimuli.
+
+A learning model might seek to increase the distinction between relevant and irrelevant visual responses:
+
+\[
+\mathcal L=
+-\log
+\frac{\exp(S_{word}/\tau)}
+{\sum_k\exp(S_k/\tau)}
+\]
+
+This is a possible computational learning objective, not a demonstrated biological learning equation.
+
+**Biological interpretation**
+
+Literacy contributes to the specialization of ventral visual cortex. However, this does not mean that all other visual representations are simply eliminated to make room for words.
+
+A randomized literacy-instruction study found changes in visual category responses without clear evidence of a straightforward tradeoff in which increased word responses necessarily reduced face and object responses. <Cite refs={["turn703522search2","turn703522search4"]}/>
+
+**Output:** More specialized visual word-form populations.
+
+### Step 24. Consolidate efficient orthographic processing
+
+**Objective:** Gradually make word recognition faster, more stable and less dependent on effortful individual-letter processing.
+
+With increasing reading experience, familiar written patterns can become available as larger units.
+
+A simplified progression:
+
+\[
+\text{Individual letters}
+\rightarrow
+\text{Letter combinations}
+\rightarrow
+\text{Morphemes}
+\rightarrow
+\text{Familiar words}
+\]
+
+The system increasingly exploits previously learned patterns.
+
+A computational approximation of consolidation can be expressed through repeated prototype updating:
+
+\[
+\boldsymbol{\mu}_{t+1}=
+(1-\eta)\boldsymbol{\mu}_t+
+\eta\mathbf x_t
+\]
+
+Where:
+
+- \(\boldsymbol{\mu}_t\): existing representation.
+- \(\mathbf x_t\): newly experienced pattern.
+- \(\eta\): learning rate.
+
+Additional possible operations:
+
+- Synaptic plasticity.
+- Frequency-dependent tuning.
+- Statistical regularity learning.
+- Pattern completion.
+- Recurrent stabilization.
+- Long-term memory consolidation.
+- Generalization across different visual forms.
+
+**Biological interpretation**
+
+Repeated practice contributes to the increasing efficiency of the reading network. Skilled reading also reduces the processing resources required for recognizing familiar words, allowing more resources to be devoted to comprehension.
+
+A 2026 review describes literacy as specialization of pre-existing circuits that support transformations between vision and language. A June 2026 preprint also reports evidence that literacy acquisition and changing connectivity with language regions contribute to VWFA specialization; that particular study is not yet peer-reviewed. <Cite refs={["turn553765search6","turn703522search0","turn703522search4"]}/>
+
+**Output:** More automatic, stable and efficient visual word recognition.
+
+---
+
+# 2. Integrated mathematical model
+
+We can now represent the complete algorithm as interconnected transformations.
+
+Define the following variables:
+
+| Symbol | Representation |
+|---|---|
+| \(I\) | Original visual image |
+| \(F\) | Elementary visual features |
+| \(H\) | Hierarchical visual populations |
+| \(G\) | Candidate grapheme representations |
+| \(P\) | Posterior VWFA representations |
+| \(A\) | Anterior VWFA representations |
+| \(N\) | Sublexical letter-combination representations |
+| \(M\) | Morpheme-sensitive representations |
+| \(W\) | Whole-word representations |
+| \(C\) | Cortical connectivity and contextual signals |
+| \(S\) | Integrated semantic and lexical representation |
+| \(\Theta\) | Learned connection weights and parameters |
+
+The overall transformation is:
+
+\[
+I\rightarrow F\rightarrow H\rightarrow G
+\rightarrow P\rightarrow N\rightarrow A
+\]
+
+Then:
+
+\[
+A\rightarrow
+\begin{cases}
+M\\
+W
+\end{cases}
+\]
+
+And subsequently:
+
+\[
+(M,W,C)\rightarrow S
+\]
+
+However, the complete system is recurrent:
+
+\[
+\mathbf x(t+1)=
+f\left(
+W_{bottom}\mathbf x(t)
++
+W_{recurrent}\mathbf x(t)
++
+W_{feedback}\mathbf c(t)
+\right)
+\]
+
+The learned parameters are modified through experience:
+
+\[
+\Theta_{t+1}=
+\Theta_t+\Delta\Theta_t
+\]
+
+This gives us three distinct interacting systems:
+
+1. **Visual representation:** Processing the physical appearance of written symbols.
+2. **Orthographic and lexical representation:** Processing letters, combinations, morphemes and whole-word forms.
+3. **Distributed biological network:** Exchanging information and modifying learned connections across development.
+
+---
+
+# 3. Summary of the mathematical operations
+
+These are the major mathematical families that a Python implementation should eventually represent.
+
+| Mathematical operation | Biological/computational purpose |
+|---|---|
+| Convolution | Extract local visual features |
+| Gabor energy | Detect orientation and spatial-frequency structure |
+| Divisive normalization | Regulate population activity |
+| Matrix multiplication | Integrate neural population signals |
+| Nonlinear activation | Model population response functions |
+| Spatial pooling | Integrate visual information across locations |
+| Gaussian tuning | Represent graded positional sensitivity |
+| Vector similarity | Compare orthographic representations |
+| N-gram extraction | Construct combinations of letters |
+| Frequency estimation | Model familiarity with recurring patterns |
+| Morphological segmentation | Identify potential stems and affixes |
+| Probabilistic inference | Compare alternative morphological structures |
+| Weighted vector composition | Combine morphological information |
+| Recurrent updating | Refine representations over time |
+| Competitive normalization | Resolve competing representations |
+| Graph propagation | Model interactions between brain regions |
+| Correlation estimation | Analyze functional connectivity |
+| Hebbian-style learning | Model experience-dependent association |
+| Prediction-error updating | Model learning from mismatches |
+| Statistical regularization | Encourage stable representations |
+
+---
+
+# 4. Recommended implementation boundaries
+
+For translating this research into your ORE neurocomputational architecture, I recommend dividing the algorithm into six independent subsystems.
+
+| Subsystem | Steps | Main responsibility |
+|---|---:|---|
+| Visual Feature Subsystem | 1–4 | Visual input and elementary feature extraction |
+| Hierarchical Population Subsystem | 5–8 | Visual population integration and grapheme representations |
+| VWFA Hierarchy Subsystem | 9–12 | Posterior-to-anterior specialization |
+| Orthographic-Lexical Subsystem | 13–17 | Whole words, morphemes and lexical stabilization |
+| Cortical Connectivity Subsystem | 18–21 | Inter-region neural communication and feedback |
+| Literacy Development Subsystem | 22–24 | Learning, plasticity and consolidation |
+
+One architectural decision is particularly important: **do not combine whole-word recognition and morphological decomposition into one function.**
+
+They should have separate representations that interact.
+
+Similarly, distinguish between:
+
+- Orthographic recognition.
+- Morphological form analysis.
+- Morphological meaning.
+- Whole-word lexical activation.
+- Semantic integration.
+
+This will allow each mechanism to be independently tested and biologically qualified.
+
+## 5. Important research references
+
+These sources provide useful foundations for the proposed architecture:
+
+1. **Hierarchical coding of letter strings in the ventral stream (2007).** <Link ref="turn703522search1" title="Vinckier et al. — posterior-to-anterior hierarchy"/>. Investigates increasing selectivity for increasingly complex written structures.
+
+2. **The transition from vision to language (2024).** <Link ref="turn553765search0" title="Yablonski et al. — VWFA subregions and functional connectivity"/>. Investigates differences between VWFA-1 and VWFA-2.
+
+3. **Anatomical Connections of the Visual Word Form Area (2014).** <Link ref="turn904745search5" title="Bouhali et al. — anatomical connectivity"/>. Investigates pathways connecting the VWFA with language-related regions.
+
+4. **Early decomposition in visual word recognition (2008).** <Link ref="turn904745search1" title="Rastle et al. — morphology, form and meaning"/>. Relevant to early morphological processing.
+
+5. **The reading brain: Transforming vision into language (2026).** <Link ref="turn553765search6" title="Ghuman, Fiez and Boring — review of the reading brain"/>. Provides a contemporary account of VWFA specialization and connectivity.
+
+6. **Literacy acquisition and functional connectivity drive the emergence and continued development of the VWFA (2026 preprint).** <Link ref="turn703522search0" title="Li et al. — developmental specialization"/>. Investigates literacy-driven changes in word selectivity and functional connectivity.
+
+---
+
+**The central biological principle:** The VWFA progressively transforms visual information into increasingly complex, stable and language-connected orthographic representations. Its specialization depends not only on its local neural populations, but also on the connectivity, learning and experience of the wider reading network.
+
+This gives us a foundation for building a VWFA subsystem that is more than just a letter or word classifier: it can model hierarchical representations, morphological sensitivity, whole-word recognition, recurrent communication and literacy-dependent plasticity.

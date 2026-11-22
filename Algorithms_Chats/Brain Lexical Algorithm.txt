@@ -1,0 +1,1743 @@
+Title: Brain Lexical Algorithm
+Conversation ID: 6af8af3b-7684-83e9-a79b-c560a99ee18d
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Lexical access and morphology:
+Retrieve stored word identity
+Retrieve word meaning
+Retrieve grammatical word category
+Morphological decomposition
+Retrieve stems and affixes
+Distinguish morphological alternatives
+Activate lexical candidates incrementally
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Lexical Access and Morphological Processing in the Human Brain
+
+The objective of this algorithm is to explain how the human brain recognizes a word, retrieves its stored identity and meaning, identifies its grammatical properties, decomposes it into morphological components, retrieves those components, resolves competing interpretations, and continuously updates its lexical hypotheses as new information arrives.
+
+We will construct this as one interconnected algorithm consisting of **7 major processing stages and 35 subordinate algorithmic operations**.
+
+The algorithm will include:
+
+1. The computational operation.
+2. The biological/neural operation.
+3. The mathematical operations potentially involved.
+4. The information passed to subsequent operations.
+5. The feedback mechanisms connecting different stages.
+
+An important principle: these stages are a functional organization, not necessarily a sequence of isolated neural events. Research supports cascaded and parallel processing, with several operations occurring simultaneously and influencing one another. <Cite refs={["turn313847view0","turn313847view1"]}/>
+
+---
+
+# Part 1 — Overall architecture
+
+## 1.1. The objective
+
+Consider that the brain encounters the written word:
+
+**WHISTLERS**
+
+It needs to accomplish several tasks:
+
+- Recognize the word.
+- Access its stored lexical representation.
+- Retrieve the concept associated with whistling.
+- Recognize that the word refers to people who perform an action.
+- Identify the morphological structure.
+- Retrieve the root `whistle`.
+- Retrieve the derivational suffix `-er`.
+- Retrieve the inflectional suffix `-s`.
+- Determine that the resulting word is a plural noun.
+- Construct the complete meaning.
+
+The morphological structure is:
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Morphological structure of WHISTLERS</title>
+  <row align="center" justify="center" gap={1}>
+    <box background="#DCEBFA" radius="md" padding={3} flex="1" align="center">
+      **WHISTLE**
+
+      <text color="#245B99" size="xs">Root</text>
+    </box>
+    <box background="#E8E1F7" radius="md" padding={3} flex="1" align="center">
+      **-ER**
+
+      <text color="#6846A3" size="xs">Derivation</text>
+    </box>
+    <box background="#DCEFE5" radius="md" padding={3} flex="1" align="center">
+      **-S**
+
+      <text color="#26764D" size="xs">Inflection</text>
+    </box>
+  </row>
+  <box align="center" gap={1}>
+    <icon name="arrow-down" color="secondary" size="lg"/>
+    **Morphological composition**
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="surface-secondary" radius="md" padding={3} align="center">
+    <title size="xl" color="success">WHISTLERS</title>
+    **People who whistle (plural)**
+
+    <text size="xs" color="secondary">Grammatical category: plural noun</text>
+  </box>
+</box>
+
+This requires several different kinds of stored information, not simply retrieving a sequence of letters.
+
+## 1.2. Main biological processing network
+
+The following are proposed functional associations based on cognitive neuroscience, not exclusive one-to-one assignments.
+
+<box border radius="lg" padding={3} gap={3}>
+  <title size="lg">Neural processing architecture</title>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3}>
+    **1. Sensory word-form recognition**
+
+    <text color="secondary" size="sm">Visual word-form processing: ventral occipitotemporal cortex and fusiform gyrus. Auditory word-form processing: superior temporal regions.</text>
+  </box>
+  <box align="center"><icon name="arrow-down-up" color="secondary"/></box>
+  <box background="rgba(20,184,166,0.09)" radius="md" padding={3}>
+    **2. Lexical and semantic access**
+
+    <text color="secondary" size="sm">Middle temporal gyrus, superior temporal regions, anterior temporal lobe and distributed semantic networks.</text>
+  </box>
+  <box align="center"><icon name="arrow-down-up" color="secondary"/></box>
+  <box background="rgba(139,92,246,0.09)" radius="md" padding={3}>
+    **3. Morphological and grammatical processing**
+
+    <text color="secondary" size="sm">Left inferior frontal gyrus and temporal language regions, working together to identify roots, derivations and inflections.</text>
+  </box>
+  <box align="center"><icon name="arrow-down-up" color="secondary"/></box>
+  <box background="rgba(234,179,8,0.09)" radius="md" padding={3}>
+    **4. Semantic and morphological integration**
+
+    <text color="secondary" size="sm">Distributed semantic networks and frontal regions involved in evaluating meaning and combining linguistic information.</text>
+  </box>
+  <box align="center">
+    <icon name="repeat" color="secondary" size="lg"/>
+    <text color="secondary" size="xs">Recurrent feedback between processing systems</text>
+  </box>
+</box>
+
+Research has associated morphological decomposition in reading with the fusiform gyrus, root access with the middle temporal gyrus, and grammatical morphology with the left inferior frontal gyrus. These regions interact rather than operating as independent processors. <Cite refs={["turn313847view0","turn313847view2"]}/>
+
+---
+
+# Part 2 — Stage 1: Retrieve stored word identity
+
+<badge color="info">Stage 1</badge>
+
+**Objective:** Identify which known lexical representation corresponds to the incoming sensory pattern.
+
+The brain must determine which stored word identity best matches the letters or speech sounds it has received.
+
+An important distinction:
+
+- Word-form identity: how the word is written or pronounced.
+- Lemma: the abstract lexical representation associated with its grammatical and semantic properties.
+
+They are related but are not necessarily the same representation.
+
+## Operation 1.1 — Encode the incoming word pattern
+
+**Computational procedure**
+
+The system receives a sensory input.
+
+For written language:
+
+- Detect individual letters.
+- Identify their positions.
+- Extract letter combinations.
+- Construct an orthographic representation.
+
+For spoken language:
+
+- Detect acoustic features.
+- Identify speech sounds.
+- Extract phonological sequences.
+- Construct a phonological representation.
+
+The result is a structured sensory pattern:
+
+\[
+X_t=(x_1,x_2,\ldots,x_t)
+\]
+
+Where:
+
+- \(x_i\) represents an incoming letter, phonological feature, or other relevant sensory unit.
+- \(t\) represents the current processing point.
+
+**Possible mathematical operations**
+
+1. Feature extraction.
+2. Pattern matching.
+3. Vector construction.
+4. Similarity calculation.
+5. Probability estimation.
+
+For example, represent a word using an abstract feature vector:
+
+\[
+X=[x_1,x_2,\ldots,x_n]
+\]
+
+A stored word representation is:
+
+\[
+W_i=[w_1,w_2,\ldots,w_n]
+\]
+
+One possible measure of similarity is cosine similarity:
+
+\[
+Similarity(X,W_i)=
+\frac{X\cdot W_i}{\|X\|\|W_i\|}
+\]
+
+This is a computational analogy for evaluating overlapping features, not a claim that the brain explicitly performs cosine calculations.
+
+**Biological interpretation**
+
+The visual system uses ventral occipitotemporal pathways, including fusiform regions, to develop increasingly abstract representations of written words. Auditory input involves superior temporal auditory and phonological processing networks.
+
+## Operation 1.2 — Search the stored lexical representations
+
+The brain activates stored word representations that are compatible with the incoming pattern.
+
+For example, the initial sequence `WHIS...` might activate several possibilities:
+
+- Whistle
+- Whisker
+- Whiskey
+- Whisper
+
+These candidates are not necessarily equally active.
+
+The system considers:
+
+- Sensory similarity.
+- Previous experience.
+- Word frequency.
+- Existing contextual expectations.
+
+**Mathematical operations**
+
+A Bayesian representation:
+
+\[
+P(W_i|X)=
+\frac{P(X|W_i)P(W_i)}{P(X)}
+\]
+
+Where:
+
+- \(P(X|W_i)\): compatibility between the incoming pattern and candidate word.
+- \(P(W_i)\): prior probability of encountering that word.
+- \(P(W_i|X)\): updated probability of the candidate.
+
+Word frequency can contribute to the prior probability.
+
+For example, a familiar word may initially receive stronger activation than a rarely encountered word, provided their sensory matches are comparable.
+
+## Operation 1.3 — Identify the best-fitting lexical identity
+
+The system evaluates the activated candidates and determines whether one has sufficient evidence to be selected.
+
+Possible mechanisms include:
+
+- Candidate comparison.
+- Lateral inhibition.
+- Evidence accumulation.
+- Confidence estimation.
+
+A simple model:
+
+\[
+W^*=\arg\max_i P(W_i|X)
+\]
+
+The highest-probability candidate becomes the current leading hypothesis.
+
+However, it does not necessarily become the final interpretation yet.
+
+The system may retain alternatives.
+
+**Biological relevance:** Lexical access involves distributed temporal and occipitotemporal networks, with interactions between word-form and lexical representations.
+
+---
+
+# Part 3 — Stage 2: Retrieve word meaning
+
+<badge color="info">Stage 2</badge>
+
+**Objective:** Activate the semantic representation associated with the recognized or partially recognized word.
+
+Recognizing a word's form is not sufficient.
+
+The brain must retrieve the concept and its semantic properties.
+
+## Operation 2.1 — Activate the semantic representation
+
+Each lexical representation is connected to semantic information.
+
+For example:
+
+`DOG`
+
+may activate properties such as:
+
+- Animal.
+- Mammal.
+- Living organism.
+- Four-legged.
+- Domestic animal.
+- Barking.
+- Pet.
+
+A useful computational representation is a semantic vector:
+
+\[
+M_{dog}=
+[m_1,m_2,\ldots,m_n]
+\]
+
+Each dimension represents a semantic feature.
+
+The activation of a semantic feature depends on its relationship to the recognized word and the current processing context.
+
+**Possible mathematical operations**
+
+Weighted summation:
+
+\[
+M=\sum_{i=1}^{n}a_iF_i
+\]
+
+Where:
+
+- \(F_i\): stored semantic feature.
+- \(a_i\): activation associated with that feature.
+- \(M\): resulting semantic activation pattern.
+
+The system can also use associative spreading activation.
+
+For example:
+
+\[
+DOG \rightarrow ANIMAL
+\]
+
+\[
+DOG \rightarrow MAMMAL
+\]
+
+\[
+DOG \rightarrow PET
+\]
+
+Activation spreads through interconnected semantic representations.
+
+**Biological interpretation**
+
+Semantic processing is distributed across temporal and other cortical networks. The middle temporal gyrus and anterior temporal lobe are particularly relevant to lexical-semantic processing, while the angular gyrus participates in broader semantic integration. <Cite refs={["turn491188view1","turn313847view1"]}/>
+
+## Operation 2.2 — Retrieve possible word senses
+
+Some words have several meanings.
+
+Consider:
+
+`BANK`
+
+Possible meanings:
+
+- Financial institution.
+- Riverbank.
+
+The brain must initially allow multiple semantic hypotheses.
+
+Let:
+
+\[
+S=\{s_1,s_2,\ldots,s_k\}
+\]
+
+represent possible meanings.
+
+The system evaluates their compatibility with the current context.
+
+For example:
+
+"The fisherman sat beside the bank."
+
+The context activates semantic features related to rivers and water.
+
+**Mathematical operations**
+
+Semantic compatibility:
+
+\[
+C(s_i,K)=Similarity(M_{s_i},K)
+\]
+
+Where:
+
+- \(M_{s_i}\): semantic representation of sense \(i\).
+- \(K\): contextual representation.
+
+A probabilistic sense-selection model:
+
+\[
+P(s_i|W,K)
+\propto P(K|s_i,W)P(s_i|W)
+\]
+
+The strongest interpretation receives greater activation.
+
+## Operation 2.3 — Construct a contextual semantic representation
+
+The brain does not retrieve meaning entirely independently of surrounding words.
+
+The meaning of the current word can be influenced by:
+
+- Previously processed words.
+- Current sentence structure.
+- Expected events.
+- Semantic associations.
+- The broader discourse.
+
+Mathematically, we can represent this as:
+
+\[
+M_{final}=M_{lexical}+\alpha M_{context}
+\]
+
+Where \(\alpha\) controls the contribution of contextual information.
+
+This equation is a simplified computational model of contextual modulation.
+
+**Output of Stage 2:** An activated semantic representation, potentially containing multiple interpretations.
+
+---
+
+# Part 4 — Stage 3: Retrieve grammatical word category
+
+<badge color="info">Stage 3</badge>
+
+**Objective:** Determine the grammatical identity of the word.
+
+The brain must determine whether the word functions as:
+
+- Noun.
+- Verb.
+- Adjective.
+- Adverb.
+- Preposition.
+- Pronoun.
+- Other grammatical category.
+
+This is important because the grammatical category influences how the word can participate in sentence structure.
+
+## Operation 3.1 — Activate the grammatical representation
+
+A lexical representation includes grammatical information.
+
+For example:
+
+| Word | Grammatical category |
+|---|---|
+| Dog | Noun |
+| Run | Verb |
+| Beautiful | Adjective |
+| Quickly | Adverb |
+
+However, grammatical category is not always determined by the root alone.
+
+Consider:
+
+- Love (noun): The love was genuine.
+- Love (verb): I love science.
+
+The same root can participate in different grammatical constructions.
+
+Therefore, the system must consider both lexical identity and syntactic context.
+
+**Mathematical operations**
+
+Represent grammatical categories using an activation vector:
+
+\[
+G=[g_N,g_V,g_A,g_{Adv},\ldots]
+\]
+
+Each value represents activation for a possible category.
+
+For example:
+
+\[
+G=[0.85,0.12,0.02,0.01]
+\]
+
+This would indicate strong noun activation in an illustrative model.
+
+## Operation 3.2 — Evaluate grammatical compatibility
+
+The brain compares possible categories against:
+
+- Sentence position.
+- Neighboring words.
+- Morphological markers.
+- Syntactic expectations.
+- Previously constructed grammatical structure.
+
+For example:
+
+"The children are playing."
+
+The construction `are playing` supports a verbal interpretation.
+
+A possible mathematical representation:
+
+\[
+P(G_i|W,K)=
+\frac{P(K|G_i,W)P(G_i|W)}
+{\sum_jP(K|G_j,W)P(G_j|W)}
+\]
+
+This produces a distribution across grammatical categories.
+
+## Operation 3.3 — Retrieve additional grammatical properties
+
+The category may activate more detailed grammatical information.
+
+For a noun:
+
+- Number.
+- Gender, where applicable.
+- Case, where applicable.
+- Countability.
+
+For a verb:
+
+- Tense.
+- Aspect.
+- Mood.
+- Argument structure.
+- Agreement properties.
+
+These features may be distributed across lexical and grammatical representations.
+
+**Biological interpretation**
+
+The left inferior frontal gyrus and temporal language regions participate in processing morphosyntactic information. The precise role of individual regions remains an active research question. <Cite refs={["turn491188view2","turn313847view2"]}/>
+
+**Output of Stage 3:** An activated lexical representation with possible grammatical properties.
+
+---
+
+# Part 5 — Stage 4: Morphological decomposition
+
+<badge color="info">Stage 4</badge>
+
+**Objective:** Determine whether the recognized word contains smaller meaningful or grammatical units.
+
+This is a particularly important stage.
+
+The brain needs to determine whether the word is:
+
+1. Morphologically simple.
+2. Inflected.
+3. Derived through affixation.
+4. Composed of several morphological units.
+
+For example:
+
+`UNHAPPINESS`
+
+Can be segmented into:
+
+\[
+[UN]+[HAPPY]+[NESS]
+\]
+
+The components have different functions.
+
+- `un-`: Negation.
+- `happy`: Root.
+- `-ness`: Derives a noun from an adjective.
+
+Research suggests morphological parsing can begin automatically using properties of word form, even before semantic relationships between the proposed constituents are completely evaluated. <Cite refs={["turn491188view0","turn313847view2"]}/>
+
+## Operation 4.1 — Detect possible morphological boundaries
+
+The system searches for patterns that might indicate:
+
+- Prefixes.
+- Roots.
+- Suffixes.
+- Compound boundaries.
+- Inflectional endings.
+
+For example:
+
+`REUSABLE`
+
+Potential segmentation:
+
+\[
+[RE]+[USE]+[ABLE]
+\]
+
+The system identifies possible structural boundaries rather than immediately deciding which interpretation is correct.
+
+**Mathematical operations**
+
+Boundary detection can be represented using a probability:
+
+\[
+P(B_j=1|X)
+\]
+
+Where:
+
+- \(B_j\): possible boundary at position \(j\).
+- \(X\): incoming word pattern.
+
+The system evaluates possible boundaries using learned statistical regularities.
+
+For example, frequently occurring combinations of stems and suffixes may have stronger structural evidence.
+
+## Operation 4.2 — Detect possible roots
+
+The brain searches for an internal sequence corresponding to a known root.
+
+Examples:
+
+| Word | Possible root |
+|---|---|
+| Played | Play |
+| Darkness | Dark |
+| Happiness | Happy |
+| Disappeared | Appear |
+| Reusable | Use |
+
+A root does not necessarily have to appear as an independent word.
+
+Some roots are bound morphemes and occur only in combinations.
+
+The algorithm should therefore distinguish between:
+
+- Free roots.
+- Bound roots.
+
+## Operation 4.3 — Detect possible derivational structures
+
+Derivational morphology creates new lexical units.
+
+Examples:
+
+\[
+HAPPY \rightarrow HAPPINESS
+\]
+
+\[
+TEACH \rightarrow TEACHER
+\]
+
+\[
+NATION \rightarrow NATIONAL
+\]
+
+The brain must identify the possibility that an affix changes:
+
+- Word category.
+- Semantic properties.
+- Lexical identity.
+
+## Operation 4.4 — Detect possible inflectional structures
+
+Inflection generally adds grammatical information without changing the basic lexical category.
+
+Examples:
+
+\[
+DOG \rightarrow DOGS
+\]
+
+\[
+WALK \rightarrow WALKED
+\]
+
+\[
+PLAY \rightarrow PLAYING
+\]
+
+The system identifies these endings and associates them with grammatical functions.
+
+## Operation 4.5 — Construct possible morphological parses
+
+The system should not immediately commit to one segmentation.
+
+Instead, it can maintain a collection of possible morphological structures.
+
+For example:
+
+\[
+H=\{h_1,h_2,\ldots,h_n\}
+\]
+
+Each hypothesis contains:
+
+- Proposed root.
+- Proposed affixes.
+- Proposed boundaries.
+- Morphological type.
+- Associated probability.
+
+This creates a morphological candidate network.
+
+**Mathematical operations**
+
+A possible segmentation algorithm maximizes:
+
+\[
+H^*=\arg\max_H
+\left[
+\sum_i\log P(m_i)
++
+\sum_i\log P(m_i|m_{i-1})
+\right]
+\]
+
+Where:
+
+- \(m_i\): individual morphological units.
+- \(P(m_i)\): probability of the unit.
+- \(P(m_i|m_{i-1})\): probability of one morphological unit occurring after another.
+
+This is a simplified statistical morphological parsing model.
+
+**Biological implementation**
+
+For written language, fusiform regions are implicated in morphological segmentation.
+
+For spoken language, superior temporal regions are sensitive to phonological sequences and transition probabilities associated with morpheme boundaries.
+
+The left inferior frontal and temporal networks contribute to subsequent morphological interpretation. <Cite refs={["turn491188view0","turn491188view1","turn313847view2"]}/>
+
+---
+
+# Part 6 — Stage 5: Retrieve stems and affixes
+
+<badge color="info">Stage 5</badge>
+
+**Objective:** Retrieve the stored information associated with each identified morphological constituent.
+
+Once the morphological structure has been proposed, the brain needs to determine what each component means and what function it performs.
+
+This stage contains three major operations.
+
+## Operation 5.1 — Retrieve the root or stem representation
+
+Suppose the input is:
+
+`HAPPINESS`
+
+The proposed root is:
+
+`HAPPY`
+
+The system retrieves its stored semantic representation.
+
+For example:
+
+\[
+R_{happy}=
+[
+pleasant,
+positive,
+emotion,
+satisfaction,
+contentment
+]
+\]
+
+The semantic features become activated according to their associated strengths.
+
+**Mathematical operations**
+
+Weighted feature activation:
+
+\[
+R=\sum_iw_if_i
+\]
+
+Where:
+
+- \(f_i\): semantic features.
+- \(w_i\): their associated weights.
+
+Possible additional operations:
+
+- Associative retrieval.
+- Pattern completion.
+- Vector similarity.
+- Feature activation.
+- Memory-strength modulation.
+
+The middle temporal gyrus is implicated in access to decomposed root representations and their semantic features. <Cite refs={["turn491188view1","turn391504view2"]}/>
+
+## Operation 5.2 — Retrieve derivational affix representations
+
+The system retrieves information associated with the derivational affix.
+
+For example:
+
+`-NESS`
+
+Its function is to derive a noun from a suitable adjective.
+
+The representation may contain:
+
+| Feature | Function |
+|---|---|
+| Word category | Noun |
+| Input category | Adjective |
+| Semantic function | State, quality, or condition |
+| Morphological function | Derivation |
+
+Other examples:
+
+| Affix | Possible function |
+|---|---|
+| -er | Agent or instrument noun |
+| -ful | Adjective formation |
+| -ly | Adverb formation in many cases |
+| -tion | Noun formation |
+| un- | Negation or reversal |
+| re- | Repetition or again |
+
+The algorithm retrieves the corresponding transformation rules.
+
+**Mathematical operations**
+
+A derivational affix can be represented as a transformation operator:
+
+\[
+D(R)=R'
+\]
+
+Where:
+
+- \(R\): original root representation.
+- \(D\): derivational operator.
+- \(R'\): resulting derived representation.
+
+A vector implementation might use:
+
+\[
+R'=R\odot W_D
+\]
+
+Where \(\odot\) represents element-wise multiplication and \(W_D\) represents the learned transformation weights.
+
+This is one possible mathematical account of derivational semantic composition.
+
+## Operation 5.3 — Retrieve inflectional affix representations
+
+The brain identifies what grammatical information the inflection provides.
+
+For example:
+
+`DOGS`
+
+The system retrieves:
+
+- Root: Dog.
+- Number: Plural.
+- Word category: Noun.
+
+For verbs:
+
+`WALKED`
+
+It retrieves:
+
+- Root: Walk.
+- Tense: Past.
+- Verbal category: Verb.
+
+A simplified feature representation:
+
+\[
+I=[tense,number,aspect,person,\ldots]
+\]
+
+The applicable features depend on the language and grammatical construction.
+
+**Mathematical operations**
+
+Feature assignment:
+
+\[
+G_{final}=G_{stem}+I
+\]
+
+The addition here represents the combination of grammatical feature information, not simply arithmetic addition performed by individual neurons.
+
+**Important distinction**
+
+The root, derivational affix and inflectional affix do not perform interchangeable functions.
+
+| Component | Main contribution |
+|---|---|
+| Root | Core lexical-semantic information |
+| Derivation | Creates a new lexical unit and may change category |
+| Inflection | Specifies grammatical properties |
+
+This distinction is central to the mathematical model developed by Gwilliams (2020). <Cite refs={["turn313847view0","turn491188view3"]}/>
+
+---
+
+# Part 7 — Stage 6: Distinguish morphological alternatives
+
+<badge color="info">Stage 6</badge>
+
+**Objective:** Decide which proposed morphological interpretation best explains the incoming word.
+
+This is necessary because identifying possible morphemes does not guarantee that the proposed segmentation is correct.
+
+Consider:
+
+`BROTHER`
+
+A form-based parser might temporarily identify:
+
+\[
+[BROTH]+[ER]
+\]
+
+However, the ordinary meaning of brother is not compositionally derived from broth and the suffix -er.
+
+Therefore, the system must distinguish between superficial similarities and genuine morphological relationships.
+
+## Operation 6.1 — Compare possible morphological structures
+
+The system receives multiple candidates.
+
+For example:
+
+\[
+H_1=[ROOT]+[SUFFIX]
+\]
+
+\[
+H_2=[WHOLE\ WORD]
+\]
+
+\[
+H_3=[PREFIX]+[ROOT]+[SUFFIX]
+\]
+
+It compares their compatibility with stored linguistic representations.
+
+**Possible mathematical operations**
+
+Candidate scoring:
+
+\[
+Score(H_i)=
+w_1F_i+
+w_2M_i+
+w_3S_i+
+w_4C_i
+\]
+
+Where:
+
+- \(F_i\): word-form compatibility.
+- \(M_i\): morphological compatibility.
+- \(S_i\): semantic compatibility.
+- \(C_i\): contextual and grammatical compatibility.
+- \(w_i\): learned weighting parameters.
+
+## Operation 6.2 — Evaluate morphological validity
+
+The system checks whether:
+
+1. The proposed root exists or is linguistically possible.
+2. The proposed affix exists.
+3. Their combination follows the language's morphological rules.
+4. The affix can attach to that category of root.
+5. The resulting representation is compatible with the observed word.
+
+This can be modeled as:
+
+\[
+V(H_i)=
+P(H_i\text{ is morphologically valid})
+\]
+
+Invalid combinations receive lower scores.
+
+## Operation 6.3 — Evaluate semantic compatibility
+
+A morphological combination can be structurally possible but semantically unpredictable.
+
+The brain compares the meaning predicted from its components with the meaning associated with the complete lexical item.
+
+For example:
+
+`TEACHER`
+
+The system can construct:
+
+\[
+TEACH+ER
+\]
+
+The root represents an action, while the suffix derives an agent noun.
+
+The composition produces an understandable semantic interpretation.
+
+By contrast, a superficial segmentation of `BROTHER` does not produce the ordinary stored meaning.
+
+**Mathematical operations**
+
+Semantic compatibility:
+
+\[
+SC(H_i)=
+Similarity(
+M_{predicted},
+M_{stored}
+)
+\]
+
+Where:
+
+- \(M_{predicted}\): compositional meaning.
+- \(M_{stored}\): stored meaning of the complete lexical candidate.
+
+This is a useful way to model semantic-coherence evaluation.
+
+Research has associated morphological semantic composition and semantic coherence with neural responses around 400–500 ms, including activity involving orbitofrontal regions. <Cite refs={["turn491188view2","turn491188view3"]}/>
+
+## Operation 6.4 — Resolve competition between alternatives
+
+The brain must reduce activation for interpretations that are inconsistent with the accumulating evidence.
+
+A possible neural-network-inspired operation is lateral inhibition.
+
+Let:
+
+\[
+A_i(t)
+\]
+
+represent the activation of candidate \(i\).
+
+Then:
+
+\[
+A_i(t+1)=
+\sigma
+\left(
+B_i+
+E_i-
+\lambda\sum_{j\neq i}C_{ij}A_j(t)
+\right)
+\]
+
+Where:
+
+- \(B_i\): baseline activation.
+- \(E_i\): supporting evidence.
+- \(C_{ij}\): competitive interaction.
+- \(\lambda\): strength of inhibition.
+- \(\sigma\): activation function.
+
+This does not mean every candidate inhibits every other candidate equally. The model can distinguish mutually incompatible interpretations from related representations that may receive shared activation.
+
+## Operation 6.5 — Determine whether the whole word or its components dominate
+
+This operation is particularly important.
+
+Not all words are processed in the same way.
+
+The system may rely more heavily on:
+
+- Stored whole-word representations.
+- Morphological decomposition.
+- A combination of both.
+
+For example:
+
+- `DOGS`: root plus regular plural inflection.
+- `WENT`: irregular stored form associated with GO.
+- `UNHAPPINESS`: multiple productive morphological components.
+
+Therefore, the algorithm must support both whole-word and decompositional pathways.
+
+**Output of Stage 6:** The best-supported morphological interpretation, together with its semantic and grammatical representation.
+
+---
+
+# Part 8 — Stage 7: Activate lexical candidates incrementally
+
+<badge color="success">Stage 7</badge>
+
+**Objective:** Continuously activate, update, compare and refine lexical candidates as new sensory information arrives.
+
+This stage is particularly important because lexical access is not simply a final lookup operation.
+
+The brain begins activating possible words before it has received the complete word.
+
+For example, when hearing:
+
+`/whi/`
+
+Several lexical candidates can become active.
+
+When the next sounds arrive, some candidates become more likely and others lose activation.
+
+This principle is central to incremental spoken-word recognition models such as the Cohort model. <Cite refs={["turn923889search0","turn923889search2","turn923889search1"]}/>
+
+## Operation 7.1 — Generate initial lexical candidates
+
+As soon as the first sensory features arrive, the system searches for compatible lexical entries.
+
+For example:
+
+Input:
+
+`WHI...`
+
+Candidate representations:
+
+- Whistle.
+- Whisker.
+- Whisper.
+- Whiskey.
+
+Each receives an activation value.
+
+\[
+A=[a_1,a_2,a_3,a_4]
+\]
+
+## Operation 7.2 — Update candidates as more information arrives
+
+Suppose the next input becomes:
+
+`WHIST...`
+
+The system updates compatibility.
+
+Some candidates become stronger:
+
+- Whistle.
+
+Others become weaker:
+
+- Whisper.
+- Whiskey.
+
+This is an iterative evidence-accumulation procedure.
+
+**Mathematical operation**
+
+Bayesian updating:
+
+\[
+P(W_i|X_{1:t+1})
+\propto
+P(x_{t+1}|W_i,X_{1:t})
+P(W_i|X_{1:t})
+\]
+
+Each incoming element changes the probability distribution over possible words.
+
+## Operation 7.3 — Activate morphological candidates
+
+When the system recognizes possible morphological structure, it can activate component-level representations.
+
+For example:
+
+`WHISTL...`
+
+may activate:
+
+- Whistle.
+- Whistler.
+- Whistling.
+- Whistled.
+
+These candidates share morphological relationships.
+
+The system can exploit those relationships to improve retrieval efficiency.
+
+A possible mathematical representation:
+
+\[
+A_{word}=
+A_{form}+A_{root}+A_{affix}
+\]
+
+This is a simplified combination of activation sources.
+
+## Operation 7.4 — Allow semantic and grammatical feedback
+
+Candidates are not evaluated exclusively against the incoming letters or sounds.
+
+Semantic expectations and grammatical context can also influence their activation.
+
+For example:
+
+"The person who ___"
+
+The grammatical and semantic context may increase activation for a noun referring to a person who performs an action.
+
+This helps the brain distinguish between morphologically related alternatives.
+
+**Possible mathematical operations**
+
+Contextual weighting:
+
+\[
+S_i=
+\alpha F_i+
+\beta M_i+
+\gamma G_i+
+\delta K_i
+\]
+
+Where:
+
+- \(F_i\): sensory form evidence.
+- \(M_i\): morphological evidence.
+- \(G_i\): grammatical compatibility.
+- \(K_i\): contextual compatibility.
+
+## Operation 7.5 — Apply activation decay and competition
+
+Candidates that no longer match the incoming evidence gradually lose activation.
+
+A simplified decay model:
+
+\[
+A_i(t+1)=
+\rho A_i(t)+E_i(t)-I_i(t)
+\]
+
+Where:
+
+- \(\rho\): activation persistence.
+- \(E_i\): new supporting evidence.
+- \(I_i\): inhibitory influence from competition.
+
+This allows the system to maintain plausible candidates while suppressing inconsistent alternatives.
+
+## Operation 7.6 — Select the leading lexical interpretation
+
+Eventually, the evidence may become sufficiently strong to support one interpretation.
+
+A simple selection operation:
+
+\[
+W^*=\arg\max_i A_i
+\]
+
+However, a biological model should not assume that the highest activation always causes immediate conscious recognition.
+
+The decision may also depend on:
+
+- Confidence.
+- Remaining ambiguity.
+- Task requirements.
+- Attention.
+- Available contextual evidence.
+
+## Operation 7.7 — Continue updating after recognition
+
+Recognition does not necessarily end processing.
+
+The brain continues to integrate the word into the sentence and may revise its interpretation as subsequent information arrives.
+
+This creates a recurrent processing loop.
+
+---
+
+# Part 9 — Mathematical integration of the seven stages
+
+We can now combine all seven stages into one computational framework.
+
+## 9.1. Main variables
+
+| Variable | Meaning |
+|---|---|
+| \(X_t\) | Incoming sensory information |
+| \(W\) | Candidate lexical identity |
+| \(M\) | Semantic representation |
+| \(G\) | Grammatical representation |
+| \(R\) | Root representation |
+| \(D\) | Derivational information |
+| \(I\) | Inflectional information |
+| \(H\) | Morphological hypothesis |
+| \(A\) | Candidate activation |
+| \(K\) | Contextual information |
+
+## 9.2. Integrated mathematical model
+
+The entire algorithm can be expressed using a candidate hypothesis:
+
+\[
+H_i=(W_i,M_i,G_i,R_i,D_i,I_i)
+\]
+
+The system estimates:
+
+\[
+P(H_i|X_{1:t},K)
+\]
+
+Using the available sensory evidence and previous knowledge.
+
+A simplified scoring function:
+
+\[
+\begin{aligned}
+S(H_i,t)=
+&\alpha F(H_i,X_{1:t})\\
+&+\beta M(H_i)\\
+&+\gamma G(H_i,K)\\
+&+\delta R(H_i)\\
+&+\epsilon D(H_i,I_i)\\
+&+\zeta P(H_i)
+\end{aligned}
+\]
+
+Each component contributes to the suitability of the candidate.
+
+The scores can be normalized using softmax:
+
+\[
+P(H_i)=
+\frac{e^{S(H_i)/T}}
+{\sum_j e^{S(H_j)/T}}
+\]
+
+Where \(T\) controls the sharpness of the probability distribution.
+
+This provides a unified mathematical representation of:
+
+- Form recognition.
+- Semantic access.
+- Grammatical access.
+- Morphological decomposition.
+- Component retrieval.
+- Alternative resolution.
+- Incremental candidate activation.
+
+These equations represent a computational hypothesis, not established literal neural calculations.
+
+---
+
+# Part 10 — Complete master algorithm
+
+The following pseudocode combines the seven stages into one interconnected processing system.
+
+<CodeBlock language="python" editable>
+# MASTER ALGORITHM:
+# LEXICAL ACCESS AND MORPHOLOGICAL PROCESSING
+
+def lexical_morphological_processing(
+    incoming_input,
+    context,
+    lexical_memory,
+    semantic_memory,
+    morphological_memory,
+    grammatical_memory
+):
+
+    # ------------------------------------------------
+    # INITIALIZATION
+    # ------------------------------------------------
+
+    lexical_candidates = []
+    semantic_candidates = []
+    grammatical_candidates = []
+    morphological_hypotheses = []
+
+    activation_states = {}
+
+    # ------------------------------------------------
+    # STAGE 1: RETRIEVE STORED WORD IDENTITY
+    # ------------------------------------------------
+
+    sensory_representation = encode_input(incoming_input)
+
+    lexical_candidates = retrieve_compatible_words(
+        sensory_representation,
+        lexical_memory
+    )
+
+    lexical_candidates = update_form_compatibility(
+        lexical_candidates,
+        sensory_representation
+    )
+
+    lexical_candidates = apply_lexical_frequency_priors(
+        lexical_candidates
+    )
+
+    # ------------------------------------------------
+    # STAGE 2: RETRIEVE WORD MEANING
+    # ------------------------------------------------
+
+    for candidate in lexical_candidates:
+
+        candidate.semantic_features = activate_semantic_features(
+            candidate,
+            semantic_memory
+        )
+
+        candidate.possible_senses = retrieve_possible_senses(
+            candidate
+        )
+
+        candidate.semantic_score = evaluate_contextual_meaning(
+            candidate.possible_senses,
+            context
+        )
+
+    # ------------------------------------------------
+    # STAGE 3: RETRIEVE GRAMMATICAL CATEGORY
+    # ------------------------------------------------
+
+    for candidate in lexical_candidates:
+
+        candidate.grammatical_features = retrieve_grammar(
+            candidate,
+            grammatical_memory
+        )
+
+        candidate.category_score = evaluate_category_compatibility(
+            candidate,
+            context
+        )
+
+    # ------------------------------------------------
+    # STAGE 4: MORPHOLOGICAL DECOMPOSITION
+    # ------------------------------------------------
+
+    morphological_hypotheses = generate_morphological_parses(
+        sensory_representation,
+        morphological_memory
+    )
+
+    morphological_hypotheses = identify_possible_roots(
+        morphological_hypotheses
+    )
+
+    morphological_hypotheses = identify_prefixes_and_suffixes(
+        morphological_hypotheses
+    )
+
+    morphological_hypotheses = identify_inflectional_structures(
+        morphological_hypotheses
+    )
+
+    # ------------------------------------------------
+    # STAGE 5: RETRIEVE STEMS AND AFFIXES
+    # ------------------------------------------------
+
+    for hypothesis in morphological_hypotheses:
+
+        hypothesis.root_representation = retrieve_root(
+            hypothesis
+        )
+
+        hypothesis.derivational_features = retrieve_derivations(
+            hypothesis
+        )
+
+        hypothesis.inflectional_features = retrieve_inflections(
+            hypothesis
+        )
+
+        hypothesis.semantic_representation = retrieve_component_meanings(
+            hypothesis
+        )
+
+    # ------------------------------------------------
+    # STAGE 6: DISTINGUISH MORPHOLOGICAL ALTERNATIVES
+    # ------------------------------------------------
+
+    for hypothesis in morphological_hypotheses:
+
+        hypothesis.form_score = evaluate_form_compatibility(
+            hypothesis,
+            sensory_representation
+        )
+
+        hypothesis.morphology_score = evaluate_morphological_validity(
+            hypothesis
+        )
+
+        hypothesis.semantic_score = evaluate_semantic_coherence(
+            hypothesis
+        )
+
+        hypothesis.grammar_score = evaluate_grammar(
+            hypothesis,
+            context
+        )
+
+        hypothesis.whole_word_score = evaluate_whole_word_support(
+            hypothesis,
+            lexical_candidates
+        )
+
+        hypothesis.final_score = combine_scores(
+            hypothesis.form_score,
+            hypothesis.morphology_score,
+            hypothesis.semantic_score,
+            hypothesis.grammar_score,
+            hypothesis.whole_word_score
+        )
+
+    selected_morphological_hypotheses = resolve_competing_parses(
+        morphological_hypotheses
+    )
+
+    # ------------------------------------------------
+    # MORPHOLOGICAL COMPOSITION
+    # ------------------------------------------------
+
+    for hypothesis in selected_morphological_hypotheses:
+
+        hypothesis.stem = compose_root_and_derivation(
+            hypothesis.root_representation,
+            hypothesis.derivational_features
+        )
+
+        hypothesis.complete_word = compose_inflection(
+            hypothesis.stem,
+            hypothesis.inflectional_features
+        )
+
+    # ------------------------------------------------
+    # STAGE 7: INCREMENTAL CANDIDATE ACTIVATION
+    # ------------------------------------------------
+
+    for incoming_increment in incoming_input:
+
+        update_sensory_evidence(
+            incoming_increment
+        )
+
+        update_lexical_candidates(
+            lexical_candidates,
+            incoming_increment,
+            context
+        )
+
+        update_semantic_candidates(
+            semantic_candidates,
+            lexical_candidates,
+            context
+        )
+
+        update_grammatical_candidates(
+            grammatical_candidates,
+            lexical_candidates,
+            context
+        )
+
+        update_morphological_hypotheses(
+            morphological_hypotheses,
+            incoming_increment
+        )
+
+        update_candidate_activations(
+            activation_states
+        )
+
+        apply_competition_and_inhibition(
+            activation_states
+        )
+
+        propagate_semantic_and_grammatical_feedback(
+            lexical_candidates,
+            morphological_hypotheses,
+            context
+        )
+
+    # ------------------------------------------------
+    # FINAL SELECTION
+    # ------------------------------------------------
+
+    selected_word = select_best_lexical_candidate(
+        lexical_candidates
+    )
+
+    selected_meaning = select_best_semantic_interpretation(
+        selected_word,
+        context
+    )
+
+    selected_grammar = select_best_grammatical_interpretation(
+        selected_word,
+        context
+    )
+
+    selected_morphology = select_best_morphological_parse(
+        selected_morphological_hypotheses
+    )
+
+    # ------------------------------------------------
+    # FINAL OUTPUT
+    # ------------------------------------------------
+
+    return {
+        "word_identity": selected_word,
+        "meaning": selected_meaning,
+        "grammatical_category": selected_grammar,
+        "morphological_structure": selected_morphology,
+        "semantic_representation": selected_morphology,
+        "activation_states": activation_states
+    }
+</CodeBlock>
+
+*This is architectural pseudocode: functions such as `retrieve_root`, `apply_competition_and_inhibition`, and `compose_inflection` represent mechanisms that would need their own implementations and data structures.*
+
+---
+
+# Part 11 — Biological timing and mathematical operations
+
+An additional consideration for building a biologically inspired simulation is the approximate timing of some experimentally observed processes.
+
+The following are example findings, not universal fixed processing deadlines.
+
+| Processing observation | Approximate timing |
+|---|---:|
+| Visual orthographic processing and bigram sensitivity in posterior fusiform regions | 130 ms |
+| Morphological segmentation and stem/affix frequency sensitivity in anterior fusiform regions | 170 ms |
+| Spoken morpheme transition sensitivity in superior temporal gyrus | 200 ms after phoneme onset |
+| Root lexical access associated with middle temporal gyrus activity | 350 ms |
+| Morphological semantic composition responses | 400–500 ms |
+
+<Cite refs={["turn491188view0","turn491188view1","turn491188view2"]}/>
+
+The mathematical operations that can be used to model the complete architecture include:
+
+| Mathematical operation | Algorithmic purpose |
+|---|---|
+| Vector construction | Represent word forms and semantic features |
+| Weighted summation | Combine evidence from multiple sources |
+| Dot product | Evaluate feature similarity |
+| Bayesian inference | Update lexical probabilities |
+| Softmax normalization | Convert competing scores into probabilities |
+| Logarithmic transformation | Represent frequency effects |
+| Probability multiplication | Combine compatible evidence |
+| Element-wise multiplication | Model feature modulation by derivation |
+| Vector addition | Combine semantic and grammatical features |
+| Dynamic programming | Evaluate alternative morphological segmentations |
+| Entropy | Measure ambiguity between alternatives |
+| Lateral inhibition | Model competitive activation |
+| Exponential decay | Model persistence and weakening of activation |
+| Threshold comparison | Model candidate selection |
+| Recurrent updates | Model feedback between processing systems |
+
+The proposed operations are consistent with computational approaches to language processing, particularly the mathematical account of morpheme composition proposed by Gwilliams. <Cite refs={["turn313847view0","turn313847view1"]}/>
+
+---
+
+# Part 12 — Important architectural conclusions
+
+There are four important principles that should guide the eventual biological Python implementation.
+
+**1. Lexical identity, meaning and grammatical category should be represented separately but interconnected.**
+
+A single word representation should not be forced to contain all the information in one indivisible structure. The algorithm should support separate activation of word form, semantic features, grammatical features and morphology.
+
+**2. Morphological decomposition should not depend entirely on semantic recognition.**
+
+The brain can initially identify potential morphological boundaries from structural regularities. Semantic and grammatical evaluation can subsequently reject incorrect decompositions.
+
+**3. Whole-word recognition and morphological decomposition should operate as complementary pathways.**
+
+The architecture must support irregular words, morphologically transparent words, familiar whole forms and novel combinations.
+
+**4. Incremental lexical activation should be a global mechanism.**
+
+This is particularly important. Stage 7 should not be implemented merely as a final operation after all other stages. It should continuously update Stages 1–6 whenever new sensory or contextual information becomes available.
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">Final architecture</title>
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **Retrieve stored word identity**
+
+      <text color="secondary" size="sm">Sensory-to-lexical pattern matching and lexical retrieval.</text>
+    </list-item>
+    <list-item>
+      **Retrieve word meaning**
+
+      <text color="secondary" size="sm">Semantic feature activation and interpretation.</text>
+    </list-item>
+    <list-item>
+      **Retrieve grammatical category**
+
+      <text color="secondary" size="sm">Lexical category and grammatical feature activation.</text>
+    </list-item>
+    <list-item>
+      **Morphological decomposition**
+
+      <text color="secondary" size="sm">Identify roots, prefixes, suffixes and possible boundaries.</text>
+    </list-item>
+    <list-item>
+      **Retrieve stems and affixes**
+
+      <text color="secondary" size="sm">Retrieve component-level semantic and grammatical information.</text>
+    </list-item>
+    <list-item>
+      **Distinguish morphological alternatives**
+
+      <text color="secondary" size="sm">Evaluate validity, meaning, grammatical compatibility and competing parses.</text>
+    </list-item>
+    <list-item>
+      **Activate lexical candidates incrementally**
+
+      <text color="secondary" size="sm">Continuously update, compare, inhibit and select candidate representations.</text>
+    </list-item>
+  </list>
+  <divider color="subtle"/>
+  <row align="center" gap={2}>
+    <icon name="repeat" color="success" size="xl"/>
+    **Continuous feedback and iterative refinement across all seven stages.**
+  </row>
+</box>
+
+## Research references
+
+The main scientific foundations for this algorithm are:
+
+1. Gwilliams (2020), <Link ref="turn313847view0" title="How the brain composes morphemes into meaning"/> — particularly valuable because it explicitly proposes mathematical operations for morphological composition.
+2. Gwilliams et al. (2025), <Link ref="turn313847view1" title="Computational Architecture of Speech Comprehension in the Human Brain"/> — an important framework for parallel and distributed language processing.
+3. Marslen-Wilson and Tyler (2007), <Link ref="turn313847view2" title="Morphology, language and the brain"/> — foundational work on morphological decomposition and grammatical morphology.
+4. <Link ref="turn923889search2" title="The Activation of Embedded Words in Spoken Word Recognition"/> — relevant to incremental lexical activation and competition.
+
+**My recommendation for ORE-Neurocomputational:** Treat this algorithm as a dedicated Lexical Access and Morphological Processing subsystem, with seven independently testable processing modules, shared activation and probability interfaces, and a recurrent controller responsible for exchanging information between them. This would allow each operation to be tested independently while preserving the parallel and interactive nature of human language processing.

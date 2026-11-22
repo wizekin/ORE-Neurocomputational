@@ -1,0 +1,2477 @@
+Title: Brain Understanding Research
+Conversation ID: 6af68657-75bc-83ea-8218-92119d719632
+
+---
+
+[USER]
+[$deep-research](app://connector_openai_deep_research) I want you to create an extensive research on how the human brain acquires information then creates understanding patterns which it uses to understand generally, for example to understand what people say or understanding an article and so on
+
+---
+
+[ASSISTANT]
+<badge color="success"><icon name="check-circle" size="xs" inline/> Research initiated</badge>
+
+I've started an extensive deep-research project titled **How the Human Brain Forms Understanding**.
+
+The research will examine how the brain transforms raw information into meaningful knowledge, builds mental models and patterns, and uses them to understand conversations, spoken language, written articles, unfamiliar concepts, and new situations.
+
+It will cover cognitive neuroscience, psychology, linguistics, memory, learning, predictive processing, pattern recognition, abstraction, reasoning, and generalization, with scientific references, practical examples, diagrams, and a detailed bibliography.
+
+The Deep Research workspace has been opened and will develop the research plan and report there.
+
+---
+
+[USER]
+[$deep-research](app://connector_openai_deep_research) I want you to create an extensive research on the following in the brain:\
+In reading, sequences of letters are mapped to orthographic representations. Accessing a word triggers retrieval of its stored form and meaning. Linguistic models often propose both exemplar (memories of specific words seen/heard) and prototype (best-average representation) processes in the temporal lobe. This stage is influenced by context-based prediction: for instance, after hearing “The musician tuned her…”, the brain expects a noun like “instrument” and activates related meanings even before hearing them.
+
+---
+
+[ASSISTANT]
+<badge color="success"><icon name="check-circle" size="xs" inline/> Research started</badge>
+
+I've added this as a focused, extensive research extension to the existing **How the Brain Forms Understanding** project.
+
+The Deep Research workspace will update its research plan and investigate the neuroscience of orthographic processing, word recognition, lexical memory, exemplar versus prototype representations, semantic retrieval, and predictive language processing, including the evidence for how the brain anticipates words before they are encountered.
+
+---
+
+[USER]
+I want you to turn the sequence of "Orthographic Processing and the Visual Word Form Area" into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step
+
+---
+
+[ASSISTANT]
+# The Orthographic Processing and VWFA Algorithm
+
+**A brain-inspired computational algorithm for transforming visual text into recognizable letters, ordered word representations, lexical identities, and meaning.**
+
+I will formulate this as one large algorithm composed of interconnected sub-algorithms. Each sub-algorithm will have:
+
+1. Its purpose: what problem the brain needs to solve.
+2. Its input and output.
+3. Its internal operations: what happens computationally.
+4. Its possible mathematical operations: equations describing how the transformation could be implemented.
+5. Its corresponding brain mechanisms.
+6. Its uncertainties: what neuroscience has established and what remains a computational hypothesis.
+
+One important distinction: the brain does not necessarily execute these operations in a rigid sequence. Several processes operate simultaneously and exchange information through recurrent connections. The algorithm below is a computational reconstruction of the best-supported functional organization, not a claim that researchers have discovered the brain's literal source code.
+
+## 1. Overall architecture
+
+The algorithm starts with an image of written text and ends with an identified word whose meaning can be accessed by the language system.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **INPUT**
+
+    <title size="xl" color="default">Visual text</title>
+    <text color="secondary" size="xs">Light patterns reaching the retina</text>
+  </box>
+  <box align="center"><icon name="arrow-down" color="secondary" size="lg"/></box>
+  {#each [{n:"01",t:"Visual signal acquisition",d:"Detect contrast, edges, orientation and spatial structure."},{n:"02",t:"Text-region segmentation",d:"Find text lines, word boundaries and candidate character regions."},{n:"03",t:"Visual feature extraction",d:"Extract strokes, curves, junctions and local shapes."},{n:"04",t:"Abstract letter identification",d:"Recognize letter identities independently of superficial appearance."},{n:"05",t:"Letter-position encoding",d:"Determine which letters occur and their order within the word."},{n:"06",t:"Parallel letter and combination processing",d:"Build representations of individual letters and their combinations."},{n:"07",t:"Orthographic representation construction",d:"Create a structured representation of the complete letter sequence."},{n:"08",t:"Lexical candidate generation",d:"Activate possible known words that match the representation."},{n:"09",t:"Lexical competition and selection",d:"Compare candidates and settle on the most likely word."},{n:"10",t:"Phonological retrieval",d:"Retrieve the word's pronunciation or assemble it through spelling-to-sound rules."},{n:"11",t:"Semantic activation",d:"Access the word's meaning and associated knowledge."}] as s,i}
+    <box border radius="md" padding={3} gap={1}>
+      <row align="center" gap={2}>
+        <badge color="info">{s.n}</badge>
+        **{s.t}**
+      </row>
+      <text color="secondary" size="sm">{s.d}</text>
+    </box>
+    {#if i !== 10}
+      <box align="center"><icon name="arrow-down" color="secondary"/></box>
+    {/if}
+  {/each}
+  <box background="rgba(22,163,74,0.09)" radius="md" padding={3} align="center">
+    **OUTPUT**
+
+    <title size="xl" color="success">Recognized word + meaning</title>
+    <text color="secondary" size="xs">Available for comprehension, reasoning and communication</text>
+  </box>
+  <caption color="secondary">Simplified functional sequence. Feedback and parallel processing occur throughout the pathway.</caption>
+</box>
+
+The main neural pathway involves early visual areas, the left ventral occipitotemporal cortex (including the VWFA), and interacting language networks. The VWFA is not an isolated dictionary or a single location that performs every operation. It participates in a hierarchy that transforms visual information into increasingly abstract orthographic representations. <Cite refs={["turn745049search4","turn745049search7"]}/>
+
+---
+
+## 2. Mathematical foundation of the algorithm
+
+Before describing the individual steps, let's establish the mathematical objects that the algorithm manipulates.
+
+A computer vision system normally works with numbers representing pixels, but the brain works with biological signals distributed across neurons. We can nevertheless construct mathematical descriptions of these signals.
+
+| Symbol | Meaning |
+|---|---|
+| \(I(x,y)\) | Visual image reaching the visual system |
+| \(F\) | Extracted visual features |
+| \(L\) | Candidate letter identities |
+| \(P\) | Letter-position information |
+| \(O\) | Complete orthographic representation |
+| \(W\) | Candidate word identities |
+| \(C\) | Contextual information |
+| \(\Phi\) | Phonological representation |
+| \(M\) | Semantic representation |
+| \(A_i\) | Activation of a neural population or model unit |
+| \(w_{ij}\) | Connection strength between populations |
+| \(\theta\) | A decision or activation threshold |
+
+There are three mathematical principles that will recur throughout the algorithm.
+
+### A. Weighted integration
+
+Neurons receive inputs from many other neurons. A simplified mathematical description of how a neuron or neural population combines signals is:
+
+\[
+u_j=\sum_{i=1}^{n}w_{ij}x_i+b_j
+\]
+
+Where:
+
+- \(x_i\): incoming signals.
+- \(w_{ij}\): strength of each incoming connection.
+- \(b_j\): baseline bias.
+- \(u_j\): resulting integrated signal.
+
+The resulting signal can be transformed into an output activation:
+
+\[
+A_j=f(u_j)
+\]
+
+A possible mathematical function is the sigmoid:
+
+\[
+f(u)=\frac{1}{1+e^{-u}}
+\]
+
+This is a computational approximation, not a claim that biological neurons literally calculate sigmoid functions.
+
+### B. Probabilistic inference
+
+The brain must frequently decide what it is seeing despite incomplete or noisy information.
+
+Bayesian inference provides a useful model:
+
+\[
+P(H\mid E)=
+\frac{P(E\mid H)P(H)}{P(E)}
+\]
+
+Where:
+
+- \(H\): a possible interpretation.
+- \(E\): the available evidence.
+- \(P(H)\): prior probability.
+- \(P(E\mid H)\): probability of seeing the evidence if the interpretation is correct.
+- \(P(H\mid E)\): updated probability of the interpretation.
+
+For reading, \(H\) might represent the hypothesis that a particular visual pattern is the word *BRAIN*.
+
+### C. Competition between interpretations
+
+Several letters or words can be activated simultaneously.
+
+A useful mathematical approximation is:
+
+\[
+A_i=\frac{e^{s_i/T}}{\sum_j e^{s_j/T}}
+\]
+
+Where:
+
+- \(s_i\): the score of candidate \(i\).
+- \(T\): a temperature parameter controlling how distributed or concentrated the candidate activations are.
+
+A high temperature produces less concentrated competition; a low temperature produces stronger preference for the best-scoring candidate.
+
+Again, this equation describes a possible computational model. It does not establish that the brain uses an actual software-like softmax operation.
+
+---
+
+# 3. The complete algorithm: individual processing steps
+
+## Step 01 — Visual signal acquisition
+
+<badge color="success">Strong biological evidence</badge>
+
+**Problem to solve:** Convert the incoming light pattern into signals that the brain can process.
+
+**Input:** Light reflected from the written page or screen.
+
+**Output:** An initial representation of visual contrast, brightness, edges and spatial information.
+
+### What happens?
+
+When you look at the word:
+
+<box background="surface" radius="lg" padding={3} align="center" gap={2}>
+  <title size="2xl" weight="bold">BRAIN</title>
+  <caption>Example visual input</caption>
+</box>
+
+The visual system does not immediately receive the abstract word BRAIN.
+
+Initially, it receives a pattern of light.
+
+The retina converts light into electrical signals through photoreceptors. Retinal circuits process contrast and local spatial structure, and signals travel through the visual pathways to the visual cortex.
+
+The initial visual system must distinguish:
+
+- Light from dark.
+- Boundaries from backgrounds.
+- Changes in brightness.
+- Spatial positions.
+- Local orientation and contrast.
+
+### Possible mathematical operations
+
+**Operation 1: Contrast computation**
+
+The visual system is sensitive to differences in brightness rather than simply recording absolute brightness.
+
+A simplified contrast measure is:
+
+\[
+C(x,y)=I(x,y)-I_{\text{local}}(x,y)
+\]
+
+This measures the difference between a point and its surrounding region.
+
+**Operation 2: Local contrast filtering**
+
+A computational model can use a difference-of-Gaussians filter:
+
+\[
+R(x,y)=I(x,y)*G_{\sigma_1}(x,y)
+-I(x,y)*G_{\sigma_2}(x,y)
+\]
+
+Here:
+
+- \(G_{\sigma_1}\) is a smaller Gaussian filter.
+- \(G_{\sigma_2}\) is a larger Gaussian filter.
+- \(*\) means convolution.
+
+This produces a response to local brightness differences and approximates certain receptive-field properties of early visual processing.
+
+**Operation 3: Signal normalization**
+
+Illumination can vary. A black letter may appear slightly different under different lighting.
+
+A simplified normalization is:
+
+\[
+I_{\text{normalized}}=
+\frac{I-\mu_{\text{local}}}
+{\sigma_{\text{local}}+\epsilon}
+\]
+
+This makes the representation less dependent on local brightness and contrast.
+
+### Biological interpretation
+
+Retinal and early visual circuits already perform substantial transformations of the incoming visual signal. V1 and subsequent visual areas extract increasingly complex visual information.
+
+**Important distinction:** The equations describe computational equivalents of visual operations. They do not prove that the retina calculates these exact equations.
+
+---
+
+## Step 02 — Text-region and character-boundary segmentation
+
+<badge color="info">Computational reconstruction</badge>
+
+**Problem to solve:** Determine which parts of the visual scene belong to text and where candidate words and characters are located.
+
+**Input:** Initial visual features.
+
+**Output:** Candidate text regions and spatially organized character regions.
+
+Consider:
+
+`THE BRAIN LEARNS PATTERNS`
+
+The visual system must distinguish the letters from the surrounding background and organize them into lines, words and characters.
+
+It must also distinguish:
+
+- Spaces between words.
+- Spaces within letters, such as the inside of B.
+- Narrow distances between neighboring letters.
+- Punctuation.
+- Text boundaries.
+- Different lines of text.
+
+### Possible mathematical operations
+
+**Operation 1: Spatial grouping**
+
+For two visual components \(a\) and \(b\), define a grouping score:
+
+\[
+G(a,b)=
+w_1D(a,b)+w_2O(a,b)+w_3S(a,b)
+\]
+
+Where:
+
+- \(D\): distance between components.
+- \(O\): orientation compatibility.
+- \(S\): similarity in visual characteristics.
+- \(w_1,w_2,w_3\): relative weights.
+
+The model can use the grouping score to determine whether two components probably belong together.
+
+**Operation 2: Boundary detection**
+
+A boundary function might be defined as:
+
+\[
+B(x,y)=|\nabla I(x,y)|
+\]
+
+This estimates how strongly brightness changes across neighboring locations.
+
+**Operation 3: Region clustering**
+
+Visual components that are sufficiently close and compatible can be grouped:
+
+\[
+R_k=\{c_i:\operatorname{similarity}(c_i,R_k)>\theta\}
+\]
+
+Where \(R_k\) represents a candidate text or character region.
+
+### Biological interpretation
+
+The visual system performs grouping and spatial organization through interconnected visual processing circuits. However, we should not assume there is a dedicated brain mechanism that explicitly creates a computer-style list of word boundaries before letter recognition.
+
+Some segmentation and letter recognition operations can influence one another.
+
+---
+
+## Step 03 — Visual feature extraction
+
+<badge color="success">Strong biological evidence</badge>
+
+**Problem to solve:** Determine the visual components that distinguish one letter from another.
+
+**Input:** Candidate character regions.
+
+**Output:** Feature representations describing the shape of each character.
+
+For example:
+
+<grid columns={3} gap={2}>
+  <grid-item>
+    <box background="surface" padding={2} radius="md" align="center">
+      <title size="2xl">B</title>
+      <caption>Vertical + curves</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface" padding={2} radius="md" align="center">
+      <title size="2xl">A</title>
+      <caption>Lines + junction</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface" padding={2} radius="md" align="center">
+      <title size="2xl">R</title>
+      <caption>Stem + curve + leg</caption>
+    </box>
+  </grid-item>
+</grid>
+
+The system needs to detect features such as:
+
+- Horizontal lines.
+- Vertical lines.
+- Curves.
+- Diagonal lines.
+- Junctions.
+- Endpoints.
+- Closed shapes.
+- Open shapes.
+- Relative spatial arrangements.
+
+The letter B differs from P because of the additional lower curve. R differs from P because of its diagonal leg.
+
+### Possible mathematical operations
+
+**Operation 1: Convolution with orientation filters**
+
+A computational model can use Gabor filters to extract oriented edges and spatial frequencies.
+
+\[
+F_k(x,y)=|I*G_k|
+\]
+
+Each \(G_k\) represents a filter sensitive to a particular combination of orientation and spatial frequency.
+
+For example, one filter might respond strongly to vertical strokes while another responds to diagonal strokes.
+
+**Operation 2: Feature pooling**
+
+Features can be summarized over a character region:
+
+\[
+z_k=\sum_{x,y\in R}F_k(x,y)
+\]
+
+The result is a feature vector:
+
+\[
+\mathbf z=
+[z_1,z_2,z_3,\ldots,z_n]
+\]
+
+This vector describes the visual characteristics of the character.
+
+**Operation 3: Feature comparison**
+
+If the system encounters two shapes, it can measure how similar their feature vectors are:
+
+\[
+D(\mathbf z_1,\mathbf z_2)=
+\sqrt{\sum_i(z_{1i}-z_{2i})^2}
+\]
+
+A smaller distance indicates greater similarity under this particular representation.
+
+### Biological interpretation
+
+Visual cortical neurons respond to particular visual features. Increasingly complex visual representations are constructed through interactions between neurons and cortical regions.
+
+This is an important foundation for recognizing letters independently of their entire visual appearance.
+
+---
+
+## Step 04 — Abstract letter identification
+
+<badge color="success">Strong evidence for the functional operation</badge>
+
+**Problem to solve:** Recognize the same letter despite differences in font, size, case and appearance.
+
+**Input:** Extracted visual feature vectors.
+
+**Output:** Abstract letter-identity representations.
+
+Consider these examples:
+
+<box border radius="lg" padding={3} gap={3}>
+  <grid columns={2} gap={3}>
+    <grid-item align="center">
+      <title size="2xl" weight="bold">A</title>
+      <caption>Uppercase</caption>
+    </grid-item>
+    <grid-item align="center">
+      <title size="2xl" weight="normal">a</title>
+      <caption>Lowercase</caption>
+    </grid-item>
+    <grid-item align="center">
+      <title size="2xl" italic>𝒂</title>
+      <caption>Different style</caption>
+    </grid-item>
+    <grid-item align="center">
+      <title size="2xl" weight="bold">A</title>
+      <caption>Different size</caption>
+    </grid-item>
+  </grid>
+  <divider color="subtle"/>
+  <box background="rgba(22,163,74,0.08)" radius="md" padding={3} align="center">
+    **Shared learned orthographic identity**
+
+    <title size="2xl" color="success">LETTER A / a</title>
+  </box>
+</box>
+
+The system must learn that these different visual forms can represent the same alphabetic identity.
+
+This is called abstract letter identification.
+
+It is especially important because the brain cannot rely on memorizing one exact visual image for each letter.
+
+### Possible mathematical operations
+
+**Operation 1: Classification**
+
+Let the feature vector be:
+
+\[
+\mathbf z=[z_1,z_2,\ldots,z_n]
+\]
+
+The system evaluates the probability that the visual input represents each possible letter:
+
+\[
+P(L=c\mid\mathbf z)
+\]
+
+For example:
+
+\[
+P(A\mid\mathbf z)=0.92
+\]
+
+\[
+P(R\mid\mathbf z)=0.05
+\]
+
+\[
+P(B\mid\mathbf z)=0.03
+\]
+
+These numbers are illustrative, not experimental measurements.
+
+**Operation 2: Learned visual invariance**
+
+A simplified feature transformation could be:
+
+\[
+\mathbf h=f(W\mathbf z+b)
+\]
+
+Here \(W\) and \(b\) represent learned parameters.
+
+The intended result is that different visual presentations of the same learned letter identity produce similar abstract representations:
+
+\[
+\operatorname{similarity}
+\left(
+\mathbf h_A^{(1)},\mathbf h_A^{(2)}
+\right)
+\gg
+\operatorname{similarity}
+\left(
+\mathbf h_A,\mathbf h_R
+\right)
+\]
+
+**Operation 3: Probabilistic identification**
+
+Instead of immediately choosing a single letter, the system can maintain several possibilities:
+
+\[
+\mathbf p_j=
+[P(A),P(B),P(C),\ldots,P(Z)]
+\]
+
+This is useful when the visual input is unclear.
+
+### Biological interpretation
+
+Research on the visual word form system supports abstract orthographic processing that is relatively independent of physical properties such as font and size.
+
+This does not mean each letter is stored as one rigid neural template. The representations emerge through activity across distributed neural populations. <Cite refs={["turn745049search4","turn745049search7"]}/>
+
+---
+
+## Step 05 — Letter-position encoding
+
+<badge color="success">Strong evidence; exact coding remains debated</badge>
+
+**Problem to solve:** Determine not only which letters are present but where they occur in the word.
+
+This is a fundamental operation.
+
+Consider:
+
+<grid columns={2} gap={2}>
+  <grid-item>
+    <box background="surface" padding={3} radius="md" align="center">
+      <title size="2xl" weight="bold">FORM</title>
+      <caption>F – O – R – M</caption>
+    </box>
+  </grid-item>
+  <grid-item>
+    <box background="surface" padding={3} radius="md" align="center">
+      <title size="2xl" weight="bold">FROM</title>
+      <caption>F – R – O – M</caption>
+    </box>
+  </grid-item>
+</grid>
+
+Both words contain exactly the same letters.
+
+Their difference is their order.
+
+Therefore, recognizing a word requires at least two kinds of information:
+
+1. Letter identity.
+2. Letter position.
+
+### Possible mathematical operations
+
+**Operation 1: Position assignment**
+
+The system associates each detected letter with a spatial location.
+
+\[
+L=\{(c_1,x_1),(c_2,x_2),\ldots,(c_n,x_n)\}
+\]
+
+Where \(c_i\) is a letter identity and \(x_i\) is its location.
+
+**Operation 2: Relative-position normalization**
+
+Since the physical size and location of a word vary, its letter positions can be normalized relative to the word boundaries:
+
+\[
+p_i=\frac{x_i-x_{\text{start}}}
+{x_{\text{end}}-x_{\text{start}}}
+\]
+
+This provides a scale-relative position.
+
+**Operation 3: Ordinal-position encoding**
+
+The system can additionally represent order:
+
+\[
+P_i=i
+\]
+
+For example:
+
+| Letter | Ordinal position |
+|---|---:|
+| B | 1 |
+| R | 2 |
+| A | 3 |
+| I | 4 |
+| N | 5 |
+
+This representation distinguishes BRAIN from BRIAN.
+
+### Important recent evidence
+
+A 2025 study using 7T fMRI and MEG investigated the transformation from visual position coding to word-centered ordinal coding. It reported early retinotopic information, followed by a shift toward ordinal representations in higher-level regions including the VWFA, while positional information remained present across multiple time windows. <Cite refs={["turn745049search2","turn745049search3"]}/>
+
+Another 2025 study found evidence that absolute letter-position information also contributes to lexical access. <Cite refs={["turn745049search6"]}/>
+
+This suggests that we should not assume the brain relies exclusively on either absolute or relative position.
+
+A more complete mathematical representation would preserve both:
+
+\[
+R_i=(c_i,p_i,x_i)
+\]
+
+Where:
+
+- \(c_i\): letter identity.
+- \(p_i\): ordinal position.
+- \(x_i\): spatial position.
+
+This provides richer information for distinguishing words.
+
+---
+
+## Step 06 — Parallel processing of letters
+
+<badge color="success">Supported, with temporal details still debated</badge>
+
+**Problem to solve:** Process several letters without requiring the brain to finish recognizing the first letter before beginning the second.
+
+Consider the word:
+
+**BRAIN**
+
+A strictly sequential system would process:
+
+\[
+B\rightarrow R\rightarrow A\rightarrow I\rightarrow N
+\]
+
+However, skilled reading shows substantial parallel processing.
+
+The brain can extract useful information from several letter positions during overlapping periods.
+
+### Possible mathematical operations
+
+Suppose the word has five letter positions:
+
+\[
+\mathbf L=
+[L_1,L_2,L_3,L_4,L_5]
+\]
+
+Instead of processing each position in isolation and waiting for the previous one to finish, the system maintains multiple active representations:
+
+\[
+\mathbf A(t)=
+[A_1(t),A_2(t),A_3(t),A_4(t),A_5(t)]
+\]
+
+Each activation changes over time:
+
+\[
+A_i(t+\Delta t)=f_i
+\left(
+\text{visual input},
+\text{previous activation},
+\text{context}
+\right)
+\]
+
+The important property is that several \(A_i\) values can be updated simultaneously.
+
+**Operation 2: Cross-position integration**
+
+Individual letters can also be combined:
+
+\[
+A_{ij}=g(A_i,A_j)
+\]
+
+For example, the system can represent both:
+
+- B
+- R
+- The combination BR.
+
+### Why is this important?
+
+The brain does not need to recognize every individual letter perfectly before it starts constructing a word-level hypothesis.
+
+Partial information can already activate possible letter combinations and word candidates.
+
+A 2025 perceptual-oscillation experiment reported evidence supporting substantial parallel processing of five-letter words, although the precise temporal organization of individual letter and letter-combination processing remains debated. <Cite refs={["turn745049search0","turn745049search1"]}/>
+
+---
+
+## Step 07 — Letter-combination and orthographic-pattern construction
+
+<badge color="info">Several competing computational models</badge>
+
+**Problem to solve:** Construct representations of combinations of letters, rather than treating every letter as an unrelated visual object.
+
+This is where the system begins building a much richer representation of the word.
+
+Consider:
+
+**BRAIN**
+
+It contains individual letters:
+
+\[
+B,\ R,\ A,\ I,\ N
+\]
+
+But it also contains combinations:
+
+\[
+BR,\ BA,\ BI,\ RN,\ AI,\ldots
+\]
+
+These combinations provide information about the order and relationships between letters.
+
+### 7.1 Bigram representation
+
+A bigram is a pair of letters appearing in a particular order.
+
+For BRAIN, the adjacent bigrams are:
+
+\[
+BR,\ RA,\ AI,\ IN
+\]
+
+A simple bigram representation is:
+
+\[
+O_2=\{BR,RA,AI,IN\}
+\]
+
+The important information is not just that B and R exist; it is that B occurs before R.
+
+### 7.2 Open-bigram representation
+
+Some computational models propose that the brain also represents pairs of letters that are not immediately adjacent.
+
+For example, in:
+
+**FACE**
+
+The C occurs after both F and A.
+
+An open-bigram representation can therefore include:
+
+\[
+FC,\ AC
+\]
+
+It is less restrictive than representing only adjacent letters.
+
+This helps explain why some small letter transpositions can still produce substantial recognition or priming effects.
+
+However, open bigrams are a theoretical representation, not an experimentally established literal neural data structure.
+
+### Possible mathematical operations
+
+Let the letter-identity probability at position \(i\) be:
+
+\[
+P_i(c)
+\]
+
+We can calculate an ordered-pair activation:
+
+\[
+B(a,b)=
+\sum_{i<j}
+P_i(a)P_j(b)
+\cdot
+e^{-\lambda(j-i-1)}
+\]
+
+Where:
+
+- \(a,b\): two letter identities.
+- \(i,j\): their positions.
+- \(i<j\): the first letter must precede the second.
+- \(\lambda\): controls the influence of distance.
+- \(e^{-\lambda(j-i-1)}\): reduces the contribution of letters that are farther apart.
+
+This equation is one possible approximation of open-bigram coding.
+
+For BRAIN, the resulting representation would include both neighboring and non-neighboring ordered pairs.
+
+### 7.3 Higher-order combinations
+
+The same principle can be extended to three-letter sequences.
+
+For example:
+
+\[
+BR,\ RA,\ AI,\ IN
+\]
+
+and:
+
+\[
+BRA,\ RAI,\ AIN
+\]
+
+These are trigrams.
+
+A more comprehensive orthographic representation might include:
+
+\[
+O=
+\{L_1,\ldots,L_n,B_1,\ldots,T_1,\ldots\}
+\]
+
+Where:
+
+- \(L\): individual letters.
+- \(B\): bigrams.
+- \(T\): trigrams.
+
+### 7.4 Morphological patterns
+
+The brain also learns recurring written components:
+
+- Prefixes.
+- Suffixes.
+- Stems.
+- Repeated word endings.
+- Common letter sequences associated with grammatical forms.
+
+For example:
+
+| Word | Possible recurring component |
+|---|---|
+| Playing | play + ing |
+| Reading | read + ing |
+| Walking | walk + ing |
+| Helpful | help + ful |
+
+A computational model can identify recurring segments through frequency and consistency:
+
+\[
+S(m)=
+\sum_{w\in W}
+\operatorname{frequency}(m,w)
+\]
+
+Where \(m\) is a candidate recurring sequence.
+
+A better learning model would also measure whether the sequence contributes consistently to the structure or meaning of different words.
+
+### Biological interpretation
+
+The VWFA is associated with increasingly complex orthographic representations, potentially ranging from letters through letter combinations to morphemes. However, this hierarchy should not be interpreted as a definitive anatomical map with one neuron group dedicated to every possible combination. <Cite refs={["turn745049search4","turn745049search7"]}/>
+
+---
+
+## Step 08 — Construction of the complete orthographic representation
+
+<badge color="info">Computational synthesis</badge>
+
+**Problem to solve:** Combine letter identities, their ordering and their combinations into a unified representation of the written word.
+
+Until this stage, the algorithm has been building multiple kinds of information.
+
+It now needs to integrate them.
+
+### Input
+
+For example:
+
+### Output
+
+A structured orthographic representation.
+
+We can represent it as:
+
+\[
+O=
+\left[
+\mathbf L,
+\mathbf P,
+\mathbf B,
+\mathbf T,
+\mathbf M
+\right]
+\]
+
+Where:
+
+- \(\mathbf L\): letter identities.
+- \(\mathbf P\): position information.
+- \(\mathbf B\): bigrams.
+- \(\mathbf T\): higher-order combinations.
+- \(\mathbf M\): morphological information.
+
+This is a conceptual data structure for our algorithm, not a claim that the brain maintains a single explicit object containing five arrays.
+
+### Possible mathematical operations
+
+**Operation 1: Feature concatenation**
+
+\[
+O=\mathbf L\oplus\mathbf P\oplus\mathbf B
+\oplus\mathbf T\oplus\mathbf M
+\]
+
+The symbol \(\oplus\) indicates combining representations.
+
+**Operation 2: Weighted integration**
+
+\[
+O_{\text{combined}}=
+w_L L+
+w_P P+
+w_B B+
+w_T T+
+w_M M
+\]
+
+The weights determine how much each representation contributes.
+
+The actual brain may use distributed neural populations and nonlinear interactions rather than a single weighted-sum calculation.
+
+**Operation 3: Conflict resolution**
+
+Suppose the system has detected:
+
+- B with high confidence.
+- R with high confidence.
+- A with medium confidence.
+- I with high confidence.
+- N with high confidence.
+
+The system must preserve the uncertainty of the A representation instead of treating every letter as equally certain.
+
+One way to represent this is:
+
+\[
+O=\{P(L_1),P(L_2),\ldots,P(L_5)\}
+\]
+
+This produces a representation with both structural information and uncertainty.
+
+### Why this step matters
+
+A dictionary lookup cannot work reliably if the system has not constructed a sufficiently informative representation of the visual input.
+
+The algorithm needs to know not simply which letters appeared, but their relationships and their order.
+
+---
+
+## Step 09 — Lexical candidate generation
+
+<badge color="success">Strong evidence for lexical access; implementation debated</badge>
+
+**Problem to solve:** Determine which known word or words could have produced the observed orthographic pattern.
+
+This is where orthographic processing begins interacting directly with long-term word knowledge.
+
+The brain does not need to generate every possible combination of letters.
+
+It has acquired an enormous amount of experience with written language.
+
+It can use this experience to activate likely words.
+
+### Example
+
+Suppose the visual input is:
+
+The system can activate a candidate:
+
+But suppose the fourth letter is unclear.
+
+The system might temporarily consider:
+
+These alternatives share much of the same visual information but have different letter-position arrangements.
+
+### Possible mathematical operations
+
+**Operation 1: Generate candidates**
+
+Let the learned orthographic vocabulary be:
+
+\[
+V=\{w_1,w_2,\ldots,w_N\}
+\]
+
+The algorithm evaluates each candidate against the observed representation.
+
+**Operation 2: Calculate orthographic similarity**
+
+One possible score is:
+
+\[
+S_{\text{orth}}(w,O)=
+\alpha S_L+
+\beta S_P+
+\gamma S_B+
+\delta S_T
+\]
+
+Where:
+
+- \(S_L\): letter-identity similarity.
+- \(S_P\): letter-position similarity.
+- \(S_B\): bigram similarity.
+- \(S_T\): higher-order pattern similarity.
+
+The coefficients determine the relative importance of the different forms of evidence.
+
+**Operation 3: Incorporate word frequency**
+
+Words frequently encountered in reading generally become easier to recognize.
+
+A model can therefore include a frequency prior:
+
+\[
+P(w)\propto \operatorname{frequency}(w)
+\]
+
+A more realistic model uses a smoothed logarithmic transformation:
+
+\[
+F(w)=\log(1+\operatorname{frequency}(w))
+\]
+
+This prevents extremely frequent words from dominating everything else.
+
+**Operation 4: Calculate an initial candidate score**
+
+\[
+s(w)=
+S_{\text{orth}}(w,O)+
+\eta F(w)
+\]
+
+Here \(\eta\) controls how much experience-based familiarity influences recognition.
+
+### Biological interpretation
+
+This is often described as accessing the orthographic lexicon or orthographic long-term memory.
+
+Importantly, this does not necessarily imply that the brain stores complete words in separate isolated locations.
+
+A word's identity can emerge from the response pattern of overlapping neural populations.
+
+The distinction between stored orthographic representations and distributed connectionist mappings remains important in computational theories of reading. <Cite refs={["turn745049search9","turn745049search4"]}/>
+
+---
+
+## Step 10 — Lexical competition, contextual prediction and word selection
+
+<badge color="success">Strong evidence for context-sensitive recognition</badge>
+
+**Problem to solve:** Choose the most appropriate lexical candidate using visual evidence, word experience and the surrounding sentence.
+
+This is particularly important when the visual input is incomplete or several words look similar.
+
+### 10.1 Contextual information
+
+Consider:
+
+"The musician tuned her ..."
+
+Even before the next word is read, the brain can use the surrounding sentence to activate related possibilities:
+
+- Guitar.
+- Piano.
+- Violin.
+- Instrument.
+
+Context can therefore influence lexical access.
+
+### 10.2 Bayesian candidate evaluation
+
+The probability of a word given the orthographic evidence and context can be represented as:
+
+\[
+P(w\mid O,C)=
+\frac{P(O\mid w,C)P(w\mid C)}
+{P(O\mid C)}
+\]
+
+A simplified model might assume:
+
+\[
+P(O\mid w,C)\approx P(O\mid w)
+\]
+
+Giving:
+
+\[
+P(w\mid O,C)\propto
+P(O\mid w)P(w\mid C)
+\]
+
+This is particularly useful for understanding the interaction between bottom-up visual information and top-down linguistic information.
+
+The visual input supplies evidence about what is written.
+
+The sentence supplies expectations about what is likely to appear.
+
+### 10.3 Candidate competition
+
+Suppose three candidates are active:
+
+| Candidate | Visual match | Contextual support |
+|---|---:|---:|
+| Guitar | Low | Very high |
+| Instrument | Low | Very high |
+| Window | Low | Low |
+
+The system should not automatically choose the candidate with the highest contextual probability.
+
+It must also check whether the visual evidence supports it.
+
+The posterior distribution combines both kinds of information.
+
+A simple scoring approximation is:
+
+\[
+s(w)=
+\alpha V(w)+
+\beta C(w)+
+\gamma F(w)
+\]
+
+Where:
+
+- \(V(w)\): visual compatibility.
+- \(C(w)\): contextual compatibility.
+- \(F(w)\): learned familiarity.
+
+### 10.4 Competition and normalization
+
+Candidate activations can be normalized:
+
+\[
+A(w)=
+\frac{e^{s(w)}}
+{\sum_{u\in W}e^{s(u)}}
+\]
+
+The algorithm can then estimate which candidate is most strongly supported.
+
+### 10.5 Confidence calculation
+
+A possible measure of uncertainty is entropy:
+
+\[
+H(W)=-\sum_w P(w)\log P(w)
+\]
+
+Low entropy means that one or a few candidates dominate.
+
+High entropy means that the interpretation remains uncertain.
+
+The model can use the entropy to decide whether it needs more visual information.
+
+For instance:
+
+- Low uncertainty: proceed with the leading candidate.
+- High uncertainty: preserve alternatives, re-examine letter positions, or use additional context.
+
+This is a useful computational strategy, not an established literal stopping rule in the human brain.
+
+### 10.6 Feedback to earlier processing stages
+
+An important property of this algorithm is that lexical candidate information can influence earlier processing.
+
+Suppose the brain is considering BRAIN and BRIAN.
+
+The higher-level candidate representations can influence the interpretation of uncertain letter-position information.
+
+A simplified recurrent model is:
+
+\[
+A_i(t+1)=
+f\left(
+B_i(t)+
+\lambda T_i(t)-
+\mu I_i(t)
+\right)
+\]
+
+Where:
+
+- \(B_i\): bottom-up evidence.
+- \(T_i\): top-down feedback.
+- \(I_i\): competing activation.
+- \(\lambda,\mu\): interaction strengths.
+
+This is an interactive architecture: early visual evidence influences word recognition, while word-level hypotheses can influence how uncertain visual evidence is interpreted.
+
+Not every model of reading assumes feedback of the same strength, so this should be treated as a model-dependent feature.
+
+---
+
+## Step 11 — Phonological retrieval
+
+<badge color="success">Strong evidence for interacting reading routes</badge>
+
+**Problem to solve:** Retrieve or construct the pronunciation associated with the recognized written word.
+
+This step is important even when a person is reading silently.
+
+It is particularly important when reading aloud.
+
+The brain can access phonological information through at least two broadly distinguished routes.
+
+### Route A: Direct lexical retrieval
+
+The system has already learned the spelling and pronunciation of a familiar word.
+
+For example:
+
+The system does not need to independently assemble every pronunciation from individual letters.
+
+A simplified mathematical relationship is:
+
+\[
+P(\Phi\mid w)
+\]
+
+Where \(\Phi\) represents the learned pronunciation associated with word \(w\).
+
+### Route B: Grapheme-to-phoneme conversion
+
+The system can also use learned spelling-to-sound associations.
+
+For example:
+
+This is particularly valuable when encountering unfamiliar or invented words.
+
+A mathematical representation is:
+
+\[
+P(\Phi\mid O)=
+\prod_{i=1}^{n}
+P(\phi_i\mid g_i,\text{context})
+\]
+
+Where:
+
+- \(g_i\): a grapheme or grapheme group.
+- \(\phi_i\): the corresponding phonological unit.
+- Context: neighboring letters and learned spelling rules.
+
+This equation is a simplified representation because actual spelling-to-sound mappings can involve overlapping letter groups and non-independent decisions.
+
+### Combining both routes
+
+A computational model could combine their evidence:
+
+\[
+P(\Phi\mid O,w)=
+\lambda P_{\text{lexical}}(\Phi\mid w)
++
+(1-\lambda)P_{\text{conversion}}(\Phi\mid O)
+\]
+
+Here \(\lambda\) represents the relative contribution of direct lexical retrieval.
+
+This contribution can vary according to word familiarity, regularity and task demands.
+
+### An important example
+
+Consider the English word:
+
+**YACHT**
+
+A simple letter-to-sound mechanism cannot reliably recover its conventional pronunciation.
+
+The system needs learned word-specific information.
+
+By contrast, a regular invented word can often be pronounced using spelling-to-sound correspondences even if it has never been encountered before.
+
+### Biological interpretation
+
+Reading research supports the involvement of orthographic long-term memory and sublexical orthography-to-phonology conversion. These pathways interact rather than behaving like completely isolated systems. <Cite refs={["turn745049search4","turn745049search9"]}/>
+
+---
+
+## Step 12 — Semantic representation retrieval
+
+<badge color="success">Strong evidence for distributed semantic processing</badge>
+
+**Problem to solve:** Transform the recognized word into knowledge about what it represents.
+
+Recognizing the written form BRAIN is not the same as understanding the concept *brain*.
+
+Recognition identifies the linguistic item.
+
+Semantic retrieval activates the knowledge associated with that item.
+
+For example, recognizing BRAIN can activate:
+
+- Biological organ.
+- Nervous system.
+- Neurons.
+- Memory.
+- Thinking.
+- Sensory processing.
+- Brainstem.
+- Cerebral cortex.
+
+These concepts are related but are not simply additional letters or word forms.
+
+### Possible mathematical operations
+
+**Operation 1: Retrieve associated semantic features**
+
+A concept can be represented as a feature vector:
+
+\[
+M_{\text{brain}}=
+[
+m_1,m_2,m_3,\ldots,m_n
+]
+\]
+
+An illustrative representation might be:
+
+| Semantic feature | Activation |
+|---|---:|
+| Biological organ | 0.95 |
+| Nervous system | 0.98 |
+| Neurons | 0.96 |
+| Thinking | 0.90 |
+| Memory | 0.88 |
+| Mechanical device | 0.02 |
+
+These are illustrative numbers, not measured neural activations.
+
+**Operation 2: Semantic association**
+
+The system can activate related concepts through learned associations:
+
+\[
+A(c_j)=
+\sum_i w_{ij}A(c_i)
+\]
+
+Where:
+
+- \(c_i\): the recognized concept.
+- \(c_j\): a related concept.
+- \(w_{ij}\): learned association strength.
+
+**Operation 3: Concept integration**
+
+The system integrates different features into a more unified concept representation.
+
+A simplified mathematical model is:
+
+\[
+M=f(W_1O+W_2\Phi+W_3K)
+\]
+
+Where:
+
+- \(O\): orthographic information.
+- \(\Phi\): phonological information.
+- \(K\): other contextual and learned knowledge.
+- \(W_1,W_2,W_3\): learned connection weights.
+
+This is a model of multimodal integration, not an established biological equation.
+
+### Biological interpretation
+
+Semantic representations are distributed across networks.
+
+The anterior temporal lobe is strongly implicated in integrating information into conceptual representations, while other temporal, frontal, parietal and modality-specific regions contribute to different aspects of semantic knowledge.
+
+This is why understanding the word BRAIN involves more than the VWFA.
+
+The VWFA helps transform the written stimulus into an orthographic representation. The wider language and semantic systems provide access to the concept.
+
+---
+
+# 4. The complete master algorithm
+
+We can now consolidate the twelve steps into one computational architecture.
+
+I would call this:
+
+**OP-VWFA: Orthographic Processing and Visual Word Form Architecture.**
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">OP-VWFA functional algorithm</title>
+  <badge color="info">Conceptual computational specification</badge>
+  <CodeBlock language="python" editable>
+def read_visual_word(image, context, orthographic_memory,
+                     phonological_memory, semantic_memory):
+
+    # 01. Acquire and preprocess visual input
+    visual_signal = acquire_visual_signal(image)
+    visual_signal = normalize_visual_signal(visual_signal)
+
+    # 02. Identify text regions
+    text_regions = segment_text_regions(visual_signal)
+
+    # 03. Extract visual characteristics
+    visual_features = extract_visual_features(text_regions)
+
+    # 04. Identify abstract letter candidates
+    letter_candidates = identify_letter_probabilities(
+        visual_features
+    )
+
+    # 05. Encode letter identities and positions
+    positioned_letters = encode_letter_positions(
+        letter_candidates
+    )
+
+    # 06. Process multiple letters in parallel
+    parallel_representations = process_letters_parallel(
+        positioned_letters
+    )
+
+    # 07. Construct combinations and orthographic patterns
+    letter_combinations = construct_orthographic_patterns(
+        parallel_representations
+    )
+
+    # 08. Construct complete orthographic representation
+    orthographic_representation = integrate_orthographic_features(
+        parallel_representations,
+        letter_combinations
+    )
+
+    # 09. Generate lexical candidates
+    candidates = retrieve_orthographic_candidates(
+        orthographic_representation,
+        orthographic_memory
+    )
+
+    # 10. Resolve lexical competition using visual and
+    #     contextual information
+    selected_word, confidence = resolve_candidates(
+        candidates,
+        orthographic_representation,
+        context
+    )
+
+    # Additional visual processing if recognition remains uncertain
+    if confidence < 0.85:
+        candidates = re_evaluate_candidates(
+            candidates,
+            orthographic_representation,
+            context
+        )
+        selected_word, confidence = resolve_candidates(
+            candidates,
+            orthographic_representation,
+            context
+        )
+
+    # 11. Retrieve or assemble pronunciation
+    pronunciation = retrieve_phonological_form(
+        selected_word,
+        orthographic_representation,
+        phonological_memory
+    )
+
+    # 12. Retrieve semantic knowledge
+    meaning = retrieve_semantic_representation(
+        selected_word,
+        semantic_memory,
+        context
+    )
+
+    return {
+        "orthographic_form": orthographic_representation,
+        "recognized_word": selected_word,
+        "confidence": confidence,
+        "pronunciation": pronunciation,
+        "meaning": meaning
+    }
+  </CodeBlock>
+  <caption color="secondary">Illustrative software architecture. The confidence threshold and individual functions are proposed implementation choices, not measured properties of the brain.</caption>
+</box>
+
+Notice something important: this implementation looks sequential, but the actual biological process should be modeled as a recurrent system with concurrent operations.
+
+For example, lexical candidate generation can begin before all letter identities have reached maximum confidence.
+
+Likewise, phonological and semantic information can become active before the complete recognition process has finished.
+
+---
+
+# 5. The neural mathematics underneath the algorithm
+
+So far, we have described mathematical operations as part of the information-processing model.
+
+But there is another question:
+
+**How could physical neural activity implement these mathematical operations?**
+
+We need to distinguish three levels.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    **Level 1 — Biological computation**
+
+    Individual neurons receive electrical and chemical inputs, integrate them and produce electrical responses.
+    <badge color="success">Established biology</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Level 2 — Neural population computation**
+
+    Groups of neurons collectively encode features, positions, combinations and competing interpretations.
+    <badge color="success">Strong general evidence</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Level 3 — Abstract mathematical computation**
+
+    We describe the overall transformations through convolution, probability distributions, similarity, weighted integration and other mathematical operations.
+    <badge color="warning">Model-dependent interpretation</badge>
+  </box>
+</box>
+
+### 5.1 Neural signal integration
+
+A simplified neuron model is:
+
+\[
+\tau\frac{du}{dt}
+=
+-(u-u_{\text{rest}})
++
+R\sum_i w_i x_i(t)
+\]
+
+Where:
+
+- \(u\): membrane potential.
+- \(u_{\text{rest}}\): resting potential.
+- \(x_i(t)\): incoming signals.
+- \(w_i\): synaptic strengths.
+- \(\tau\): time constant.
+- \(R\): scaling factor.
+
+When the electrical state reaches an appropriate threshold, the neuron can generate an action potential.
+
+An individual neuron does not need to recognize an entire word.
+
+Rather, information emerges through the combined activity of interconnected populations.
+
+### 5.2 Excitation and inhibition
+
+The system must increase the activity of relevant representations while suppressing irrelevant competing representations.
+
+A simplified population equation is:
+
+\[
+A_i(t+1)=
+f\left(
+\sum_j w_{ji}A_j(t)
+-
+\sum_k v_{ki}A_k(t)
+\right)
+\]
+
+Here:
+
+- \(w_{ji}\): excitatory influences.
+- \(v_{ki}\): inhibitory influences.
+
+This offers a possible mathematical interpretation of lexical competition.
+
+For example, several word candidates can become active, but competition helps the system settle on the best-supported candidate.
+
+### 5.3 Neural plasticity and learning
+
+The algorithm cannot work without a learning mechanism.
+
+A child does not automatically possess the orthographic representations necessary to recognize written words.
+
+These abilities develop through experience.
+
+A simplified Hebbian learning rule is:
+
+\[
+\Delta w_{ij}=\eta x_i y_j
+\]
+
+Where:
+
+- \(x_i\): presynaptic activity.
+- \(y_j\): postsynaptic activity.
+- \(\eta\): learning rate.
+
+The principle is that coordinated neural activity can modify connection strengths.
+
+More sophisticated models include timing-dependent plasticity and error-driven learning.
+
+For example:
+
+\[
+\Delta w_{ij}=\eta\delta_jx_i
+\]
+
+Where \(\delta_j\) represents a learning error or teaching-related signal.
+
+This equation is common in computational learning models. It should not be taken to mean that the brain calculates one explicit error number and distributes it exactly this way.
+
+### 5.4 What learning changes
+
+Repeated exposure can improve:
+
+- Letter identification.
+- Recognition of familiar letter sequences.
+- Word-form familiarity.
+- Spelling-to-sound mappings.
+- Access to word meanings.
+- Speed of lexical retrieval.
+
+Consequently, the same visual stimulus can be recognized differently by a beginner and an experienced reader.
+
+This is particularly important for understanding the development of the VWFA. Literacy tunes existing visual circuitry to become increasingly useful for recognizing written language. <Cite refs={["turn745049search4","turn745049search7"]}/>
+
+---
+
+# 6. What happens when the same algorithm encounters different inputs?
+
+A good algorithm must work when its input is incomplete, unfamiliar, distorted or ambiguous.
+
+Let's examine four cases.
+
+### Case A — Familiar word
+
+Input:
+
+`BRAIN`
+
+Expected behavior:
+
+1. Visual features are extracted.
+2. Letter identities become highly probable.
+3. Letter order is determined.
+4. A familiar word candidate becomes strongly activated.
+5. Pronunciation and semantic information become accessible.
+
+Recognition is relatively easy.
+
+### Case B — Unfamiliar word
+
+Input:
+
+`FLORP`
+
+Expected behavior:
+
+1. Letters are identified.
+2. Their positions are encoded.
+3. The system checks orthographic memory.
+4. No strongly familiar lexical entry may be found.
+5. Grapheme-to-phoneme conversion may nevertheless produce a pronunciation.
+6. The system may classify the string as an unfamiliar word or pseudoword.
+
+The algorithm must not confuse failure to recognize a known word with failure to recognize the letters.
+
+### Case C — Visually ambiguous word
+
+Input:
+
+`BR?IN`
+
+The third letter is unclear.
+
+Possible candidates might include:
+
+- BRAIN
+- BRUIN
+
+The algorithm should preserve multiple hypotheses rather than prematurely committing to one.
+
+If contextual information is available, it can influence the competition.
+
+If the visual evidence is still insufficient, the uncertainty should remain.
+
+### Case D — Wrong letter order
+
+Input:
+
+`BRIAN`
+
+The system must not treat this as equivalent to BRAIN.
+
+A representation based only on letter presence would fail.
+
+This is why letter-position encoding and combinations are essential.
+
+---
+
+# 7. Important modifications for an algorithm intended to work with different languages
+
+The previous description uses English examples, but the architecture needs to accommodate different writing systems.
+
+For example, Arabic presents some additional requirements:
+
+- Letters can have different shapes depending on their position within a word.
+- Some letters connect to neighboring letters while others do not.
+- Dots distinguish otherwise similar letter shapes.
+- Diacritics can distinguish words and grammatical forms.
+- Reading direction is generally right to left.
+- Some short vowels are not written in ordinary unvocalized text.
+
+Therefore, the algorithm should not assume:
+
+\[
+\text{one character}=\text{one fixed visual shape}
+\]
+
+Instead, it should distinguish:
+
+\[
+\text{visual glyph}
+\rightarrow
+\text{graphemic identity}
+\rightarrow
+\text{position and context}
+\]
+
+This requires script-specific orthographic processing modules while preserving the general architecture.
+
+It is especially important not to impose English-style bigram assumptions on Arabic without testing whether they adequately describe Arabic reading.
+
+---
+
+# 8. Scientific confidence and remaining uncertainties
+
+Here is how I would classify the operations before attempting to reproduce them computationally.
+
+| Operation | Scientific status |
+|---|---|
+| Visual feature extraction | Well established |
+| Abstract letter identification | Strong evidence |
+| Visual-to-ordinal position transformation | Supported, details developing |
+| Parallel letter processing | Supported, exact temporal architecture debated |
+| Bigram/open-bigram coding | Theoretical computational models |
+| Higher-level orthographic representations | Strong evidence |
+| Lexical candidate activation | Strong evidence |
+| Bayesian-style lexical inference | Useful computational account |
+| Interactive top-down feedback | Supported in several models; strength and timing debated |
+| Direct phonological retrieval | Strong evidence |
+| Grapheme-to-phoneme conversion | Strong evidence |
+| Semantic activation | Strong evidence |
+| Exact mathematical operations performed by individual neurons | Not established |
+
+The most important limitation is that a mathematical model can reproduce human reading behavior without necessarily reproducing the actual biological mechanism.
+
+A model that correctly identifies BRAIN using convolution, Bayesian inference and neural-network layers is not automatically a faithful simulation of the human brain.
+
+That distinction will matter considerably when translating these ideas into an artificial reasoning architecture.
+
+---
+
+# 9. My proposed direction for developing this algorithm further
+
+I would divide the algorithm into four major computational subsystems instead of implementing all twelve steps as one large program.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    <badge color="info">Subsystem A</badge>
+    **Visual Perception Engine**
+
+    Steps 01–03.
+
+    Responsible for transforming incoming images into structured visual features.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem B</badge>
+    **Orthographic Representation Engine**
+
+    Steps 04–08.
+
+    Responsible for letter identities, letter ordering, combinations and complete orthographic representations.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem C</badge>
+    **Lexical Identification Engine**
+
+    Steps 09–11.
+
+    Responsible for lexical candidates, competition, contextual constraints and pronunciation.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem D</badge>
+    **Semantic Retrieval Engine**
+
+    Step 12.
+
+    Responsible for accessing and integrating conceptual knowledge.
+  </box>
+</box>
+
+These four subsystems should communicate bidirectionally.
+
+For example, the Lexical Identification Engine should be able to request clarification from the Orthographic Representation Engine when two candidate words are visually similar.
+
+Similarly, contextual information should be able to influence lexical selection without being allowed to arbitrarily override strong visual evidence.
+
+## 10. The most important architectural principle
+
+There is one principle I would preserve above everything else:
+
+**Do not represent a written word using only its collection of letters. Represent it through several simultaneously available relationships.**
+
+The representation should contain:
+
+\[
+\boxed{
+O=
+\text{Identity}
++
+\text{Position}
++
+\text{Combinations}
++
+\text{Morphology}
++
+\text{Uncertainty}
+}
+\]
+
+This is more powerful than simply turning a word into a sequence of character IDs.
+
+A more advanced system should also learn how these features relate to stored lexical knowledge and meanings.
+
+The brain-inspired value of this architecture is not that we have discovered one perfect mathematical formula for reading. It is that we have identified a collection of different information transformations that cooperate to produce recognition.
+
+**The next major research question is how to make these representations emerge and improve through experience, rather than manually defining every possible letter combination and word pattern.** That is where the transition from an orthographic processing algorithm to a genuinely learning lexical system begins.
+
+---
+
+## References for the algorithm
+
+These are useful foundations for further mathematical development:
+
+1. White, A. L. (2021). *Reading: The Confluence of Vision and Language*. Annual Review of Vision Science, 7, 487–517. <Cite refs={["turn745049search4"]}/>
+2. Norris, D. (2013). *Models of Visual Word Recognition*. Trends in Cognitive Sciences, 17(10), 517–524. <Cite refs={["turn745049search9"]}/>
+3. Arguin, M. & Fortier-St-Pierre, S. (2025). *Spatiotemporal Letter Processing in Visual Word Recognition Uncovered by Perceptual Oscillations*. Journal of Vision, 25(14). <Cite refs={["turn745049search0","turn745049search1"]}/>
+4. *From Retinotopic to Ordinal Coding: Dissecting the Cortical Stages of Visual Word Recognition* (2025). <Cite refs={["turn745049search2","turn745049search3"]}/>
+5. Snell, J. & Simon, J. (2025). *Readers Encode Absolute Letter Positions*. Cognition, 254. <Cite refs={["turn745049search6"]}/>
+
+**My recommendation:** Treat this as the first specification of a larger brain-inspired reading and lexical-learning architecture. The next development stage should formalize the Orthographic Representation Engine at the level of data structures, equations, learning rules and testable predictions, before implementing the complete system.
+
+---
+
+[ASSISTANT]
+## Step 12 — Semantic representation retrieval
+
+<badge color="success">Strong evidence for distributed semantic processing</badge>
+
+**Problem to solve:** Transform the recognized word into knowledge about what it represents.
+
+Recognizing the written form BRAIN is not the same as understanding the concept *brain*.
+
+Recognition identifies the linguistic item.
+
+Semantic retrieval activates the knowledge associated with that item.
+
+For example, recognizing BRAIN can activate:
+
+- Biological organ.
+- Nervous system.
+- Neurons.
+- Memory.
+- Thinking.
+- Sensory processing.
+- Brainstem.
+- Cerebral cortex.
+
+These concepts are related but are not simply additional letters or word forms.
+
+### Possible mathematical operations
+
+**Operation 1: Retrieve associated semantic features**
+
+A concept can be represented as a feature vector:
+
+\[
+M_{\text{brain}}=
+[
+m_1,m_2,m_3,\ldots,m_n
+]
+\]
+
+An illustrative representation might be:
+
+| Semantic feature | Activation |
+|---|---:|
+| Biological organ | 0.95 |
+| Nervous system | 0.98 |
+| Neurons | 0.96 |
+| Thinking | 0.90 |
+| Memory | 0.88 |
+| Mechanical device | 0.02 |
+
+These are illustrative numbers, not measured neural activations.
+
+**Operation 2: Semantic association**
+
+The system can activate related concepts through learned associations:
+
+\[
+A(c_j)=
+\sum_i w_{ij}A(c_i)
+\]
+
+Where:
+
+- \(c_i\): the recognized concept.
+- \(c_j\): a related concept.
+- \(w_{ij}\): learned association strength.
+
+**Operation 3: Concept integration**
+
+The system integrates different features into a more unified concept representation.
+
+A simplified mathematical model is:
+
+\[
+M=f(W_1O+W_2\Phi+W_3K)
+\]
+
+Where:
+
+- \(O\): orthographic information.
+- \(\Phi\): phonological information.
+- \(K\): other contextual and learned knowledge.
+- \(W_1,W_2,W_3\): learned connection weights.
+
+This is a model of multimodal integration, not an established biological equation.
+
+### Biological interpretation
+
+Semantic representations are distributed across networks.
+
+The anterior temporal lobe is strongly implicated in integrating information into conceptual representations, while other temporal, frontal, parietal and modality-specific regions contribute to different aspects of semantic knowledge.
+
+This is why understanding the word BRAIN involves more than the VWFA.
+
+The VWFA helps transform the written stimulus into an orthographic representation. The wider language and semantic systems provide access to the concept.
+
+---
+
+# 4. The complete master algorithm
+
+We can now consolidate the twelve steps into one computational architecture.
+
+I would call this:
+
+**OP-VWFA: Orthographic Processing and Visual Word Form Architecture.**
+
+<box border radius="lg" padding={3} gap={2}>
+  <title size="lg">OP-VWFA functional algorithm</title>
+  <badge color="info">Conceptual computational specification</badge>
+  <CodeBlock language="python" editable>
+def read_visual_word(image, context, orthographic_memory,
+                     phonological_memory, semantic_memory):
+
+    # 01. Acquire and preprocess visual input
+    visual_signal = acquire_visual_signal(image)
+    visual_signal = normalize_visual_signal(visual_signal)
+
+    # 02. Identify text regions
+    text_regions = segment_text_regions(visual_signal)
+
+    # 03. Extract visual characteristics
+    visual_features = extract_visual_features(text_regions)
+
+    # 04. Identify abstract letter candidates
+    letter_candidates = identify_letter_probabilities(
+        visual_features
+    )
+
+    # 05. Encode letter identities and positions
+    positioned_letters = encode_letter_positions(
+        letter_candidates
+    )
+
+    # 06. Process multiple letters in parallel
+    parallel_representations = process_letters_parallel(
+        positioned_letters
+    )
+
+    # 07. Construct combinations and orthographic patterns
+    letter_combinations = construct_orthographic_patterns(
+        parallel_representations
+    )
+
+    # 08. Construct complete orthographic representation
+    orthographic_representation = integrate_orthographic_features(
+        parallel_representations,
+        letter_combinations
+    )
+
+    # 09. Generate lexical candidates
+    candidates = retrieve_orthographic_candidates(
+        orthographic_representation,
+        orthographic_memory
+    )
+
+    # 10. Resolve lexical competition using visual and
+    #     contextual information
+    selected_word, confidence = resolve_candidates(
+        candidates,
+        orthographic_representation,
+        context
+    )
+
+    # Additional visual processing if recognition remains uncertain
+    if confidence < 0.85:
+        candidates = re_evaluate_candidates(
+            candidates,
+            orthographic_representation,
+            context
+        )
+        selected_word, confidence = resolve_candidates(
+            candidates,
+            orthographic_representation,
+            context
+        )
+
+    # 11. Retrieve or assemble pronunciation
+    pronunciation = retrieve_phonological_form(
+        selected_word,
+        orthographic_representation,
+        phonological_memory
+    )
+
+    # 12. Retrieve semantic knowledge
+    meaning = retrieve_semantic_representation(
+        selected_word,
+        semantic_memory,
+        context
+    )
+
+    return {
+        "orthographic_form": orthographic_representation,
+        "recognized_word": selected_word,
+        "confidence": confidence,
+        "pronunciation": pronunciation,
+        "meaning": meaning
+    }
+  </CodeBlock>
+  <caption color="secondary">Illustrative software architecture. The confidence threshold and individual functions are proposed implementation choices, not measured properties of the brain.</caption>
+</box>
+
+Notice something important: this implementation looks sequential, but the actual biological process should be modeled as a recurrent system with concurrent operations.
+
+For example, lexical candidate generation can begin before all letter identities have reached maximum confidence.
+
+Likewise, phonological and semantic information can become active before the complete recognition process has finished.
+
+---
+
+# 5. The neural mathematics underneath the algorithm
+
+So far, we have described mathematical operations as part of the information-processing model.
+
+But there is another question:
+
+**How could physical neural activity implement these mathematical operations?**
+
+We need to distinguish three levels.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    **Level 1 — Biological computation**
+
+    Individual neurons receive electrical and chemical inputs, integrate them and produce electrical responses.
+    <badge color="success">Established biology</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Level 2 — Neural population computation**
+
+    Groups of neurons collectively encode features, positions, combinations and competing interpretations.
+    <badge color="success">Strong general evidence</badge>
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    **Level 3 — Abstract mathematical computation**
+
+    We describe the overall transformations through convolution, probability distributions, similarity, weighted integration and other mathematical operations.
+    <badge color="warning">Model-dependent interpretation</badge>
+  </box>
+</box>
+
+### 5.1 Neural signal integration
+
+A simplified neuron model is:
+
+\[
+\tau\frac{du}{dt}
+=
+-(u-u_{\text{rest}})
++
+R\sum_i w_i x_i(t)
+\]
+
+Where:
+
+- \(u\): membrane potential.
+- \(u_{\text{rest}}\): resting potential.
+- \(x_i(t)\): incoming signals.
+- \(w_i\): synaptic strengths.
+- \(\tau\): time constant.
+- \(R\): scaling factor.
+
+When the electrical state reaches an appropriate threshold, the neuron can generate an action potential.
+
+An individual neuron does not need to recognize an entire word.
+
+Rather, information emerges through the combined activity of interconnected populations.
+
+### 5.2 Excitation and inhibition
+
+The system must increase the activity of relevant representations while suppressing irrelevant competing representations.
+
+A simplified population equation is:
+
+\[
+A_i(t+1)=
+f\left(
+\sum_j w_{ji}A_j(t)
+-
+\sum_k v_{ki}A_k(t)
+\right)
+\]
+
+Here:
+
+- \(w_{ji}\): excitatory influences.
+- \(v_{ki}\): inhibitory influences.
+
+This offers a possible mathematical interpretation of lexical competition.
+
+For example, several word candidates can become active, but competition helps the system settle on the best-supported candidate.
+
+### 5.3 Neural plasticity and learning
+
+The algorithm cannot work without a learning mechanism.
+
+A child does not automatically possess the orthographic representations necessary to recognize written words.
+
+These abilities develop through experience.
+
+A simplified Hebbian learning rule is:
+
+\[
+\Delta w_{ij}=\eta x_i y_j
+\]
+
+Where:
+
+- \(x_i\): presynaptic activity.
+- \(y_j\): postsynaptic activity.
+- \(\eta\): learning rate.
+
+The principle is that coordinated neural activity can modify connection strengths.
+
+More sophisticated models include timing-dependent plasticity and error-driven learning.
+
+For example:
+
+\[
+\Delta w_{ij}=\eta\delta_jx_i
+\]
+
+Where \(\delta_j\) represents a learning error or teaching-related signal.
+
+This equation is common in computational learning models. It should not be taken to mean that the brain calculates one explicit error number and distributes it exactly this way.
+
+### 5.4 What learning changes
+
+Repeated exposure can improve:
+
+- Letter identification.
+- Recognition of familiar letter sequences.
+- Word-form familiarity.
+- Spelling-to-sound mappings.
+- Access to word meanings.
+- Speed of lexical retrieval.
+
+Consequently, the same visual stimulus can be recognized differently by a beginner and an experienced reader.
+
+This is particularly important for understanding the development of the VWFA. Literacy tunes existing visual circuitry to become increasingly useful for recognizing written language. <Cite refs={["turn745049search4","turn745049search7"]}/>
+
+---
+
+# 6. What happens when the same algorithm encounters different inputs?
+
+A good algorithm must work when its input is incomplete, unfamiliar, distorted or ambiguous.
+
+Let's examine four cases.
+
+### Case A — Familiar word
+
+Input:
+
+`BRAIN`
+
+Expected behavior:
+
+1. Visual features are extracted.
+2. Letter identities become highly probable.
+3. Letter order is determined.
+4. A familiar word candidate becomes strongly activated.
+5. Pronunciation and semantic information become accessible.
+
+Recognition is relatively easy.
+
+### Case B — Unfamiliar word
+
+Input:
+
+`FLORP`
+
+Expected behavior:
+
+1. Letters are identified.
+2. Their positions are encoded.
+3. The system checks orthographic memory.
+4. No strongly familiar lexical entry may be found.
+5. Grapheme-to-phoneme conversion may nevertheless produce a pronunciation.
+6. The system may classify the string as an unfamiliar word or pseudoword.
+
+The algorithm must not confuse failure to recognize a known word with failure to recognize the letters.
+
+### Case C — Visually ambiguous word
+
+Input:
+
+`BR?IN`
+
+The third letter is unclear.
+
+Possible candidates might include:
+
+- BRAIN
+- BRUIN
+
+The algorithm should preserve multiple hypotheses rather than prematurely committing to one.
+
+If contextual information is available, it can influence the competition.
+
+If the visual evidence is still insufficient, the uncertainty should remain.
+
+### Case D — Wrong letter order
+
+Input:
+
+`BRIAN`
+
+The system must not treat this as equivalent to BRAIN.
+
+A representation based only on letter presence would fail.
+
+This is why letter-position encoding and combinations are essential.
+
+---
+
+# 7. Important modifications for an algorithm intended to work with different languages
+
+The previous description uses English examples, but the architecture needs to accommodate different writing systems.
+
+For example, Arabic presents some additional requirements:
+
+- Letters can have different shapes depending on their position within a word.
+- Some letters connect to neighboring letters while others do not.
+- Dots distinguish otherwise similar letter shapes.
+- Diacritics can distinguish words and grammatical forms.
+- Reading direction is generally right to left.
+- Some short vowels are not written in ordinary unvocalized text.
+
+Therefore, the algorithm should not assume:
+
+\[
+\text{one character}=\text{one fixed visual shape}
+\]
+
+Instead, it should distinguish:
+
+\[
+\text{visual glyph}
+\rightarrow
+\text{graphemic identity}
+\rightarrow
+\text{position and context}
+\]
+
+This requires script-specific orthographic processing modules while preserving the general architecture.
+
+It is especially important not to impose English-style bigram assumptions on Arabic without testing whether they adequately describe Arabic reading.
+
+---
+
+# 8. Scientific confidence and remaining uncertainties
+
+Here is how I would classify the operations before attempting to reproduce them computationally.
+
+| Operation | Scientific status |
+|---|---|
+| Visual feature extraction | Well established |
+| Abstract letter identification | Strong evidence |
+| Visual-to-ordinal position transformation | Supported, details developing |
+| Parallel letter processing | Supported, exact temporal architecture debated |
+| Bigram/open-bigram coding | Theoretical computational models |
+| Higher-level orthographic representations | Strong evidence |
+| Lexical candidate activation | Strong evidence |
+| Bayesian-style lexical inference | Useful computational account |
+| Interactive top-down feedback | Supported in several models; strength and timing debated |
+| Direct phonological retrieval | Strong evidence |
+| Grapheme-to-phoneme conversion | Strong evidence |
+| Semantic activation | Strong evidence |
+| Exact mathematical operations performed by individual neurons | Not established |
+
+The most important limitation is that a mathematical model can reproduce human reading behavior without necessarily reproducing the actual biological mechanism.
+
+A model that correctly identifies BRAIN using convolution, Bayesian inference and neural-network layers is not automatically a faithful simulation of the human brain.
+
+That distinction will matter considerably when translating these ideas into an artificial reasoning architecture.
+
+---
+
+# 9. My proposed direction for developing this algorithm further
+
+I would divide the algorithm into four major computational subsystems instead of implementing all twelve steps as one large program.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box gap={1}>
+    <badge color="info">Subsystem A</badge>
+    **Visual Perception Engine**
+
+    Steps 01–03.
+
+    Responsible for transforming incoming images into structured visual features.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem B</badge>
+    **Orthographic Representation Engine**
+
+    Steps 04–08.
+
+    Responsible for letter identities, letter ordering, combinations and complete orthographic representations.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem C</badge>
+    **Lexical Identification Engine**
+
+    Steps 09–11.
+
+    Responsible for lexical candidates, competition, contextual constraints and pronunciation.
+  </box>
+  <divider color="subtle"/>
+  <box gap={1}>
+    <badge color="info">Subsystem D</badge>
+    **Semantic Retrieval Engine**
+
+    Step 12.
+
+    Responsible for accessing and integrating conceptual knowledge.
+  </box>
+</box>
+
+These four subsystems should communicate bidirectionally.
+
+For example, the Lexical Identification Engine should be able to request clarification from the Orthographic Representation Engine when two candidate words are visually similar.
+
+Similarly, contextual information should be able to influence lexical selection without being allowed to arbitrarily override strong visual evidence.
+
+## 10. The most important architectural principle
+
+There is one principle I would preserve above everything else:
+
+**Do not represent a written word using only its collection of letters. Represent it through several simultaneously available relationships.**
+
+The representation should contain:
+
+\[
+\boxed{
+O=
+\text{Identity}
++
+\text{Position}
++
+\text{Combinations}
++
+\text{Morphology}
++
+\text{Uncertainty}
+}
+\]
+
+This is more powerful than simply turning a word into a sequence of character IDs.
+
+A more advanced system should also learn how these features relate to stored lexical knowledge and meanings.
+
+The brain-inspired value of this architecture is not that we have discovered one perfect mathematical formula for reading. It is that we have identified a collection of different information transformations that cooperate to produce recognition.
+
+**The next major research question is how to make these representations emerge and improve through experience, rather than manually defining every possible letter combination and word pattern.** That is where the transition from an orthographic processing algorithm to a genuinely learning lexical system begins.
+
+---
+
+## References for the algorithm
+
+These are useful foundations for further mathematical development:
+
+1. White, A. L. (2021). *Reading: The Confluence of Vision and Language*. Annual Review of Vision Science, 7, 487–517. <Cite refs={["turn745049search4"]}/>
+2. Norris, D. (2013). *Models of Visual Word Recognition*. Trends in Cognitive Sciences, 17(10), 517–524. <Cite refs={["turn745049search9"]}/>
+3. Arguin, M. & Fortier-St-Pierre, S. (2025). *Spatiotemporal Letter Processing in Visual Word Recognition Uncovered by Perceptual Oscillations*. Journal of Vision, 25(14). <Cite refs={["turn745049search0","turn745049search1"]}/>
+4. *From Retinotopic to Ordinal Coding: Dissecting the Cortical Stages of Visual Word Recognition* (2025). <Cite refs={["turn745049search2","turn745049search3"]}/>
+5. Snell, J. & Simon, J. (2025). *Readers Encode Absolute Letter Positions*. Cognition, 254. <Cite refs={["turn745049search6"]}/>
+
+**My recommendation:** Treat this as the first specification of a larger brain-inspired reading and lexical-learning architecture. The next development stage should formalize the Orthographic Representation Engine at the level of data structures, equations, learning rules and testable predictions, before implementing the complete system.

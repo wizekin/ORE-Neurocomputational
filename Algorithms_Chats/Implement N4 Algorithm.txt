@@ -1,0 +1,1852 @@
+Title: Implement N4 Algorithm
+Conversation ID: 6af7db9d-dce4-83ea-9fc6-24cac6ebef63
+
+---
+
+[USER]
+related to our previous chat "Implement N3 Algorithm", Auto implement the steps of the N4 algorithm in python and ignore the previous n0-n7 implementation. you can use github through github plugin to implement N4 — 40-operations architecture. Use ORE-Neurocomputational repo. Don't use composio to connect to github, instead use github plugin
+
+---
+
+[ASSISTANT]
+**N4 is committed to `main`** with its 40-operation pipeline, configurable attention and precision controls, structured output, tests, and architecture documentation.
+
+The focused N4 suite passes locally: **7/7 tests**. GitHub Actions exposed a pre-existing syntax error in `ore_n3/pipeline.py` that prevents the repository-wide tests from even loading. I’m checking the smallest safe correction so the full suite can verify the combined project.
+
+<badge color="success">Implemented and committed</badge>
+
+**ORE N4 — 40-operation architecture** is now in `wizekin/ORE-Neurocomputational`, on the `main` branch.
+
+### What was implemented
+
+The new `ore_n4` package contains:
+
+1. **Operations 1–6:** N3 input and probability validation.
+2. **Operations 7–15:** Bottom-up salience from visual uncertainty, prediction errors, and visual/prior disagreement.
+3. **Operations 16–19:** Top-down task relevance and class-goal signals.
+4. **Operations 20–26:** Competitive spatial attention and class-selective attention gates.
+5. **Operations 27–32:** Sensory and prior precision estimation and modulation.
+6. **Operations 33–37:** Iterative, damped attention-conditioned inference.
+7. **Operations 38–40:** Candidate ranking, abstention, diagnostics, and structured output.
+
+N4 accepts the actual N3 result contract, keeps N3's original data unchanged, and exposes all 40 operations in its execution trace.
+
+### Repository files
+
+- [N4 Python package](https://github.com/wizekin/ORE-Neurocomputational/tree/main/ore_n4)
+- [Complete 40-operation specification](https://github.com/wizekin/ORE-Neurocomputational/blob/main/docs/N4_ARCHITECTURE.md)
+- [N4 automated tests](https://github.com/wizekin/ORE-Neurocomputational/blob/main/tests/test_n4.py)
+- [Updated README](https://github.com/wizekin/ORE-Neurocomputational/blob/main/README.md)
+
+### Test results
+
+<box border radius="lg" padding={3} gap={2}>
+  <row align="center" justify="between">
+    **GitHub Actions**
+    <badge color="success">Passed</badge>
+  </row>
+  <title size="2xl" color="success" tabularNums>28 / 28</title>
+  Full repository tests passed, including the N4 tests using the real N3Result data contract.
+  <text color="secondary" size="xs">[View successful GitHub Actions run](https://github.com/wizekin/ORE-Neurocomputational/actions/runs/43554582259)</text>
+</box>
+
+I also corrected a pre-existing bracket syntax error in N3's candidate-probability indexing. This was necessary to let the full test suite run; it does not change N3's intended algorithm.
+
+**Scientific qualification:** N4 is a testable computational approximation of attention and precision gating, not yet a validated reproduction of biological neural mechanisms.
+
+All implementation was performed through the GitHub integration, without Composio.
+
+Would you like me to monitor this repository's CI and report new failures daily?
+
+<SuggestAutomation label="Monitor ORE GitHub CI daily" emoji="🧪"/>
+
+---
+
+[USER]
+related to our previous chat "Request Stage A Output", I want you to turn the sequence of "ORE Neurocomputational Development Roadmap: Phase N5 — Neural connectivity and recurrence" into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step
+
+---
+
+[ASSISTANT]
+# ORE Neurocomputational Development Roadmap — Phase N5
+## Neural Connectivity and Recurrence: Complete Algorithmic Specification
+
+<badge color="success">Algorithm specification</badge> <badge color="info">Proposed 52 operations</badge>
+
+### 1. Purpose of Phase N5
+
+The objective of N5 is to transform ORE from a collection of processing modules that exchange calculated outputs into a computational architecture containing **interconnected neural-population models that continuously influence one another**.
+
+This is an important architectural distinction.
+
+In our preceding phases, we established the following capabilities:
+
+| Phase | Computational responsibility |
+|---|---|
+| N1 | Extract early visual features, such as oriented edges and contrast |
+| N2 | Represent visual information through distributed grapheme-selective populations |
+| N3 | Exchange orthographic predictions and prediction-error information |
+| N4 | Modulate sensory and predictive processing through attention and precision |
+| **N5** | Build neural connectivity and recurrent dynamics across processing populations |
+
+N3 already performs recurrence at the level of grapheme probability distributions. N5 will introduce a deeper mechanism: **recurrence at the level of interconnected neural populations and their evolving activity**.
+
+For example, instead of calculating a grapheme probability once and passing it to the next module, N5 will allow:
+
+1. Early visual populations to activate higher-level populations.
+2. Higher-level populations to send information back to earlier populations.
+3. Neurons within the same processing level to influence neighboring neurons.
+4. Excitatory and inhibitory populations to regulate one another.
+5. Recurrent activity to evolve over time until a stable or sufficiently informative representation emerges.
+
+This approach is motivated by research describing the interaction of feedforward, horizontal and feedback connections in the visual cortex. Importantly, the precise computational role of recurrent feedback and prediction-error mechanisms remains a subject of scientific investigation. <Cite refs={["turn373111search1","turn373111search7","turn950443view3"]}/>
+
+### 2. The neural mechanisms N5 will model
+
+<box gap={3}>
+  <row align=start gap={3}>
+    <AsyncImage query="scientific neuroscience illustration feedforward neural connections visual cortex hierarchical pathways V1 V2 V4" aspectRatio="1:1" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **A. Feedforward connections**
+
+      Information travels from lower-level sensory populations toward higher-level processing populations.
+
+      Example: early edge detection → visual structure → grapheme populations.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="neuroscience illustration cortical feedback connections top down visual hierarchy arrows V4 V2 V1" aspectRatio="1:1" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **B. Feedback connections**
+
+      Higher-level populations send signals back to lower-level populations, influencing their ongoing activity.
+
+      Example: a candidate letter interpretation influences the processing of ambiguous visual features.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="visual cortex horizontal lateral connections neurons orientation columns neuroscience illustration" aspectRatio="1:1" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **C. Horizontal connections**
+
+      Populations within the same processing level communicate with neighboring populations.
+
+      Example: compatible edge and contour signals reinforce one another.
+    </box>
+  </row>
+  <divider color="subtle"/>
+  <row align=start gap={3}>
+    <AsyncImage query="cortical excitatory inhibitory neural circuit pyramidal interneuron neuroscience diagram" aspectRatio="1:1" maxWidth="112px"/>
+    <box flex="1" gap={1}>
+      **D. Excitatory-inhibitory recurrence**
+
+      Excitatory and inhibitory populations regulate the strength, competition and stability of neural activity.
+    </box>
+  </row>
+</box>
+
+These are not four separate biological systems operating independently. They are interacting components of cortical networks. <Cite refs={["turn373111search4","turn950443view3","turn373111search11"]}/>
+
+---
+
+# 3. Mathematical foundation of N5
+
+Before defining the algorithm, we need a common mathematical representation of the network.
+
+This is important because every operation will modify or use the same underlying network state.
+
+### 3.1 Neural population representation
+
+Instead of modeling every biological neuron individually, N5 will initially model groups of neurons as populations.
+
+Let:
+
+\[
+r_l(t)=
+\begin{bmatrix}
+r_1(t)\\
+r_2(t)\\
+\vdots\\
+r_n(t)
+\end{bmatrix}
+\]
+
+Where:
+
+- \(l\) identifies a processing level.
+- \(t\) represents simulation time.
+- \(r_i(t)\) represents the activity of population \(i\).
+- \(n\) is the number of populations at that level.
+
+The variable represents a population activity or firing-rate approximation, not an exact count of biological action potentials.
+
+### 3.2 Four connectivity matrices
+
+N5 will distinguish four fundamental connection types.
+
+| Matrix | Meaning |
+|---|---|
+| \(W^{FF}\) | Feedforward connections |
+| \(W^{FB}\) | Feedback connections |
+| \(W^{LAT}\) | Lateral/horizontal connections |
+| \(W^{EI}\) | Excitatory-inhibitory interactions |
+
+The resulting network will be represented by:
+
+\[
+\mathcal N=(V,E,W,D,S)
+\]
+
+Where:
+
+- \(V\): neural populations.
+- \(E\): connections between populations.
+- \(W\): connection strengths.
+- \(D\): connection delays.
+- \(S\): dynamic neural and synaptic states.
+
+### 3.3 The fundamental recurrence equation
+
+The central operation of N5 is to calculate the next population activity using its previous activity and the signals received from connected populations.
+
+A simplified formulation is:
+
+\[
+\tau_l\frac{dr_l}{dt}
+=
+-r_l+
+\phi\left(
+I_l^{FF}
++I_l^{FB}
++I_l^{LAT}
++I_l^{EXT}
+-\theta_l
+\right)
+\]
+
+Where:
+
+- \(\tau_l\) is the population time constant.
+- \(-r_l\) represents activity decay or leakage.
+- \(\phi\) is a nonlinear activation function.
+- \(I^{FF}\) is incoming feedforward activity.
+- \(I^{FB}\) is incoming feedback activity.
+- \(I^{LAT}\) is incoming lateral activity.
+- \(I^{EXT}\) is external sensory input.
+- \(\theta_l\) is an activation threshold or baseline.
+
+This differential equation describes how activity changes continuously over time.
+
+Its most important implication is that the output of a processing population is no longer determined only by the current input. It also depends on the network's previous state and its incoming recurrent signals.
+
+This is the mathematical foundation of N5.
+
+# 4. N5 — Complete algorithmic operations
+
+The proposed N5 architecture contains **52 operations**, organized into seven phases.
+
+<box border radius="lg" padding={3} gap={3}>
+  **N5 execution architecture**
+
+  <list connector="solid" marker="number" gap={2}>
+    <list-item>
+      **A. Network architecture and population definition**
+
+      <text color="secondary" size="xs">Operations 1–8 · Build the network structure</text>
+    </list-item>
+    <list-item>
+      **B. Neural connectivity construction**
+
+      <text color="secondary" size="xs">Operations 9–16 · Establish connections and weights</text>
+    </list-item>
+    <list-item>
+      **C. Neural and synaptic dynamics**
+
+      <text color="secondary" size="xs">Operations 17–24 · Define how activity evolves</text>
+    </list-item>
+    <list-item>
+      **D. Feedforward and horizontal propagation**
+
+      <text color="secondary" size="xs">Operations 25–32 · Propagate and organize activity</text>
+    </list-item>
+    <list-item>
+      **E. Feedback and recurrent communication**
+
+      <text color="secondary" size="xs">Operations 33–40 · Create reciprocal information flow</text>
+    </list-item>
+    <list-item>
+      **F. Network integration and stabilization**
+
+      <text color="secondary" size="xs">Operations 41–46 · Update and stabilize neural states</text>
+    </list-item>
+    <list-item>
+      **G. Network output and validation**
+
+      <text color="secondary" size="xs">Operations 47–52 · Produce inspectable results</text>
+    </list-item>
+  </list>
+</box>
+
+## Phase A — Network architecture and population definition
+
+<badge color="info">Operations 1–8</badge>
+
+**Objective:** Construct an explicit representation of the neural populations that participate in visual and orthographic processing.
+
+### Operation 1. Define the N5 input boundary
+
+Receive the outputs of the previous stages:
+
+- N1: visual feature representations.
+- N2: distributed grapheme population activations.
+- N3: candidate beliefs, contextual priors and prediction errors.
+- N4: attention allocation and sensory/prior precision.
+
+N5 must not recalculate these stages. It should use their outputs as signals entering the connected network.
+
+Mathematically:
+
+\[
+X_1 = N1(I)
+\]
+
+\[
+X_2 = N2(X_1)
+\]
+
+\[
+B_3 = N3(X_2)
+\]
+
+\[
+G_4 = N4(B_3)
+\]
+
+The N5 initial state is therefore:
+
+\[
+S_5(0)=f(X_1,X_2,B_3,G_4)
+\]
+
+Here, \(I\) is the original visual input and \(S_5(0)\) is the initial network state.
+
+### Operation 2. Divide the network into processing populations
+
+Create distinct populations representing different computational functions.
+
+For the initial ORE model:
+
+| Population group | Function |
+|---|---|
+| Early visual populations | Edge, orientation and contrast responses |
+| Visual integration populations | Contours, junctions and shape relationships |
+| Grapheme populations | Candidate letter identities |
+| Orthographic sequence populations | Relationships between neighboring positions |
+| Prediction populations | Higher-level expectations |
+| Error populations | Optional representation of unexplained sensory information |
+| Inhibitory populations | Suppression and competition |
+| Attention-control populations | Modulation of network gain |
+
+Each population is a group of computational units.
+
+For example:
+
+\[
+P=\{P_1,P_2,\ldots,P_m\}
+\]
+
+Each \(P_i\) has its own activity state.
+
+The separation is functional, not a claim that these software groups correspond one-to-one to anatomically distinct brain structures.
+
+### Operation 3. Define the internal structure of every population
+
+Each population must have:
+
+- A population identifier.
+- A processing level.
+- A set of connected populations.
+- An activity vector.
+- A baseline activation.
+- An activation threshold.
+- An excitatory or inhibitory designation.
+- A time constant.
+- A connection-weight configuration.
+
+Represent a population as:
+
+\[
+P_i=(r_i,\theta_i,\tau_i,W_i,C_i)
+\]
+
+Where:
+
+- \(r_i\): current activity.
+- \(\theta_i\): baseline or threshold.
+- \(\tau_i\): time constant.
+- \(W_i\): incoming connection weights.
+- \(C_i\): connectivity information.
+
+### Operation 4. Establish the neural state variables
+
+Create state variables that change during network operation.
+
+At a minimum:
+
+\[
+S(t)=
+\{
+r(t),s(t),I(t),e(t)
+\}
+\]
+
+Where:
+
+- \(r(t)\): population activity.
+- \(s(t)\): filtered synaptic activity.
+- \(I(t)\): incoming current or input drive.
+- \(e(t)\): optional prediction-error activity.
+
+Unlike the N3 belief state, these quantities represent evolving neural-population activity.
+
+### Operation 5. Define the spatial and functional organization
+
+Assign populations to relative positions and functional groups.
+
+For example, populations representing neighboring visual patches should retain their spatial relationships.
+
+Define:
+
+\[
+d_{ij}=\text{functional distance between populations }i,j
+\]
+
+The distance may represent physical proximity, receptive-field separation or an abstract functional relationship.
+
+Use these distances later to construct local connections.
+
+### Operation 6. Separate the different directions of communication
+
+Create separate connection categories:
+
+\[
+W=
+\{
+W^{FF},W^{FB},W^{LAT},W^{EI}
+\}
+\]
+
+Do not store every connection in one undifferentiated matrix.
+
+This allows us to determine whether an activation originated from:
+
+- A lower-level sensory population.
+- A higher-level feedback population.
+- A neighboring population.
+- An inhibitory population.
+
+### Operation 7. Establish the hierarchical network topology
+
+Create the general organization of the network.
+
+A simplified hierarchy:
+
+\[
+L_1\leftrightarrow L_2
+\leftrightarrow L_3
+\leftrightarrow L_4
+\]
+
+Where the arrows represent reciprocal communication.
+
+Each level should communicate with selected neighboring levels rather than automatically connecting to every population.
+
+### Operation 8. Create the network adjacency structure
+
+Create a connectivity mask:
+
+\[
+C_{ij}=
+\begin{cases}
+1 & \text{if connection }j\rightarrow i\text{ exists}\\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+Use separate masks for different pathways.
+
+**Why this matters:** A brain-inspired network should not behave as though every neural population is directly connected to every other population. Connectivity must be explicit and inspectable.
+
+**Output of Phase A:** An initialized neural-population graph with defined processing levels, state variables and connection categories.
+
+---
+
+## Phase B — Neural connectivity construction
+
+<badge color="info">Operations 9–16</badge>
+
+**Objective:** Construct the pathways through which neural populations communicate.
+
+### Operation 9. Construct feedforward connections
+
+Connect lower-level populations to higher-level populations.
+
+For example:
+
+\[
+V1\rightarrow V2\rightarrow V4
+\]
+
+In ORE:
+
+\[
+P_{\text{early visual}}
+\rightarrow
+P_{\text{visual integration}}
+\rightarrow
+P_{\text{grapheme}}
+\]
+
+Calculate incoming feedforward activity:
+
+\[
+I_i^{FF}(t)
+=
+\sum_j W_{ij}^{FF}r_j(t)
+\]
+
+Each source population contributes according to its connection strength.
+
+### Operation 10. Construct feedback connections
+
+Connect higher-level populations to lower-level populations.
+
+For example:
+
+\[
+V4\rightarrow V2\rightarrow V1
+\]
+
+The feedback signal can contain information about the currently active higher-level representation.
+
+Mathematically:
+
+\[
+I_i^{FB}(t)
+=
+\sum_j W_{ij}^{FB}r_j(t)
+\]
+
+The feedback matrix is not necessarily equal to the transpose of the feedforward matrix.
+
+The two pathways can have different connection strengths and functional roles.
+
+### Operation 11. Construct horizontal connections
+
+Connect populations within the same processing level.
+
+For example, two nearby orientation-selective populations may influence one another when they represent compatible portions of the same contour.
+
+\[
+I_i^{LAT}(t)
+=
+\sum_j W_{ij}^{LAT}r_j(t)
+\]
+
+These connections allow information to spread locally without requiring every interaction to pass through a higher-level population.
+
+Long-range horizontal connections are particularly relevant to models of contour integration and perceptual grouping. <Cite refs={["turn950443view3","turn373111search4"]}/>
+
+### Operation 12. Construct excitatory populations
+
+Assign excitatory population states.
+
+Their contribution to connected populations is positive:
+
+\[
+I_i^E(t)=\sum_j W_{ij}^E r_j^E(t)
+\]
+
+Require:
+
+\[
+W_{ij}^E\geq 0
+\]
+
+In the computational model, excitatory populations increase the activity of their targets.
+
+### Operation 13. Construct inhibitory populations
+
+Create inhibitory populations that regulate activity and competition.
+
+Their contribution is:
+
+\[
+I_i^I(t)=\sum_j W_{ij}^I r_j^I(t)
+\]
+
+Their effect enters the target population with a negative sign.
+
+For instance, competing grapheme populations may suppress one another through shared inhibitory interactions.
+
+### Operation 14. Define connection polarity
+
+Assign each connection an explicit functional sign:
+
+\[
+w_{ij}=
+\begin{cases}
++w_{ij} & \text{excitatory}\\
+-w_{ij} & \text{inhibitory}
+\end{cases}
+\]
+
+This is a simplified signed-weight representation of circuit effects.
+
+In real neural circuits, the effect also depends on the target cell, receptor, location and network state.
+
+### Operation 15. Calculate spatially dependent connection strengths
+
+Use the distance between populations to construct a possible connectivity kernel:
+
+\[
+W_{ij}
+=
+C_{ij}a_{ij}
+\exp\left(
+-\frac{d_{ij}^{2}}{2\sigma^{2}}
+\right)
+\]
+
+Where:
+
+- \(C_{ij}\) determines whether a connection exists.
+- \(a_{ij}\) is its maximum strength.
+- \(d_{ij}\) is the distance between populations.
+- \(\sigma\) controls the spatial range.
+
+This provides a controllable approximation of local connectivity.
+
+Do not assume that all biological connections decay according to a Gaussian. The function is an experimental starting point.
+
+### Operation 16. Assign transmission delays
+
+Signals do not travel instantaneously between biological neural populations.
+
+Introduce a delay for each connection:
+
+\[
+d_{ij}=\frac{L_{ij}}{v_{ij}}
+\]
+
+Where:
+
+- \(L_{ij}\) is the approximate transmission path length.
+- \(v_{ij}\) is the effective conduction velocity.
+
+Then calculate incoming activity using the delayed source state:
+
+\[
+I_i(t)=
+\sum_j W_{ij}r_j(t-d_{ij})
+\]
+
+This enables N5 to distinguish immediate local interactions from slower long-range interactions.
+
+**Output of Phase B:** A directed, weighted network with separate feedforward, feedback, horizontal and excitatory-inhibitory connections.
+
+---
+
+## Phase C — Neural and synaptic dynamics
+
+<badge color="info">Operations 17–24</badge>
+
+**Objective:** Define how signals are transmitted, integrated, transformed and maintained over time.
+
+### Operation 17. Model synaptic signal filtering
+
+A neural signal does not simply disappear after its source population becomes inactive.
+
+Introduce a synaptic state:
+
+\[
+\tau_s\frac{ds_i}{dt}
+=
+-s_i+r_i(t)
+\]
+
+Where:
+
+- \(s_i\) is the synaptic activity.
+- \(\tau_s\) controls its decay.
+
+This creates a short-lived memory of previous population activity.
+
+A delayed version can be used where necessary:
+
+\[
+\tau_s\frac{ds_i}{dt}
+=
+-s_i+r_i(t-d)
+\]
+
+### Operation 18. Assign population time constants
+
+Different populations can have different response and decay speeds.
+
+\[
+\tau_i\frac{dr_i}{dt}
+=
+-r_i+\phi(I_i)
+\]
+
+A smaller \(\tau_i\) produces a faster response under this simplified model.
+
+A larger \(\tau_i\) produces slower changes.
+
+These parameters must eventually be fitted or calibrated using appropriate physiological evidence rather than assigned arbitrary biological meanings.
+
+### Operation 19. Define nonlinear activation functions
+
+Neural activity does not grow indefinitely in direct proportion to incoming input.
+
+Introduce a nonlinear response function.
+
+One possible choice is the sigmoid:
+
+\[
+\phi(x)=\frac{1}{1+e^{-kx}}
+\]
+
+Where \(k\) controls the response slope.
+
+Another option is a rectified response:
+
+\[
+\phi(x)=\max(0,x)
+\]
+
+N5 should permit different activation functions to be compared experimentally.
+
+### Operation 20. Implement activity decay
+
+Population activity should evolve even when no new input arrives.
+
+\[
+\frac{dr_i}{dt}=-\frac{r_i}{\tau_i}
+\]
+
+Without incoming activation, the current state gradually decreases.
+
+This prevents every previously activated population from remaining permanently active.
+
+### Operation 21. Introduce activation thresholds
+
+Define a baseline activation or threshold for every population.
+
+\[
+z_i=I_i-\theta_i
+\]
+
+The population responds according to:
+
+\[
+r_i=\phi(z_i)
+\]
+
+This makes the activation dependent on whether incoming signals sufficiently exceed the population's baseline.
+
+Thresholds may later be made adaptive, but their adaptation mechanism should be separately tested.
+
+### Operation 22. Apply divisive normalization
+
+Introduce competition and gain control through a normalization mechanism.
+
+One possible approximation is:
+
+\[
+r_i^{norm}
+=
+\frac{\phi(I_i)}
+{\epsilon+\sum_j a_{ij}\phi(I_j)}
+\]
+
+Where \(a_{ij}\) determines the populations contributing to the normalization pool.
+
+This limits excessive activation when many populations respond simultaneously.
+
+Divisive normalization is a useful computational model, not a universal claim about the exact operation of every cortical circuit.
+
+### Operation 23. Integrate N4 attention and precision signals
+
+Allow the attention and precision signals calculated by N4 to modulate the network.
+
+For each position \(i\):
+
+\[
+I_i^{sensory}
+=
+\pi_{v,i}I_i^{visual}
+\]
+
+\[
+I_i^{feedback}
+=
+\pi_{p,i}I_i^{prediction}
+\]
+
+Where \(\pi_{v,i}\) and \(\pi_{p,i}\) represent N4's sensory and prior precision estimates.
+
+N5 can also apply the attention allocation through a separate gain:
+
+\[
+I_i^{attended}=g_i I_i
+\]
+
+This creates a bridge between attention and network activity without recalculating the attention mechanism inside N5.
+
+### Operation 24. Initialize the recurrent network state
+
+Assign the initial population activity.
+
+Possible initialization:
+
+\[
+r_i(0)=f(X_1,X_2)
+\]
+
+The initial state comes from N1 and N2 visual information, while N3 and N4 provide the initial contextual and attentional modulation.
+
+Also initialize:
+
+\[
+s_i(0)=0
+\]
+
+unless a previous network state is deliberately supplied.
+
+**Output of Phase C:** A dynamic neural-population model containing activation functions, signal filtering, time constants, thresholds and precision modulation.
+
+---
+
+## Phase D — Feedforward and horizontal propagation
+
+<badge color="info">Operations 25–32</badge>
+
+**Objective:** Execute the initial information propagation through the interconnected populations and integrate local responses.
+
+### Operation 25. Receive early visual population activity
+
+Read the visual feature activity produced by N1.
+
+For example:
+
+\[
+X_1=
+[x_{\text{edge}},x_{\text{orientation}},
+x_{\text{contrast}},x_{\text{curvature}}]
+\]
+
+Use this as external drive to the corresponding early visual populations.
+
+### Operation 26. Activate the distributed visual populations
+
+Use N2's population output.
+
+For grapheme class \(c\) at position \(i\):
+
+\[
+r_{i,c}^{N2}
+\propto P(c\mid X_i)
+\]
+
+Preserve alternative class activations.
+
+Do not force every population into a binary active/inactive decision.
+
+### Operation 27. Initialize contextual activity
+
+Read the N3 contextual prior.
+
+\[
+p_i(c)=P(c\mid \text{orthographic context})
+\]
+
+Convert this information into a context-dependent input to the relevant N5 prediction populations.
+
+Keep these expectations separate from visual evidence.
+
+### Operation 28. Calculate feedforward input currents
+
+For every population at level \(l\):
+
+\[
+I_l^{FF}=W_l^{FF}s_{l-1}
+\]
+
+The calculation aggregates activity from the lower level.
+
+### Operation 29. Propagate activity to the next processing level
+
+Pass the feedforward signal into the next population group.
+
+\[
+r_l(t+\Delta t)=
+f\left(I_l^{FF}(t)\right)
+\]
+
+Do not immediately discard the previous activity.
+
+It remains part of the recurrent state.
+
+### Operation 30. Activate compatible horizontal connections
+
+Calculate interactions between neighboring populations that encode compatible features.
+
+For example, for orientation-selective populations:
+
+\[
+I_i^{compatible}
+=
+\sum_j
+A_{ij}^{compatible}w_{ij}r_j
+\]
+
+The compatibility matrix can take into account:
+
+- Similar orientation.
+- Spatial proximity.
+- Contour alignment.
+- Shared visual structure.
+
+This provides an approximation of horizontal association mechanisms involved in perceptual grouping.
+
+### Operation 31. Suppress incompatible competing activity
+
+Calculate inhibitory interactions between competing representations.
+
+\[
+I_i^{competition}
+=
+-\sum_j B_{ij}r_j^I
+\]
+
+For example, incompatible contour interpretations may compete for representation.
+
+The strength of competition must depend on experimental settings rather than automatically eliminating every alternative.
+
+### Operation 32. Integrate local information into a coherent population representation
+
+Combine:
+
+\[
+I_i^{local}=
+I_i^{sensory}
++I_i^{compatible}
+-I_i^{competition}
+\]
+
+Update the local population activity using its nonlinear response function.
+
+This allows a population to respond to both direct sensory information and the activity of neighboring populations.
+
+**Output of Phase D:** A distributed activation pattern containing feedforward sensory evidence and horizontal contextual interactions.
+
+---
+
+## Phase E — Feedback and recurrent communication
+
+<badge color="info">Operations 33–40</badge>
+
+**Objective:** Establish reciprocal information flow between higher-level and lower-level processing populations.
+
+This is the central phase of N5.
+
+### Operation 33. Identify currently active higher-level representations
+
+Read the high-level populations that have received feedforward information.
+
+For example:
+
+- Candidate grapheme populations.
+- Orthographic sequence populations.
+- Integrated shape populations.
+
+Represent the current state:
+
+\[
+H(t)=
+[h_1(t),h_2(t),\ldots,h_m(t)]
+\]
+
+These are hypotheses represented by population activity, not confirmed answers.
+
+### Operation 34. Generate top-down feedback signals
+
+Higher-level populations activate their outgoing feedback connections.
+
+\[
+I_l^{FB}(t)
+=
+W_l^{FB}r_{l+1}(t)
+\]
+
+The resulting signal carries information from higher processing levels toward lower ones.
+
+### Operation 35. Map feedback to its relevant lower-level targets
+
+Feedback should reach the populations that contributed to the higher-level representation.
+
+For example, if a high-level grapheme population is active, its feedback should target lower-level visual populations associated with the corresponding patch or relevant features.
+
+Use:
+
+\[
+I_i^{FB}
+=
+\sum_j
+M_{ij}^{FB}W_{ij}^{FB}r_j
+\]
+
+Here, \(M_{ij}^{FB}\) is a target-selection mask.
+
+This is important because feedback should not indiscriminately activate the entire visual system.
+
+### Operation 36. Apply attention-dependent feedback gain
+
+Use N4's attention signals to regulate the feedback pathway.
+
+\[
+g_i^{FB}=f(\pi_{p,i},a_i)
+\]
+
+Then:
+
+\[
+I_i^{FB,attended}
+=
+g_i^{FB}I_i^{FB}
+\]
+
+A highly relevant position can receive stronger feedback influence.
+
+The actual function \(f\) must be a configurable hypothesis.
+
+### Operation 37. Combine incoming feedback with ongoing sensory activity
+
+Calculate:
+
+\[
+I_i^{combined}
+=
+I_i^{sensory}
++
+g_i^{FB}I_i^{FB}
++
+I_i^{LAT}
+\]
+
+The population now responds to both sensory input and information arriving from higher levels.
+
+This is fundamentally different from a feedforward-only pipeline.
+
+### Operation 38. Calculate optional predictive feature residuals
+
+In a predictive-coding implementation, higher-level populations generate predictions about lower-level feature activity.
+
+Let:
+
+\[
+\hat{x}_l=W_l^{gen}r_{l+1}
+\]
+
+Where \(\hat{x}_l\) is the predicted lower-level representation.
+
+The residual is:
+
+\[
+\epsilon_l=x_l-\hat{x}_l
+\]
+
+This residual represents information not explained by the current prediction.
+
+**Important architectural choice:** Predictive error subtraction is not the only possible role of recurrent feedback. N5 must also permit a representational mode in which compatible feedback reinforces global feature structures without requiring explicit error computation.
+
+This distinction matters scientifically. A 2026 review finds evidence relevant to both predictive-coding and representational accounts and concludes that available neuronal data do not unequivocally establish either framework. <Cite refs={["turn950443view3","turn373111search7"]}/>
+
+### Operation 39. Separate positive and negative prediction-error signals
+
+When the predictive-coding mode is enabled, decompose the residual:
+
+\[
+\epsilon_l^+=\max(0,\epsilon_l)
+\]
+
+\[
+\epsilon_l^-=\max(0,-\epsilon_l)
+\]
+
+This preserves two directions of mismatch.
+
+For example:
+
+- Positive residual: observed activity is greater than predicted.
+- Negative residual: predicted activity is greater than observed.
+
+Separate populations may represent these signals in a more detailed model.
+
+They should not be treated as already established biological units in this particular ORE implementation.
+
+### Operation 40. Return feedback information into the recurrent network
+
+Send the resulting feedback, representation and optional error signals into the next recurrent update cycle.
+
+\[
+S(t+1)=F(S(t),X,I^{FB},I^{LAT},\epsilon)
+\]
+
+This closes the network loop.
+
+The same populations can therefore be activated repeatedly as the different levels exchange information.
+
+**Output of Phase E:** A bidirectionally connected network that continuously exchanges sensory, contextual and recurrent information.
+
+---
+
+## Phase F — Network integration and stabilization
+
+<badge color="info">Operations 41–46</badge>
+
+**Objective:** Calculate the evolution of the recurrent network and prevent unstable activity.
+
+### Operation 41. Update excitatory population activity
+
+Use the combined feedforward, feedback and horizontal input.
+
+A simplified excitatory-inhibitory model is:
+
+\[
+\tau_E\frac{dr_E}{dt}
+=
+-r_E+
+\phi(
+I_E+
+W_{EE}s_E-
+W_{EI}s_I
+)
+\]
+
+Where:
+
+- \(W_{EE}\): recurrent excitation.
+- \(W_{EI}\): inhibition received by excitatory populations.
+- \(s_E,s_I\): synaptic states.
+
+### Operation 42. Update inhibitory population activity
+
+Update inhibitory populations based on their incoming signals.
+
+\[
+\tau_I\frac{dr_I}{dt}
+=
+-r_I+
+\phi(
+I_I+
+W_{IE}s_E-
+W_{II}s_I
+)
+\]
+
+This creates reciprocal excitatory-inhibitory dynamics.
+
+The Wilson–Cowan family of models provides an established mathematical starting point for investigating interacting excitatory and inhibitory neural populations. <Cite refs={["turn373111search11","turn373111search7"]}/>
+
+### Operation 43. Apply temporal delays during recurrence
+
+When the network repeats its calculations, retrieve signals from their appropriate delayed time points.
+
+\[
+I_i(t)=
+\sum_jW_{ij}r_j(t-d_{ij})
+\]
+
+Implement a history buffer for each connection or connection group.
+
+This allows fast local and slower long-range interactions to be investigated separately.
+
+### Operation 44. Integrate the entire recurrent network state
+
+Calculate the next state of all populations together.
+
+A discrete-time approximation using Euler integration is:
+
+\[
+r_i^{k+1}
+=
+r_i^k+
+\frac{\Delta t}{\tau_i}
+\left[-r_i^k+\phi(I_i^k)\right]
+\]
+
+Here \(k\) is the simulation iteration.
+
+This produces the next network state from the current state.
+
+The integration method and time step must be tested to ensure numerical stability.
+
+### Operation 45. Measure recurrent convergence
+
+Compare successive network states.
+
+\[
+\Delta_k=
+\frac{1}{N}
+\sum_{i=1}^{N}
+|r_i^{k+1}-r_i^k|
+\]
+
+If:
+
+\[
+\Delta_k<\varepsilon
+\]
+
+for a configured number of consecutive iterations, the network can be considered sufficiently settled for the current experiment.
+
+Do not assume every biological neural network must reach a static equilibrium. Some neural activity remains dynamic.
+
+### Operation 46. Detect unstable or excessive activity
+
+Monitor:
+
+- Unbounded population activation.
+- Excessive recurrent excitation.
+- Excessive inhibition.
+- Oscillatory instability.
+- Unexpectedly persistent activity.
+- Numerical overflow.
+
+A useful local linear stability diagnostic is based on the effective recurrent Jacobian:
+
+\[
+J=\frac{\partial F}{\partial S}
+\]
+
+For a discrete-time approximation, a local stability condition is:
+
+\[
+\rho(J)<1
+\]
+
+Where \(\rho\) denotes the spectral radius.
+
+This is a local condition around a particular state, not a guarantee of global biological stability.
+
+If instability is detected, the experiment should stop or move into a separately defined parameter-adjustment procedure.
+
+**Output of Phase F:** A temporally evolving recurrent network that can be monitored for convergence, bounded activity and dynamic stability.
+
+---
+
+## Phase G — Network output and validation
+
+<badge color="info">Operations 47–52</badge>
+
+**Objective:** Convert the final network activity into structured representations, preserve the internal activity history and establish whether recurrent processing contributes useful information.
+
+### Operation 47. Construct the final population representation
+
+Collect the activity of all relevant populations after the recurrent iterations.
+
+\[
+R_5=
+\{
+r_1^*,r_2^*,\ldots,r_L^*
+\}
+\]
+
+The star indicates the final activity state of each level.
+
+Preserve the individual population outputs rather than immediately combining them into one vector.
+
+This is important because a future experiment may need to determine which processing level contributed to a particular recognition result.
+
+### Operation 48. Calculate network connectivity diagnostics
+
+Measure how activity travels through the different pathways.
+
+For example:
+
+\[
+A_{FF}=\sum_i |I_i^{FF}|
+\]
+
+\[
+A_{FB}=\sum_i |I_i^{FB}|
+\]
+
+\[
+A_{LAT}=\sum_i |I_i^{LAT}|
+\]
+
+Also calculate excitatory and inhibitory contributions separately.
+
+This produces a pathway-activity report.
+
+It allows ORE to determine whether its output was dominated by sensory propagation, lateral integration or top-down feedback.
+
+### Operation 49. Measure temporal coordination between populations
+
+Introduce an optional temporal coordination analysis.
+
+For populations with oscillatory activity, one possible diagnostic is phase-locking value:
+
+\[
+PLV_{ij}
+=
+\left|
+\frac{1}{T}
+\sum_{t=1}^{T}
+e^{\mathrm{i}(\varphi_i(t)-\varphi_j(t))}
+\right|
+\]
+
+Where:
+
+- \(\varphi_i\) is the phase of population \(i\).
+- \(\varphi_j\) is the phase of population \(j\).
+- \(T\) is the observation interval.
+
+The result measures phase consistency between the two signals.
+
+This is an optional extension, not a requirement for the initial N5 implementation. It should only be enabled when oscillatory state variables and appropriate temporal resolution are implemented.
+
+### Operation 50. Generate an N5 population-level readout
+
+Convert the final activity of selected populations into a structured output.
+
+For example:
+
+\[
+q_5(c)=
+\operatorname{softmax}
+(W_{\text{readout}}R_5+b)
+\]
+
+This produces an optional distribution over candidate graphemes or higher-level orthographic representations.
+
+Important: N5 should retain the original N2 visual distribution and N3 posterior separately. Its population readout must not silently overwrite them.
+
+The system can compare:
+
+\[
+q_2(c),\quad b_3(c),\quad q_5(c)
+\]
+
+This makes it possible to investigate how recurrent network dynamics changed the original visual interpretation.
+
+### Operation 51. Execute connectivity and recurrence ablation experiments
+
+Run the same input using different network configurations.
+
+At minimum:
+
+| Experiment | Feedforward | Horizontal | Feedback | Recurrent E/I |
+|---|---|---|---|---|
+| A | Enabled | Disabled | Disabled | Disabled |
+| B | Enabled | Enabled | Disabled | Enabled |
+| C | Enabled | Disabled | Enabled | Enabled |
+| D | Enabled | Enabled | Enabled | Enabled |
+| E | Enabled | Enabled | Enabled | Disabled |
+
+Compare the results using:
+
+- Grapheme classification accuracy.
+- Prediction error.
+- Output uncertainty.
+- Convergence time.
+- Stability.
+- Sensitivity to ambiguous visual input.
+- Sensitivity to misleading contextual feedback.
+
+The goal is to establish which connections actually improve computational performance.
+
+### Operation 52. Return the complete N5 network result
+
+Generate a structured result containing:
+
+1. Network topology.
+2. Population identifiers.
+3. Feedforward connection matrices.
+4. Feedback connection matrices.
+5. Horizontal connection matrices.
+6. Excitatory-inhibitory parameters.
+7. Synaptic delays.
+8. Initial and final population activities.
+9. Recurrent activity traces.
+10. Attention and precision modulation.
+11. Prediction errors, when enabled.
+12. Stability and convergence diagnostics.
+13. Ablation results.
+14. Configuration and model fingerprints.
+15. Scientific limitations.
+
+The final output should be a complete, inspectable network state rather than merely a recognized character.
+
+---
+
+# 5. The complete mathematical model of N5
+
+We can now bring the preceding operations together into one coherent mathematical architecture.
+
+## 5.1 Network connectivity
+
+Define:
+
+\[
+W^{TOTAL}
+=
+W^{FF}+W^{FB}+W^{LAT}
+\]
+
+The excitatory and inhibitory populations will have their own interaction matrices.
+
+For a particular processing level, the total incoming drive can be expressed as:
+
+\[
+I(t)=
+W^{FF}s_{lower}(t-d_{FF})
++
+W^{FB}s_{higher}(t-d_{FB})
++
+W^{LAT}s_{local}(t-d_{LAT})
++
+I^{EXT}(t)
+\]
+
+This equation combines information from three directions:
+
+- Upward propagation.
+- Downward feedback.
+- Horizontal communication.
+
+## 5.2 Excitatory-inhibitory dynamics
+
+For the two population types:
+
+\[
+\tau_E\dot r_E
+=
+-r_E+\phi(
+I_E+W_{EE}s_E-W_{EI}s_I
+)
+\]
+
+\[
+\tau_I\dot r_I
+=
+-r_I+\phi(
+I_I+W_{IE}s_E-W_{II}s_I
+)
+\]
+
+This allows the network to model:
+
+- Recurrent excitation.
+- Lateral inhibition.
+- Population competition.
+- Activity decay.
+- Dynamic interactions.
+
+## 5.3 Synaptic dynamics
+
+For each population:
+
+\[
+\tau_s\dot s_i=-s_i+r_i(t-d_i)
+\]
+
+The synaptic state is therefore dependent on previous neural activity, not just the latest input.
+
+## 5.4 Attention-modulated recurrence
+
+N4 supplies the precision signals that influence N5:
+
+\[
+I^{sensory}_i=\pi_{v,i}I^{visual}_i
+\]
+
+\[
+I^{predictive}_i=\pi_{p,i}I^{feedback}_i
+\]
+
+This creates an interaction between the recurrent network and attention-controlled signal gain.
+
+## 5.5 Complete recurrent state equation
+
+Combining the principal mechanisms:
+
+\[
+\boxed{
+\tau\dot R=
+-R+
+\phi\left(
+W^{FF}S_{lower}
++
+g_{FB}W^{FB}S_{higher}
++
+W^{LAT}S_{local}
++
+I^{EXT}
+-
+I^{INH}
+\right)
+}
+\]
+
+This is the central mathematical abstraction of N5.
+
+It describes a network in which current activity is continuously influenced by interconnected populations, previous activity, external information and modulated feedback.
+
+---
+
+# 6. How N5 connects the previous ORE phases
+
+The relationship between the phases should look like this:
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **N1 — Early visual processing**
+    <text color="secondary" size="xs">Visual feature populations and activity</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **N2 — Distributed population representation**
+    <text color="secondary" size="xs">Candidate-selective activity distributions</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **N3 — Predictive inference**
+    <text color="secondary" size="xs">Contextual priors and prediction errors</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(59,130,246,0.10)" radius="md" padding={3} align="center">
+    **N4 — Attention and precision**
+    <text color="secondary" size="xs">Sensory and contextual gain signals</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <box background="rgba(16,185,129,0.12)" radius="md" padding={3} align="center" gap={1}>
+    **N5 — Connected recurrent network**
+    <badge color="success">New architecture</badge>
+    <text color="secondary" size="xs">Feedforward + feedback + horizontal + excitatory/inhibitory dynamics</text>
+  </box>
+  <box align="center" gap={1}>
+    <icon name="arrow-down-up" color="success" size="xl"/>
+    <text color="success" weight="medium" size="xs">Continuous internal recurrence</text>
+  </box>
+  <box background="rgba(16,185,129,0.08)" radius="md" padding={3} align="center">
+    **N5 final population state**
+    <text color="secondary" size="xs">Refined representations, network traces and diagnostics</text>
+  </box>
+</box>
+
+There is an important architectural property here:
+
+**N5 does not simply execute N1 → N2 → N3 → N4 → output once.**
+
+It allows the relevant processing populations to exchange information repeatedly.
+
+For example, a higher-level grapheme hypothesis can influence lower-level visual activity, which can then change the activity of the higher-level population on the following iteration.
+
+This is what makes the architecture recurrent rather than merely sequential.
+
+# 7. Complete N5 execution pseudocode
+
+The 52 operations can be organized into one main algorithm.
+
+### Important implementation decision
+
+All incoming currents should initially be calculated using the previous simulation state:
+
+\[
+I^{(k)}=F(R^{(k)},S^{(k)})
+\]
+
+Then the new activity is updated:
+
+\[
+R^{(k+1)}=G(R^{(k)},I^{(k)})
+\]
+
+This avoids accidentally giving populations updated information from different simulation times within the same iteration.
+
+Synchronous updates can be the initial implementation. Asynchronous updates can be introduced later as a separate experimental condition.
+
+---
+
+# 8. How we will know whether N5 actually works
+
+Passing Python tests is not enough. We need experiments that establish whether adding recurrent connectivity makes ORE better than its existing architecture.
+
+I recommend the following validation experiments.
+
+| Experiment | What we investigate | Expected evidence |
+|---|---|---|
+| E1: Feedforward baseline | Network without recurrence | Baseline performance |
+| E2: Horizontal connections | Influence of neighboring populations | Improved local grouping where useful |
+| E3: Feedback connections | Influence of higher-level hypotheses | Changes in lower-level representations |
+| E4: E/I dynamics | Network competition and stability | Bounded and interpretable activity |
+| E5: Delayed recurrence | Temporal influence of network connections | Measurable delayed responses |
+| E6: Attention integration | N4 modulation of network pathways | Selective changes in pathway gain |
+| E7: Prediction versus representation | Compare two feedback mechanisms | Separate error-coding and representation-based outcomes |
+| E8: Combined architecture | All enabled mechanisms | Comparison against simpler alternatives |
+
+For each experiment, measure:
+
+**Recognition performance:** Character accuracy, top-k accuracy and character error rate.
+
+**Network behavior:** Average population activation, recurrent activity magnitude and pathway contributions.
+
+**Stability:** Divergence, oscillation, exploding activity and convergence time.
+
+**Uncertainty:** Whether feedback improves ambiguous inputs without incorrectly overriding clear sensory evidence.
+
+**Robustness:** Performance under noise, blur, occlusion, font changes and unfamiliar grapheme combinations.
+
+The 2026 research literature is particularly important here: visual-word processing appears to involve interactions between visual and language networks, while the exact role and timing of feedback remains an empirical question. <Cite refs={["turn373111search2","turn373111search6","turn373111search10","turn950443view3"]}/>
+
+# 9. Important scientific distinctions
+
+There are several things we should deliberately avoid when implementing N5.
+
+**First: recurrence is not the same as feedback.**
+
+A recurrent network can have local connections, feedback connections, or both. We must measure their contributions separately.
+
+**Second: excitation alone is not enough.**
+
+Unrestricted positive feedback can create runaway activity. Inhibitory interactions, normalization and appropriate temporal dynamics are important parts of a stable network model.
+
+**Third: prediction error is not the whole explanation of recurrence.**
+
+Our N5 should support both:
+
+- A predictive-coding architecture, in which residual signals influence subsequent processing.
+- A representational recurrent architecture, in which feedback helps reinforce and refine compatible representations.
+
+These hypotheses need separate experimental configurations. The evidence does not justify assuming that one is the complete explanation of cortical recurrence. <Cite refs={["turn950443view3","turn373111search7"]}/>
+
+**Fourth: connectivity learning must remain separate from inference.**
+
+For the initial N5 implementation, connection weights should remain frozen while a recognition experiment is running. Any Hebbian or spike-timing-dependent weight modification should be an explicitly authorized, separately evaluated learning experiment.
+
+This will prevent network activity from silently changing the model during recognition.
+
+---
+
+# 10. Proposed software architecture
+
+I recommend that the eventual Python implementation use the following modules:
+
+The main controller would be:
+
+These are interface proposals, not implemented code yet.
+
+### Implementation acceptance criteria
+
+N5 should not be considered software-complete until:
+
+- All 52 operations have explicit implementations or documented, justified exclusions.
+- Every population has an inspectable state.
+- All connection types have separate, testable weight matrices.
+- Transmission delays are functional.
+- Excitatory and inhibitory dynamics are tested independently.
+- Feedback demonstrably influences lower-level activity.
+- Horizontal connections demonstrably influence local population activity.
+- Recurrent updates preserve numerical stability.
+- N4 attention signals can modulate the appropriate network pathways.
+- The predictive-coding and representational alternatives can be compared.
+- Ablation tests demonstrate the contribution of individual mechanisms.
+- The complete N1–N4 regression suite remains unaffected.
+
+<box border radius="lg" padding={3} gap={2}>
+  **One scope clarification**
+
+  The retrievable version of the earlier ORE roadmap labels N5 as experience-dependent plasticity, whereas your requested N5 title is *Neural connectivity and recurrence*. I have followed the title in your current request and kept plasticity separate rather than mixing two different mechanisms into this specification.
+
+  The 52 operations above are a proposed detailed expansion, not a claim that an existing 52-step source algorithm was recovered.
+</box>
+
+## Final architectural objective
+
+The fundamental change introduced by N5 is that ORE will no longer be limited to passing information between independently calculated processing stages.
+
+It will begin to model a network in which:
+
+\[
+\boxed{
+\text{Sensory input}
+\leftrightarrow
+\text{Distributed populations}
+\leftrightarrow
+\text{Higher-level representations}
+}
+\]
+
+With lateral communication, excitation, inhibition, temporal delays and recurrent feedback operating together.
+
+This establishes the network-dynamics foundation on which subsequent ORE mechanisms can build.
+
+**My recommendation:** Implement N5 before introducing more complicated neural plasticity. We first need a functioning, measurable and stable recurrent network; only then can we investigate how experience changes the connectivity and behavior of that network.
+
+---
+
+[ASSISTANT]
+# 7. Complete N5 execution pseudocode
+
+The 52 operations can be organized into one main algorithm.
+
+### Important implementation decision
+
+All incoming currents should initially be calculated using the previous simulation state:
+
+\[
+I^{(k)}=F(R^{(k)},S^{(k)})
+\]
+
+Then the new activity is updated:
+
+\[
+R^{(k+1)}=G(R^{(k)},I^{(k)})
+\]
+
+This avoids accidentally giving populations updated information from different simulation times within the same iteration.
+
+Synchronous updates can be the initial implementation. Asynchronous updates can be introduced later as a separate experimental condition.
+
+---
+
+# 8. How we will know whether N5 actually works
+
+Passing Python tests is not enough. We need experiments that establish whether adding recurrent connectivity makes ORE better than its existing architecture.
+
+I recommend the following validation experiments.
+
+| Experiment | What we investigate | Expected evidence |
+|---|---|---|
+| E1: Feedforward baseline | Network without recurrence | Baseline performance |
+| E2: Horizontal connections | Influence of neighboring populations | Improved local grouping where useful |
+| E3: Feedback connections | Influence of higher-level hypotheses | Changes in lower-level representations |
+| E4: E/I dynamics | Network competition and stability | Bounded and interpretable activity |
+| E5: Delayed recurrence | Temporal influence of network connections | Measurable delayed responses |
+| E6: Attention integration | N4 modulation of network pathways | Selective changes in pathway gain |
+| E7: Prediction versus representation | Compare two feedback mechanisms | Separate error-coding and representation-based outcomes |
+| E8: Combined architecture | All enabled mechanisms | Comparison against simpler alternatives |
+
+For each experiment, measure:
+
+**Recognition performance:** Character accuracy, top-k accuracy and character error rate.
+
+**Network behavior:** Average population activation, recurrent activity magnitude and pathway contributions.
+
+**Stability:** Divergence, oscillation, exploding activity and convergence time.
+
+**Uncertainty:** Whether feedback improves ambiguous inputs without incorrectly overriding clear sensory evidence.
+
+**Robustness:** Performance under noise, blur, occlusion, font changes and unfamiliar grapheme combinations.
+
+The 2026 research literature is particularly important here: visual-word processing appears to involve interactions between visual and language networks, while the exact role and timing of feedback remains an empirical question. <Cite refs={["turn373111search2","turn373111search6","turn373111search10","turn950443view3"]}/>
+
+# 9. Important scientific distinctions
+
+There are several things we should deliberately avoid when implementing N5.
+
+**First: recurrence is not the same as feedback.**
+
+A recurrent network can have local connections, feedback connections, or both. We must measure their contributions separately.
+
+**Second: excitation alone is not enough.**
+
+Unrestricted positive feedback can create runaway activity. Inhibitory interactions, normalization and appropriate temporal dynamics are important parts of a stable network model.
+
+**Third: prediction error is not the whole explanation of recurrence.**
+
+Our N5 should support both:
+
+- A predictive-coding architecture, in which residual signals influence subsequent processing.
+- A representational recurrent architecture, in which feedback helps reinforce and refine compatible representations.
+
+These hypotheses need separate experimental configurations. The evidence does not justify assuming that one is the complete explanation of cortical recurrence. <Cite refs={["turn950443view3","turn373111search7"]}/>
+
+**Fourth: connectivity learning must remain separate from inference.**
+
+For the initial N5 implementation, connection weights should remain frozen while a recognition experiment is running. Any Hebbian or spike-timing-dependent weight modification should be an explicitly authorized, separately evaluated learning experiment.
+
+This will prevent network activity from silently changing the model during recognition.
+
+---
+
+# 10. Proposed software architecture
+
+I recommend that the eventual Python implementation use the following modules:
+
+The main controller would be:
+
+These are interface proposals, not implemented code yet.
+
+### Implementation acceptance criteria
+
+N5 should not be considered software-complete until:
+
+- All 52 operations have explicit implementations or documented, justified exclusions.
+- Every population has an inspectable state.
+- All connection types have separate, testable weight matrices.
+- Transmission delays are functional.
+- Excitatory and inhibitory dynamics are tested independently.
+- Feedback demonstrably influences lower-level activity.
+- Horizontal connections demonstrably influence local population activity.
+- Recurrent updates preserve numerical stability.
+- N4 attention signals can modulate the appropriate network pathways.
+- The predictive-coding and representational alternatives can be compared.
+- Ablation tests demonstrate the contribution of individual mechanisms.
+- The complete N1–N4 regression suite remains unaffected.
+
+<box border radius="lg" padding={3} gap={2}>
+  **One scope clarification**
+
+  The retrievable version of the earlier ORE roadmap labels N5 as experience-dependent plasticity, whereas your requested N5 title is *Neural connectivity and recurrence*. I have followed the title in your current request and kept plasticity separate rather than mixing two different mechanisms into this specification.
+
+  The 52 operations above are a proposed detailed expansion, not a claim that an existing 52-step source algorithm was recovered.
+</box>
+
+## Final architectural objective
+
+The fundamental change introduced by N5 is that ORE will no longer be limited to passing information between independently calculated processing stages.
+
+It will begin to model a network in which:
+
+\[
+\boxed{
+\text{Sensory input}
+\leftrightarrow
+\text{Distributed populations}
+\leftrightarrow
+\text{Higher-level representations}
+}
+\]
+
+With lateral communication, excitation, inhibition, temporal delays and recurrent feedback operating together.
+
+This establishes the network-dynamics foundation on which subsequent ORE mechanisms can build.
+
+**My recommendation:** Implement N5 before introducing more complicated neural plasticity. We first need a functioning, measurable and stable recurrent network; only then can we investigate how experience changes the connectivity and behavior of that network.

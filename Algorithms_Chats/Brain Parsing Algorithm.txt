@@ -1,0 +1,2211 @@
+Title: Brain Parsing Algorithm
+Conversation ID: 6af918dd-3920-83ea-bc23-4d2a94aed80e
+
+---
+
+[USER]
+I want you to turn the sequence of the following points related to human brain into a big algorithm which is made of algorithmic steps, each step is explained in detail and within each step find any possible mathematical operations the brain does to implement that step:
+
+Syntactic parsing and structure-building:
+
+Part-of-speech identification
+Phrase detection
+Dependency parsing
+Constituency parsing
+Hierarchical syntax representation
+Subject/object assignment
+Agent/patient thematic roles
+Syntactic ambiguity resolution
+Long-distance dependency processing
+
+---
+
+[ASSISTANT]
+# Master Algorithm: Syntactic Parsing and Structure-Building in the Human Brain
+
+## 1. Objective of the algorithm
+
+The purpose of syntactic parsing is to transform an incoming sequence of words into a structured representation that identifies:
+
+- Which words belong together.
+- Which words govern or depend on other words.
+- How words combine into phrases and clauses.
+- Which word is the subject, object, or another grammatical element.
+- Who performs an action, who receives it, and what happens to whom.
+- How grammatically ambiguous sentences should be interpreted.
+- How words separated by several other words can still be connected grammatically.
+
+For example, consider:
+
+**"The young scientist examined the unusual creature."**
+
+The brain must move beyond recognizing the individual words. It must establish that:
+
+1. `The young scientist` is a noun phrase.
+2. `examined` is the main verb.
+3. `the unusual creature` is another noun phrase.
+4. `scientist` is the subject of `examined`.
+5. `creature` is its direct object.
+6. The scientist is the agent performing the examination.
+7. The creature is the patient receiving the action.
+
+The result is a structured representation of the sentence, rather than an unordered collection of word meanings.
+
+## 2. Important distinction: biological processing versus computational modeling
+
+Before building the algorithm, we need an important distinction.
+
+The human brain does not necessarily execute nine independent operations in the exact order presented in the question. Syntactic processing is incremental, interactive, and recurrent: information from word recognition, grammar, meaning, memory, and context continuously influences other processes.
+
+Furthermore, dependency parsing and constituency parsing are two different ways of describing syntactic structure. They are useful computational representations, but we should not assume that the brain literally constructs two separate software-like data structures.
+
+Research implicates interacting frontal and temporal language networks, including the inferior frontal gyrus and posterior temporal regions, but the precise neural implementation of hierarchical syntactic computations remains an active research question. <Cite refs={["turn890979search1","turn300247view1","turn890979search0"]}/>
+
+Therefore, I will construct a **neurocomputational algorithm** with two objectives:
+
+1. Describe the functional operations necessary for syntactic comprehension.
+2. Identify plausible mathematical operations that could model those functions.
+
+The mathematical formulas below are proposed computational abstractions. They are not claims that neurons literally execute the corresponding equations.
+
+---
+
+## 3. Overall architecture
+
+The nine requested processes form an interconnected system with a continuous feedback mechanism.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Input: recognized words**
+
+    <text color="secondary" size="xs">Word identity, lexical category, grammatical features and contextual information</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary" size="lg"/>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(59,130,246,0.08)" radius="md" padding={2} align="center">
+        **1. Part-of-speech identification**
+        <text color="secondary" size="xs">Word category probabilities</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(59,130,246,0.08)" radius="md" padding={2} align="center">
+        **2. Phrase detection**
+        <text color="secondary" size="xs">Word grouping</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} align="center">
+        **3. Dependency parsing**
+        <text color="secondary" size="xs">Word-to-word relations</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} align="center">
+        **4. Constituency parsing**
+        <text color="secondary" size="xs">Phrase-to-phrase hierarchy</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **5. Hierarchical syntax representation**
+
+    <text color="secondary" size="xs">Integration of grammatical structures into a sentence-level representation</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(249,115,22,0.09)" radius="md" padding={2} align="center">
+        **6. Subject/object assignment**
+        <text color="secondary" size="xs">Grammatical functions</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(249,115,22,0.09)" radius="md" padding={2} align="center">
+        **7. Thematic role assignment**
+        <text color="secondary" size="xs">Semantic event roles</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(168,85,247,0.09)" radius="md" padding={3} align="center">
+    **8. Syntactic ambiguity resolution**
+
+    <text color="secondary" size="xs">Evaluate competing interpretations and revise structures</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(168,85,247,0.09)" radius="md" padding={3} align="center">
+    **9. Long-distance dependency processing**
+
+    <text color="secondary" size="xs">Maintain and connect grammatical relationships across intervening words and phrases</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.12)" radius="md" padding={3} align="center">
+    **Final output: integrated syntactic and semantic sentence representation**
+  </box>
+  <text color="secondary" size="xs" textAlign="center">Feedback loops operate throughout the architecture. New information can modify earlier decisions.</text>
+</box>
+
+An important refinement: stages 3–9 are not necessarily a one-way pipeline. Long-distance dependencies, for example, can begin to be predicted before a complete phrase or clause has been encountered. Subject and thematic role interpretations can also be revised when new words arrive.
+
+## 4. Internal data structures required by the algorithm
+
+Before implementing the individual operations, we need to define what information the system maintains.
+
+The brain needs to preserve information about already recognized words while continuously incorporating new ones. A computational model can represent this using the following structures.
+
+### 4.1 Word representation
+
+Each recognized word receives a record:
+
+| Property | Purpose |
+|---|---|
+| `word_id` | Unique word identity |
+| `position` | Position in the sentence |
+| `lemma` | Dictionary form |
+| `pos_candidates` | Possible grammatical categories |
+| `morph_features` | Number, gender, tense, case, etc. |
+| `semantic_features` | Meaning-related information |
+| `pos_confidence` | Confidence in category identification |
+| `phrase_membership` | Phrase to which the word may belong |
+| `dependency_head` | Word governing this word |
+| `grammatical_role` | Subject, object, modifier, etc. |
+| `thematic_role` | Agent, patient, experiencer, etc. |
+
+These records should be updated as new evidence arrives.
+
+### 4.2 Parse hypothesis system
+
+The system should not immediately commit to one interpretation.
+
+Instead, it maintains a collection of possible syntactic interpretations:
+
+\[
+H=\{H_1,H_2,H_3,\ldots,H_n\}
+\]
+
+Each hypothesis contains a possible arrangement of words, phrases, and grammatical relationships.
+
+Every hypothesis receives a score based on grammatical compatibility, lexical evidence, semantic plausibility, and context.
+
+### 4.3 Structural memory
+
+We need four additional memory structures:
+
+| Structure | Information stored |
+|---|---|
+| Phrase memory | Current noun phrases, verb phrases, clauses, etc. |
+| Dependency memory | Grammatical relationships between words |
+| Hierarchical memory | Nested phrase and clause structures |
+| Unresolved dependency memory | Grammatical relationships awaiting a later word |
+
+The fourth structure is particularly important for understanding long sentences.
+
+---
+
+# 5. Detailed algorithmic stages
+
+## Stage 1 — Part-of-speech identification
+
+**Objective:** Determine the grammatical category of each recognized word.
+
+A word can have different grammatical functions depending on its sentence context.
+
+For example:
+
+- "I can swim." — `can` is a modal auxiliary.
+- "The can is empty." — `can` is a noun.
+- "They watch television." — `watch` is a verb.
+- "I bought a new watch." — `watch` is a noun.
+
+The brain must identify which grammatical category is currently being used.
+
+### Operation 1.1 — Activate possible grammatical categories
+
+When a word enters the language-processing system, its lexical representation activates possible grammatical categories.
+
+For example, when processing:
+
+"The boy..."
+
+The word `boy` strongly activates the noun category.
+
+But when processing:
+
+"They boy..."
+
+The grammatical relationship becomes unusual in standard English, and the system may reduce the probability of its initial interpretation.
+
+The system can represent the grammatical candidates using:
+
+\[
+C_i=\{N,V,ADJ,ADV,PREP,DET,PRON,AUX,\ldots\}
+\]
+
+Where each symbol represents a possible grammatical category.
+
+**Mathematical operations:**
+
+1. Candidate activation.
+2. Probability estimation.
+3. Competition between alternatives.
+4. Context-dependent weighting.
+
+### Operation 1.2 — Retrieve grammatical information
+
+Retrieve information associated with each candidate:
+
+- Can it function as a noun?
+- Can it function as a verb?
+- Can it accept an object?
+- Can it follow a determiner?
+- Can it take tense or agreement features?
+- Does its morphology identify its category?
+
+For example, the suffix `-ed` may support a past-tense verb interpretation, although it can also occur in participial adjectives.
+
+### Operation 1.3 — Integrate surrounding grammatical evidence
+
+The grammatical category of a word is influenced by neighboring words.
+
+For example:
+
+"The scientist examined..."
+
+The preceding determiner and noun provide evidence for a noun phrase, while the position of `examined` supports a verb interpretation.
+
+The system combines several sources of evidence:
+
+\[
+P(C_i\mid W_i,X)
+\]
+
+Where:
+
+- \(C_i\) = grammatical category.
+- \(W_i\) = current word.
+- \(X\) = surrounding linguistic context.
+
+A Bayesian approximation is:
+
+\[
+P(C_i\mid W_i,X)
+\propto
+P(W_i\mid C_i)P(C_i\mid X)
+\]
+
+This combines evidence from the word itself with expectations generated by the context.
+
+### Operation 1.4 — Resolve category competition
+
+Suppose a word has three possible categories.
+
+The system can calculate a normalized activation:
+
+\[
+P(C_i)=
+\frac{e^{S_i/\tau}}
+{\sum_j e^{S_j/\tau}}
+\]
+
+Where:
+
+- \(S_i\) = compatibility score.
+- \(\tau\) = temperature controlling how strongly the highest-scoring candidate dominates.
+
+The most strongly supported category receives the highest activation, but alternative interpretations can remain available.
+
+### Operation 1.5 — Update grammatical expectations
+
+After identifying a category, the system updates its expectations about what might follow.
+
+For example:
+
+After:
+
+"The small..."
+
+The system expects a noun or another compatible modifier.
+
+After:
+
+"The small scientist examined..."
+
+The system has stronger expectations for a verb phrase.
+
+These expectations are continuously revised as additional words arrive.
+
+**Output of Stage 1:**
+
+A sequence of words with grammatical category estimates and confidence values.
+
+---
+
+## Stage 2 — Phrase detection
+
+**Objective:** Identify which words combine to form meaningful grammatical units.
+
+A phrase is a group of words that functions as a grammatical unit.
+
+Examples:
+
+- `the young scientist` → noun phrase (NP).
+- `examined the creature` → verb phrase (VP).
+- `inside the laboratory` → prepositional phrase (PP).
+- `very unusual` → adjective phrase (AdjP).
+
+### Operation 2.1 — Detect possible phrase beginnings
+
+The system evaluates whether a newly recognized word can begin a phrase.
+
+For example:
+
+A determiner such as `the` frequently indicates the beginning of a noun phrase.
+
+A preposition such as `inside` frequently indicates the beginning of a prepositional phrase.
+
+An auxiliary or verb may indicate the beginning of a verb phrase.
+
+The system activates possible phrase structures without necessarily waiting for the entire phrase.
+
+### Operation 2.2 — Detect relationships between neighboring words
+
+Consider:
+
+"The extremely intelligent scientist"
+
+The system must determine that:
+
+- `extremely` modifies `intelligent`.
+- `intelligent` modifies `scientist`.
+- All three words participate in one noun phrase.
+
+This requires evaluating grammatical compatibility between words.
+
+Potential mathematical representation:
+
+\[
+R(i,j)=
+f(POS_i,POS_j,M_i,M_j,C)
+\]
+
+Where:
+
+- \(POS_i,POS_j\) = grammatical categories.
+- \(M_i,M_j\) = morphological features.
+- \(C\) = contextual information.
+
+The result estimates how likely two words are to participate in a grammatical grouping.
+
+### Operation 2.3 — Detect phrase boundaries
+
+The system estimates where one phrase starts and where it ends.
+
+For example:
+
+"The young scientist" / "examined the creature."
+
+It needs to detect the boundary between the subject noun phrase and the following verb phrase.
+
+For every possible boundary:
+
+\[
+B_i=P(\text{boundary after word }i\mid X)
+\]
+
+A sigmoid approximation can convert a boundary score into a probability:
+
+\[
+B_i=\frac{1}{1+e^{-z_i}}
+\]
+
+Here, \(z_i\) represents the combined evidence for a boundary.
+
+In spoken language, prosodic information such as pauses, stress, and intonation can also provide boundary evidence.
+
+### Operation 2.4 — Combine words into preliminary phrases
+
+When compatible grammatical elements are identified, the system combines them into larger units.
+
+For example:
+
+\[
+[\text{young}+\text{scientist}]
+\rightarrow AdjP+N
+\]
+
+Then:
+
+\[
+[\text{the}+[young+scientist]]
+\rightarrow NP
+\]
+
+This resembles a bottom-up structure-building operation.
+
+The system can also use top-down expectations: after detecting a noun phrase beginning with a determiner, it anticipates a noun-containing structure.
+
+### Operation 2.5 — Update phrase membership
+
+Every word receives an association with its possible phrase.
+
+For example:
+
+Phrase detection is not necessarily complete at this stage. The system maintains partial phrases and updates them when new words arrive.
+
+**Output of Stage 2:**
+
+A collection of preliminary grammatical groups with estimated boundaries and internal relationships.
+
+---
+
+## Stage 3 — Dependency parsing
+
+**Objective:** Determine which individual words depend grammatically on other words.
+
+Dependency parsing focuses on word-to-word relationships.
+
+For example:
+
+"The scientist examined the creature."
+
+A possible dependency representation is:
+
+More formally:
+
+- `examined` governs `scientist`.
+- `scientist` has the grammatical relation `subject`.
+- `examined` governs `creature`.
+- `creature` has the grammatical relation `object`.
+- `The` depends on `scientist`.
+- `the` depends on `creature`.
+
+### Operation 3.1 — Identify possible grammatical heads
+
+A head is the word that determines the central grammatical behavior of a construction.
+
+Examples:
+
+- In a noun phrase, the noun is usually the head.
+- In a verb phrase, the verb is usually the head.
+- In a prepositional phrase, the preposition is generally the head in traditional dependency analysis.
+
+The system estimates which word is likely to govern the others.
+
+### Operation 3.2 — Detect potential head-dependent relationships
+
+For each pair of words, evaluate whether one could govern the other.
+
+For instance:
+
+`scientist` and `examined` have a strong potential subject–verb relationship.
+
+`creature` and `examined` have a strong potential object–verb relationship.
+
+A computational model might define:
+
+\[
+S(i,j,r)=
+f(W_i,W_j,POS_i,POS_j,M_i,M_j,r)
+\]
+
+Where:
+
+- \(i\) = potential head.
+- \(j\) = potential dependent.
+- \(r\) = grammatical relation.
+- \(S\) = compatibility score.
+
+### Operation 3.3 — Assign dependency labels
+
+Possible relationships include:
+
+| Dependency | Meaning |
+|---|---|
+| `nsubj` | Nominal subject |
+| `obj` | Direct object |
+| `iobj` | Indirect object |
+| `amod` | Adjectival modifier |
+| `det` | Determiner |
+| `advmod` | Adverbial modifier |
+| `nmod` | Nominal modifier |
+| `obl` | Oblique argument or modifier |
+| `aux` | Auxiliary |
+| `conj` | Coordinated element |
+
+The brain must distinguish not only which words are connected, but also the type of relationship.
+
+### Operation 3.4 — Evaluate competing dependency links
+
+Consider:
+
+"The scientist examined the unusual creature."
+
+The adjective `unusual` should be linked to `creature`, not directly to `examined`, in the normal interpretation.
+
+The parser compares potential relationships using grammatical constraints.
+
+A probabilistic approximation is:
+
+\[
+P(r_{ij}\mid X)=
+\frac{e^{S(i,j,r)/\tau}}
+{\sum_k e^{S(i,k,r)/\tau}}
+\]
+
+The system favors relationships supported by grammatical evidence.
+
+### Operation 3.5 — Enforce structural consistency
+
+The developing dependency representation must satisfy constraints.
+
+For a typical dependency tree:
+
+- Each non-root word has one syntactic head.
+- The structure must not contain dependency cycles.
+- The sentence normally has one root.
+- Dependency relations must be compatible with the language's grammatical system.
+
+The system must revise earlier links when subsequent words contradict them.
+
+**Output of Stage 3:**
+
+A developing dependency graph representing the grammatical relationships between individual words.
+
+---
+
+## Stage 4 — Constituency parsing
+
+**Objective:** Construct nested phrase structures that describe how words combine into larger grammatical units.
+
+Dependency parsing identifies relationships between words.
+
+Constituency parsing identifies relationships between groups of words.
+
+For example:
+
+"The intelligent scientist examined the unusual creature."
+
+A constituency representation could be:
+
+The important concept is hierarchy: phrases can contain other phrases.
+
+### Operation 4.1 — Detect possible constituent structures
+
+The system identifies potential phrase categories:
+
+- NP: noun phrase.
+- VP: verb phrase.
+- PP: prepositional phrase.
+- AdjP: adjective phrase.
+- AdvP: adverb phrase.
+- S or CP: sentence or clause-level constituent.
+
+These categories are activated through grammatical rules and learned language patterns.
+
+### Operation 4.2 — Combine smaller constituents into larger constituents
+
+For example:
+
+\[
+NP \rightarrow DET+N
+\]
+
+\[
+NP \rightarrow DET+AdjP+N
+\]
+
+\[
+VP \rightarrow V+NP
+\]
+
+These are simplified examples of grammatical production rules.
+
+The brain does not need to memorize every possible complete sentence. It can use abstract patterns to combine previously learned grammatical structures.
+
+### Operation 4.3 — Build nested structures
+
+Consider:
+
+"The scientist examined the creature inside the laboratory."
+
+One possible interpretation is:
+
+The prepositional phrase is nested inside the object noun phrase in this interpretation.
+
+However, another interpretation could attach `inside the laboratory` to the verb phrase.
+
+The system therefore needs to maintain alternative hierarchical structures when necessary.
+
+### Operation 4.4 — Combine grammatical rules with word evidence
+
+For each possible constituent, calculate its grammatical compatibility.
+
+A simplified model:
+
+\[
+S(T)=\sum_{k=1}^{m}s_k(T)
+\]
+
+Where:
+
+- \(T\) = candidate syntactic tree.
+- \(s_k\) = score from a structural decision.
+
+These scores may incorporate:
+
+- Grammatical category compatibility.
+- Phrase ordering.
+- Morphological agreement.
+- Lexical preferences.
+- Contextual expectations.
+
+The highest-scoring tree is not necessarily finalized immediately. Other interpretations can remain active.
+
+**Output of Stage 4:**
+
+A collection of candidate phrase trees representing the hierarchical organization of the sentence.
+
+**Relationship between Stages 3 and 4:** These processes can be modeled as interacting analyses of the same unfolding sentence. Dependency structures represent head-dependent links, while constituency structures represent nested grammatical units. They are not interchangeable representations. <Cite refs={["turn890979search1","turn890979search8"]}/>
+
+---
+
+## Stage 5 — Hierarchical syntax representation
+
+**Objective:** Integrate the developing grammatical information into a coherent hierarchical representation.
+
+This stage combines information from:
+
+- Word categories.
+- Phrase structures.
+- Dependency relationships.
+- Clause boundaries.
+- Grammatical features.
+- Unresolved grammatical relationships.
+
+### Operation 5.1 — Create structural levels
+
+Organize the representation into levels.
+
+<box border radius="lg" padding={3} gap={2}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={2} align="center">
+    **Sentence level**
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={2} gap={2}>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} align="center">
+        **Noun phrase**
+        <text size="xs" color="secondary">The young scientist</text>
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(16,185,129,0.09)" radius="md" padding={2} align="center">
+        **Verb phrase**
+        <text size="xs" color="secondary">examined the creature</text>
+      </box>
+    </grid-item>
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={3} gap={2}>
+    <grid-item>
+      <box background="rgba(249,115,22,0.08)" radius="md" padding={2} align="center">
+        **Determiner**
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(249,115,22,0.08)" radius="md" padding={2} align="center">
+        **Adjective + noun**
+      </box>
+    </grid-item>
+    <grid-item>
+      <box background="rgba(249,115,22,0.08)" radius="md" padding={2} align="center">
+        **Verb + object NP**
+      </box>
+    </grid-item>
+  </grid>
+  <text color="secondary" size="xs" textAlign="center">Illustrative structural levels, not a claim about the exact physical organization of neural representations.</text>
+</box>
+
+### Operation 5.2 — Establish parent-child relationships
+
+Every constituent is connected to its containing constituent.
+
+For example:
+
+This produces a recursive hierarchical representation.
+
+### Operation 5.3 — Bind grammatical relationships to structural positions
+
+The system must combine information from both structural levels.
+
+For example:
+
+The dependency representation identifies `scientist` as the subject of `examined`.
+
+The constituency representation identifies `The young scientist` as a noun phrase.
+
+The hierarchical system can consequently associate the entire noun phrase with the subject function.
+
+### Operation 5.4 — Perform structural unification
+
+Unification means combining compatible linguistic information into a larger representation.
+
+For example:
+
+\[
+U(NP,VP)\rightarrow S
+\]
+
+Where:
+
+- \(NP\) = subject noun phrase.
+- \(VP\) = predicate verb phrase.
+- \(S\) = sentence structure.
+
+A more general recursive operation can be expressed as:
+
+\[
+U(X,Y)\rightarrow Z
+\]
+
+Where the output \(Z\) contains the integrated structural information of \(X\) and \(Y\).
+
+This resembles the unification and hierarchical structure-building operations discussed in neurocomputational accounts of language. <Cite refs={["turn300247view1","turn890979search0"]}/>
+
+### Operation 5.5 — Preserve structural uncertainty
+
+The system should retain unresolved alternatives.
+
+For example, a prepositional phrase could belong to an object noun phrase or to the main verb phrase.
+
+The hierarchical representation should therefore allow multiple candidate parent-child relationships until stronger evidence becomes available.
+
+**Output of Stage 5:**
+
+An integrated hierarchical representation in which words, phrases, grammatical heads, dependencies, and structural positions are connected.
+
+---
+
+## Stage 6 — Subject/object assignment
+
+**Objective:** Determine the grammatical function of each important noun phrase in relation to the sentence's predicate.
+
+The system must identify:
+
+- Subject.
+- Direct object.
+- Indirect object.
+- Other complements.
+- Grammatical modifiers and adjuncts.
+
+This is an important stage because grammatical position does not always reveal semantic function.
+
+### Operation 6.1 — Identify the main predicate
+
+First, identify the verb or verbal construction around which the clause is organized.
+
+Example:
+
+"The scientist gave the assistant a document."
+
+The main predicate is:
+
+`gave`
+
+The system retrieves its grammatical properties, including the kinds of arguments it normally accepts.
+
+### Operation 6.2 — Identify possible subjects
+
+Evaluate noun phrases that could serve as subjects of the predicate.
+
+Relevant evidence includes:
+
+1. Word order.
+2. Subject-verb agreement.
+3. Grammatical case.
+4. Grammatical construction.
+5. Dependency relationships.
+6. Clause structure.
+
+For example:
+
+"The scientist examines the creature."
+
+The subject is `the scientist`.
+
+The agreement and canonical English word order support this interpretation.
+
+However, languages with richer case marking may use morphological evidence to establish the subject even when it appears after the verb.
+
+### Operation 6.3 — Identify possible direct objects
+
+Identify noun phrases that complete the predicate's relationship with its subject.
+
+In:
+
+"The scientist examined the creature."
+
+The direct object is `the creature`.
+
+The verb `examined` establishes a relationship with the entity receiving the examination.
+
+The system considers both grammatical evidence and the argument structure of the verb.
+
+### Operation 6.4 — Identify indirect objects and additional arguments
+
+Consider:
+
+"The scientist gave the assistant a document."
+
+The grammatical analysis is:
+
+| Element | Grammatical function |
+|---|---|
+| The scientist | Subject |
+| gave | Main predicate |
+| the assistant | Indirect object |
+| a document | Direct object |
+
+The system must recognize that some verbs accept multiple arguments.
+
+It must not assume that every sentence contains only one subject and one object.
+
+### Operation 6.5 — Verify grammatical assignments
+
+The system compares possible assignments against the developing sentence structure.
+
+A possible compatibility function is:
+
+\[
+S(G_i)=
+w_1S_{\text{position}}+
+w_2S_{\text{agreement}}+
+w_3S_{\text{case}}+
+w_4S_{\text{dependency}}+
+w_5S_{\text{verb}}
+\]
+
+Where:
+
+- \(G_i\) = candidate grammatical assignment.
+- \(w_i\) = evidence weights.
+- Each \(S\) represents evidence supporting that assignment.
+
+The assignment with the strongest overall support is preferred.
+
+### Operation 6.6 — Distinguish grammatical subject from semantic actor
+
+This is crucial.
+
+Consider:
+
+"The creature was examined by the scientist."
+
+The grammatical subject is:
+
+`the creature`
+
+But the scientist performs the action.
+
+Consequently:
+
+\[
+\text{Grammatical Subject}\neq\text{Agent}
+\]
+
+The system must keep grammatical functions and semantic roles in separate representations.
+
+**Output of Stage 6:**
+
+A set of grammatical-function assignments linking noun phrases and other constituents to their governing predicates.
+
+---
+
+## Stage 7 — Agent/patient thematic role assignment
+
+**Objective:** Determine the semantic role played by each sentence element in the event, state, or situation being described.
+
+This process answers:
+
+- Who performs the action?
+- Who receives the action?
+- Who experiences something?
+- What is being moved or changed?
+- Who receives something?
+- What instrument is used?
+- Where does the event happen?
+
+These are called thematic roles, or semantic roles.
+
+### Operation 7.1 — Retrieve the verb's semantic argument structure
+
+Each verb activates information about the participants and relationships associated with it.
+
+For example:
+
+The verb `break` commonly supports a structure involving:
+
+- An entity causing the breaking.
+- An entity or object that becomes broken.
+
+The system retrieves candidate semantic relationships associated with the verb.
+
+These relationships do not have to appear in a fixed grammatical order.
+
+### Operation 7.2 — Identify the possible agent
+
+An agent is the participant that intentionally or causally performs an action, depending on the particular event structure.
+
+Example:
+
+"The scientist opened the door."
+
+Possible representation:
+
+The system considers:
+
+- Whether the participant is a plausible actor.
+- Whether the verb supports an agent.
+- Whether the grammatical structure identifies a compatible argument.
+- Whether the contextual information supports the interpretation.
+
+### Operation 7.3 — Identify the patient or theme
+
+A patient is an entity affected by an action or undergoing a change.
+
+A theme is an entity involved in an event, often as something moved, perceived, or located. The exact distinction depends on the semantic framework.
+
+Example:
+
+"The scientist examined the creature."
+
+The creature is the entity being examined.
+
+In other verbs, a theme may not undergo an actual physical change:
+
+"Mary carried the box."
+
+Here, the box is the theme.
+
+### Operation 7.4 — Identify additional thematic roles
+
+The system should not restrict thematic analysis to agent and patient.
+
+Additional roles include:
+
+| Thematic role | Description | Example |
+|---|---|---|
+| Agent | Performer of an action | The boy kicked the ball |
+| Patient | Entity affected | The ball was kicked |
+| Theme | Entity moved, located, or involved | She carried the bag |
+| Experiencer | Entity experiencing a state | Mary fears spiders |
+| Stimulus | Cause of an experience | The noise frightened Mary |
+| Recipient | Entity receiving something | He gave Mary a book |
+| Beneficiary | Entity benefiting from an action | She cooked him dinner |
+| Instrument | Means used to perform an action | He cut it with a knife |
+| Location | Place of the event | They met in Cairo |
+| Source | Starting point | She came from London |
+| Goal | Destination | They travelled to Paris |
+
+### Operation 7.5 — Map grammatical functions to thematic roles
+
+This is one of the most important integration operations.
+
+The system combines:
+
+1. Subject/object information.
+2. Verb-specific semantic information.
+3. Word meanings.
+4. Contextual information.
+5. Syntactic construction.
+
+Consider these two sentences:
+
+**Sentence A:**
+
+"The scientist examined the creature."
+
+**Sentence B:**
+
+"The creature was examined by the scientist."
+
+The grammatical functions differ, but the underlying event relationships are approximately the same.
+
+<box border radius="lg" padding={3} gap={3}>
+  **Sentence A**
+  <grid columns={2} gap={2}>
+    <grid-item background="rgba(59,130,246,0.08)" padding={2} radius="md">
+      **Scientist**
+
+      <badge color="info">Subject</badge>
+      <badge color="success">Agent</badge>
+    </grid-item>
+    <grid-item background="rgba(249,115,22,0.08)" padding={2} radius="md">
+      **Creature**
+
+      <badge color="info">Object</badge>
+      <badge color="warning">Patient</badge>
+    </grid-item>
+  </grid>
+  <divider color="subtle"/>
+  **Sentence B**
+  <grid columns={2} gap={2}>
+    <grid-item background="rgba(249,115,22,0.08)" padding={2} radius="md">
+      **Creature**
+
+      <badge color="info">Subject</badge>
+      <badge color="warning">Patient</badge>
+    </grid-item>
+    <grid-item background="rgba(59,130,246,0.08)" padding={2} radius="md">
+      **Scientist**
+
+      <badge color="info">Oblique agent</badge>
+      <badge color="success">Agent</badge>
+    </grid-item>
+  </grid>
+  <text color="secondary" size="xs">Different grammatical constructions, similar event representation.</text>
+</box>
+
+### Operation 7.6 — Calculate thematic compatibility
+
+For each possible thematic assignment, calculate a compatibility score.
+
+A possible mathematical model is:
+
+\[
+S(R_i)=
+\alpha S_{\text{syntax}}+
+\beta S_{\text{verb-role}}+
+\gamma S_{\text{semantic}}+
+\delta S_{\text{context}}
+\]
+
+Where:
+
+- \(R_i\) = candidate thematic role.
+- \(S_{\text{syntax}}\) = grammatical compatibility.
+- \(S_{\text{verb-role}}\) = compatibility with the verb's argument structure.
+- \(S_{\text{semantic}}\) = compatibility with the participant's meaning.
+- \(S_{\text{context}}\) = contextual compatibility.
+
+Then normalize candidate role probabilities:
+
+\[
+P(R_i)=
+\frac{e^{S(R_i)}}
+{\sum_j e^{S(R_j)}}
+\]
+
+These formulas provide a possible computational description of how multiple constraints jointly influence role assignment.
+
+Research on language comprehension supports the importance of integrating grammatical structure, lexical information, event knowledge, and thematic roles rather than relying on word order alone. <Cite refs={["turn890979search6","turn890979search2","turn890979search7"]}/>
+
+**Output of Stage 7:**
+
+A semantic event representation describing the participants and their relationships.
+
+For our example:
+
+---
+
+## Stage 8 — Syntactic ambiguity resolution
+
+**Objective:** Resolve situations in which multiple grammatical structures or interpretations are possible.
+
+This process is essential because a sequence of words can support more than one grammatical organization.
+
+Consider:
+
+"I saw the man with the telescope."
+
+There are two possible interpretations:
+
+**Interpretation A:** I used a telescope to see the man.
+
+**Interpretation B:** I saw a man who possessed a telescope.
+
+The same words can produce different structures and meanings.
+
+### Operation 8.1 — Detect structural uncertainty
+
+When a new word or phrase arrives, the system evaluates whether it can attach to multiple existing structures.
+
+For example:
+
+`with the telescope`
+
+It can potentially attach to:
+
+- The verb phrase.
+- The noun phrase.
+
+The system identifies this as an ambiguity rather than immediately assuming one interpretation.
+
+A simple uncertainty measure is entropy:
+
+\[
+H(X)=-\sum_i P(H_i)\log P(H_i)
+\]
+
+Where:
+
+- \(H_i\) = alternative syntactic hypotheses.
+- \(P(H_i)\) = probability of each hypothesis.
+
+High entropy indicates that the system has several competing interpretations with relatively similar probabilities.
+
+### Operation 8.2 — Generate alternative parses
+
+Create a candidate for each grammatically possible attachment.
+
+For example:
+
+Each candidate must have a corresponding hierarchical representation and semantic interpretation.
+
+### Operation 8.3 — Evaluate grammatical compatibility
+
+Determine whether each candidate follows the grammatical patterns of the language.
+
+Some interpretations may be grammatically impossible, allowing their probability to decrease substantially.
+
+### Operation 8.4 — Evaluate semantic plausibility
+
+The system evaluates whether each interpretation makes sense.
+
+For example:
+
+- Is the telescope likely to be an instrument used for seeing?
+- Is the telescope plausibly something the man possesses?
+- Does the surrounding discourse suggest either interpretation?
+
+Semantic knowledge can influence the syntactic decision, but it should not simply override all grammatical evidence.
+
+### Operation 8.5 — Evaluate contextual and probabilistic expectations
+
+The system also uses experience with previously encountered grammatical structures.
+
+A candidate can receive a higher score if similar constructions are common in the language.
+
+A general Bayesian formulation is:
+
+\[
+P(H_i\mid E)\propto P(E\mid H_i)P(H_i)
+\]
+
+Where:
+
+- \(H_i\) = candidate structure.
+- \(E\) = available evidence.
+- \(P(H_i)\) = prior probability.
+- \(P(E\mid H_i)\) = likelihood of the evidence under that interpretation.
+
+### Operation 8.6 — Integrate all evidence
+
+A more general scoring function could be:
+
+\[
+S(H_i)=
+w_1S_{\text{syntax}}+
+w_2S_{\text{lexical}}+
+w_3S_{\text{semantic}}+
+w_4S_{\text{context}}+
+w_5S_{\text{prosody}}
+\]
+
+The system evaluates the competing interpretations using all available evidence.
+
+### Operation 8.7 — Detect interpretation errors
+
+Sometimes the initial interpretation becomes incompatible with later information.
+
+For example:
+
+"While the man hunted, the deer ran into the woods."
+
+An initial reader might incorrectly interpret `the deer` as the object of `hunted`, especially if the pause or punctuation is not yet available.
+
+When `ran` arrives, the system must recognize the new clause structure and revise the earlier interpretation.
+
+This is called syntactic reanalysis.
+
+### Operation 8.8 — Reconstruct the affected structure
+
+The system should not necessarily rebuild the entire sentence from scratch.
+
+Instead:
+
+1. Identify the incompatible structural relationship.
+2. Reduce the activation of the incorrect hypothesis.
+3. Retrieve alternative syntactic candidates.
+4. Reconnect the affected constituents.
+5. Reevaluate grammatical functions.
+6. Reevaluate thematic roles.
+7. Update the sentence-level interpretation.
+
+This can be modeled as an iterative optimization procedure:
+
+\[
+H^{*}=\arg\max_{H_i}S(H_i)
+\]
+
+The selected interpretation is the strongest candidate given current evidence.
+
+### Operation 8.9 — Update predictions
+
+After resolving the ambiguity, the system updates its expectations about what can follow.
+
+A successful revision also changes the structural context used by subsequent processing.
+
+**Output of Stage 8:**
+
+A preferred syntactic interpretation, with alternative hypotheses retained when uncertainty remains.
+
+---
+
+## Stage 9 — Long-distance dependency processing
+
+**Objective:** Establish grammatical relationships between words or phrases that are separated by several intervening words or clauses.
+
+This is one of the most interesting aspects of human sentence comprehension.
+
+Consider:
+
+**"Which book did the student say that the teacher recommended?"**
+
+The phrase `which book` appears near the beginning.
+
+However, it functions as the object of `recommended`.
+
+Its grammatical relationship cannot be understood simply by attaching it to the nearest verb.
+
+The system must preserve an unresolved grammatical relationship while processing the intervening sentence.
+
+### Operation 9.1 — Detect a dependency-triggering construction
+
+Certain grammatical constructions signal that a relationship may be completed later.
+
+Examples include:
+
+- Wh-questions.
+- Relative clauses.
+- Fronted objects.
+- Object extraction.
+- Some forms of topicalization.
+
+In our example:
+
+`Which book...`
+
+activates an expectation for a later syntactic position that can be filled by this noun phrase.
+
+### Operation 9.2 — Register the unresolved dependency
+
+The system creates an unresolved dependency record.
+
+For example:
+
+The noun phrase must remain accessible until suitable grammatical evidence arrives.
+
+### Operation 9.3 — Maintain the dependency during intervening processing
+
+Now the system encounters:
+
+`did the student say that the teacher...`
+
+It must process:
+
+- The auxiliary.
+- The subject.
+- The reporting verb.
+- The embedded clause.
+- The embedded subject.
+
+During this time, the unresolved dependency must remain available.
+
+Other grammatical relationships are being constructed simultaneously.
+
+This requires temporary maintenance of structural information.
+
+### Operation 9.4 — Predict the expected grammatical position
+
+The system uses the initial phrase and the construction to predict what type of grammatical position is likely to complete the relationship.
+
+The prediction is not necessarily a specific word.
+
+It can be a structural expectation, such as an object position inside an upcoming clause.
+
+### Operation 9.5 — Detect a possible dependency-completion point
+
+When the system reaches:
+
+`recommended`
+
+it recognizes a compatible verb.
+
+The verb's argument structure supports an object.
+
+The unresolved phrase `which book` becomes a strong candidate for that object relationship.
+
+### Operation 9.6 — Retrieve the appropriate earlier element
+
+The system searches its active structural memory for an unresolved dependency compatible with the current position.
+
+It evaluates possible candidates based on:
+
+- Grammatical category.
+- Expected grammatical function.
+- Morphological features.
+- Verb argument structure.
+- Contextual compatibility.
+- Interference from other active elements.
+
+A computational retrieval model can be expressed as:
+
+\[
+A_i=
+S_{\text{match}}(i)
+-\lambda D_i
+-\mu I_i
+\]
+
+Where:
+
+- \(A_i\) = activation of candidate dependency.
+- \(S_{\text{match}}\) = compatibility with current retrieval cues.
+- \(D_i\) = dependency-distance cost.
+- \(I_i\) = interference from competing representations.
+- \(\lambda,\mu\) = weighting parameters.
+
+The distance and interference terms are approximations of processing difficulty, not established literal neural equations.
+
+### Operation 9.7 — Reconnect the distant grammatical elements
+
+After retrieving the correct phrase, the system establishes the missing grammatical connection.
+
+Our sentence becomes:
+
+The long-distance relationship can be represented as:
+
+\[
+\text{Which book}
+\longrightarrow
+\text{Object of recommended}
+\]
+
+This is a nonlocal grammatical dependency.
+
+### Operation 9.8 — Check whether the dependency is correctly resolved
+
+Verify:
+
+1. Does the retrieved phrase have the expected grammatical category?
+2. Is the target position compatible with its grammatical function?
+3. Does the verb permit that type of argument?
+4. Is the dependency consistent with the existing parse?
+5. Is the relationship compatible with the clause structure?
+
+If all evidence is compatible, mark the dependency as resolved.
+
+### Operation 9.9 — Release unnecessary working-memory information
+
+Once the dependency is integrated into the completed structure, the system can reduce the need to maintain it as an unresolved expectation.
+
+The phrase itself remains part of the sentence representation, but it no longer needs to be retained as an open dependency.
+
+### Operation 9.10 — Manage nested and competing dependencies
+
+Consider:
+
+"The book that the student said that the teacher recommended was expensive."
+
+The system must maintain the initial noun phrase until it can establish its grammatical relationship with `was expensive`.
+
+There are also intervening clauses and another dependency involving the relative clause.
+
+As the number and depth of nested dependencies increase, processing becomes more demanding.
+
+Research indicates that nested long-distance dependencies place substantial demands on working memory and that some deeply nested constructions are particularly difficult for human comprehenders. <Cite refs={["turn300247view3","turn890979search12","turn890979search10"]}/>
+
+**Output of Stage 9:**
+
+A syntactic representation containing correctly integrated long-distance dependencies, with no unresolved relationships that can be closed using the available sentence information.
+
+---
+
+# 6. Master processing loop: How all nine stages work together
+
+The previous stages describe individual operations. However, the actual computational architecture needs a control system that coordinates them.
+
+The system should process words incrementally instead of waiting for an entire sentence.
+
+For example, when it receives:
+
+"The young scientist examined the unusual creature inside the laboratory."
+
+It should update its structural representation after every incoming word.
+
+### 6.1 Master algorithm
+
+<CodeBlock language="python" editable>
+def syntactic_structure_builder(sentence):
+    """
+    Neurocomputational abstraction of human syntactic
+    parsing and structure-building.
+
+    All operations are modeled computationally.
+    This is not a literal simulation of neural activity.
+    """
+
+    state = {
+        "tokens": [],
+        "pos_candidates": {},
+        "phrases": [],
+        "dependency_graph": [],
+        "constituency_trees": [],
+        "hierarchical_structure": {},
+        "grammatical_functions": {},
+        "thematic_roles": {},
+        "parse_hypotheses": [],
+        "open_dependencies": [],
+        "predictions": [],
+        "processing_history": []
+    }
+
+    # Initialize candidate interpretations.
+    state["parse_hypotheses"] = initialize_hypotheses()
+
+    # Process the sentence incrementally.
+    for position, word in enumerate(tokenize(sentence)):
+
+        # STAGE 1: Part-of-speech identification
+        pos_candidates = identify_pos(
+            word,
+            state
+        )
+
+        state["pos_candidates"][position] = pos_candidates
+
+        # STAGE 2: Phrase detection
+        detect_phrase_boundaries(
+            word,
+            state
+        )
+
+        update_phrase_membership(
+            word,
+            state
+        )
+
+        # STAGE 3: Dependency parsing
+        identify_dependency_candidates(
+            word,
+            state
+        )
+
+        update_dependency_graph(
+            word,
+            state
+        )
+
+        # STAGE 4: Constituency parsing
+        generate_constituent_candidates(
+            word,
+            state
+        )
+
+        update_constituency_trees(
+            state
+        )
+
+        # STAGE 5: Hierarchical syntax representation
+        unify_syntactic_structures(
+            state
+        )
+
+        update_hierarchical_representation(
+            state
+        )
+
+        # STAGE 6: Subject/object assignment
+        update_grammatical_functions(
+            state
+        )
+
+        # STAGE 7: Thematic role assignment
+        update_thematic_roles(
+            state
+        )
+
+        # STAGE 8: Syntactic ambiguity resolution
+        evaluate_parse_hypotheses(
+            state
+        )
+
+        revise_incompatible_structures(
+            state
+        )
+
+        # STAGE 9: Long-distance dependencies
+        detect_dependency_triggers(
+            word,
+            state
+        )
+
+        maintain_open_dependencies(
+            state
+        )
+
+        retrieve_dependency_candidates(
+            word,
+            state
+        )
+
+        resolve_completed_dependencies(
+            state
+        )
+
+        # Update predictions for the next word.
+        update_grammatical_predictions(
+            state
+        )
+
+        # Record a complete processing snapshot.
+        record_processing_step(
+            position,
+            word,
+            state
+        )
+
+    # Sentence-final processing.
+    finalize_sentence_structure(state)
+
+    verify_syntactic_consistency(state)
+
+    resolve_remaining_ambiguities(state)
+
+    integrate_sentence_meaning(state)
+
+    return state
+</CodeBlock>
+
+*Note: This is architectural pseudocode. Functions such as `identify_pos`, `update_dependency_graph`, and `unify_syntactic_structures` require their own implementations.*
+
+---
+
+# 7. Mathematical operations involved in the complete algorithm
+
+Now we can identify the main mathematical operations that a computational model of these brain functions should implement.
+
+These are particularly relevant when translating the architecture into Python.
+
+| No. | Mathematical operation | Main application |
+|---:|---|---|
+| 1 | Bayesian probability | Part-of-speech identification |
+| 2 | Conditional probability | Context-dependent grammatical expectations |
+| 3 | Softmax normalization | Competition between grammatical candidates |
+| 4 | Weighted summation | Combining grammatical evidence |
+| 5 | Vector similarity | Comparing lexical and structural representations |
+| 6 | Threshold activation | Detecting phrase boundaries |
+| 7 | Graph construction | Dependency parsing |
+| 8 | Graph traversal | Finding relationships between words |
+| 9 | Tree construction | Constituency parsing |
+| 10 | Recursive operations | Hierarchical structure-building |
+| 11 | Unification | Combining compatible structures |
+| 12 | Constraint satisfaction | Enforcing grammatical consistency |
+| 13 | Optimization | Selecting preferred syntactic interpretations |
+| 14 | Entropy calculation | Measuring syntactic uncertainty |
+| 15 | Bayesian updating | Resolving syntactic ambiguity |
+| 16 | Semantic compatibility scoring | Thematic role assignment |
+| 17 | Associative retrieval | Retrieving distant grammatical elements |
+| 18 | Activation decay | Modeling temporary memory limitations |
+| 19 | Interference modeling | Managing competing dependencies |
+| 20 | Error correction | Revising incorrect syntactic interpretations |
+| 21 | Prediction error | Updating grammatical expectations |
+| 22 | Dynamic state updating | Maintaining the evolving sentence structure |
+
+## 7.1 Three especially important mathematical mechanisms
+
+I would give particular attention to three mechanisms when developing a neurocomputational implementation.
+
+**A. Probabilistic competition**
+
+Multiple interpretations can be active simultaneously.
+
+\[
+P(H_i)=\frac{e^{S(H_i)}}{\sum_j e^{S(H_j)}}
+\]
+
+This is useful for modeling category competition, attachment ambiguity, and competing dependency relationships.
+
+**B. Hierarchical recursive combination**
+
+Smaller structures are integrated into larger structures:
+
+\[
+Z=U(X,Y)
+\]
+
+For example:
+
+\[
+U(\text{Determiner},\text{Noun})
+\rightarrow NP
+\]
+
+\[
+U(NP,VP)\rightarrow S
+\]
+
+This is central to representing nested grammatical structures.
+
+**C. Memory-based retrieval**
+
+Previously encountered grammatical elements must remain available until their relationships can be established.
+
+\[
+A_i(t)=A_i(0)e^{-\lambda t}
+\]
+
+This is a simplified activation-decay model.
+
+A more sophisticated implementation should also include interference from competing items and retrieval cues.
+
+These mechanisms should interact rather than operate as completely independent calculations.
+
+---
+
+# 8. Biological interpretation: What brain systems could support these operations?
+
+It is important not to assign one brain region to each algorithmic stage. Human syntactic processing involves distributed and interacting neural networks.
+
+The following is a functional mapping, not a definitive anatomical division of labor.
+
+| Brain system | Possible contribution |
+|---|---|
+| Left inferior frontal gyrus (IFG) | Syntactic operations, structural integration, and controlled retrieval |
+| Left posterior superior temporal gyrus (pSTG) | Processing syntactic relationships and integrating linguistic information |
+| Left anterior temporal regions | Combinatorial and hierarchical linguistic representations |
+| Posterior temporal language regions | Processing word relationships and linguistic structure |
+| Frontal-temporal connections | Communication and integration across language-processing networks |
+| Working-memory networks | Maintaining unresolved information and supporting nonlocal dependencies |
+| Broader semantic networks | Integrating word meaning, event knowledge, and thematic roles |
+
+The exact functional contributions and neural implementation of these regions remain debated. <Cite refs={["turn890979search1","turn300247view1","turn890979search7"]}/>
+
+### Important neurobiological mechanisms to investigate
+
+There are additional biological mechanisms worth considering when building a more realistic model:
+
+1. **Neural population activation:** Different populations of neurons represent competing linguistic and structural information.
+2. **Synaptic interactions:** Connections allow information from lexical, grammatical, and semantic processing systems to influence each other.
+3. **Recurrent processing:** Information circulates between processing systems, allowing earlier interpretations to be revised.
+4. **Working-memory activity:** Unresolved grammatical information remains accessible over time.
+5. **Neural oscillations:** Some theories propose that oscillatory activity contributes to chunking and the integration of information across different temporal scales.
+
+However, the exact relationship between neural oscillations and hierarchical syntactic structure remains controversial. <Cite refs={["turn890979search0","turn300247view1"]}/>
+
+---
+
+# 9. Recommended modular architecture for a Python implementation
+
+For an actual implementation, I would separate the algorithm into the following modules.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Syntactic Processing Controller**
+
+    <text color="secondary" size="xs">Coordinates processing, memory, feedback and hypothesis selection</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={2} gap={2}>
+    {#each [{n:"1",t:"POS Analyzer"},{n:"2",t:"Phrase Detector"},{n:"3",t:"Dependency Engine"},{n:"4",t:"Constituency Engine"},{n:"5",t:"Hierarchy Builder"},{n:"6",t:"Grammatical Role Engine"},{n:"7",t:"Thematic Role Engine"},{n:"8",t:"Ambiguity Resolver"},{n:"9",t:"Long-Distance Engine"}] as item}
+      <grid-item>
+        <box border radius="md" padding={2} gap={1}>
+          <text color="secondary" size="xs">MODULE {item.n}</text>
+          **{item.t}**
+        </box>
+      </grid-item>
+    {/each}
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **Shared Cognitive Resources**
+
+    <text color="secondary" size="xs">Lexical information · Grammatical knowledge · Working memory · Semantic knowledge · Context · Prediction</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.12)" radius="md" padding={3} align="center">
+    **Integrated Sentence Representation**
+  </box>
+</box>
+
+I recommend implementing the modules with shared data structures rather than allowing each module to maintain an isolated version of the sentence.
+
+For example, the ambiguity resolver should be able to request changes to the dependency graph, and the hierarchy builder should receive those changes automatically.
+
+Similarly, the long-distance engine should be able to retrieve information from the phrase memory and dependency memory.
+
+This creates a genuinely interconnected architecture.
+
+## 10. Suggested implementation boundaries
+
+| Module | Main responsibility | Output |
+|---|---|---|
+| `pos_analyzer.py` | Grammatical category identification | POS distributions |
+| `phrase_detector.py` | Phrase detection and grouping | Phrase candidates |
+| `dependency_parser.py` | Head-dependent relationships | Dependency graph |
+| `constituency_parser.py` | Nested constituent analysis | Constituency trees |
+| `hierarchy_builder.py` | Structural integration | Hierarchical representation |
+| `grammatical_roles.py` | Subject/object identification | Grammatical functions |
+| `thematic_roles.py` | Agent/patient and other semantic roles | Event representation |
+| `ambiguity_resolver.py` | Competing syntactic interpretations | Preferred parse |
+| `long_distance.py` | Nonlocal grammatical relationships | Resolved dependencies |
+| `syntactic_controller.py` | Coordination and feedback | Final processing state |
+| `syntactic_memory.py` | Shared state and unresolved structures | Memory records |
+| `syntactic_math.py` | Probabilities, scoring and optimization | Mathematical operations |
+
+---
+
+# 11. Final conceptual model
+
+The most important idea is that syntactic comprehension is not simply the identification of grammatical rules.
+
+It is a continuous process of **constructing, maintaining, testing, and revising hierarchical relationships**.
+
+The complete sequence can be summarized as:
+
+1. Recognize the grammatical category of each word.
+2. Identify which words are likely to form phrases.
+3. Establish grammatical relationships between individual words.
+4. Construct nested phrase structures.
+5. Integrate those structures into a hierarchical representation.
+6. Determine the grammatical functions of sentence elements.
+7. Assign semantic roles to the participants in the described event.
+8. Evaluate competing interpretations and correct incorrect structures.
+9. Maintain and retrieve distant grammatical dependencies.
+
+These processes continuously exchange information.
+
+**One particularly important design decision:** I would not make the nine stages independent sequential modules with no feedback. I would implement them as specialized processing modules coordinated by a shared controller, with shared memory and a hypothesis-evaluation mechanism.
+
+That architecture would be a better computational approximation of incremental human sentence comprehension than a traditional linear parser.
+
+## Research foundation
+
+These are useful starting points for investigating the biological and computational mechanisms behind the architecture:
+
+1. Lopopolo et al. (2021), <Link ref="turn890979search1" title="Distinguishing Syntactic Operations in the Brain: Dependency and Phrase-Structure Parsing"/>.
+2. Fitz, Hagoort and Petersson (2024), <Link ref="turn890979search3" title="Neurobiological Causal Models of Language Processing"/>.
+3. Friederici (2011), <Link ref="turn890979search6" title="The Brain Basis of Language Processing: From Structure to Function"/>.
+4. Lakretz et al. (2020), <Link ref="turn890979search10" title="What Limits Our Capacity to Process Nested Long-Range Dependencies in Sentence Comprehension?"/>.
+5. Kazanina and Tavano (2023), <Link ref="turn890979search0" title="What Neural Oscillations Can and Cannot Do for Syntactic Structure Building"/>.
+
+**My recommendation for the next development stage:** Convert this architecture into a formal, numbered operation registry, just as we did with the earlier lexical and reading-processing architectures. Each operation should have an identifier, biological hypothesis, mathematical formulation, input, output, dependencies, and Python implementation boundary. That would make it possible to implement and test the entire syntactic system operation by operation.
+
+---
+
+[ASSISTANT]
+# 6. Master processing loop: How all nine stages work together
+
+The previous stages describe individual operations. However, the actual computational architecture needs a control system that coordinates them.
+
+The system should process words incrementally instead of waiting for an entire sentence.
+
+For example, when it receives:
+
+"The young scientist examined the unusual creature inside the laboratory."
+
+It should update its structural representation after every incoming word.
+
+### 6.1 Master algorithm
+
+<CodeBlock language="python" editable>
+def syntactic_structure_builder(sentence):
+    """
+    Neurocomputational abstraction of human syntactic
+    parsing and structure-building.
+
+    All operations are modeled computationally.
+    This is not a literal simulation of neural activity.
+    """
+
+    state = {
+        "tokens": [],
+        "pos_candidates": {},
+        "phrases": [],
+        "dependency_graph": [],
+        "constituency_trees": [],
+        "hierarchical_structure": {},
+        "grammatical_functions": {},
+        "thematic_roles": {},
+        "parse_hypotheses": [],
+        "open_dependencies": [],
+        "predictions": [],
+        "processing_history": []
+    }
+
+    # Initialize candidate interpretations.
+    state["parse_hypotheses"] = initialize_hypotheses()
+
+    # Process the sentence incrementally.
+    for position, word in enumerate(tokenize(sentence)):
+
+        # STAGE 1: Part-of-speech identification
+        pos_candidates = identify_pos(
+            word,
+            state
+        )
+
+        state["pos_candidates"][position] = pos_candidates
+
+        # STAGE 2: Phrase detection
+        detect_phrase_boundaries(
+            word,
+            state
+        )
+
+        update_phrase_membership(
+            word,
+            state
+        )
+
+        # STAGE 3: Dependency parsing
+        identify_dependency_candidates(
+            word,
+            state
+        )
+
+        update_dependency_graph(
+            word,
+            state
+        )
+
+        # STAGE 4: Constituency parsing
+        generate_constituent_candidates(
+            word,
+            state
+        )
+
+        update_constituency_trees(
+            state
+        )
+
+        # STAGE 5: Hierarchical syntax representation
+        unify_syntactic_structures(
+            state
+        )
+
+        update_hierarchical_representation(
+            state
+        )
+
+        # STAGE 6: Subject/object assignment
+        update_grammatical_functions(
+            state
+        )
+
+        # STAGE 7: Thematic role assignment
+        update_thematic_roles(
+            state
+        )
+
+        # STAGE 8: Syntactic ambiguity resolution
+        evaluate_parse_hypotheses(
+            state
+        )
+
+        revise_incompatible_structures(
+            state
+        )
+
+        # STAGE 9: Long-distance dependencies
+        detect_dependency_triggers(
+            word,
+            state
+        )
+
+        maintain_open_dependencies(
+            state
+        )
+
+        retrieve_dependency_candidates(
+            word,
+            state
+        )
+
+        resolve_completed_dependencies(
+            state
+        )
+
+        # Update predictions for the next word.
+        update_grammatical_predictions(
+            state
+        )
+
+        # Record a complete processing snapshot.
+        record_processing_step(
+            position,
+            word,
+            state
+        )
+
+    # Sentence-final processing.
+    finalize_sentence_structure(state)
+
+    verify_syntactic_consistency(state)
+
+    resolve_remaining_ambiguities(state)
+
+    integrate_sentence_meaning(state)
+
+    return state
+</CodeBlock>
+
+*Note: This is architectural pseudocode. Functions such as `identify_pos`, `update_dependency_graph`, and `unify_syntactic_structures` require their own implementations.*
+
+---
+
+# 7. Mathematical operations involved in the complete algorithm
+
+Now we can identify the main mathematical operations that a computational model of these brain functions should implement.
+
+These are particularly relevant when translating the architecture into Python.
+
+| No. | Mathematical operation | Main application |
+|---:|---|---|
+| 1 | Bayesian probability | Part-of-speech identification |
+| 2 | Conditional probability | Context-dependent grammatical expectations |
+| 3 | Softmax normalization | Competition between grammatical candidates |
+| 4 | Weighted summation | Combining grammatical evidence |
+| 5 | Vector similarity | Comparing lexical and structural representations |
+| 6 | Threshold activation | Detecting phrase boundaries |
+| 7 | Graph construction | Dependency parsing |
+| 8 | Graph traversal | Finding relationships between words |
+| 9 | Tree construction | Constituency parsing |
+| 10 | Recursive operations | Hierarchical structure-building |
+| 11 | Unification | Combining compatible structures |
+| 12 | Constraint satisfaction | Enforcing grammatical consistency |
+| 13 | Optimization | Selecting preferred syntactic interpretations |
+| 14 | Entropy calculation | Measuring syntactic uncertainty |
+| 15 | Bayesian updating | Resolving syntactic ambiguity |
+| 16 | Semantic compatibility scoring | Thematic role assignment |
+| 17 | Associative retrieval | Retrieving distant grammatical elements |
+| 18 | Activation decay | Modeling temporary memory limitations |
+| 19 | Interference modeling | Managing competing dependencies |
+| 20 | Error correction | Revising incorrect syntactic interpretations |
+| 21 | Prediction error | Updating grammatical expectations |
+| 22 | Dynamic state updating | Maintaining the evolving sentence structure |
+
+## 7.1 Three especially important mathematical mechanisms
+
+I would give particular attention to three mechanisms when developing a neurocomputational implementation.
+
+**A. Probabilistic competition**
+
+Multiple interpretations can be active simultaneously.
+
+\[
+P(H_i)=\frac{e^{S(H_i)}}{\sum_j e^{S(H_j)}}
+\]
+
+This is useful for modeling category competition, attachment ambiguity, and competing dependency relationships.
+
+**B. Hierarchical recursive combination**
+
+Smaller structures are integrated into larger structures:
+
+\[
+Z=U(X,Y)
+\]
+
+For example:
+
+\[
+U(\text{Determiner},\text{Noun})
+\rightarrow NP
+\]
+
+\[
+U(NP,VP)\rightarrow S
+\]
+
+This is central to representing nested grammatical structures.
+
+**C. Memory-based retrieval**
+
+Previously encountered grammatical elements must remain available until their relationships can be established.
+
+\[
+A_i(t)=A_i(0)e^{-\lambda t}
+\]
+
+This is a simplified activation-decay model.
+
+A more sophisticated implementation should also include interference from competing items and retrieval cues.
+
+These mechanisms should interact rather than operate as completely independent calculations.
+
+---
+
+# 8. Biological interpretation: What brain systems could support these operations?
+
+It is important not to assign one brain region to each algorithmic stage. Human syntactic processing involves distributed and interacting neural networks.
+
+The following is a functional mapping, not a definitive anatomical division of labor.
+
+| Brain system | Possible contribution |
+|---|---|
+| Left inferior frontal gyrus (IFG) | Syntactic operations, structural integration, and controlled retrieval |
+| Left posterior superior temporal gyrus (pSTG) | Processing syntactic relationships and integrating linguistic information |
+| Left anterior temporal regions | Combinatorial and hierarchical linguistic representations |
+| Posterior temporal language regions | Processing word relationships and linguistic structure |
+| Frontal-temporal connections | Communication and integration across language-processing networks |
+| Working-memory networks | Maintaining unresolved information and supporting nonlocal dependencies |
+| Broader semantic networks | Integrating word meaning, event knowledge, and thematic roles |
+
+The exact functional contributions and neural implementation of these regions remain debated. <Cite refs={["turn890979search1","turn300247view1","turn890979search7"]}/>
+
+### Important neurobiological mechanisms to investigate
+
+There are additional biological mechanisms worth considering when building a more realistic model:
+
+1. **Neural population activation:** Different populations of neurons represent competing linguistic and structural information.
+2. **Synaptic interactions:** Connections allow information from lexical, grammatical, and semantic processing systems to influence each other.
+3. **Recurrent processing:** Information circulates between processing systems, allowing earlier interpretations to be revised.
+4. **Working-memory activity:** Unresolved grammatical information remains accessible over time.
+5. **Neural oscillations:** Some theories propose that oscillatory activity contributes to chunking and the integration of information across different temporal scales.
+
+However, the exact relationship between neural oscillations and hierarchical syntactic structure remains controversial. <Cite refs={["turn890979search0","turn300247view1"]}/>
+
+---
+
+# 9. Recommended modular architecture for a Python implementation
+
+For an actual implementation, I would separate the algorithm into the following modules.
+
+<box border radius="lg" padding={3} gap={3}>
+  <box background="rgba(59,130,246,0.09)" radius="md" padding={3} align="center">
+    **Syntactic Processing Controller**
+
+    <text color="secondary" size="xs">Coordinates processing, memory, feedback and hypothesis selection</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <grid columns={2} gap={2}>
+    {#each [{n:"1",t:"POS Analyzer"},{n:"2",t:"Phrase Detector"},{n:"3",t:"Dependency Engine"},{n:"4",t:"Constituency Engine"},{n:"5",t:"Hierarchy Builder"},{n:"6",t:"Grammatical Role Engine"},{n:"7",t:"Thematic Role Engine"},{n:"8",t:"Ambiguity Resolver"},{n:"9",t:"Long-Distance Engine"}] as item}
+      <grid-item>
+        <box border radius="md" padding={2} gap={1}>
+          <text color="secondary" size="xs">MODULE {item.n}</text>
+          **{item.t}**
+        </box>
+      </grid-item>
+    {/each}
+  </grid>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.09)" radius="md" padding={3} align="center">
+    **Shared Cognitive Resources**
+
+    <text color="secondary" size="xs">Lexical information · Grammatical knowledge · Working memory · Semantic knowledge · Context · Prediction</text>
+  </box>
+  <box align="center">
+    <icon name="arrow-down" color="secondary"/>
+  </box>
+  <box background="rgba(16,185,129,0.12)" radius="md" padding={3} align="center">
+    **Integrated Sentence Representation**
+  </box>
+</box>
+
+I recommend implementing the modules with shared data structures rather than allowing each module to maintain an isolated version of the sentence.
+
+For example, the ambiguity resolver should be able to request changes to the dependency graph, and the hierarchy builder should receive those changes automatically.
+
+Similarly, the long-distance engine should be able to retrieve information from the phrase memory and dependency memory.
+
+This creates a genuinely interconnected architecture.
+
+## 10. Suggested implementation boundaries
+
+| Module | Main responsibility | Output |
+|---|---|---|
+| `pos_analyzer.py` | Grammatical category identification | POS distributions |
+| `phrase_detector.py` | Phrase detection and grouping | Phrase candidates |
+| `dependency_parser.py` | Head-dependent relationships | Dependency graph |
+| `constituency_parser.py` | Nested constituent analysis | Constituency trees |
+| `hierarchy_builder.py` | Structural integration | Hierarchical representation |
+| `grammatical_roles.py` | Subject/object identification | Grammatical functions |
+| `thematic_roles.py` | Agent/patient and other semantic roles | Event representation |
+| `ambiguity_resolver.py` | Competing syntactic interpretations | Preferred parse |
+| `long_distance.py` | Nonlocal grammatical relationships | Resolved dependencies |
+| `syntactic_controller.py` | Coordination and feedback | Final processing state |
+| `syntactic_memory.py` | Shared state and unresolved structures | Memory records |
+| `syntactic_math.py` | Probabilities, scoring and optimization | Mathematical operations |
+
+---
+
+# 11. Final conceptual model
+
+The most important idea is that syntactic comprehension is not simply the identification of grammatical rules.
+
+It is a continuous process of **constructing, maintaining, testing, and revising hierarchical relationships**.
+
+The complete sequence can be summarized as:
+
+1. Recognize the grammatical category of each word.
+2. Identify which words are likely to form phrases.
+3. Establish grammatical relationships between individual words.
+4. Construct nested phrase structures.
+5. Integrate those structures into a hierarchical representation.
+6. Determine the grammatical functions of sentence elements.
+7. Assign semantic roles to the participants in the described event.
+8. Evaluate competing interpretations and correct incorrect structures.
+9. Maintain and retrieve distant grammatical dependencies.
+
+These processes continuously exchange information.
+
+**One particularly important design decision:** I would not make the nine stages independent sequential modules with no feedback. I would implement them as specialized processing modules coordinated by a shared controller, with shared memory and a hypothesis-evaluation mechanism.
+
+That architecture would be a better computational approximation of incremental human sentence comprehension than a traditional linear parser.
+
+## Research foundation
+
+These are useful starting points for investigating the biological and computational mechanisms behind the architecture:
+
+1. Lopopolo et al. (2021), <Link ref="turn890979search1" title="Distinguishing Syntactic Operations in the Brain: Dependency and Phrase-Structure Parsing"/>.
+2. Fitz, Hagoort and Petersson (2024), <Link ref="turn890979search3" title="Neurobiological Causal Models of Language Processing"/>.
+3. Friederici (2011), <Link ref="turn890979search6" title="The Brain Basis of Language Processing: From Structure to Function"/>.
+4. Lakretz et al. (2020), <Link ref="turn890979search10" title="What Limits Our Capacity to Process Nested Long-Range Dependencies in Sentence Comprehension?"/>.
+5. Kazanina and Tavano (2023), <Link ref="turn890979search0" title="What Neural Oscillations Can and Cannot Do for Syntactic Structure Building"/>.
+
+**My recommendation for the next development stage:** Convert this architecture into a formal, numbered operation registry, just as we did with the earlier lexical and reading-processing architectures. Each operation should have an identifier, biological hypothesis, mathematical formulation, input, output, dependencies, and Python implementation boundary. That would make it possible to implement and test the entire syntactic system operation by operation.

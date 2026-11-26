@@ -643,6 +643,14 @@ def _execute_observed(
     source_namespace = None
     source_bundle_id = None
     source_bundle_digest = None
+    if source_artifact is None:
+        for artifact in input_artifacts:
+            payload = artifact.payload
+            if all(hasattr(payload, field) for field in ("bundle_id", "bundle_digest", "namespace")):
+                source_namespace = str(payload.namespace)
+                source_bundle_id = str(payload.bundle_id)
+                source_bundle_digest = str(payload.bundle_digest)
+                break
     if source_artifact is not None:
         bundle = source_artifact.payload
         for key in ("records", "relations", "mappings", "evidence", "contexts", "sources"):

@@ -10,7 +10,9 @@ from ore_usg.compatibility import (
     USGCompatibilityError,
     USGMigration,
     USGMigrationRegistry,
+    inspect_ore_contract_catalog,
     inspect_usg_compatibility,
+    register_usg_contracts,
     require_usg_compatibility,
 )
 from ore_usg.observability import USGSQLiteObservability, _safe_metadata
@@ -68,6 +70,38 @@ def test_explicit_migration_chain_preserves_semantics_or_declares_change():
     ))
     with pytest.raises(USGCompatibilityError):
         registry.apply(result.bundle, migration_ids=("bad-preservation-claim",))
+
+
+def test_ore_catalog_version_check_reports_missing_required_contracts():
+    catalog = ContractCatalog()
+    register_usg_contracts(catalog)
+    issues = inspect_ore_contract_catalog(catalog)
+    assert any("ORE.BLACKBOARD.USG_MODULE_KNOWLEDGE@1.0.0" in item for item in issues)
+
+
+def test_declared_semantic_change_migration_is_explicit_and_traceable(tmp_path):
+    registry = USGMigrationRegistry()
+    migration = USGMigration(
+        migration_id="semantic-change-v1-to-v2",
+        source_contract="USG-KNOWLEDGE/0.1.0",
+        target_contract="USG-KNOWLEDGE/0.2.0",
+        transform=lambda bundle: {
+            **bundle,
+            "contract": "USG-KNOWLEDGE/0.2.0",
+            "records": [*bundle["records"], {"id": "new:assertion"}],
+        },
+        semantic_effect="DECLARED_CHANGE",
+        description="Add an explicitly reviewed assertion under the new source profile.",
+    )
+    registry.register(migration)
+    result = registry.apply(_bundle(), migration_ids=(migration.migration_id,))
+    assert result.semantic_change_declared is True
+    observer = USGSQLiteObservability(tmp_path / "ore.sqlite3")
+    observer.record_migration(result, migration)
+    with observer.database.connection() as connection:
+        row = connection.execute("SELECT * FROM usg_migration_events").fetchone()
+    assert row["migration_id"] == migration.migration_id
+    assert row["semantic_change_declared"] == 1
 
 
 def test_migration_requires_explicit_known_contiguous_chain():

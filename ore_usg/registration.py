@@ -652,16 +652,6 @@ def _execute_observed(
         source_namespace = str(bundle.get("namespace") or "") or None
         source_bundle_id = str(bundle.get("bundle_id") or "") or None
         source_bundle_digest = str(bundle.get("bundle_digest") or source_artifact.payload_hash) or None
-        observer.record_source_bundle(
-            artifact_id=source_artifact.payload_hash,
-            payload_hash=source_artifact.payload_hash,
-            contract_id=source_artifact.envelope.contract_id,
-            schema_version=source_artifact.envelope.schema_version,
-            producer_module="usg.source_export",
-            producer_version="external",
-            bundle=bundle,
-        )
-
     output_artifacts = tuple(getattr(result, "artifacts", ()) or ()) if result is not None else ()
     for artifact in output_artifacts:
         envelope = artifact.envelope
@@ -679,6 +669,18 @@ def _execute_observed(
             source_bundle_id=str(metadata.get("usg_bundle_id") or metadata.get("bundle_id") or source_bundle_id or "") or None,
             source_bundle_digest=str(metadata.get("usg_bundle_digest") or metadata.get("bundle_digest") or source_bundle_digest or "") or None,
             source_record_ids=source_ids,
+        )
+
+    if source_artifact is not None:
+        observer.record_source_bundle(
+            artifact_id=source_artifact.payload_hash,
+            payload_hash=source_artifact.payload_hash,
+            contract_id=source_artifact.envelope.contract_id,
+            schema_version=source_artifact.envelope.schema_version,
+            producer_module="usg.source_export",
+            producer_version="external",
+            bundle=source_artifact.payload,
+            bundle_digest=source_bundle_digest,
         )
 
     diagnostics = dict(getattr(result, "diagnostics", {}) or {}) if result is not None else {}

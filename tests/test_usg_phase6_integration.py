@@ -100,6 +100,7 @@ def test_sqlite_events_and_source_lineage_are_traceable_and_idempotent(tmp_path)
         run_id="run-1",
         source_namespace="test",
         source_bundle_id="phase6-test",
+        source_bundle_digest="sha-source",
         source_record_ids=("context:1", "evidence:1", "sense:1", "relation:1", "source:1"),
     )
     observer.record_artifact_lineage(

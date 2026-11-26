@@ -43,6 +43,7 @@ from ore_logger.database import LoggerDatabase
 from ore_usg import USGSQLiteObservability
 
 observer = USGSQLiteObservability(LoggerDatabase("ore_logs/ore_logger.sqlite3"))
+register_usg_knowledge_module(registry, observability=observer)
 observer.record_module_execution(
     module_id="ore.usg_knowledge_import",
     module_version="0.1.0",

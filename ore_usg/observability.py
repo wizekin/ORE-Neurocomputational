@@ -119,6 +119,7 @@ class USGSQLiteObservability:
         status: str,
         duration_ms: float,
         run_id: str | None = None,
+        started_at_utc: str | None = None,
         input_artifact_ids: tuple[str, ...] | list[str] = (),
         output_artifact_ids: tuple[str, ...] | list[str] = (),
         bundle_id: str | None = None,
@@ -138,8 +139,8 @@ class USGSQLiteObservability:
                  input_artifact_ids_json,output_artifact_ids_json,bundle_id,bundle_digest,metadata_json)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
-                    module_id, module_version, operation, status, run_id, utc_now(),
-                    float(duration_ms),
+                    module_id, module_version, operation, status, run_id,
+                    started_at_utc or utc_now(), float(duration_ms),
                     json.dumps(list(input_artifact_ids), ensure_ascii=False),
                     json.dumps(list(output_artifact_ids), ensure_ascii=False),
                     bundle_id, bundle_digest,

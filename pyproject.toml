@@ -24,6 +24,9 @@ include = ["ore_logger*", "ore_bnbea*", "ore_brain_networks*", "ore_vwfa*", "ore
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "performance: reproducible USG import, memory, and lookup measurements",
+]
 
 [tool.ruff]
 line-length = 100

@@ -6,7 +6,7 @@ it does not claim calibrated predictive information gain when no such model exis
 """
 from __future__ import annotations
 
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import math
@@ -70,7 +70,7 @@ class SQLiteResourceHistory:
         """Create the resource-history table inside the supplied ore_logger SQLite file."""
         self.path = Path(database_path).expanduser().resolve()
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute(
                 """CREATE TABLE IF NOT EXISTS resource_module_history (
                     task_family TEXT NOT NULL,
@@ -94,9 +94,27 @@ class SQLiteResourceHistory:
         connection.execute("PRAGMA busy_timeout=20000")
         return connection
 
+    @contextmanager
+    def _connection(self):
+        """Commit or roll back one operation, then always close its connection.
+
+        sqlite3.Connection's built-in context manager manages transactions but
+        does not close the connection. Explicit closure is essential on Windows,
+        where an open SQLite handle prevents deletion of the temporary database.
+        """
+        connection = self._connect()
+        try:
+            yield connection
+            connection.commit()
+        except BaseException:
+            connection.rollback()
+            raise
+        finally:
+            connection.close()
+
     def get(self, task_family: str, module_id: str) -> dict[str, Any]:
         """Return stored observations or neutral defaults when a module has no history."""
-        with self._connect() as connection:
+        with self._connection() as connection:
             row = connection.execute(
                 "SELECT * FROM resource_module_history WHERE task_family=? AND module_id=?",
                 (task_family, module_id),
@@ -130,7 +148,7 @@ class SQLiteResourceHistory:
             ).isoformat()
         elif success:
             opened_until = None
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute(
                 """INSERT INTO resource_module_history
                    (task_family,module_id,successes,failures,consecutive_failures,
@@ -178,7 +196,7 @@ class SQLiteResourceHistory:
                 updated.append(float(measured))
             else:
                 updated.append(alpha * float(measured) + (1.0 - alpha) * float(old))
-        with self._connect() as connection:
+        with self._connection() as connection:
             connection.execute(
                 """INSERT INTO resource_module_history
                    (task_family,module_id,average_latency_ms,average_memory_mb,

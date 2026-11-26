@@ -1,0 +1,51 @@
+name: Agentic workflow and memory layer validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "ore_agentic/**"
+      - "tests/test_agentic_*_point15.py"
+      - "tests/agentic_point15_helpers.py"
+      - "ore_logger/**"
+      - "ore_workspace/**"
+  push:
+    branches: [feat/ore-agentic-point15]
+    paths:
+      - "ore_agentic/**"
+      - "tests/test_agentic_*_point15.py"
+      - "tests/agentic_point15_helpers.py"
+      - "ore_logger/**"
+      - "ore_workspace/**"
+
+concurrency:
+  group: agentic-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  focused-agentic-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install package and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Run focused agentic tests
+        run: |
+          python -m pytest -q tests/test_agentic_workflow_point15.py \
+            tests/test_agentic_delegation_point15.py \
+            tests/test_agentic_evaluation_point15.py \
+            tests/test_agentic_memory_point15.py \
+            tests/test_agentic_protocols_point15.py \
+            tests/test_agentic_reliability_point15.py \
+            tests/test_agentic_integration_point15.py

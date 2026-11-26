@@ -1,0 +1,150 @@
+"""ORE Point 12 planning layer: search algorithms and hierarchical planning.
+
+The package adds an explicit planning layer to ORE: goal formalization, HTN
+decomposition, partial-order constraints, cost-aware A* and beam search, and an
+execution/replanning loop bound to the existing coordinator. It does not replace
+CognitiveTaskCoordinator, ModuleScheduler, AdaptiveResourceCoordinator, or the
+shared workspace.
+"""
+from .capability_adapter import (
+    CapabilityRegistryAdapter,
+    OperatorDiscovery,
+    OperatorRejection,
+)
+from .contracts import (
+    PLANNING_CONTRACTS_VERSION,
+    CostVector,
+    CostWeights,
+    DecompositionProvenance,
+    DependencyType,
+    ExecutionFeedback,
+    GoalSpec,
+    HTNMethod,
+    OperatorSpec,
+    PlanCheckpoint,
+    PlanDecision,
+    PlanEdge,
+    PlannerBudget,
+    PlanNode,
+    PlanNodeStatus,
+    PlanRunResult,
+    PlanRunStatus,
+    PlanState,
+    Predicate,
+    ResourceSpec,
+    SearchRecord,
+    SuccessCondition,
+    TaskSpec,
+    canonical_planning_json,
+    planning_fingerprint,
+)
+from .cost import (
+    CostModel,
+    GoalProgress,
+    RemainingCostHeuristic,
+    ScaledHeuristic,
+    UnmetConditionHeuristic,
+    ZeroHeuristic,
+    goal_progress_from_conditions,
+)
+from .executor import PlanExecutionReport, PlanExecutorAdapter, completed_operators
+from .goal_adapter import GoalConstraintAdapter, GoalFormalization
+from .htn import (
+    GOAL_TASK_TYPE,
+    DecompositionResult,
+    HTNDecomposer,
+    TaskTree,
+    build_default_methods,
+)
+from .partial_order import (
+    PartialOrderBuilder,
+    PartialOrderPlan,
+    ProtectionInterval,
+    recompute_frontier,
+)
+from .planner import HierarchicalPlanner, PlanningOutcome, SelectedPlan
+from .provenance import (
+    PLANNER_STEPS,
+    PlanningEventLogger,
+    PlanningProvenance,
+    ProvenanceRecord,
+    StepOutcome,
+)
+from .replanner import (
+    DISRUPTION_COST_UNITS,
+    REPLAN_COST_UNITS,
+    OutcomeEvaluation,
+    OutcomeEvaluator,
+    PredictionError,
+    ReplanDecision,
+)
+from .search import SearchEngine, SearchOutcome, SearchStats
+
+__all__ = [
+    "DISRUPTION_COST_UNITS",
+    "GOAL_TASK_TYPE",
+    "PLANNER_STEPS",
+    "PLANNING_CONTRACTS_VERSION",
+    "REPLAN_COST_UNITS",
+    "CapabilityRegistryAdapter",
+    "CostModel",
+    "CostVector",
+    "CostWeights",
+    "DecompositionProvenance",
+    "DecompositionResult",
+    "DependencyType",
+    "ExecutionFeedback",
+    "GoalConstraintAdapter",
+    "GoalFormalization",
+    "GoalProgress",
+    "GoalSpec",
+    "HTNDecomposer",
+    "HTNMethod",
+    "HierarchicalPlanner",
+    "OperatorDiscovery",
+    "OperatorRejection",
+    "OperatorSpec",
+    "OutcomeEvaluation",
+    "OutcomeEvaluator",
+    "PartialOrderBuilder",
+    "PartialOrderPlan",
+    "PlanCheckpoint",
+    "PlanDecision",
+    "PlanEdge",
+    "PlanExecutionReport",
+    "PlanExecutorAdapter",
+    "PlanNode",
+    "PlanNodeStatus",
+    "PlanRunResult",
+    "PlanRunStatus",
+    "PlanState",
+    "PlannerBudget",
+    "PlanningEventLogger",
+    "PlanningOutcome",
+    "PlanningProvenance",
+    "Predicate",
+    "PredictionError",
+    "ProtectionInterval",
+    "ProvenanceRecord",
+    "RemainingCostHeuristic",
+    "ReplanDecision",
+    "ResourceSpec",
+    "ScaledHeuristic",
+    "SearchEngine",
+    "SearchOutcome",
+    "SearchRecord",
+    "SearchStats",
+    "SelectedPlan",
+    "StepOutcome",
+    "SuccessCondition",
+    "TaskSpec",
+    "TaskTree",
+    "UnmetConditionHeuristic",
+    "ZeroHeuristic",
+    "build_default_methods",
+    "canonical_planning_json",
+    "completed_operators",
+    "goal_progress_from_conditions",
+    "planning_fingerprint",
+    "recompute_frontier",
+]

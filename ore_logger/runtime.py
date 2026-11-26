@@ -70,7 +70,18 @@ class RuntimeSession:
         sys.excepthook = self._excepthook
 
     def _source(self, frame: Any) -> tuple[str | None, str | None, str]:
-        filename = Path(frame.f_code.co_filename).resolve()
+        raw_filename = frame.f_code.co_filename
+
+# Ignore Python internal and synthetic filenames.
+        if not raw_filename or (
+            raw_filename.startswith("<") and raw_filename.endswith(">")
+        ):
+            return None, "", ""
+
+        try:
+            filename = Path(raw_filename).resolve()
+        except (OSError, ValueError, RuntimeError):
+            return None, "", ""
         try:
             relative = filename.relative_to(self.root).as_posix()
         except ValueError:
@@ -264,12 +275,19 @@ def _candidate_script(arguments: list[str], root: Path) -> tuple[Path | None, st
 
 def install_for_current_script() -> RuntimeSession | None:
     """Install automatically when the launched .py entry point belongs to this repository."""
-    if os.getenv("ORE_AUTO_LOG", "1").strip().lower() in {"0", "false", "no", "off"}:
+    if (
+    os.getenv("ORE_AUTO_LOG", "1").strip().lower()
+    in {"0", "false", "no", "off"}
+    or "pytest" in sys.modules
+    or any("pytest" in str(arg).lower() for arg in sys.argv)
+):
         return None
     root = Path(__file__).resolve().parents[1]
     script, entry_kind = _candidate_script(sys.argv, root)
     if script is None:
         return None
+
+    
     # Streamlit's server process is long-lived and reruns app.py repeatedly.
     # Individual component runs are recorded by the Workbench adapter instead.
     if script.relative_to(root).as_posix() == "experiment_workbench/app.py":

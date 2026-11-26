@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ore-neurocomputational-n1"
+version = "0.1.0"
+description = "Modular biologically motivated ORE visual, orthographic and semantic research pipelines"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Wizekin / ORE contributors"}]
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[tool.setuptools]
+py-modules = ["sitecustomize"]
+
+[tool.setuptools.packages.find]
+include = ["ore_logger*", "ore_bnbea*", "ore_brain_networks*", "ore_vwfa*", "ore_sensory_perception*", "ore_n1*", "ore_n2*", "ore_n3*", "ore_n4*", "ore_n5*", "ore_n6*", "ore_n9*", "ore_contracts*", "ore_reading*", "ore_semantic*", "ore_lexical_context*", "ore_predictive_orthography*", "ore_lexical_access*", "ore_syntax*", "ore_semantic_composition*", "ore_discourse*", "ore_working_memory*", "ore_comprehension*", "ore_hub_spoke*", "ore_csc*", "ore_atl_amodal*", "ore_distributed_semantics*", "ore_distributed_only*", "ore_hybrid_embodied_amodal*", "ore_language_comprehension*", "ore_grounded_integration*", "ore_hippocampal_encoding*", "ore_cortical_learning*", "ore_sleep_consolidation*", "ore_memory_transformation*", "ore_novelty_consolidation*", "ore_commonality_concepts*", "ore_prototype_exemplar*", "ore_schema_formation*", "ore_schema_guided_inference*", "ore_analogical_transfer*", "ore_context_dependent_interpretation*", "ore_emotion_motivation*", "ore_social_conversational_learning*", "ore_language_domain_reasoning*", "ore_developmental_language_cognition*", "ore_adult_individual_differences*", "ore_attentional_failure*", "ore_working_memory_overload*", "ore_reconstructive_memory*", "ore_confirmation_bias*", "ore_cognitive_heuristics*", "ore_garden_path*", "ore_corrective_learning*", "ore_active_engagement*", "ore_prior_knowledge*", "ore_spaced_repetition*", "ore_testing_effect*", "ore_varied_contexts*", "ore_cognitive_load*", "ore_feedback_seeking*", "ore_curiosity_motivation*", "ore_workspace*", "ore_text_localization*", "ore_memory_integration*", "ore_science*", "ore_usg*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.setuptools.package-data]
+ore_logger = ["*.json"]

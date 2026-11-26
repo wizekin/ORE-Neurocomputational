@@ -1,0 +1,197 @@
+"""Blackboard-based cognitive coordination for ORE-Neurocomputational (Algorithm 1).
+
+This package implements Priority 1 / Source Point 1 of the ORE integrated
+algorithm series: a blackboard architecture and shared cognitive workspace
+built on ORE's existing ``ore_workspace``, ``ore_contracts``, ``ore_usg``, and
+``ore_logger`` components. See ``docs/BLACKBOARD_COORDINATION_IMPLEMENTATION.md``
+for the 32-step mapping and acceptance-criteria coverage.
+"""
+from .bridge import (
+    ArtifactFindingBridge,
+    BLACKBOARD_CONTRACT_VERSION,
+    BLACKBOARD_FINDING_BATCH_CONTRACT,
+    BLACKBOARD_INPUT_CONTRACT,
+    BLACKBOARD_MEMORY_STORE_CONTRACT,
+    BLACKBOARD_SNAPSHOT_CONTRACT,
+    BLACKBOARD_VERIFICATION_RULES_CONTRACT,
+    register_blackboard_contracts,
+    validate_module_result,
+)
+from .config import (
+    AblationSwitches,
+    BlackboardPolicy,
+    ComparisonCoefficients,
+    CycleBudgets,
+    StagnationPolicy,
+    default_policy,
+)
+from .contracts import (
+    BLACKBOARD_PACKAGE_VERSION,
+    BlackboardLayer,
+    BlackboardTaskRequest,
+    BlackboardTaskResult,
+    COGNITIVE_CONTROL_PRODUCER,
+    FailureClassification,
+    FindingEnvelope,
+    InputRoot,
+    InputSource,
+    LAYER_FIELDS,
+    LifecycleState,
+    RunIdentity,
+    SupportedHypothesis,
+    TokenSpan,
+    USGSnapshotReference,
+    build_input_root,
+    layer_for_field,
+    one_hot_layer,
+)
+from .coordinator import BlackboardCoordinator
+from .evaluation import (
+    ABLATION_MECHANISMS,
+    AblationReport,
+    BenchmarkReport,
+    SequentialBaselineRunner,
+    TaskRunMetrics,
+    evaluation_operation_records,
+    paired_bootstrap,
+    run_ablation,
+    run_benchmark,
+)
+from .hypotheses import (
+    BayesianHypothesisUpdater,
+    SCORE_DEFINITION,
+    aggregate_evidence,
+    resolve_conflict_with_evidence,
+    summarize_open_conflicts,
+)
+from .planning import (
+    ModuleRegistrationReport,
+    build_dependency_plan,
+    build_permission_policy,
+    build_task_profile,
+    register_specialist_modules,
+)
+from .policy_learning import (
+    MeasurementTransaction,
+    PolicyProposal,
+    PolicyProposalBuilder,
+    PromotionDecision,
+    PromotionGateEvaluator,
+    RunMeasurementRecorder,
+)
+from .relevance import (
+    FieldChange,
+    measure_workspace_changes,
+    relevance_report,
+)
+from .registry import (
+    BLACKBOARD_OPERATIONS,
+    BLACKBOARD_OPERATION_IDS,
+    OperationSpec,
+    operation_by_id,
+    operation_by_step,
+)
+from .resources import (
+    BlackboardResourceCoordinator,
+    ComparisonScore,
+    compute_comparison_score,
+    exponential_backoff,
+)
+from .specialists import (
+    FALLBACK_LEXICON,
+    LexicalSpecialist,
+    MemorySpecialist,
+    SemanticSpecialist as SemanticSpecialist,
+    SyntaxSpecialist as SyntaxSpecialist,
+    VerificationSpecialist,
+    default_specialists,
+)
+from .trace import ProvenanceTraceBuilder, TraceEdge, TraceNode
+from .usg_integration import BlackboardUSGSnapshot, publish_usg_reference
+
+__version__ = BLACKBOARD_PACKAGE_VERSION
+
+__all__ = [
+    "ABLATION_MECHANISMS",
+    "AblationReport",
+    "AblationSwitches",
+    "ArtifactFindingBridge",
+    "BLACKBOARD_CONTRACT_VERSION",
+    "BLACKBOARD_FINDING_BATCH_CONTRACT",
+    "BLACKBOARD_INPUT_CONTRACT",
+    "BLACKBOARD_MEMORY_STORE_CONTRACT",
+    "BLACKBOARD_OPERATIONS",
+    "BLACKBOARD_OPERATION_IDS",
+    "BLACKBOARD_PACKAGE_VERSION",
+    "BLACKBOARD_SNAPSHOT_CONTRACT",
+    "BLACKBOARD_VERIFICATION_RULES_CONTRACT",
+    "BayesianHypothesisUpdater",
+    "BenchmarkReport",
+    "BlackboardCoordinator",
+    "BlackboardLayer",
+    "BlackboardPolicy",
+    "BlackboardResourceCoordinator",
+    "BlackboardTaskRequest",
+    "BlackboardTaskResult",
+    "BlackboardUSGSnapshot",
+    "COGNITIVE_CONTROL_PRODUCER",
+    "ComparisonCoefficients",
+    "ComparisonScore",
+    "CycleBudgets",
+    "FailureClassification",
+    "FieldChange",
+    "FindingEnvelope",
+    "FALLBACK_LEXICON",
+    "InputRoot",
+    "InputSource",
+    "LAYER_FIELDS",
+    "LexicalSpecialist",
+    "LifecycleState",
+    "MeasurementTransaction",
+    "MemorySpecialist",
+    "ModuleRegistrationReport",
+    "OperationSpec",
+    "PolicyProposal",
+    "PolicyProposalBuilder",
+    "PromotionDecision",
+    "PromotionGateEvaluator",
+    "ProvenanceTraceBuilder",
+    "RunIdentity",
+    "RunMeasurementRecorder",
+    "SCORE_DEFINITION",
+    "SequentialBaselineRunner",
+    "StagnationPolicy",
+    "SupportedHypothesis",
+    "TaskRunMetrics",
+    "TokenSpan",
+    "TraceEdge",
+    "TraceNode",
+    "USGSnapshotReference",
+    "VerificationSpecialist",
+    "aggregate_evidence",
+    "build_dependency_plan",
+    "build_input_root",
+    "build_permission_policy",
+    "build_task_profile",
+    "compute_comparison_score",
+    "default_policy",
+    "default_specialists",
+    "evaluation_operation_records",
+    "exponential_backoff",
+    "layer_for_field",
+    "measure_workspace_changes",
+    "one_hot_layer",
+    "operation_by_id",
+    "operation_by_step",
+    "paired_bootstrap",
+    "publish_usg_reference",
+    "relevance_report",
+    "register_blackboard_contracts",
+    "register_specialist_modules",
+    "resolve_conflict_with_evidence",
+    "run_ablation",
+    "run_benchmark",
+    "summarize_open_conflicts",
+    "validate_module_result",
+    "__version__",
+]

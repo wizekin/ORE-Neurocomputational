@@ -22,7 +22,7 @@ def _large_bundle(extra_forms: int = 1200):
             "version": 1,
             "state": "ACCEPTED",
             "created_at": timestamp,
-            "source_ids": ["source:dictionary"],
+            "source_ids": ["source:permitted"],
             "evidence_ids": [],
             "context_ids": [],
             "payload": {"form": f"synthetic-{index:06d}", "language": "en", "script": "Latn"},

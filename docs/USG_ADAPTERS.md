@@ -561,3 +561,129 @@ Run the focused Phase 3 regression tests locally:
 
 The full local suite remains available with `python -m pytest -q`.
 No automated tests are run by the Phase 3 integration workflow.
+
+## Phase 4 — Make integrated USG knowledge usable by ORE (roadmap items 12–15)
+
+### 12. Unified knowledge resource and explicit cross-resource references
+
+`USGKnowledgeResource` remains the canonical immutable snapshot. It carries the lexical, legacy semantic, semantic-structure, sense/concept/category/relation/frame, and language-integration resources under one `(namespace, bundle_id, bundle_digest)` identity. Construction rejects mixed snapshots.
+
+The unified resource exposes a stable `resource_id`, `available_domains`, and a `reference_inventory` containing explicit lexical-to-semantic links, morphology links, semantic relations, category memberships, context assignments, evidence attachments, and predicate frames. Convenience views (`semantic_relations`, `semantic_categories`, `semantic_memberships`, and `predicate_frames`) provide one consistent access path while retaining the source-specific subresources.
+
+### 13. Registry integration and artifact lineage
+
+`register_usg_knowledge_module(registry)` now also registers and binds a separate read-only service module, `ore.usg_knowledge_access`. The access module declares discoverable capabilities for exact, related-concept and contextual retrieval, lexical meanings, semantic concepts/relations, predicate frames, and provenance.
+
+The query and result models use dedicated contracts `ORE.USG.KNOWLEDGE_QUERY@1.0.0` and `ORE.USG.KNOWLEDGE_RETRIEVAL@1.0.0`. Registry binding validates both input port models against the shared `ContractCatalog`. `make_usg_knowledge_query_artifact()` creates a typed request artifact. The retrieval backend validates both input artifacts before execution, then emits a typed result artifact whose `parent_artifact_ids` contain both the knowledge-snapshot and query artifact hashes.
+
+Example registration and capability discovery:
+
+```python
+from ore_contracts import ContractCatalog
+from ore_contracts.module_registry import ModuleRegistry
+from ore_usg import (
+    USG_KNOWLEDGE_ACCESS_MODULE_ID,
+    register_usg_knowledge_module,
+)
+
+catalog = ContractCatalog()
+registry = ModuleRegistry(catalog)
+register_usg_knowledge_module(registry)  # importer and access service
+
+discovered = registry.find_by_capability("language.knowledge.related_lookup")
+access_backend = registry.get_backend(USG_KNOWLEDGE_ACCESS_MODULE_ID)
+```
+
+### 14. Access from ORE language-processing modules
+
+The processor builders attach the common `USGKnowledgeAccess` interface as `processor.usg_knowledge`:
+
+- `build_lexical_access_processor(resource)` uses imported `LexicalEntry` / `LexicalMeaning` records, including explicit concept links and morphology status, and exposes exact meaning lookup.
+- `build_semantic_cognition_processor(resource)` provides active imported sense/concept records to semantic cognition, with retrieval access to explicit relations and source details.
+- `build_semantic_composition_processor(resource)` provides active concepts and only predicate frames that can be represented without dropping declared constraints; incomplete frames remain retrievable through the shared access interface.
+
+These bridges do not require every knowledge domain to be populated. Semantic cognition/composition may operate with the available concept/frame subsets; the access interface reports unavailable optional domains and returns empty results for those domains rather than fabricating missing knowledge. A lexical processor still requires at least one lexical entry because the existing ORE lexical processor contract requires a non-empty lexicon.
+
+Example direct processor access:
+
+```python
+from ore_usg import (
+    build_lexical_access_processor,
+    build_semantic_cognition_processor,
+    build_semantic_composition_processor,
+)
+
+lexical_processor = build_lexical_access_processor(resource)
+meanings = lexical_processor.usg_knowledge.lexical_meanings("bank", language="en")
+
+semantic_processor = build_semantic_cognition_processor(resource)
+concepts = semantic_processor.usg_knowledge.semantic_concepts("finance")
+
+composition_processor = build_semantic_composition_processor(resource)
+frames = composition_processor.usg_knowledge.predicate_frames(
+    "transfer", executable_only=True
+)
+```
+
+### 15. Controlled exact, related and contextual retrieval
+
+Requests use `USGKnowledgeQuery` with one of three explicit modes:
+
+- `EXACT`: conservative case-insensitive exact labels/forms, or exact ORE record-ID lookup when `record_id` is supplied; no stemming or fuzzy matching.
+- `RELATED_CONCEPT`: one-hop retrieval over explicit directed USG relations, category memberships, and lexical-concept links. The source relationship and direction are returned; no inverse or transitive closure is inferred.
+- `CONTEXTUAL`: retrieval over explicit context assignments attached to a supplied ORE or source record ID, optionally filtered by context type/value. Context is not guessed from query text.
+
+Results use `USGKnowledgeQueryResult` and `USGKnowledgeCandidate`. They include record/source references, lifecycle and assertion status, evidence IDs and their `SUPPORTS` / `CONTRADICTS` / `NEUTRAL` / `UNASSESSED` statuses, context IDs, source licensing/redistribution metadata, bundle identity/digest, and available/unavailable domains. Conflicting, ambiguous, candidate, unresolved, contradicted, neutral, and unassessed states remain visible; the API does not collapse them into a single accepted result.
+
+No calibrated numeric confidence field is supplied by the current USG bundle contract. Accordingly `confidence_value` is `None`, `confidence_available` is false, and the result states why confidence is unavailable. This is deliberately different from assigning a guessed score or mistaking evidence status for probability or truth.
+
+Direct query example:
+
+```python
+from ore_usg import USGKnowledgeAccess, USGKnowledgeQuery
+
+access = USGKnowledgeAccess(resource)
+
+exact = access.query(USGKnowledgeQuery(
+    mode="EXACT", query="bank", kind="LEXICAL_ENTRY", language="en"
+))
+
+related = access.query(USGKnowledgeQuery(
+    mode="RELATED_CONCEPT", record_id=exact.candidates[0].record_id
+))
+
+contextual = access.query(USGKnowledgeQuery(
+    mode="CONTEXTUAL",
+    query="bank",
+    kind="LEXICAL_ENTRY",
+    language="en",
+    context_type="DOMAIN",
+    context_value="finance",
+))
+
+assert all(item.confidence_value is None for item in exact.candidates)
+```
+
+A query can also be sent through the registry:
+
+```python
+from ore_usg import USGKnowledgeQuery, make_usg_knowledge_query_artifact
+
+request_artifact = make_usg_knowledge_query_artifact(
+    USGKnowledgeQuery(mode="EXACT", query="bank", kind="LEXICAL_ENTRY"),
+    run_id=context.run_id,
+)
+result = access_backend.execute(
+    {"knowledge": knowledge_artifact, "request": request_artifact},
+    context,
+)
+retrieval_artifact = result.artifacts[0]
+```
+
+### Phase 4 local tests
+
+The implementation adds `tests/test_usg_knowledge_access.py`. Tests are included for local execution only; they have not been run as part of this phase.
+
+```powershell
+python -m pytest tests/test_usg_knowledge_access.py -q
+```

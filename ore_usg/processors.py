@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     )
 
 from .knowledge import USGKnowledgeResource
+from .access import USGKnowledgeAccess
 from .structures import USGPredicateFrame
 
 
@@ -123,11 +124,13 @@ def build_lexical_access_processor(
 
     if not isinstance(resource, USGKnowledgeResource):
         raise TypeError("resource must be a USGKnowledgeResource")
-    return LexicalAccessProcessor(
+    processor = LexicalAccessProcessor(
         resource.lexical.entries,
         morphemes=tuple(morphemes),
         config=config,
     )
+    processor.usg_knowledge = USGKnowledgeAccess(resource)
+    return processor
 
 
 def build_semantic_composition_processor(
@@ -145,15 +148,47 @@ def build_semantic_composition_processor(
         frames = resource.semantic_knowledge.executable_frames
     else:
         concepts = resource.semantic.concepts
-        frames = tuple(
-            to_ore_predicate_frame(frame)
-            for frame in resource.structures.predicate_frames
-        )
-    return SemanticCompositionProcessor(
+        compatible_frames = []
+        for frame in resource.structures.predicate_frames:
+            try:
+                compatible_frames.append(to_ore_predicate_frame(frame))
+            except USGPredicateFrameConversionError:
+                # One unsupported/incomplete frame must not disable other
+                # available semantic knowledge or executable frames.
+                continue
+        frames = tuple(compatible_frames)
+    processor = SemanticCompositionProcessor(
         concepts=concepts,
         predicate_frames=frames,
         config=config,
     )
+    processor.usg_knowledge = USGKnowledgeAccess(resource)
+    return processor
+
+
+def build_semantic_cognition_processor(
+    resource: USGKnowledgeResource,
+    *,
+    config: Any | None = None,
+    memory_store: Any | None = None,
+) -> Any:
+    """Build semantic cognition over imported meanings and attach common retrieval."""
+    from ore_semantic import SemanticCognitionProcessor
+
+    if not isinstance(resource, USGKnowledgeResource):
+        raise TypeError("resource must be a USGKnowledgeResource")
+    concepts = (
+        resource.semantic_knowledge.active_concepts
+        if resource.semantic_knowledge is not None
+        else resource.semantic.concepts
+    )
+    processor = SemanticCognitionProcessor(
+        concepts=concepts,
+        config=config,
+        memory_store=memory_store,
+    )
+    processor.usg_knowledge = USGKnowledgeAccess(resource)
+    return processor
 
 
 __all__ = [
@@ -161,4 +196,5 @@ __all__ = [
     "to_ore_predicate_frame",
     "build_lexical_access_processor",
     "build_semantic_composition_processor",
+    "build_semantic_cognition_processor",
 ]

@@ -86,7 +86,10 @@ def _canonical_digest(value: Any) -> str:
 
 def _semantic_projection(bundle: Mapping[str, Any]) -> dict[str, Any]:
     """Project source-backed knowledge fields; ignore only export timestamps/format metadata."""
-    excluded = {"created_at", "exported_at", "generated_at", "migration_history"}
+    excluded = {
+        "created_at", "exported_at", "generated_at", "migration_history",
+        "contract", "contract_id", "schema_version",
+    }
     return {
         key: value for key, value in bundle.items()
         if key not in excluded

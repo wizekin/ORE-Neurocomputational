@@ -225,7 +225,8 @@ class USGSemanticCompositionProcessor:
                     "source": f"token:{index}",
                     "target": node_id,
                     "record_kind": node_type,
-                    "source": "token",
+                    "binding_origin": "token",
+                    "token_index": index,
                     "target_record_id": record_id,
                 })
             return node_id

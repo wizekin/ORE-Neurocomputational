@@ -215,6 +215,7 @@ class USGSQLiteObservability:
         producer_version: str,
         bundle: Mapping[str, Any],
         run_id: str | None = None,
+        bundle_digest: str | None = None,
     ) -> bool:
         """Link a source artifact to all original USG record, relation and evidence IDs."""
         record_ids: set[str] = set()
@@ -234,7 +235,7 @@ class USGSQLiteObservability:
             run_id=run_id,
             source_namespace=str(bundle.get("namespace") or "") or None,
             source_bundle_id=str(bundle.get("bundle_id") or "") or None,
-            source_bundle_digest=str(bundle.get("bundle_digest") or payload_hash) or None,
+            source_bundle_digest=str(bundle_digest or bundle.get("bundle_digest") or payload_hash) or None,
             source_record_ids=tuple(sorted(record_ids)),
         )
 

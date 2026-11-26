@@ -288,3 +288,66 @@ definitions are not converted into invented numeric features.
 These helpers create processors; they do not run a request or mutate either
 inventory. The caller remains responsible for supplying the task's request,
 syntax, and contextual evidence.
+
+
+## Sentence-level semantic integration with classes and relations
+
+The USG-aware composition adapter connects the imported concepts, semantic classes,
+explicit relations, concept mappings, and predicate frames to the existing ORE
+nine-stage sentence-composition processor:
+
+```python
+from ore_semantic_composition import (
+    SemanticCompositionConfig,
+    SemanticCompositionRequest,
+)
+from ore_usg import (
+    USGKnowledgeAdapter,
+    build_usg_semantic_composition_processor,
+)
+
+snapshot, knowledge = USGKnowledgeAdapter().load_and_convert(
+    "exports/knowledge_bundle.json",
+)
+processor = build_usg_semantic_composition_processor(
+    knowledge,
+    config=SemanticCompositionConfig(simulate_biology=False),
+)
+result = processor.process(SemanticCompositionRequest(
+    sequence_id="example-001",
+    text="The bank transfers money.",
+    language="en",
+))
+usg_graph = result.sentence_representation["usg_knowledge_graph"]
+print(usg_graph["counts"])
+```
+
+The builder wraps the existing ORE semantic-composition processor; it does not
+replace the nine-stage engine. Imported concepts are supplied to its concept
+inventory, and explicitly converted predicate frames are supplied to its frame
+inventory. When a frame key exactly matches a sentence token under ORE's
+Unicode-normalized, case-folded token normalization, the sentence graph also
+records the matched frame, its version, role list, required roles, selectional
+preferences, and source locator.
+
+The sentence-level USG overlay binds only selected concepts and exact lexical
+entries/senses to their token nodes. It adds a semantic-class node only when an
+explicit imported relation connects that class to a record grounded in the
+current sentence. Explicit relations are emitted only when both endpoints are
+present in the local overlay. Concept mappings are emitted only when both
+mapped concepts are selected in the current sentence. Relation direction,
+predicate, lifecycle state, evidence IDs, context IDs, and source references
+are retained.
+
+The overlay is available at
+`result.sentence_representation["usg_knowledge_graph"]` and its nodes/edges
+are also included in the sentence graph's main `nodes` and `edges` arrays.
+The result metadata records the source bundle namespace, ID, and digest.
+Graph references are revalidated after enrichment.
+
+This adapter never infers semantic or modality feature values from labels or
+definitions, never generates inverse/transitive relations, and never promotes
+candidate or restricted records. The USG import policy has already filtered
+those records before composition. This is an explicit knowledge overlay, not a
+claim that every relation is contextually true or that the sentence's intended
+meaning has been experimentally validated.

@@ -39,6 +39,10 @@ USG_KNOWLEDGE_CAPABILITIES = (
     "language.semantic_categories.import",
     "language.semantic_relations.import",
     "language.predicate_frames.import",
+    "language.lexical_semantics.link",
+    "language.morphology.link",
+    "language.context.import",
+    "language.evidence.provenance",
     "language.knowledge.provenance",
 )
 
@@ -275,6 +279,9 @@ def build_usg_knowledge_manifest() -> ModuleManifest:
             "validate one supplied USG-KNOWLEDGE/0.1.0 bundle",
             "import lexical forms, lemmas, and senses",
             "import concepts, semantic classes, predicate frames, and explicit relations",
+            "link lexical entries and meanings to source-backed semantic concepts",
+            "link surface forms to lemmas only through explicit source relations",
+            "expose typed context, evidence, source licensing, and redistribution metadata",
             "preserve source rights, evidence, contexts, lifecycle decisions, and bundle identity",
         ),
         input_ports=(
@@ -304,6 +311,10 @@ def build_usg_knowledge_manifest() -> ModuleManifest:
             "Predicate roles are executable only when the ORE frame contract can represent them without dropping declared constraints; all other fields remain preserved.",
             "Relations and mappings retain their original direction, predicate, evidence, context, and provenance; no inverse or transitive edges are inferred.",
             "Category membership conflicts are represented from explicit contradictory evidence rather than resolved automatically.",
+            "Lexical-concept links use exact lexical-sense identity or explicit USG relation/mapping records; ambiguous alternatives remain separate.",
+            "Morphological form-to-lemma links require a recognized explicit directed USG relation; missing and ambiguous forms are not guessed.",
+            "Context and evidence values remain descriptive metadata; no numeric activation feature or verified fact is invented.",
+            "Evidence local-use eligibility and redistribution restrictions remain tied to source provenance.",
             "Source licensing metadata does not grant redistribution rights.",
         ),
     )

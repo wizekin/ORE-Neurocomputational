@@ -9,6 +9,11 @@ from .contracts import (
     WordFormEpisode,
 )
 from .knowledge import SemanticCategory, SemanticCategoryMembership, SemanticRelation
+from .language_knowledge import (
+    ContextualRecord, ContextAssignment, SourceProvenance, EvidenceRecord,
+    EvidenceAttachment, LexicalConceptLink, LexicalConceptLinkGroup,
+    MorphologicalFormLink,
+)
 from .pipeline import SemanticCognitionProcessor
 from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore, SemanticPrototypeEvidence
 from .source_mapping import SOURCE_COMPONENTS, SOURCE_OPERATION_MAP, source_mapping_as_dicts
@@ -22,6 +27,14 @@ __all__ = [
     "SemanticCategory",
     "SemanticCategoryMembership",
     "SemanticRelation",
+    "ContextualRecord",
+    "ContextAssignment",
+    "SourceProvenance",
+    "EvidenceRecord",
+    "EvidenceAttachment",
+    "LexicalConceptLink",
+    "LexicalConceptLinkGroup",
+    "MorphologicalFormLink",
     "SemanticConfig",
     "SemanticCognitionProcessor",
     "SemanticLIFSimulator",

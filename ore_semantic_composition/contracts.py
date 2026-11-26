@@ -86,6 +86,9 @@ class SemanticCompositionRequest:
     syntax_result: Any | None = None
     context_features: Mapping[str, float] = field(default_factory=dict)
     source_reference: str | None = None
+    contextual_records: Sequence[Any] = ()
+    evidence_records: Sequence[Any] = ()
+    source_provenance: Sequence[Any] = ()
 
     def __post_init__(self) -> None:
         """Validate sentence input, token-indexed hypotheses, and contextual feature values."""
@@ -107,6 +110,12 @@ class SemanticCompositionRequest:
             if any(not isinstance(item, str) or not item.strip() for item in concept_ids):
                 raise ValueError("concept_hypotheses must contain non-empty concept IDs")
         _validate_features("context_features", self.context_features)
+        if any(not isinstance(getattr(item, "context_id", None), str) for item in self.contextual_records):
+            raise TypeError("contextual_records must contain typed context records")
+        if any(not isinstance(getattr(item, "evidence_id", None), str) for item in self.evidence_records):
+            raise TypeError("evidence_records must contain typed evidence records")
+        if any(not isinstance(getattr(item, "source_id", None), str) for item in self.source_provenance):
+            raise TypeError("source_provenance must contain typed source records")
 
 
 @dataclass(frozen=True, slots=True)

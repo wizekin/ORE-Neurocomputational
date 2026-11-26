@@ -163,6 +163,12 @@ class LexicalAccessProcessor:
                 "exposure_count": float(getattr(entry, "exposure_count", 0.0)),
                 "frequency_strength": frequency_strength,
                 "language": str(getattr(entry, "language", "und")),
+                "semantic_concept_ids": list(getattr(entry, "semantic_concept_ids", ())),
+                "semantic_link_status": str(getattr(entry, "semantic_link_status", "UNLINKED")),
+                "lemma_entry_id": getattr(entry, "lemma_entry_id", None),
+                "morphology_link_status": str(getattr(entry, "morphology_link_status", "NOT_APPLICABLE")),
+                "script": getattr(entry, "script", None),
+                "grammatical_information_json": getattr(entry, "grammatical_information_json", None),
                 "verified_by": str(getattr(entry, "verified_by", "unspecified")),
                 "source_reference": str(getattr(entry, "source_reference", "unspecified")),
                 "_score": score,
@@ -191,6 +197,8 @@ class LexicalAccessProcessor:
                     "entry_id": str(entry.entry_id),
                     "orthography": str(entry.orthography),
                     "meaning_id": str(meaning.meaning_id),
+                    "semantic_concept_ids": list(getattr(meaning, "semantic_concept_ids", ())),
+                    "semantic_link_status": str(getattr(meaning, "semantic_link_status", "UNLINKED")),
                     "gloss": str(getattr(meaning, "gloss", "")),
                     "features": features,
                     "prior": prior,
@@ -881,6 +889,30 @@ class LexicalAccessProcessor:
                 "classified by morpheme_affix_categories; unclassified affixes remain unspecified"
             ),
             "biological_scope": "generic seven-population recurrent LIF reference; not fitted to human data",
+            "contextual_records": [
+                {"context_id": item.context_id, "context_type": item.context_type,
+                 "value": item.value, "language_profile": item.language_profile, "scope": item.scope}
+                for item in request.contextual_records
+            ],
+            "evidence_records": [
+                {"evidence_id": item.evidence_id, "source_id": item.source_id,
+                 "evidence_type": item.evidence_type, "support_status": item.support_status,
+                 "source_rights_status": item.source_rights_status,
+                 "source_redistribution": item.source_redistribution,
+                 "source_license_id": item.source_license_id,
+                 "usable_for_local_reasoning": item.usable_for_local_reasoning,
+                 "verified_fact": False, "interpretation": item.interpretation}
+                for item in request.evidence_records
+            ],
+            "source_provenance": [
+                {"source_id": item.source_id, "provider": item.provider,
+                 "source_type": item.source_type, "rights_status": item.rights_status,
+                 "redistribution": item.redistribution, "attribution": item.attribution,
+                 "license_id": item.license_id, "usable_for_local_import": item.usable_for_local_import,
+                 "redistributable": item.redistributable}
+                for item in request.source_provenance
+            ],
+            "evidence_is_verified_fact": False,
         }
         return LexicalAccessResult(
             request.sequence_id, original, word, identities, selected_identity,

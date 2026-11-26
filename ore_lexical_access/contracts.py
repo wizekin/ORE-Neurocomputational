@@ -24,6 +24,9 @@ class LexicalAccessRequest:
     contextual_category_priors: Mapping[str, float] = field(default_factory=dict)
     source_reference: str | None = None
     timestamp_ms: float | None = None
+    contextual_records: tuple[Any, ...] = ()
+    evidence_records: tuple[Any, ...] = ()
+    source_provenance: tuple[Any, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.sequence_id.strip() or not self.word.strip():
@@ -32,6 +35,12 @@ class LexicalAccessRequest:
             raise ValueError("word must contain one token, not a whitespace-separated phrase")
         _unit_map("context_features", self.context_features)
         _unit_map("contextual_category_priors", self.contextual_category_priors)
+        if any(not isinstance(getattr(item, "context_id", None), str) for item in self.contextual_records):
+            raise TypeError("contextual_records must contain typed context records")
+        if any(not isinstance(getattr(item, "evidence_id", None), str) for item in self.evidence_records):
+            raise TypeError("evidence_records must contain typed evidence records")
+        if any(not isinstance(getattr(item, "source_id", None), str) for item in self.source_provenance):
+            raise TypeError("source_provenance must contain typed source records")
         if self.timestamp_ms is not None and (
             not math.isfinite(self.timestamp_ms) or self.timestamp_ms < 0
         ):

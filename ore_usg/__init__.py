@@ -48,6 +48,11 @@ from .semantic import (
     USGSemanticImportReport,
     USGSemanticResource,
 )
+from .language_integration import (
+    USGLanguageIntegrationAdapter,
+    USGLanguageIntegrationResource,
+    USGLanguageIntegrationReport,
+)
 from .semantic_knowledge import (
     USGSemanticConceptRecord,
     USGPredicateRole,
@@ -125,6 +130,9 @@ __all__ = [
     "USGSemanticCategoryAdapter",
     "USGConceptRelationAdapter",
     "USGPredicateFrameAdapter",
+    "USGLanguageIntegrationAdapter",
+    "USGLanguageIntegrationResource",
+    "USGLanguageIntegrationReport",
     "USGBundleLoadError",
     "USGBundleSnapshot",
     "discover_knowledge_bundle",

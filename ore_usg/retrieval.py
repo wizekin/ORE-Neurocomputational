@@ -227,6 +227,60 @@ class USGKnowledgeIndex:
             if frame.frame_id in ids
         )
 
+    def lexical_concept_links_for(
+        self, entry_id: str, *, meaning_id: str | None = None,
+    ) -> tuple[Any, ...]:
+        """Return every explicit lexical-to-concept link for an entry or one meaning."""
+        if not isinstance(entry_id, str) or not entry_id.strip():
+            raise ValueError("entry_id must be non-empty text")
+        if self.resource.language_integration is None:
+            return ()
+        return tuple(
+            item for item in self.resource.language_integration.lexical_concept_links
+            if item.lexical_entry_id == entry_id
+            and (meaning_id is None or item.lexical_meaning_id == meaning_id)
+        )
+
+    def concepts_for_lexical_entry(self, entry_id: str) -> tuple[Any, ...]:
+        """Return all distinct candidate concepts explicitly linked to one lexical entry."""
+        links = self.lexical_concept_links_for(entry_id)
+        concept_ids = {
+            item.semantic_concept_id for item in links if item.semantic_concept_id is not None
+        }
+        semantic = self.resource.semantic_knowledge
+        if semantic is None:
+            return ()
+        return tuple(item for item in semantic.concepts if item.concept_id in concept_ids)
+
+    def morphology_for_form(self, form_entry_id: str) -> tuple[Any, ...]:
+        """Return explicit, ambiguous, unresolved, or missing morphology links for a form."""
+        if not isinstance(form_entry_id, str) or not form_entry_id.strip():
+            raise ValueError("form_entry_id must be non-empty text")
+        if self.resource.language_integration is None:
+            return ()
+        return tuple(
+            item for item in self.resource.language_integration.morphology_links
+            if item.form_entry_id == form_entry_id
+        )
+
+    def contexts_for(self, record_id: str) -> tuple[Any, ...]:
+        """Return exact context records attached to a lexical, semantic, relation or mapping ID."""
+        if self.resource.language_integration is None:
+            return ()
+        return self.resource.language_integration.contexts_for(record_id)
+
+    def evidence_for(self, record_id: str) -> tuple[Any, ...]:
+        """Return explicit evidence summaries with their support status and source rights."""
+        if self.resource.language_integration is None:
+            return ()
+        return self.resource.language_integration.evidence_for(record_id)
+
+    def source_provenance_by_id(self, source_id: str) -> Any | None:
+        """Return source licensing and redistribution metadata for an exact source ID."""
+        if self.resource.language_integration is None:
+            return None
+        return self.resource.language_integration.source_by_id(source_id)
+
     def semantic_frames_by_key(self, frame_key: str) -> tuple[Any, ...]:
         """Return complete ORE predicate structures, including preserved incomplete frames."""
         if not isinstance(frame_key, str) or not frame_key.strip():

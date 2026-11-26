@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 from urllib.parse import quote
-from collections import defaultdict
 from copy import deepcopy
 import re
 import unicodedata

@@ -27,6 +27,7 @@ BLACKBOARD_SNAPSHOT_CONTRACT = "ORE.BLACKBOARD.WORKSPACE_SNAPSHOT"
 BLACKBOARD_FINDING_BATCH_CONTRACT = "ORE.BLACKBOARD.FINDING_BATCH"
 BLACKBOARD_MEMORY_STORE_CONTRACT = "ORE.BLACKBOARD.MEMORY_STORE"
 BLACKBOARD_VERIFICATION_RULES_CONTRACT = "ORE.BLACKBOARD.VERIFICATION_RULES"
+BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT = "ORE.BLACKBOARD.USG_MODULE_KNOWLEDGE"
 BLACKBOARD_CONTRACT_VERSION = "1.0.0"
 
 
@@ -130,6 +131,21 @@ def register_blackboard_contracts(catalog: ContractCatalog) -> tuple[Any, ...]:
             required_fields=required_fields,
             description=f"Blackboard coordination contract {contract_id}.",
             validator=validator,
+        ))
+    if (BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT, BLACKBOARD_CONTRACT_VERSION) not in existing:
+        from .usg_integration import USGModuleKnowledge
+        definitions.append(catalog.register_model(
+            BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT,
+            BLACKBOARD_CONTRACT_VERSION,
+            USGModuleKnowledge,
+            required_fields=(
+                "module_id", "domains", "requested_terms", "predicate_terms",
+                "bundle_id", "bundle_digest", "resource_reference",
+            ),
+            description=(
+                "Read-only, domain-scoped USG knowledge slice delivered to one "
+                "blackboard specialist with feedback and provenance."
+            ),
         ))
     return tuple(definitions)
 

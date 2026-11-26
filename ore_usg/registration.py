@@ -16,6 +16,7 @@ from ore_contracts.module_manifest import (
 )
 from ore_contracts.module_registry import ModuleRegistry
 from ore_contracts.module_protocol import ModuleResult, ModuleStatus
+from ore_logger.database import utc_now
 
 from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,

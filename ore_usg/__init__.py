@@ -33,6 +33,8 @@ from .processors import (
     to_ore_predicate_frame,
     build_lexical_access_processor,
     build_semantic_composition_processor,
+    USGSemanticCompositionProcessor,
+    build_usg_semantic_composition_processor,
 )
 from .structures import (
     USGKnowledgeRelation,
@@ -93,6 +95,8 @@ __all__ = [
     "to_ore_predicate_frame",
     "build_lexical_access_processor",
     "build_semantic_composition_processor",
+    "USGSemanticCompositionProcessor",
+    "build_usg_semantic_composition_processor",
     "USGSemanticStructureAdapter",
     "USGSemanticClass",
     "USGPredicateFrame",

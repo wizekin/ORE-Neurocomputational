@@ -172,7 +172,7 @@ class USGSQLiteObservability:
         records = tuple(sorted(set(str(item) for item in source_record_ids)))
         expected = (
             payload_hash, contract_id, schema_version, producer_module, producer_version,
-            run_id, json.dumps(parents), source_namespace, source_bundle_id,
+            json.dumps(parents), source_namespace, source_bundle_id,
             source_bundle_digest, json.dumps(records),
         )
         with self.database.connection() as connection:
@@ -182,7 +182,7 @@ class USGSQLiteObservability:
             if row is not None:
                 actual = (
                     row["payload_hash"], row["contract_id"], row["schema_version"],
-                    row["producer_module"], row["producer_version"], row["run_id"],
+                    row["producer_module"], row["producer_version"],
                     row["parent_artifact_ids_json"], row["source_namespace"],
                     row["source_bundle_id"], row["source_bundle_digest"],
                     row["source_record_ids_json"],

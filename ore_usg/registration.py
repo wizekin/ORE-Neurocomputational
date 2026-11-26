@@ -20,11 +20,14 @@ from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
     ORE_USG_KNOWLEDGE_CONTRACT,
+    ORE_USG_QUERY_CONTRACT,
+    ORE_USG_RETRIEVAL_CONTRACT,
     USG_KNOWLEDGE_SCHEMA_VERSION,
     USGLexiconResource,
 )
 from .lexical import USGKnowledgeLexicalAdapter
 from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
+from .access import USGKnowledgeAccess, USGKnowledgeQuery, USGKnowledgeQueryResult
 from .validation import validate_knowledge_bundle
 
 
@@ -32,6 +35,18 @@ USG_LEXICAL_MODULE_ID = "ore.usg_lexical_import"
 USG_LEXICAL_MODULE_VERSION = "0.1.0"
 USG_KNOWLEDGE_MODULE_ID = "ore.usg_knowledge_import"
 USG_KNOWLEDGE_MODULE_VERSION = "0.1.0"
+USG_KNOWLEDGE_ACCESS_MODULE_ID = "ore.usg_knowledge_access"
+USG_KNOWLEDGE_ACCESS_MODULE_VERSION = "0.1.0"
+USG_KNOWLEDGE_ACCESS_CAPABILITIES = (
+    "language.knowledge.exact_lookup",
+    "language.knowledge.related_lookup",
+    "language.knowledge.contextual_lookup",
+    "language.lexical.meanings.retrieve",
+    "language.semantic.concepts.retrieve",
+    "language.semantic.relations.retrieve",
+    "language.predicate.frames.retrieve",
+    "language.knowledge.provenance.retrieve",
+)
 USG_KNOWLEDGE_CAPABILITIES = (
     "language.lexical_resource.import",
     "language.semantic_resource.import",
@@ -146,10 +161,28 @@ def register_usg_contracts(catalog: ContractCatalog) -> tuple[Any, ...]:
         required_fields=("lexical", "semantic", "structures", "namespace", "bundle_id", "bundle_digest"),
         description="Unified read-only ORE lexical, semantic, structure, evidence, context, and provenance resource.",
     )
+    _ensure_model_contract(
+        catalog,
+        ORE_USG_QUERY_CONTRACT,
+        "1.0.0",
+        USGKnowledgeQuery,
+        required_fields=("mode",),
+        description="Validated request for exact, direct-related, or contextual retrieval from one ORE USG snapshot.",
+    )
+    _ensure_model_contract(
+        catalog,
+        ORE_USG_RETRIEVAL_CONTRACT,
+        "1.0.0",
+        USGKnowledgeQueryResult,
+        required_fields=("mode", "bundle_id", "bundle_digest", "candidates"),
+        description="Read-only source-backed USG retrieval result with explicit uncertainty and lineage.",
+    )
     return tuple(item for item in (
         catalog.get_contract(ORE_USG_BUNDLE_CONTRACT, USG_KNOWLEDGE_SCHEMA_VERSION),
         catalog.get_contract(ORE_USG_LEXICON_CONTRACT, "1.0.0"),
         catalog.get_contract(ORE_USG_KNOWLEDGE_CONTRACT, "1.0.0"),
+        catalog.get_contract(ORE_USG_QUERY_CONTRACT, "1.0.0"),
+        catalog.get_contract(ORE_USG_RETRIEVAL_CONTRACT, "1.0.0"),
     ) if item is not None)
 
 
@@ -263,6 +296,238 @@ def register_usg_lexical_module(
     binding = registry.bind_backend(USG_LEXICAL_MODULE_ID, backend)
     if binding.module_id != USG_LEXICAL_MODULE_ID:
         raise RuntimeError("ORE registry returned an unexpected module binding")
+    return backend
+
+
+
+
+def make_usg_knowledge_query_artifact(
+    request: USGKnowledgeQuery,
+    *,
+    run_id: str,
+    producer_id: str = "ore.knowledge_client",
+) -> ContractArtifact:
+    """Wrap a typed retrieval request in an ORE contract artifact."""
+    if not isinstance(request, USGKnowledgeQuery):
+        raise TypeError("request must be a USGKnowledgeQuery")
+    if not isinstance(run_id, str) or not run_id.strip():
+        raise ValueError("run_id must be non-empty")
+    if not isinstance(producer_id, str) or not producer_id.strip():
+        raise ValueError("producer_id must be non-empty")
+    return ContractArtifact(
+        ContractEnvelope(
+            contract_id=ORE_USG_QUERY_CONTRACT,
+            schema_version="1.0.0",
+            run_id=run_id,
+            producer_id=producer_id,
+            config_hash=sha256_json({"mode": request.mode}),
+            created_at=utc_now_iso(),
+            evidence_kind=EvidenceKind.EXTERNAL_REFERENCE,
+            model_version=USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+            data_hash=content_hash(request),
+        ),
+        request,
+        metadata={"read_only": True, "query_mode": request.mode},
+    )
+
+
+def build_usg_knowledge_access_manifest() -> ModuleManifest:
+    """Declare the typed request/response contract for ORE's shared USG knowledge API."""
+    return ModuleManifest(
+        identity=ModuleIdentity(
+            USG_KNOWLEDGE_ACCESS_MODULE_ID,
+            USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+            "USG Knowledge Access",
+            package_path="ore_usg",
+        ),
+        responsibilities=(
+            "provide exact lexical, semantic class, concept, and predicate-frame lookup",
+            "retrieve directly related concepts only through explicit directed source assertions",
+            "retrieve contextual associations only through explicit USG context assignments",
+            "return evidence statuses, source rights, source references, and snapshot lineage",
+            "expose unavailable domains and ambiguous/unresolved states without selecting a winner",
+        ),
+        input_ports=(
+            InputPort(
+                "knowledge",
+                ORE_USG_KNOWLEDGE_CONTRACT,
+                ("1.0.0",),
+                expected_data_type="ore_usg.knowledge.USGKnowledgeResource",
+            ),
+            InputPort(
+                "request",
+                ORE_USG_QUERY_CONTRACT,
+                ("1.0.0",),
+                expected_data_type="ore_usg.access.USGKnowledgeQuery",
+            ),
+        ),
+        output_ports=(
+            OutputPort(
+                "retrieval",
+                ORE_USG_RETRIEVAL_CONTRACT,
+                "1.0.0",
+                "ore_usg.access.USGKnowledgeQueryResult",
+                "Controlled retrieval results with provenance, uncertainty, and confidence availability.",
+            ),
+        ),
+        capabilities=USG_KNOWLEDGE_ACCESS_CAPABILITIES,
+        execution_modes=("FUNCTIONAL", "INFER"),
+        limitations=(
+            "Exact lookup uses conservative case-insensitive equality; no stemming or fuzzy substitution is applied.",
+            "Related-concept lookup is one-hop and follows only explicit source-backed relations, memberships, and lexical-concept links.",
+            "Contextual lookup follows explicit context assignments and does not infer context from text.",
+            "No transitive, inverse, causal, or unasserted relation is generated.",
+            "No calibrated confidence is present in the current USG contract; confidence_value remains None.",
+            "Evidence support status is not a verified fact or an independently adjudicated truth value.",
+            "Missing domains return empty results with explicit availability metadata instead of blocking unrelated domains.",
+        ),
+    )
+
+
+class USGKnowledgeAccessModuleBackend:
+    """Registry backend for controlled read-only queries against a supplied USG snapshot."""
+
+    def __init__(self, manifest: ModuleManifest, catalog: ContractCatalog) -> None:
+        self.manifest = manifest
+        self.catalog = catalog
+
+    def describe(self) -> ModuleManifest:
+        return self.manifest
+
+    def execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
+        """Validate both parent artifacts, retrieve, then emit a two-parent result artifact."""
+        try:
+            resource_artifact = inputs.get("knowledge")
+            request_artifact = inputs.get("request")
+            if not isinstance(resource_artifact, ContractArtifact):
+                return ModuleResult(
+                    USG_KNOWLEDGE_ACCESS_MODULE_ID, USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"error": "knowledge input must be a ContractArtifact"},
+                )
+            if not isinstance(request_artifact, ContractArtifact):
+                return ModuleResult(
+                    USG_KNOWLEDGE_ACCESS_MODULE_ID, USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"error": "request input must be a ContractArtifact"},
+                )
+            expected = (
+                (resource_artifact, ORE_USG_KNOWLEDGE_CONTRACT, "1.0.0", USGKnowledgeResource),
+                (request_artifact, ORE_USG_QUERY_CONTRACT, "1.0.0", USGKnowledgeQuery),
+            )
+            validation_errors: list[str] = []
+            for artifact, contract_id, version, payload_type in expected:
+                if artifact.envelope.contract_id != contract_id:
+                    validation_errors.append(
+                        f"expected contract {contract_id}, got {artifact.envelope.contract_id}"
+                    )
+                    continue
+                if artifact.envelope.schema_version != version:
+                    validation_errors.append(f"{contract_id} requires schema version {version}")
+                    continue
+                validation = self.catalog.validate_artifact(artifact)
+                if not validation.valid:
+                    validation_errors.extend(validation.errors)
+                if not isinstance(artifact.payload, payload_type):
+                    validation_errors.append(
+                        f"{contract_id} payload must be {payload_type.__module__}.{payload_type.__qualname__}"
+                    )
+            if validation_errors:
+                return ModuleResult(
+                    USG_KNOWLEDGE_ACCESS_MODULE_ID, USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+                    ModuleStatus.UNAVAILABLE,
+                    diagnostics={"input_validation_errors": validation_errors},
+                )
+
+            request = request_artifact.payload
+            access = USGKnowledgeAccess(resource_artifact.payload)
+            result = access.query(request)
+            parent_hashes = (resource_artifact.payload_hash, request_artifact.payload_hash)
+            envelope = make_envelope(
+                ORE_USG_RETRIEVAL_CONTRACT,
+                context.run_id,
+                USG_KNOWLEDGE_ACCESS_MODULE_ID,
+                config={"mode": request.mode, "max_results": request.max_results},
+                evidence_kind=EvidenceKind.DERIVED,
+                parent_artifact_ids=parent_hashes,
+                data_hash=content_hash(result),
+                model_version=USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+            )
+            artifact = ContractArtifact(
+                envelope,
+                result,
+                metadata={
+                    "read_only": True,
+                    "bundle_id": result.bundle_id,
+                    "bundle_digest": result.bundle_digest,
+                    "query_mode": result.mode,
+                    "candidate_count": len(result.candidates),
+                    "uncertainty_present": result.uncertainty_present,
+                    "confidence_available": result.confidence_available,
+                    "unavailable_domains": list(result.unavailable_domains),
+                },
+            )
+            return ModuleResult(
+                USG_KNOWLEDGE_ACCESS_MODULE_ID,
+                USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+                ModuleStatus.SUCCESS,
+                artifacts=(artifact,),
+                diagnostics={
+                    "output_count": 1,
+                    "candidate_count": len(result.candidates),
+                    "unavailable_domains": list(result.unavailable_domains),
+                    "uncertainty_present": result.uncertainty_present,
+                    "confidence_available": result.confidence_available,
+                    "capability_support": {
+                        capability: 1.0 for capability in USG_KNOWLEDGE_ACCESS_CAPABILITIES
+                    },
+                    "capability_support_basis": (
+                        "successful typed retrieval only; not truth, confidence, or knowledge completeness"
+                    ),
+                },
+                provenance={
+                    "read_only": True,
+                    "knowledge_artifact_hash": resource_artifact.payload_hash,
+                    "query_artifact_hash": request_artifact.payload_hash,
+                    "parent_artifact_hashes": list(parent_hashes),
+                    "bundle_id": result.bundle_id,
+                    "bundle_digest": result.bundle_digest,
+                },
+            )
+        except Exception as exc:
+            return ModuleResult(
+                USG_KNOWLEDGE_ACCESS_MODULE_ID,
+                USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+                ModuleStatus.FAILED,
+                diagnostics={"exception_type": type(exc).__name__, "error": str(exc)},
+                warnings=("USG knowledge retrieval failed; no output artifact was emitted.",),
+                provenance={"read_only": True},
+            )
+
+
+def register_usg_knowledge_access_module(
+    registry: ModuleRegistry,
+) -> USGKnowledgeAccessModuleBackend:
+    """Register and bind the controlled USG knowledge query module."""
+    if not isinstance(registry, ModuleRegistry):
+        raise TypeError("registry must be a ModuleRegistry")
+    catalog = registry.contract_catalog
+    register_usg_contracts(catalog)
+    manifest = build_usg_knowledge_access_manifest()
+    existing = registry.get_manifest(USG_KNOWLEDGE_ACCESS_MODULE_ID)
+    if existing is None:
+        registry.register(manifest)
+    elif existing != manifest:
+        raise ValueError("an incompatible USG knowledge-access manifest is already registered")
+    backend = registry.get_backend(USG_KNOWLEDGE_ACCESS_MODULE_ID)
+    if backend is not None:
+        if not isinstance(backend, USGKnowledgeAccessModuleBackend):
+            raise ValueError("the USG knowledge-access module has an incompatible backend")
+        return backend
+    backend = USGKnowledgeAccessModuleBackend(manifest, catalog)
+    binding = registry.bind_backend(USG_KNOWLEDGE_ACCESS_MODULE_ID, backend)
+    if binding.module_id != USG_KNOWLEDGE_ACCESS_MODULE_ID:
+        raise RuntimeError("ORE registry returned an unexpected USG knowledge-access binding")
     return backend
 
 
@@ -446,11 +711,19 @@ def register_usg_knowledge_module(
     binding = registry.bind_backend(USG_KNOWLEDGE_MODULE_ID, backend)
     if binding.module_id != USG_KNOWLEDGE_MODULE_ID:
         raise RuntimeError("ORE registry returned an unexpected unified USG module binding")
+    register_usg_knowledge_access_module(registry)
     return backend
 
 
 __all__ = [
     "USGKnowledgeModuleBackend",
+    "USGKnowledgeAccessModuleBackend",
+    "USG_KNOWLEDGE_ACCESS_MODULE_ID",
+    "USG_KNOWLEDGE_ACCESS_MODULE_VERSION",
+    "USG_KNOWLEDGE_ACCESS_CAPABILITIES",
+    "build_usg_knowledge_access_manifest",
+    "register_usg_knowledge_access_module",
+    "make_usg_knowledge_query_artifact",
     "USG_KNOWLEDGE_MODULE_ID",
     "USG_KNOWLEDGE_MODULE_VERSION",
     "USG_KNOWLEDGE_CAPABILITIES",

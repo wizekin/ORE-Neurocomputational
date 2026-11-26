@@ -112,6 +112,71 @@ class USGKnowledgeResource:
     def source_provenance(self) -> tuple[Any, ...]:
         return self.language_integration.sources if self.language_integration is not None else ()
 
+    @property
+    def resource_id(self) -> str:
+        """Return a stable identity for this exact immutable imported snapshot."""
+        return f"usg-knowledge://{self.namespace}/{self.bundle_id}@{self.bundle_digest}"
+
+    @property
+    def semantic_relations(self) -> tuple[Any, ...]:
+        """Expose the semantic relation graph, preferring the richer Phase 2 import."""
+        if self.semantic_knowledge is not None:
+            return self.semantic_knowledge.relations
+        return self.structures.relations
+
+    @property
+    def semantic_categories(self) -> tuple[Any, ...]:
+        """Expose typed semantic categories/classes from the best available adapter."""
+        if self.semantic_knowledge is not None:
+            return self.semantic_knowledge.categories
+        return self.structures.classes
+
+    @property
+    def semantic_memberships(self) -> tuple[Any, ...]:
+        """Expose source-backed category-membership assertions when available."""
+        return self.semantic_knowledge.memberships if self.semantic_knowledge is not None else ()
+
+    @property
+    def predicate_frames(self) -> tuple[Any, ...]:
+        """Expose complete and incomplete predicate frames without discarding source detail."""
+        if self.semantic_knowledge is not None:
+            return self.semantic_knowledge.predicate_frames
+        return self.structures.predicate_frames
+
+    @property
+    def reference_inventory(self) -> Mapping[str, tuple[Any, ...]]:
+        """Return the explicit cross-resource edges that connect imported domains."""
+        integration = self.language_integration
+        return {
+            "lexical_to_semantic": self.lexical_concept_links,
+            "morphology": self.morphology_links,
+            "relations": self.semantic_relations,
+            "memberships": self.semantic_memberships,
+            "context_assignments": integration.context_assignments if integration else (),
+            "evidence_attachments": integration.evidence_attachments if integration else (),
+            "predicate_frames": self.predicate_frames,
+        }
+
+    @property
+    def available_domains(self) -> tuple[str, ...]:
+        """List typed domains exposed by this snapshot without claiming their completeness."""
+        domains: list[str] = []
+        if self.lexical.entries:
+            domains.append("LEXICAL")
+        if self.semantic_concepts or self.semantic_categories:
+            domains.append("SEMANTIC")
+        if self.semantic_relations or self.semantic_memberships:
+            domains.append("RELATIONAL")
+        if self.predicate_frames:
+            domains.append("PREDICATE")
+        if self.contextual_records:
+            domains.append("CONTEXT")
+        if self.evidence_records:
+            domains.append("EVIDENCE")
+        if self.source_provenance:
+            domains.append("SOURCE_PROVENANCE")
+        return tuple(domains)
+
     def contexts_for(self, record_id: str) -> tuple[Any, ...]:
         """Get explicit context records attached to a lexical, semantic or USG record ID."""
         if self.language_integration is None:

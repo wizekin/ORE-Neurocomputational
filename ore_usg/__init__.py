@@ -8,6 +8,8 @@ from .contracts import (
     ORE_USG_BUNDLE_CONTRACT,
     ORE_USG_LEXICON_CONTRACT,
     ORE_USG_KNOWLEDGE_CONTRACT,
+    ORE_USG_QUERY_CONTRACT,
+    ORE_USG_RETRIEVAL_CONTRACT,
     USG_KNOWLEDGE_CONTRACT,
     USG_KNOWLEDGE_SCHEMA_VERSION,
     USG_LEXICAL_ADAPTER_VERSION,
@@ -20,6 +22,12 @@ from .contracts import (
 )
 from .lexical import USGKnowledgeLexicalAdapter
 from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
+from .access import (
+    USGKnowledgeAccess,
+    USGKnowledgeQuery,
+    USGKnowledgeCandidate,
+    USGKnowledgeQueryResult,
+)
 from .retrieval import USGKnowledgeIndex, USGRetrievalResult, USGRetrievedItem
 from .bundle_io import (
     USGBundleLoadError,
@@ -33,6 +41,7 @@ from .processors import (
     to_ore_predicate_frame,
     build_lexical_access_processor,
     build_semantic_composition_processor,
+    build_semantic_cognition_processor,
 )
 from .structures import (
     USGKnowledgeRelation,
@@ -67,7 +76,14 @@ from .semantic_knowledge import (
 )
 from .registration import (
     USGKnowledgeModuleBackend,
-    USG_KNOWLEDGE_CAPABILITIES,
+    USGKnowledgeAccessModuleBackend,
+    USG_KNOWLEDGE_ACCESS_MODULE_ID,
+    USG_KNOWLEDGE_ACCESS_MODULE_VERSION,
+    USG_KNOWLEDGE_ACCESS_CAPABILITIES,
+    build_usg_knowledge_access_manifest,
+    register_usg_knowledge_access_module,
+    make_usg_knowledge_query_artifact,
+)    USG_KNOWLEDGE_CAPABILITIES,
     USG_KNOWLEDGE_MODULE_ID,
     USG_KNOWLEDGE_MODULE_VERSION,
     build_usg_knowledge_manifest,
@@ -90,6 +106,8 @@ __all__ = [
     "ORE_USG_BUNDLE_CONTRACT",
     "ORE_USG_LEXICON_CONTRACT",
     "ORE_USG_KNOWLEDGE_CONTRACT",
+    "ORE_USG_QUERY_CONTRACT",
+    "ORE_USG_RETRIEVAL_CONTRACT",
     "USG_KNOWLEDGE_CONTRACT",
     "USG_KNOWLEDGE_SCHEMA_VERSION",
     "USG_LEXICAL_ADAPTER_VERSION",
@@ -102,6 +120,10 @@ __all__ = [
     "USGKnowledgeLexicalAdapter",
     "USGKnowledgeAdapter",
     "USGKnowledgeResource",
+    "USGKnowledgeAccess",
+    "USGKnowledgeQuery",
+    "USGKnowledgeCandidate",
+    "USGKnowledgeQueryResult",
     "USGKnowledgeIndex",
     "USGRetrievalResult",
     "USGRetrievedItem",
@@ -110,6 +132,7 @@ __all__ = [
     "to_ore_predicate_frame",
     "build_lexical_access_processor",
     "build_semantic_composition_processor",
+    "build_semantic_cognition_processor",
     "USGSemanticStructureAdapter",
     "USGSemanticClass",
     "USGPredicateFrame",
@@ -138,6 +161,13 @@ __all__ = [
     "discover_knowledge_bundle",
     "load_knowledge_bundle",
     "USGKnowledgeModuleBackend",
+    "USGKnowledgeAccessModuleBackend",
+    "USG_KNOWLEDGE_ACCESS_MODULE_ID",
+    "USG_KNOWLEDGE_ACCESS_MODULE_VERSION",
+    "USG_KNOWLEDGE_ACCESS_CAPABILITIES",
+    "build_usg_knowledge_access_manifest",
+    "register_usg_knowledge_access_module",
+    "make_usg_knowledge_query_artifact",
     "build_usg_knowledge_task_profile",
     "build_usg_knowledge_cognitive_task",
     "coordinate_usg_knowledge_import",

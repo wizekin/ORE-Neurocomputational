@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import math
 import statistics
 import time
@@ -63,7 +64,7 @@ def benchmark_usg_import(
     if repetitions < 1:
         raise ValueError("repetitions must be at least one")
     active_adapter = adapter or USGKnowledgeAdapter()
-    encoded_bytes = len(repr(bundle).encode("utf-8"))
+    encoded_bytes = len(json.dumps(bundle, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8"))
     timings: list[float] = []
     peak_memory = 0
     resource: USGKnowledgeResource | None = None

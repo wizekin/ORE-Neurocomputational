@@ -12,13 +12,12 @@ from ore_usg.compatibility import (
     USGMigrationRegistry,
     inspect_ore_contract_catalog,
     inspect_usg_compatibility,
-    register_usg_contracts,
     require_usg_compatibility,
 )
 from ore_usg.observability import USGSQLiteObservability, _safe_metadata
-from ore_usg import make_usg_bundle_artifact, register_usg_knowledge_module
+from ore_usg import make_usg_bundle_artifact, register_usg_contracts, register_usg_knowledge_module
 from ore_usg.annotation_sync import synchronize_annotations
-from test_usg_lexical_adapter import _bundle
+from test_usg_lexical_adapter import _bundle as _adapter_bundle
 
 
 def _bundle():
@@ -230,7 +229,7 @@ def test_registered_import_module_records_execution_and_source_to_output_lineage
         compute_budget=ComputeBudget(),
     )
     source = make_usg_bundle_artifact(
-        _bundle(),
+        _adapter_bundle(),
         run_id=context.run_id,
         producer_id="test.usg_source",
     )

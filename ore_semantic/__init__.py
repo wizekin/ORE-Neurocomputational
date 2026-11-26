@@ -8,6 +8,7 @@ from .contracts import (
     SemanticResult,
     WordFormEpisode,
 )
+from .knowledge import SemanticCategory, SemanticCategoryMembership, SemanticRelation
 from .pipeline import SemanticCognitionProcessor
 from .memory import MEMORY_OPERATION_REGISTRY, SemanticMemoryStore, SemanticPrototypeEvidence
 from .source_mapping import SOURCE_COMPONENTS, SOURCE_OPERATION_MAP, source_mapping_as_dicts
@@ -18,6 +19,9 @@ __all__ = [
     "OperationSpec",
     "POPULATIONS",
     "SemanticConcept",
+    "SemanticCategory",
+    "SemanticCategoryMembership",
+    "SemanticRelation",
     "SemanticConfig",
     "SemanticCognitionProcessor",
     "SemanticLIFSimulator",

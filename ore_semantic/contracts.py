@@ -48,10 +48,13 @@ class SemanticConcept:
     language: str = "und"
     verified_by: str = "unspecified"
     source_reference: str = "unspecified"
+    definition: str | None = None
 
     def __post_init__(self) -> None:
         if not self.concept_id.strip() or not self.label.strip():
             raise ValueError("concept_id and label must be non-empty")
+        if self.definition is not None and not isinstance(self.definition, str):
+            raise TypeError("definition must be a string or None")
         if not math.isfinite(self.frequency) or self.frequency <= 0:
             raise ValueError("frequency must be finite and positive")
         if any(not isinstance(alias, str) or not alias.strip() for alias in self.aliases):

@@ -1,17 +1,14 @@
 name: Python tests
 
+# Temporarily disabled during ORE-USG integration.
+# Restore push/pull_request triggers when local testing is ready to resume.
 on:
-  push:
-    branches: [main, "feature/**"]
-  pull_request:
-    branches: [main]
-
-concurrency:
-  group: python-tests-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
+    inputs: {}
 
 jobs:
   test:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

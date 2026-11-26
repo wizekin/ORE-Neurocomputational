@@ -651,11 +651,15 @@ def _execute_observed(
                     source_ids += (str(item["id"]),)
         source_namespace = str(bundle.get("namespace") or "") or None
         source_bundle_id = str(bundle.get("bundle_id") or "") or None
-        source_bundle_digest = str(bundle.get("bundle_digest") or source_artifact.payload_hash) or None
+        source_bundle_digest = str(bundle.get("bundle_digest") or "") or None
     output_artifacts = tuple(getattr(result, "artifacts", ()) or ()) if result is not None else ()
     for artifact in output_artifacts:
         envelope = artifact.envelope
         metadata = dict(getattr(artifact, "metadata", {}) or {})
+        source_bundle_digest = str(
+            metadata.get("usg_bundle_digest") or metadata.get("bundle_digest")
+            or source_bundle_digest or ""
+        ) or None
         observer.record_artifact_lineage(
             artifact_id=artifact.payload_hash,
             payload_hash=artifact.payload_hash,
@@ -680,8 +684,9 @@ def _execute_observed(
             producer_module="usg.source_export",
             producer_version="external",
             bundle=source_artifact.payload,
-            bundle_digest=source_bundle_digest,
+            bundle_digest=source_bundle_digest or source_artifact.payload_hash,
         )
+        source_bundle_digest = source_bundle_digest or source_artifact.payload_hash
 
     diagnostics = dict(getattr(result, "diagnostics", {}) or {}) if result is not None else {}
     if failure is not None:

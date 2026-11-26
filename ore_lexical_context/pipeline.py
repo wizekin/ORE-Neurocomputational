@@ -140,7 +140,9 @@ class LexicalContextProcessor:
         for meaning,prior,fit,post in zip(meanings,priors,compatibility,posterior):
             rows.append({"meaning_id":meaning.meaning_id,"prior":prior,"contextual_compatibility":fit,
                          "posterior":post,"features":dict(meaning.features),"verified_by":meaning.verified_by,
-                         "source_reference":meaning.source_reference})
+                         "source_reference":meaning.source_reference,
+                         "semantic_concept_ids":list(getattr(meaning,"semantic_concept_ids",())),
+                         "semantic_link_status":getattr(meaning,"semantic_link_status","UNLINKED")})
         rows.sort(key=lambda x:x["posterior"],reverse=True)
         return rows
     def process(self, request: LexicalContextRequest) -> LexicalContextResult:
@@ -388,7 +390,15 @@ class LexicalContextProcessor:
                     math.exp(-cfg.token_interval_ms/cfg.adaptation_tau_ms)+cfg.adaptation_gain*settling.get(selected_entry.entry_id,0.0))
                 if cfg.record_exposures: self._exposure[selected_entry.entry_id]+=1.0
             results.append({"token_index":token_index,"orthography":word,"candidate_words":candidate_records,
-                "selected_entry":({"entry_id":selected_entry.entry_id,"orthography":selected_entry.orthography} if selected_entry else None),
+                "selected_entry":({
+                    "entry_id":selected_entry.entry_id,"orthography":selected_entry.orthography,
+                    "semantic_concept_ids":list(getattr(selected_entry,"semantic_concept_ids",())),
+                    "semantic_link_status":getattr(selected_entry,"semantic_link_status","UNLINKED"),
+                    "lemma_entry_id":getattr(selected_entry,"lemma_entry_id",None),
+                    "morphology_link_status":getattr(selected_entry,"morphology_link_status","NOT_APPLICABLE"),
+                    "script":getattr(selected_entry,"script",None),
+                    "grammatical_information_json":getattr(selected_entry,"grammatical_information_json",None),
+                } if selected_entry else None),
                 "pronunciation_alternatives":pronunciation_weights,"morphological_candidates":composition,
                 "meaning_candidates":ranked_meanings,"selected_meaning":chosen,"abstained":abstained,
                 "sentence_context_before":prior_context,"predicted_next_words":predicted,
@@ -410,4 +420,21 @@ class LexicalContextProcessor:
         return LexicalContextResult(request.sequence_id,original,normalized,results,context,biology,trace,diagnostics,
             {"language":request.language,"source_reference":request.source_reference,
              "parameters":cfg.to_dict(),"exposure_state":"updated" if cfg.record_exposures else "read_only",
-             "biological_scope":"generic LIF reference; not a fitted human-brain model"})
+             "biological_scope":"generic LIF reference; not a fitted human-brain model",
+             "contextual_records":[
+                 {"context_id":item.context_id,"context_type":item.context_type,"value":item.value,
+                  "language_profile":item.language_profile,"scope":item.scope}
+                 for item in request.contextual_records],
+             "evidence_records":[
+                 {"evidence_id":item.evidence_id,"source_id":item.source_id,"support_status":item.support_status,
+                  "source_rights_status":item.source_rights_status,"source_redistribution":item.source_redistribution,
+                  "source_license_id":item.source_license_id,"usable_for_local_reasoning":item.usable_for_local_reasoning,
+                  "verified_fact":False,"interpretation":item.interpretation}
+                 for item in request.evidence_records],
+             "source_provenance":[
+                 {"source_id":item.source_id,"provider":item.provider,"source_type":item.source_type,
+                  "rights_status":item.rights_status,"redistribution":item.redistribution,
+                  "attribution":item.attribution,"license_id":item.license_id,
+                  "usable_for_local_import":item.usable_for_local_import,"redistributable":item.redistributable}
+                 for item in request.source_provenance],
+             "evidence_is_verified_fact":False})

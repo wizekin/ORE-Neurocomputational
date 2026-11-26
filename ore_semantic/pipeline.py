@@ -949,6 +949,30 @@ class SemanticCognitionProcessor:
             "source_reference": request.source_reference,
             "language": request.language,
             "task": request.task,
+            "contextual_records": [
+                {"context_id": item.context_id, "context_type": item.context_type,
+                 "value": item.value, "language_profile": item.language_profile, "scope": item.scope}
+                for item in request.contextual_records
+            ],
+            "evidence_records": [
+                {"evidence_id": item.evidence_id, "source_id": item.source_id,
+                 "evidence_type": item.evidence_type, "support_status": item.support_status,
+                 "source_rights_status": item.source_rights_status,
+                 "source_redistribution": item.source_redistribution,
+                 "source_license_id": item.source_license_id,
+                 "usable_for_local_reasoning": item.usable_for_local_reasoning,
+                 "verified_fact": False, "interpretation": item.interpretation}
+                for item in request.evidence_records
+            ],
+            "source_provenance": [
+                {"source_id": item.source_id, "provider": item.provider,
+                 "source_type": item.source_type, "rights_status": item.rights_status,
+                 "redistribution": item.redistribution, "attribution": item.attribution,
+                 "license_id": item.license_id, "usable_for_local_import": item.usable_for_local_import,
+                 "redistributable": item.redistributable}
+                for item in request.source_provenance
+            ],
+            "evidence_is_verified_fact": False,
             "model_scope": (
                 "Semantic access and concept selection only; no unrestricted syntax, "
                 "discourse, world-model, or clinical inference is claimed."

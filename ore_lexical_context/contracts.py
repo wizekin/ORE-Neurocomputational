@@ -18,10 +18,16 @@ class LexicalMeaning:
     gloss: str = ""
     verified_by: str = "unspecified"
     source_reference: str = "unspecified"
+    semantic_concept_ids: tuple[str, ...] = ()
+    semantic_link_status: str = "UNLINKED"
     def __post_init__(self):
         if not self.meaning_id.strip() or not math.isfinite(self.prior) or self.prior <= 0:
             raise ValueError("meaning_id and positive finite prior are required")
         _features("meaning features", self.features)
+        if len(self.semantic_concept_ids) != len(set(self.semantic_concept_ids)):
+            raise ValueError("semantic concept IDs on a lexical meaning must be unique")
+        if self.semantic_link_status not in {"UNLINKED", "LINKED", "AMBIGUOUS", "MISSING", "CONFLICTED", "CONTRADICTED", "UNRESOLVED", "CANDIDATE", "NEUTRAL", "UNASSESSED"}:
+            raise ValueError("unsupported lexical meaning semantic-link status")
 
 @dataclass(frozen=True, slots=True)
 class LexicalEntry:
@@ -35,6 +41,13 @@ class LexicalEntry:
     language: str = "und"
     verified_by: str = "unspecified"
     source_reference: str = "unspecified"
+    semantic_concept_ids: tuple[str, ...] = ()
+    semantic_link_status: str = "UNLINKED"
+    lemma_entry_id: str | None = None
+    morphology_link_status: str = "NOT_APPLICABLE"
+    script: str | None = None
+    grammatical_information_json: str | None = None
+    morphology_source_reference: str | None = None
     def __post_init__(self):
         if not self.entry_id.strip() or not self.orthography.strip():
             raise ValueError("entry_id and orthography must be non-empty")
@@ -44,6 +57,12 @@ class LexicalEntry:
             raise ValueError("phonemes must be non-empty symbols")
         if any(not isinstance(m, LexicalMeaning) for m in self.meanings):
             raise TypeError("meanings must contain LexicalMeaning records")
+        if len(self.semantic_concept_ids) != len(set(self.semantic_concept_ids)):
+            raise ValueError("semantic concept IDs on a lexical entry must be unique")
+        if self.semantic_link_status not in {"UNLINKED", "LINKED", "AMBIGUOUS", "MISSING", "CONFLICTED", "CONTRADICTED", "UNRESOLVED", "CANDIDATE", "NEUTRAL", "UNASSESSED"}:
+            raise ValueError("unsupported lexical entry semantic-link status")
+        if self.morphology_link_status not in {"NOT_APPLICABLE", "LINKED", "AMBIGUOUS", "MISSING", "CONFLICTED", "CONTRADICTED", "UNRESOLVED", "CANDIDATE", "NEUTRAL", "UNASSESSED"}:
+            raise ValueError("unsupported lexical entry morphology-link status")
 
 @dataclass(frozen=True, slots=True)
 class MorphemeEntry:
@@ -85,6 +104,9 @@ class LexicalContextRequest:
     incoming_semantic_evidence: Mapping[int, Mapping[str, float]] = field(default_factory=dict)
     timestamp_ms: float | None = None
     source_reference: str | None = None
+    contextual_records: Sequence[Any] = ()
+    evidence_records: Sequence[Any] = ()
+    source_provenance: Sequence[Any] = ()
     def __post_init__(self):
         if not self.sequence_id.strip() or ((self.text is None) == (self.tokens is None)):
             raise ValueError("sequence_id required; provide exactly one of text or tokens")
@@ -98,6 +120,12 @@ class LexicalContextRequest:
             _features(f"incoming_semantic_evidence[{i}]", fs)
         if self.timestamp_ms is not None and (not math.isfinite(self.timestamp_ms) or self.timestamp_ms < 0):
             raise ValueError("timestamp_ms must be finite and non-negative")
+        if any(not isinstance(getattr(item, "context_id", None), str) for item in self.contextual_records):
+            raise TypeError("contextual_records must contain typed context records")
+        if any(not isinstance(getattr(item, "evidence_id", None), str) for item in self.evidence_records):
+            raise TypeError("evidence_records must contain typed evidence records")
+        if any(not isinstance(getattr(item, "source_id", None), str) for item in self.source_provenance):
+            raise TypeError("source_provenance must contain typed source records")
 
 @dataclass(frozen=True, slots=True)
 class LexicalContextConfig:

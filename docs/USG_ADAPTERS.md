@@ -429,3 +429,135 @@ them after downloading the repository:
     python -m pytest tests/test_usg_semantic_knowledge_adapter.py -q
 
 The full local suite remains available with `python -m pytest -q`.
+
+
+
+## Phase 3 — Connect language and meaning (roadmap items 8–11)
+
+The unified importer now assembles a typed cross-resource layer at
+`knowledge.language_integration` and projects stable link information onto
+the ordinary ORE lexical entries and meanings. The older Phase 1/2 report
+properties remain available.
+
+### 8. Link lexical entries and meanings to semantic concepts
+
+    semantic_links = knowledge.lexical_concept_links
+    link_groups = knowledge.lexical_concept_groups
+
+A `LEXICAL_SENSE` record that produced both an ORE `LexicalMeaning` and an
+ORE `SemanticConcept` receives an identity link using the same version-scoped
+USG record ID. Additional links are created only when an explicit USG
+`relations` or `mappings` row connects a lexical record to a semantic
+`LEXICAL_SENSE` or `CONCEPT` record.
+
+Links are separate source-backed directed records. One lexical meaning may
+link to multiple concepts, and multiple meanings/entries may link to one
+concept. The importer does not select one preferred target or merge concepts.
+Each link keeps the original USG subject and object IDs, predicate or mapping
+type, source kind, lifecycle state, evidence/context IDs, and source locator.
+
+A missing link is represented by an explicit `MISSING` record. Entry-level
+and meaning-level link groups distinguish `LINKED`, `AMBIGUOUS`,
+`MISSING`, `CONFLICTED`, and `UNRESOLVED` states, while individual links
+also retain `CANDIDATE`, `CONTRADICTED`, `NEUTRAL`, and `UNASSESSED`
+evidence states where applicable.
+
+The imported `LexicalEntry` and `LexicalMeaning` records expose
+`semantic_concept_ids` and `semantic_link_status`, so existing ORE lexical
+processors can read their concept candidates without a new call signature.
+The complete link edges and groups remain available from
+`knowledge.language_integration`.
+
+### 9. Explicit surface-form and lemma morphology
+
+    morphology = knowledge.morphology_links
+
+A form-to-lemma link is created only if a USG relation directly connects a
+`LEXICAL_FORM` record and a `LEMMA` record with a recognized predicate and
+direction. Recognized form-to-lemma predicates are `FORM_OF`,
+`INFLECTED_FORM_OF`, `SURFACE_FORM_OF`, `MORPHOLOGICAL_FORM_OF`, and
+`DERIVED_FORM_OF`. Recognized reverse predicates include `HAS_FORM`,
+`HAS_INFLECTED_FORM`, `HAS_SURFACE_FORM`, and
+`HAS_MORPHOLOGICAL_FORM`.
+
+Unrecognized relation labels between a form and a lemma remain unresolved;
+they do not produce an executable lemma selection. A form with no explicit
+USG link receives a `MISSING` status. If a form is explicitly related to
+more than one lemma, all alternatives remain present and the lexical entry's
+morphology status is `AMBIGUOUS`; no arbitrary lemma is chosen.
+
+Language, script and extra grammatical payload fields are preserved. ORE
+`LexicalEntry` records expose `lemma_entry_id`,
+`morphology_link_status`, `script`,
+`grammatical_information_json`, and
+`morphology_source_reference`. `lemma_entry_id` is populated only for a
+single unambiguous linked lemma.
+
+This phase does not infer pluralization, conjugation, derivation, spelling
+variants, or other morphological relations from string similarity.
+
+### 10. Contextual knowledge
+
+    contexts = knowledge.contextual_records
+    sense_contexts = knowledge.contexts_for(meaning_id)
+
+USG context rows become typed ORE `ContextualRecord` records retaining their
+stable context ID, context type, value, language profile, and scope.
+`ContextAssignment` records preserve each explicit `context_ids` attachment
+to a lexical, semantic, relation, or mapping record. Context values are not
+turned into invented numeric feature activations.
+
+ORE lexical-access, lexical-context, semantic-cognition, and
+semantic-composition requests now accept typed `contextual_records`,
+`evidence_records`, and `source_provenance` fields. Processor results
+retain these inputs in their metadata. This makes the source-backed context
+available to the processing and evaluation stages without silently changing
+the existing numerical context-feature algorithms. A later phase can define
+validated mappings from specific context types into those numerical feature
+spaces.
+
+### 11. Evidence and provenance
+
+    evidence = knowledge.evidence_records
+    sources = knowledge.source_provenance
+    sense_evidence = knowledge.evidence_for(meaning_id)
+
+Every evidence summary becomes an `EvidenceRecord` with its evidence type,
+locator/digest, capture time, transformation IDs and one of
+`SUPPORTS`, `CONTRADICTS`, `NEUTRAL`, or `UNASSESSED`.
+`EvidenceAttachment` records link evidence to the exact record, relation,
+or mapping that cites it.
+
+Evidence records also carry the associated source's rights status,
+redistribution status, license ID and local-reasoning eligibility. A source
+with restricted/unknown/prohibited local-use rights cannot silently make its
+evidence locally usable. The separate `SourceProvenance` record preserves
+provider, source type, attribution, locator, retrieval date, content digest,
+license, rights and redistribution status. The `redistributable` property
+is true only when both source rights and redistribution explicitly permit it.
+
+An imported evidence summary always has `verified_fact=False` and the
+interpretation marker `EVIDENCE_SUMMARY_NOT_VERIFIED_FACT`. ORE request and
+result metadata use the same explicit `evidence_is_verified_fact=False`
+marker. Evidence is available for reasoning and evaluation, but it is not
+upgraded into a verified fact, and this adapter does not adjudicate source
+contradictions.
+
+### Retrieval and local verification
+
+The exact `USGKnowledgeIndex` adds:
+
+    index.lexical_concept_links_for(entry_id)
+    index.concepts_for_lexical_entry(entry_id)
+    index.morphology_for_form(form_entry_id)
+    index.contexts_for(record_id)
+    index.evidence_for(record_id)
+    index.source_provenance_by_id(source_id)
+
+Run the focused Phase 3 regression tests locally:
+
+    python -m pip install -e ".[dev]"
+    python -m pytest tests/test_usg_language_integration.py -q
+
+The full local suite remains available with `python -m pytest -q`.
+No automated tests are run by the Phase 3 integration workflow.

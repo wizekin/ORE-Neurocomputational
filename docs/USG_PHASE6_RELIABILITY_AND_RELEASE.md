@@ -18,6 +18,26 @@ The integration test suites are grouped by boundary:
 
 The existing suites independently exercise adapters and relationships. Phase 6 adds cases for unsupported versions, false semantic-preservation declarations, source record lineage, duplicate/conflicting lineage, nested diagnostic scrubbing and cyclic lineage traversal. Existing adapter tests continue to cover malformed references, unresolved frames, conflicting evidence and unsupported records.
 
+### Adapter and contract inventory
+
+| Adapter / interface | Imported or queried data | ORE contract and output |
+| --- | --- | --- |
+| \`USGKnowledgeLexicalAdapter\` | Lexical forms, lemmas, senses, source/evidence/context references | \`ORE.USG.LEXICON@1.0.0\` → \`USGLexiconResource\` |
+| \`USGConceptAdapter\` | Explicit USG concept records | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` → \`USGSemanticResource\` |
+| \`USGSemanticStructureAdapter\` | Semantic classes, directed relations and predicate structures | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` → \`USGStructureResource\` |
+| \`USGSenseToConceptAdapter\` | Sense and concept records, preserving distinct identities | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` |
+| \`USGSemanticCategoryAdapter\` | Semantic classes, parent categories and explicit memberships | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` |
+| \`USGConceptRelationAdapter\` | Explicit concept relations and mappings | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` |
+| \`USGPredicateFrameAdapter\` | Predicate frames and role declarations; unsupported constraints remain unresolved/non-executable | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` |
+| \`USGSemanticKnowledgeAdapter\` | Coordinated sense/concept, category, relation and predicate-frame projections | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` → \`USGSemanticKnowledgeResource\` |
+| \`USGLanguageIntegrationAdapter\` | Lexical-concept links, morphology, contexts, evidence and source provenance | Component of \`ORE.USG.KNOWLEDGE@1.0.0\` → \`USGLanguageIntegrationResource\` |
+| \`USGKnowledgeAdapter\` | Unified snapshot assembled from the adapters above | \`ORE.USG.KNOWLEDGE@1.0.0\` → \`USGKnowledgeResource\` |
+| \`USGKnowledgeAccess\` | Exact, related-concept and contextual retrieval | \`ORE.USG.KNOWLEDGE_QUERY@1.0.0\` input; \`ORE.USG.KNOWLEDGE_RETRIEVAL@1.0.0\` result |
+| Phase 5 Main Brain USG router | Bounded specialist-specific knowledge projections and separate feedback | \`ORE.BLACKBOARD.USG_MODULE_KNOWLEDGE@1.0.0\` |
+| Bundle artifact boundary | Detached validated source export | \`ORE.USG.KNOWLEDGE_BUNDLE@0.1.0\` |
+
+The "component of" entries are typed inventories carried inside the unified knowledge artifact, not separate registered contracts. All projections retain the common source namespace, bundle ID and digest.
+
 ## 21. SQLite annotation coverage, execution events and artifact lineage
 
 ORE's AST annotation catalogue remains the single annotation source. Run the synchronizer from the repository root after changes:

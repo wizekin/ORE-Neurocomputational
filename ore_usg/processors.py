@@ -157,7 +157,7 @@ def build_semantic_composition_processor(
 def _semantic_lookup_key(value: str) -> str:
     """Mirror ORE semantic-composition token normalization for exact frame matching."""
     normalized = unicodedata.normalize("NFKC", str(value)).casefold().strip()
-    return re.sub(r"^\\W+|\\W+$", "", normalized, flags=re.UNICODE)
+    return re.sub(r"^\W+|\W+$", "", normalized, flags=re.UNICODE)
 
 
 class USGSemanticCompositionProcessor:

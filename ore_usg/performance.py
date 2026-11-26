@@ -148,13 +148,13 @@ def measure_usg_resource_footprint(resource: USGKnowledgeResource) -> USGResourc
     inventories = [
         [item.entry_id for item in resource.lexical.entries],
         [item.concept_id for item in resource.semantic_concepts],
-        [item.category_id for item in resource.semantic_categories],
-        [item.relation_id for item in resource.semantic_relations],
-        [item.frame_id for item in resource.predicate_frames],
+        [getattr(item, "category_id", getattr(item, "class_id", "")) for item in resource.semantic_categories],
+        [getattr(item, "relation_id", "") for item in resource.semantic_relations],
+        [getattr(item, "frame_id", "") for item in resource.predicate_frames],
         [item.evidence_id for item in resource.evidence_records],
         [item.source_id for item in resource.source_provenance],
     ]
-    all_ids = [str(value) for inventory in inventories for value in inventory]
+    all_ids = [str(value) for inventory in inventories for value in inventory if value]
     unique_ids = set(all_ids)
     return USGResourceFootprint(
         bundle_digest=resource.bundle_digest,

@@ -651,7 +651,7 @@ def _execute_observed(
                     source_ids += (str(item["id"]),)
         source_namespace = str(bundle.get("namespace") or "") or None
         source_bundle_id = str(bundle.get("bundle_id") or "") or None
-        source_bundle_digest = str(bundle.get("bundle_digest") or "") or None
+        source_bundle_digest = str(bundle.get("bundle_digest") or source_artifact.payload_hash) or None
         observer.record_source_bundle(
             artifact_id=source_artifact.payload_hash,
             payload_hash=source_artifact.payload_hash,

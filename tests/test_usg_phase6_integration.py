@@ -15,7 +15,13 @@ from ore_usg.compatibility import (
     require_usg_compatibility,
 )
 from ore_usg.observability import USGSQLiteObservability, _safe_metadata
-from ore_usg import make_usg_bundle_artifact, register_usg_contracts, register_usg_knowledge_module
+from ore_usg import (
+    USGKnowledgeQuery,
+    make_usg_bundle_artifact,
+    make_usg_knowledge_query_artifact,
+    register_usg_contracts,
+    register_usg_knowledge_module,
+)
 from ore_usg.annotation_sync import synchronize_annotations
 from test_usg_lexical_adapter import _bundle as _adapter_bundle
 
@@ -277,3 +283,51 @@ def test_annotation_sync_covers_module_class_function_and_method_definitions(tmp
     assert report["coverage_complete"] is True
     assert report["expected_symbols"] == 5
     assert report["annotated_symbols"] == 5
+
+
+
+def test_complete_bundle_import_retrieval_and_lineage_flow(tmp_path):
+    observer = USGSQLiteObservability(tmp_path / "ore.sqlite3")
+    catalog = ContractCatalog()
+    registry = ModuleRegistry(catalog)
+    register_usg_knowledge_module(registry, observability=observer)
+    context = RunContext(
+        run_id="phase6-complete-flow",
+        mode=OperationMode.FUNCTIONAL,
+        deterministic_seed=43,
+        compute_budget=ComputeBudget(),
+    )
+    source = make_usg_bundle_artifact(
+        _adapter_bundle(),
+        run_id=context.run_id,
+        producer_id="test.usg_source",
+    )
+    importer = registry.get_backend("ore.usg_knowledge_import")
+    imported = importer.execute({"knowledge_bundle": source}, context)
+    assert imported.status.value == "success"
+
+    request = make_usg_knowledge_query_artifact(
+        USGKnowledgeQuery(mode="EXACT", query="bank", kind="LEXICAL_ENTRY"),
+        run_id=context.run_id,
+    )
+    retriever = registry.get_backend("ore.usg_knowledge_access")
+    retrieved = retriever.execute(
+        {"knowledge": imported.artifacts[0], "request": request},
+        context,
+    )
+    assert retrieved.status.value == "success"
+    assert retrieved.artifacts[0].payload.candidates
+
+    events = observer.list_module_execution_events(run_id=context.run_id)
+    assert {event["module_id"] for event in events} == {
+        "ore.usg_knowledge_import",
+        "ore.usg_knowledge_access",
+    }
+    trace = observer.trace(retrieved.artifacts[0].payload_hash)
+    imported_trace = next(
+        item for item in trace["parents"]
+        if item.get("artifact", {}).get("artifact_id") == imported.artifacts[0].payload_hash
+    )
+    source_trace = imported_trace["parents"][0]["artifact"]
+    assert source_trace["artifact_id"] == source.payload_hash
+    assert "sense:en:bank:financial" in source_trace["source_record_ids"]

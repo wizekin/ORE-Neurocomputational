@@ -15,6 +15,7 @@ from ore_usg.compatibility import (
 )
 from ore_usg.observability import USGSQLiteObservability, _safe_metadata
 from ore_usg import make_usg_bundle_artifact, register_usg_knowledge_module
+from ore_usg.annotation_sync import synchronize_annotations
 from test_usg_lexical_adapter import _bundle
 
 
@@ -218,3 +219,27 @@ def test_registered_import_module_records_execution_and_source_to_output_lineage
     assert "sense:en:bank:financial" in source_lineage["source_record_ids"]
     trace = observer.trace(output_hash)
     assert trace["parents"][0]["artifact"]["artifact_id"] == source.payload_hash
+
+
+
+def test_annotation_sync_covers_module_class_function_and_method_definitions(tmp_path):
+    package = tmp_path / "ore_usg"
+    package.mkdir()
+    (package / "__init__.py").write_text('"""Package."""\n', encoding="utf-8")
+    (package / "sample.py").write_text(
+        '"""Sample."""\n'
+        'def top_level(value):\n'
+        '    return value\n'
+        'class Example:\n'
+        '    def method(self):\n'
+        '        return True\n',
+        encoding="utf-8",
+    )
+    report = synchronize_annotations(
+        tmp_path,
+        database_path=tmp_path / "ore_logs" / "annotations.sqlite3",
+        include_paths={"ore_usg"},
+    )
+    assert report["coverage_complete"] is True
+    assert report["expected_symbols"] == 6
+    assert report["annotated_symbols"] == 6

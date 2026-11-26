@@ -4,6 +4,8 @@ from __future__ import annotations
 import pytest
 
 from ore_logger.database import LoggerDatabase
+from ore_contracts import ComputeBudget, ContractCatalog, OperationMode, RunContext
+from ore_contracts.module_registry import ModuleRegistry
 from ore_usg.compatibility import (
     USGCompatibilityError,
     USGMigration,
@@ -12,6 +14,8 @@ from ore_usg.compatibility import (
     require_usg_compatibility,
 )
 from ore_usg.observability import USGSQLiteObservability, _safe_metadata
+from ore_usg import make_usg_bundle_artifact, register_usg_knowledge_module
+from test_usg_lexical_adapter import _bundle
 
 
 def _bundle():
@@ -114,7 +118,7 @@ def test_sqlite_events_and_source_lineage_are_traceable_and_idempotent(tmp_path)
     )
     trace = observer.trace("derived-artifact")
     assert trace["parents"][0]["artifact"]["source_bundle_id"] == "phase6-test"
-    assert "record:1" in trace["parents"][0]["artifact"]["source_record_ids"]
+    assert "sense:1" in trace["parents"][0]["artifact"]["source_record_ids"]
 
     observer.record_module_execution(
         module_id="ore.usg_knowledge_import",
@@ -175,3 +179,41 @@ def test_lineage_trace_detects_cycles_without_infinite_recursion(tmp_path):
     observer.record_artifact_lineage(artifact_id="b", payload_hash="b", parent_artifact_ids=("a",), **common)
     trace = observer.trace("a")
     assert trace["parents"][0]["parents"][0]["cycle"] is True
+
+
+
+def test_registered_import_module_records_execution_and_source_to_output_lineage(tmp_path):
+    observer = USGSQLiteObservability(tmp_path / "ore.sqlite3")
+    catalog = ContractCatalog()
+    registry = ModuleRegistry(catalog)
+    register_usg_knowledge_module(registry, observability=observer)
+    context = RunContext(
+        run_id="phase6-observed-import",
+        mode=OperationMode.FUNCTIONAL,
+        deterministic_seed=41,
+        compute_budget=ComputeBudget(),
+    )
+    source = make_usg_bundle_artifact(
+        _bundle(),
+        run_id=context.run_id,
+        producer_id="test.usg_source",
+    )
+    backend = registry.get_backend("ore.usg_knowledge_import")
+    result = backend.execute({"knowledge_bundle": source}, context)
+
+    assert result.status.value == "success"
+    events = observer.list_module_execution_events(run_id=context.run_id)
+    assert len(events) == 1
+    assert events[0]["module_id"] == "ore.usg_knowledge_import"
+    assert events[0]["input_artifact_ids"] == [source.payload_hash]
+    assert len(events[0]["output_artifact_ids"]) == 1
+
+    source_lineage = observer.get_artifact_lineage(source.payload_hash)
+    output_hash = result.artifacts[0].payload_hash
+    output_lineage = observer.get_artifact_lineage(output_hash)
+    assert source_lineage is not None
+    assert output_lineage is not None
+    assert output_lineage["parent_artifact_ids"] == [source.payload_hash]
+    assert "sense:en:bank:financial" in source_lineage["source_record_ids"]
+    trace = observer.trace(output_hash)
+    assert trace["parents"][0]["artifact"]["artifact_id"] == source.payload_hash

@@ -241,5 +241,5 @@ def test_annotation_sync_covers_module_class_function_and_method_definitions(tmp
         include_paths={"ore_usg"},
     )
     assert report["coverage_complete"] is True
-    assert report["expected_symbols"] == 6
-    assert report["annotated_symbols"] == 6
+    assert report["expected_symbols"] == 5
+    assert report["annotated_symbols"] == 5

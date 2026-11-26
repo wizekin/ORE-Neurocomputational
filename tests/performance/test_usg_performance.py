@@ -10,6 +10,14 @@ from ore_usg.performance import (
     benchmark_usg_lookups,
     measure_usg_resource_footprint,
 )
+
+import sys
+from pathlib import Path
+
+TESTS_ROOT = Path(__file__).resolve().parents[1]
+if str(TESTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TESTS_ROOT))
+
 from test_usg_semantic_knowledge_adapter import _phase2_bundle
 
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 from pathlib import Path
 from typing import Any
@@ -39,11 +40,51 @@ def synchronize_annotations(
         {"source_path": row["source_path"], "symbol_kind": row["symbol_kind"], "count": row["count"]}
         for row in rows
     ]
+    indexed_counts = {}
+    for item in coverage:
+        indexed_counts[item["source_path"]] = indexed_counts.get(item["source_path"], 0) + item["count"]
+
+    expected_by_file: dict[str, int] = {}
+    parse_failures: list[str] = []
+    scopes = include_paths or DEFAULT_SCOPES
+    for scope in scopes:
+        scope_path = root / scope
+        candidates = [scope_path] if scope_path.is_file() else (
+            list(scope_path.rglob("*.py")) if scope_path.is_dir() else []
+        )
+        for candidate in candidates:
+            if any(part.startswith(".") or part in {"__pycache__", ".venv", "venv"} for part in candidate.parts):
+                continue
+            relative = candidate.relative_to(root).as_posix()
+            try:
+                tree = ast.parse(candidate.read_text(encoding="utf-8"), filename=relative)
+            except (OSError, UnicodeDecodeError, SyntaxError) as exc:
+                parse_failures.append(f"{relative}: {type(exc).__name__}: {exc}")
+                continue
+            definitions = sum(
+                isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+                for node in ast.walk(tree)
+            )
+            expected_by_file[relative] = definitions + 1  # the module-level annotation
+    coverage_gaps = [
+        {
+            "source_path": source_path,
+            "expected_symbols": expected,
+            "annotated_symbols": indexed_counts.get(source_path, 0),
+            "missing_symbols": expected - indexed_counts.get(source_path, 0),
+        }
+        for source_path, expected in sorted(expected_by_file.items())
+        if indexed_counts.get(source_path, 0) != expected
+    ]
     return {
         **report,
         "database_path": str(database.path),
         "annotated_source_groups": coverage,
         "annotated_symbols": sum(item["count"] for item in coverage),
+        "expected_symbols": sum(expected_by_file.values()),
+        "coverage_gaps": coverage_gaps,
+        "coverage_parse_errors": parse_failures,
+        "coverage_complete": not coverage_gaps and not parse_failures and report["parse_errors"] == 0,
     }
 
 
@@ -54,7 +95,7 @@ def main() -> int:
     args = parser.parse_args()
     report = synchronize_annotations(args.repository_root, database_path=args.database)
     print(json.dumps(report, indent=2, ensure_ascii=False))
-    return 1 if report["parse_errors"] else 0
+    return 1 if not report["coverage_complete"] else 0
 
 
 if __name__ == "__main__":

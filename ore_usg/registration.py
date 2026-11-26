@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import time
 from typing import Any, Mapping
 
 from ore_contracts import (
@@ -29,6 +30,7 @@ from .lexical import USGKnowledgeLexicalAdapter
 from .knowledge import USGKnowledgeAdapter, USGKnowledgeResource
 from .access import USGKnowledgeAccess, USGKnowledgeQuery, USGKnowledgeQueryResult
 from .validation import validate_knowledge_bundle
+from .observability import USGSQLiteObservability
 
 
 USG_LEXICAL_MODULE_ID = "ore.usg_lexical_import"
@@ -387,14 +389,28 @@ def build_usg_knowledge_access_manifest() -> ModuleManifest:
 class USGKnowledgeAccessModuleBackend:
     """Registry backend for controlled read-only queries against a supplied USG snapshot."""
 
-    def __init__(self, manifest: ModuleManifest, catalog: ContractCatalog) -> None:
+    def __init__(
+        self, manifest: ModuleManifest, catalog: ContractCatalog,
+        observability: USGSQLiteObservability | None = None,
+    ) -> None:
         self.manifest = manifest
         self.catalog = catalog
+        self.observability = observability
 
     def describe(self) -> ModuleManifest:
         return self.manifest
 
     def execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
+        """Run retrieval and optionally persist execution and artifact lineage."""
+        if self.observability is not None:
+            return _execute_observed(
+                self.observability, USG_KNOWLEDGE_ACCESS_MODULE_ID,
+                USG_KNOWLEDGE_ACCESS_MODULE_VERSION, inputs, context,
+                lambda: self._execute(inputs, context),
+            )
+        return self._execute(inputs, context)
+
+    def _execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
         """Validate both parent artifacts, retrieve, then emit a two-parent result artifact."""
         try:
             resource_artifact = inputs.get("knowledge")
@@ -507,6 +523,8 @@ class USGKnowledgeAccessModuleBackend:
 
 def register_usg_knowledge_access_module(
     registry: ModuleRegistry,
+    *,
+    observability: USGSQLiteObservability | None = None,
 ) -> USGKnowledgeAccessModuleBackend:
     """Register and bind the controlled USG knowledge query module."""
     if not isinstance(registry, ModuleRegistry):
@@ -523,8 +541,10 @@ def register_usg_knowledge_access_module(
     if backend is not None:
         if not isinstance(backend, USGKnowledgeAccessModuleBackend):
             raise ValueError("the USG knowledge-access module has an incompatible backend")
+        if observability is not None:
+            backend.observability = observability
         return backend
-    backend = USGKnowledgeAccessModuleBackend(manifest, catalog)
+    backend = USGKnowledgeAccessModuleBackend(manifest, catalog, observability=observability)
     binding = registry.bind_backend(USG_KNOWLEDGE_ACCESS_MODULE_ID, backend)
     if binding.module_id != USG_KNOWLEDGE_ACCESS_MODULE_ID:
         raise RuntimeError("ORE registry returned an unexpected USG knowledge-access binding")
@@ -585,6 +605,104 @@ def build_usg_knowledge_manifest() -> ModuleManifest:
     )
 
 
+
+
+def _execute_observed(
+    observer: USGSQLiteObservability,
+    module_id: str,
+    module_version: str,
+    inputs: Mapping[str, Any],
+    context: Any,
+    execute: Any,
+) -> ModuleResult:
+    """Run a backend and persist its event plus input/output artifact lineage."""
+    started = time.perf_counter()
+    run_id = getattr(context, "run_id", None)
+    input_artifacts = [
+        value for value in inputs.values() if isinstance(value, ContractArtifact)
+    ]
+    source_artifact = next(
+        (
+            artifact for artifact in input_artifacts
+            if artifact.envelope.contract_id == ORE_USG_BUNDLE_CONTRACT
+            and isinstance(artifact.payload, Mapping)
+        ),
+        None,
+    )
+    result: ModuleResult | None = None
+    failure: Exception | None = None
+    try:
+        result = execute()
+        status_value = getattr(result.status, "value", str(result.status))
+    except Exception as exc:
+        failure = exc
+        status_value = "FAILED"
+    duration_ms = (time.perf_counter() - started) * 1000.0
+
+    source_ids: tuple[str, ...] = ()
+    source_namespace = None
+    source_bundle_id = None
+    source_bundle_digest = None
+    if source_artifact is not None:
+        bundle = source_artifact.payload
+        for key in ("records", "relations", "mappings", "evidence", "contexts", "sources"):
+            for item in bundle.get(key, ()) if isinstance(bundle.get(key, ()), list) else ():
+                if isinstance(item, Mapping) and item.get("id") is not None:
+                    source_ids += (str(item["id"]),)
+        source_namespace = str(bundle.get("namespace") or "") or None
+        source_bundle_id = str(bundle.get("bundle_id") or "") or None
+        source_bundle_digest = str(bundle.get("bundle_digest") or "") or None
+        observer.record_source_bundle(
+            artifact_id=source_artifact.payload_hash,
+            payload_hash=source_artifact.payload_hash,
+            contract_id=source_artifact.envelope.contract_id,
+            schema_version=source_artifact.envelope.schema_version,
+            producer_module="usg.source_export",
+            producer_version="external",
+            bundle=bundle,
+        )
+
+    output_artifacts = tuple(getattr(result, "artifacts", ()) or ()) if result is not None else ()
+    for artifact in output_artifacts:
+        envelope = artifact.envelope
+        metadata = dict(getattr(artifact, "metadata", {}) or {})
+        observer.record_artifact_lineage(
+            artifact_id=artifact.payload_hash,
+            payload_hash=artifact.payload_hash,
+            contract_id=envelope.contract_id,
+            schema_version=envelope.schema_version,
+            producer_module=module_id,
+            producer_version=module_version,
+            parent_artifact_ids=tuple(getattr(envelope, "parent_artifact_ids", ()) or ()),
+            run_id=run_id,
+            source_namespace=str(metadata.get("usg_namespace") or source_namespace or "") or None,
+            source_bundle_id=str(metadata.get("usg_bundle_id") or metadata.get("bundle_id") or source_bundle_id or "") or None,
+            source_bundle_digest=str(metadata.get("usg_bundle_digest") or metadata.get("bundle_digest") or source_bundle_digest or "") or None,
+            source_record_ids=source_ids,
+        )
+
+    diagnostics = dict(getattr(result, "diagnostics", {}) or {}) if result is not None else {}
+    if failure is not None:
+        diagnostics.update({"exception_type": type(failure).__name__, "error": str(failure)})
+    observer.record_module_execution(
+        module_id=module_id,
+        module_version=module_version,
+        operation="execute",
+        status=status_value,
+        duration_ms=duration_ms,
+        run_id=run_id,
+        input_artifact_ids=tuple(item.payload_hash for item in input_artifacts),
+        output_artifact_ids=tuple(item.payload_hash for item in output_artifacts),
+        bundle_id=source_bundle_id,
+        bundle_digest=source_bundle_digest,
+        metadata=diagnostics,
+    )
+    if failure is not None:
+        raise failure
+    assert result is not None
+    return result
+
+
 class USGKnowledgeModuleBackend:
     """Protocol backend that reports operational capability completion to adaptive ORE."""
 
@@ -593,17 +711,28 @@ class USGKnowledgeModuleBackend:
         manifest: ModuleManifest,
         catalog: ContractCatalog,
         adapter: USGKnowledgeAdapter,
+        observability: USGSQLiteObservability | None = None,
     ) -> None:
-        """Bind the exact manifest, validator, and unified read-only adapter."""
+        """Bind the exact manifest, validator, adapter, and optional SQLite observer."""
         self.manifest = manifest
         self.catalog = catalog
         self.adapter = adapter
+        self.observability = observability
 
     def describe(self) -> ModuleManifest:
         """Return the module manifest used for registry compatibility checks."""
         return self.manifest
 
     def execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
+        """Run the importer and optionally persist execution and artifact lineage."""
+        if self.observability is not None:
+            return _execute_observed(
+                self.observability, USG_KNOWLEDGE_MODULE_ID, USG_KNOWLEDGE_MODULE_VERSION,
+                inputs, context, lambda: self._execute(inputs, context),
+            )
+        return self._execute(inputs, context)
+
+    def _execute(self, inputs: Mapping[str, Any], context: Any) -> ModuleResult:
         """Validate one bundle, emit a typed resource, and report operational support."""
         try:
             source = inputs.get("knowledge_bundle")
@@ -691,6 +820,7 @@ def register_usg_knowledge_module(
     registry: ModuleRegistry,
     *,
     adapter: USGKnowledgeAdapter | None = None,
+    observability: USGSQLiteObservability | None = None,
 ) -> USGKnowledgeModuleBackend:
     """Register and bind the unified read-only USG knowledge importer."""
     if not isinstance(registry, ModuleRegistry):
@@ -706,12 +836,12 @@ def register_usg_knowledge_module(
     if registry.get_backend(USG_KNOWLEDGE_MODULE_ID) is not None:
         raise ValueError("the unified USG knowledge module already has a bound backend")
     backend = USGKnowledgeModuleBackend(
-        manifest, catalog, adapter or USGKnowledgeAdapter(),
+        manifest, catalog, adapter or USGKnowledgeAdapter(), observability=observability,
     )
     binding = registry.bind_backend(USG_KNOWLEDGE_MODULE_ID, backend)
     if binding.module_id != USG_KNOWLEDGE_MODULE_ID:
         raise RuntimeError("ORE registry returned an unexpected unified USG module binding")
-    register_usg_knowledge_access_module(registry)
+    register_usg_knowledge_access_module(registry, observability=observability)
     return backend
 
 

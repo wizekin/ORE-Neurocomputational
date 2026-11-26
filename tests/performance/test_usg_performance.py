@@ -16,21 +16,38 @@ def _large_bundle(extra_forms: int = 1200):
     timestamp = bundle["created_at"]
     extra = []
     for index in range(extra_forms):
+        suffix = f"synthetic-{index:06d}"
+        lemma_id = f"lemma:en:{suffix}"
         extra.append({
-            "id": f"form:en:synthetic-{index:06d}",
-            "kind": "LEXICAL_FORM",
+            "id": lemma_id,
+            "kind": "LEMMA",
             "version": 1,
             "state": "ACCEPTED",
             "created_at": timestamp,
             "source_ids": ["source:permitted"],
             "evidence_ids": [],
             "context_ids": [],
-            "payload": {"form": f"synthetic-{index:06d}", "language": "en", "script": "Latn"},
+            "payload": {"lemma": suffix, "language": "en", "part_of_speech": "NOUN"},
+        })
+        extra.append({
+            "id": f"sense:en:{suffix}",
+            "kind": "LEXICAL_SENSE",
+            "version": 1,
+            "state": "ACCEPTED",
+            "created_at": timestamp,
+            "source_ids": ["source:permitted"],
+            "evidence_ids": [],
+            "context_ids": [],
+            "payload": {
+                "lemma_record_id": lemma_id,
+                "language": "en",
+                "definition": f"Synthetic meaning for {suffix}.",
+                "sense_source_id": "source:permitted",
+            },
         })
     bundle["records"].extend(extra)
     bundle["bundle_id"] = "phase6-large-performance"
     return bundle
-
 
 def test_large_bundle_import_measures_time_memory_and_resource_counts():
     resource, report = benchmark_usg_import(_large_bundle(), repetitions=2)

@@ -691,3 +691,8 @@ python -m pytest tests/test_usg_knowledge_access.py -q
 ## Phase 5 coordination
 
 Phase 5 connects USG knowledge to the Main Brain Coordinator through demand-driven, per-specialist knowledge slices, evidence-aware competing interpretations, task-scoped contextual/semantic feedback, and ORE resource prioritization. See [USG Phase 5 Coordination](USG_PHASE5_COORDINATION.md) for the routing model, feedback lifecycle, resource scoring, limitations, and local test command.
+
+
+## Phase 6 — Reliability and release verification
+
+See [USG Phase 6 Reliability and Release](USG_PHASE6_RELIABILITY_AND_RELEASE.md) for the adapter/contract inventory, annotation synchronization, SQLite execution events and artifact lineage, compatibility/migration rules, performance measurements, licensing/error handling, and reproducible verification commands.

@@ -57,7 +57,8 @@ class USGKnowledgeIndex:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("query must be non-empty text")
         allowed = {
-            "LEXICAL_ENTRY", "SEMANTIC_CONCEPT", "SEMANTIC_CLASS", "PREDICATE_FRAME",
+            "LEXICAL_ENTRY", "SEMANTIC_CONCEPT", "SEMANTIC_CLASS",
+            "SEMANTIC_CATEGORY", "PREDICATE_FRAME",
         }
         if kind is not None and kind not in allowed:
             raise ValueError(f"kind must be one of {sorted(allowed)}")
@@ -80,33 +81,78 @@ class USGKnowledgeIndex:
                     ))
 
         if kind in (None, "SEMANTIC_CONCEPT"):
-            for concept in self.resource.semantic.concepts:
+            semantic_resource = self.resource.semantic_knowledge
+            concepts = (
+                semantic_resource.concepts if semantic_resource is not None
+                else self.resource.semantic.concepts
+            )
+            concept_records = (
+                {item.concept.concept_id: item for item in semantic_resource.concept_records}
+                if semantic_resource is not None else {}
+            )
+            for concept in concepts:
                 labels = (concept.label, *concept.aliases)
                 if any(self._normalize(label) == normalized for label in labels) and (
                     language_filter is None or concept.language.casefold() == language_filter
                 ):
+                    imported = concept_records.get(concept.concept_id)
+                    details = () if imported is None else (
+                        f"record_kind:{imported.record_kind}",
+                        f"definition:{imported.definition or ''}",
+                        f"active:{imported.active}",
+                        f"lemma_record_id:{imported.lemma_record_id or ''}",
+                    )
                     hits.append(USGRetrievedItem(
                         "SEMANTIC_CONCEPT", concept.concept_id, concept.label,
                         concept.language, concept.source_reference,
+                        imported.lifecycle_state if imported is not None else None,
+                        details,
                     ))
 
-        if kind in (None, "SEMANTIC_CLASS"):
-            for item in self.resource.structures.classes:
-                if self._normalize(item.class_key) == normalized:
-                    hits.append(USGRetrievedItem(
-                        "SEMANTIC_CLASS", item.class_id, item.class_key,
-                        "und", item.source_reference, item.lifecycle_state,
-                        (item.definition,),
-                    ))
+        if kind in (None, "SEMANTIC_CLASS", "SEMANTIC_CATEGORY"):
+            semantic_resource = self.resource.semantic_knowledge
+            if semantic_resource is not None:
+                class_items = semantic_resource.categories
+                for item in class_items:
+                    if self._normalize(item.class_key) == normalized:
+                        hits.append(USGRetrievedItem(
+                            "SEMANTIC_CATEGORY" if kind == "SEMANTIC_CATEGORY" else "SEMANTIC_CLASS",
+                            item.category_id, item.class_key,
+                            "und", item.source_reference, item.lifecycle_state,
+                            (item.definition, f"parents:{','.join(item.parent_category_ids)}",
+                             f"unresolved_parents:{','.join(item.unresolved_parent_keys)}"),
+                        ))
+            else:
+                for item in self.resource.structures.classes:
+                    if self._normalize(item.class_key) == normalized:
+                        hits.append(USGRetrievedItem(
+                            "SEMANTIC_CLASS", item.class_id, item.class_key,
+                            "und", item.source_reference, item.lifecycle_state,
+                            (item.definition,),
+                        ))
 
         if kind in (None, "PREDICATE_FRAME"):
-            for item in self.resource.structures.predicate_frames:
-                if self._normalize(item.frame_key) == normalized:
-                    hits.append(USGRetrievedItem(
-                        "PREDICATE_FRAME", item.frame_id, item.frame_key,
-                        "und", item.source_reference, item.lifecycle_state,
-                        (item.roles_json,),
-                    ))
+            semantic_resource = self.resource.semantic_knowledge
+            if semantic_resource is not None:
+                frame_items = semantic_resource.predicate_frames
+                for item in frame_items:
+                    if self._normalize(item.frame_key) == normalized:
+                        hits.append(USGRetrievedItem(
+                            "PREDICATE_FRAME", item.frame_id, item.frame_key,
+                            "und", item.source_reference, item.lifecycle_state,
+                            tuple(role.raw_json for role in item.roles) + (
+                                f"status:{item.status}",
+                                f"unresolved:{','.join(item.unresolved_fields)}",
+                            ),
+                        ))
+            else:
+                for item in self.resource.structures.predicate_frames:
+                    if self._normalize(item.frame_key) == normalized:
+                        hits.append(USGRetrievedItem(
+                            "PREDICATE_FRAME", item.frame_id, item.frame_key,
+                            "und", item.source_reference, item.lifecycle_state,
+                            (item.roles_json,),
+                        ))
 
         hits.sort(key=lambda item: (item.kind, item.record_id))
         return USGRetrievalResult(
@@ -122,9 +168,26 @@ class USGKnowledgeIndex:
         """Return explicit directed relations incident to an exact ORE record ID."""
         if not isinstance(record_id, str) or not record_id.strip():
             raise ValueError("record_id must be non-empty text")
+        relations = (
+            self.resource.semantic_knowledge.relations
+            if self.resource.semantic_knowledge is not None
+            else self.resource.relations
+        )
         return tuple(
-            relation for relation in self.resource.relations
+            relation for relation in relations
             if relation.subject_id == record_id or relation.object_id == record_id
+        )
+
+    def memberships_for(self, record_id: str) -> tuple[Any, ...]:
+        """Return explicit semantic-category membership assertions incident to one ID."""
+        if not isinstance(record_id, str) or not record_id.strip():
+            raise ValueError("record_id must be non-empty text")
+        semantic_resource = self.resource.semantic_knowledge
+        if semantic_resource is None:
+            return ()
+        return tuple(
+            membership for membership in semantic_resource.memberships
+            if membership.member_id == record_id or membership.category_id == record_id
         )
 
 
@@ -162,6 +225,18 @@ class USGKnowledgeIndex:
         return tuple(
             frame for frame in self.resource.structures.predicate_frames
             if frame.frame_id in ids
+        )
+
+    def semantic_frames_by_key(self, frame_key: str) -> tuple[Any, ...]:
+        """Return complete ORE predicate structures, including preserved incomplete frames."""
+        if not isinstance(frame_key, str) or not frame_key.strip():
+            raise ValueError("frame_key must be non-empty text")
+        if self.resource.semantic_knowledge is None:
+            return ()
+        normalized = self._normalize(frame_key)
+        return tuple(
+            frame for frame in self.resource.semantic_knowledge.predicate_frames
+            if self._normalize(frame.frame_key) == normalized
         )
 
 

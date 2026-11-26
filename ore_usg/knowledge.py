@@ -52,7 +52,7 @@ class USGKnowledgeResource:
 
     @property
     def relations(self) -> tuple[Any, ...]:
-        """Return explicit cross-resource relations from the structural adapter."""
+        """Return the legacy structural relation records for backward compatibility."""
         return self.structures.relations
 
     @property

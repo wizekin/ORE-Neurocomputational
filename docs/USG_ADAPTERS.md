@@ -288,3 +288,144 @@ definitions are not converted into invented numeric features.
 These helpers create processors; they do not run a request or mutate either
 inventory. The caller remains responsible for supplying the task's request,
 syntax, and contextual evidence.
+
+
+
+## Phase 2 — Semantic knowledge integration (roadmap items 4–7)
+
+This section supersedes the earlier "not yet imported" and "not yet compiled"
+status notes above. The current implementation adds a complete, typed semantic
+knowledge projection alongside the original Phase 1 import records.
+
+### Unified semantic-knowledge API
+
+    from ore_usg import USGKnowledgeAdapter
+
+    snapshot, knowledge = USGKnowledgeAdapter().load_and_convert(
+        "exports/knowledge_bundle.json",
+    )
+    semantic = knowledge.semantic_knowledge
+
+The original `knowledge.semantic`, `knowledge.structures`, and
+`knowledge.concepts` APIs remain available for compatibility.
+`knowledge.semantic_knowledge` is the complete semantic resource. It
+contains the distinct ORE semantic concepts, source-linked category records,
+membership assertions, typed relations, and preserved predicate structures.
+Its namespace, bundle ID, and digest must match the same immutable source
+snapshot as all Phase 1 resources.
+
+### 4. Sense-to-concept adapter
+
+`USGSemanticKnowledgeAdapter` converts both `LEXICAL_SENSE` and
+`CONCEPT` records into ORE `SemanticConcept` objects. Every source record
+gets its own version-scoped ORE identifier; two senses belonging to one lemma
+remain two separate concept records. A sense also carries its referenced lemma as an alias and its
+explicit part-of-speech when the lemma passes the same lifecycle and rights policy, allowing ORE to
+retrieve multiple distinct sense concepts for one surface word. Each concept retains its definition,
+language, source locator, lifecycle state, source IDs, evidence IDs, context
+IDs, and canonical source payload in the companion
+`USGSemanticConceptRecord`.
+
+    semantic.concepts
+    semantic.concept_records
+    semantic.active_concepts
+
+`active_concepts` excludes unresolved records and candidate records unless
+the caller opted into candidates. Feature maps remain empty unless supplied
+explicitly in a supported format; labels and definitions are not converted
+into invented semantic activations. Equivalent, overlapping, related, and
+unresolved mappings remain separate directed knowledge relations. None of
+these mapping types merges concept identities.
+
+### 5. Semantic categories and memberships
+
+Every eligible `SEMANTIC_CLASS` becomes an ORE `SemanticCategory`, with its
+original class key, definition, lifecycle state, provenance, and payload.
+Parent keys are resolved only when they identify exactly one imported
+category. Missing or ambiguous parent keys stay in
+`unresolved_parent_keys`; no parent edge is guessed.
+
+    semantic.categories
+    semantic.memberships
+
+Membership assertions are created only from explicit relation predicates
+(`INSTANCE_OF`, `CLASSIFIED_AS`, `MEMBER_OF`, or `HAS_CLASS`) whose
+endpoints identify exactly one category and one member. Both the normalized
+member/category identifiers and the original directed subject/object
+orientation are retained. Membership status explicitly records
+`ACTIVE`, `CANDIDATE`, `UNRESOLVED`, `CONFLICTED`, `CONTRADICTED`,
+or `UNASSESSED`. An assertion is marked conflicted only when its own
+evidence contains both `SUPPORTS` and `CONTRADICTS`; multiple memberships
+alone are not treated as contradictions.
+
+### 6. Concept relations
+
+Source `relations` and `mappings` are converted into typed ORE
+`SemanticRelation` records:
+
+    semantic.relations
+
+Each relation preserves its source subject, object, direction, raw predicate
+or mapping type, lifecycle state, evidence/context IDs, source reference, and
+source kind. A conservative exact-label registry classifies known predicates
+as `EQUIVALENCE`, `HIERARCHY`, `ASSOCIATION`, `UNRESOLVED`, or
+`OTHER`; the original predicate string is never replaced.
+
+All USG relation rows in this contract are directed. Equivalent relations
+therefore remain directed, source-backed assertions; they do not union,
+collapse, or overwrite the endpoint concept records. Hierarchy parent IDs are
+projected only from explicit `parent_class_keys` or explicit hierarchy
+relations. No inverse, transitive, synonym, or other relationship is
+fabricated. Unrecognized predicates remain `OTHER`, available for later
+interpretation without losing the source label.
+
+### 7. Predicate-frame adapter
+
+Every eligible or unresolved `PREDICATE_FRAME` is retained as a
+`USGPredicateStructure`. Its source frame ID/version, lifecycle state,
+roles, role descriptions, required flags, role constraints, semantic
+relationships, complete payload, and provenance remain available.
+
+    semantic.predicate_frames
+    semantic.executable_frames
+
+The adapter creates a native ORE `PredicateFrame` only when its roles,
+required-role declarations, and numeric selectional preferences can be
+represented by the current ORE contract without discarding declared
+semantics. Custom constraints, role relationships, malformed/incomplete
+roles, explicit `complete: false`, or `resolved: false` prevent the
+executable projection. These records are not discarded: their raw fields
+and unresolved-field explanations remain in `USGPredicateStructure`.
+Unresolved and inactive frames are never included in
+`executable_frames`.
+
+The standard processor bridge now uses the complete active semantic-concept
+inventory and only safely executable predicate frames:
+
+    from ore_usg import build_semantic_composition_processor
+
+    processor = build_semantic_composition_processor(knowledge)
+
+The categories, memberships, and relation records remain available through
+the same immutable `semantic_knowledge` resource for ORE components that
+consume structured semantic knowledge. The existing nine-stage composition
+algorithm is not replaced or rewritten by this adapter.
+
+### Focused adapters
+
+For applications that need one part of Phase 2 independently, the package
+also exports `USGSenseToConceptAdapter`,
+`USGSemanticCategoryAdapter`, `USGConceptRelationAdapter`, and
+`USGPredicateFrameAdapter`. They use the same validation, lifecycle, and
+source-rights rules as the unified adapter.
+
+### Local verification
+
+The Phase 2 regression tests are stored with the repository for local use.
+They are intentionally not executed by this integration workflow. To run
+them after downloading the repository:
+
+    python -m pip install -e ".[dev]"
+    python -m pytest tests/test_usg_semantic_knowledge_adapter.py -q
+
+The full local suite remains available with `python -m pytest -q`.

@@ -36,6 +36,9 @@ USG_KNOWLEDGE_CAPABILITIES = (
     "language.lexical_resource.import",
     "language.semantic_resource.import",
     "language.semantic_structure.import",
+    "language.semantic_categories.import",
+    "language.semantic_relations.import",
+    "language.predicate_frames.import",
     "language.knowledge.provenance",
 )
 
@@ -295,11 +298,12 @@ def build_usg_knowledge_manifest() -> ModuleManifest:
         execution_modes=("FUNCTIONAL", "INFER"),
         limitations=(
             "No USG database writes or network calls are performed.",
-            "Candidate records are excluded unless explicitly enabled.",
-            "Unresolved, deprecated, and rejected records are not imported as active knowledge.",
+            "Candidate records are excluded from active inventories unless explicitly enabled.",
+            "Unresolved records and assertions are retained as inactive knowledge when source rights permit; deprecated and rejected records are excluded.",
             "Semantic features are not inferred from labels or definitions.",
-            "Predicate-frame roles are preserved as data and are not yet executable constraints.",
-            "Relations are imported only when both endpoints are eligible records.",
+            "Predicate roles are executable only when the ORE frame contract can represent them without dropping declared constraints; all other fields remain preserved.",
+            "Relations and mappings retain their original direction, predicate, evidence, context, and provenance; no inverse or transitive edges are inferred.",
+            "Category membership conflicts are represented from explicit contradictory evidence rather than resolved automatically.",
             "Source licensing metadata does not grant redistribution rights.",
         ),
     )

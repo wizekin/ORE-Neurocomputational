@@ -140,12 +140,17 @@ def build_semantic_composition_processor(
 
     if not isinstance(resource, USGKnowledgeResource):
         raise TypeError("resource must be a USGKnowledgeResource")
-    frames = tuple(
-        to_ore_predicate_frame(frame)
-        for frame in resource.structures.predicate_frames
-    )
+    if resource.semantic_knowledge is not None:
+        concepts = resource.semantic_knowledge.active_concepts
+        frames = resource.semantic_knowledge.executable_frames
+    else:
+        concepts = resource.semantic.concepts
+        frames = tuple(
+            to_ore_predicate_frame(frame)
+            for frame in resource.structures.predicate_frames
+        )
     return SemanticCompositionProcessor(
-        concepts=resource.semantic.concepts,
+        concepts=concepts,
         predicate_frames=frames,
         config=config,
     )

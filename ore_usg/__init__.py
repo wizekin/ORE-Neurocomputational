@@ -83,7 +83,7 @@ from .registration import (
     build_usg_knowledge_access_manifest,
     register_usg_knowledge_access_module,
     make_usg_knowledge_query_artifact,
-)    USG_KNOWLEDGE_CAPABILITIES,
+    USG_KNOWLEDGE_CAPABILITIES,
     USG_KNOWLEDGE_MODULE_ID,
     USG_KNOWLEDGE_MODULE_VERSION,
     build_usg_knowledge_manifest,

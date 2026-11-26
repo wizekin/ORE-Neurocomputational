@@ -130,7 +130,7 @@ class USGKnowledgeAccess:
 
     @property
     def available_domains(self) -> tuple[str, ...]:
-        """Return domains represented by a typed subresource, even when it is empty."""
+        """Return domains with imported records; empty or absent domains remain unavailable."""
         available: list[str] = []
         if self.resource.lexical.entries:
             available.append("LEXICAL")

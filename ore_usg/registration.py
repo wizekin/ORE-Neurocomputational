@@ -616,6 +616,7 @@ def _execute_observed(
     execute: Any,
 ) -> ModuleResult:
     """Run a backend and persist its event plus input/output artifact lineage."""
+    started_at_utc = utc_now()
     started = time.perf_counter()
     run_id = getattr(context, "run_id", None)
     input_artifacts = [
@@ -706,6 +707,7 @@ def _execute_observed(
         status=status_value,
         duration_ms=duration_ms,
         run_id=run_id,
+        started_at_utc=started_at_utc,
         input_artifact_ids=tuple(item.payload_hash for item in input_artifacts),
         output_artifact_ids=tuple(item.payload_hash for item in output_artifacts),
         bundle_id=source_bundle_id,

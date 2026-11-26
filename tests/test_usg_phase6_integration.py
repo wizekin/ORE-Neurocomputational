@@ -87,6 +87,7 @@ def test_declared_semantic_change_migration_is_explicit_and_traceable(tmp_path):
         transform=lambda bundle: {
             **bundle,
             "contract": "USG-KNOWLEDGE/0.2.0",
+            "schema_version": "0.2.0",
             "records": [*bundle["records"], {"id": "new:assertion"}],
         },
         semantic_effect="DECLARED_CHANGE",

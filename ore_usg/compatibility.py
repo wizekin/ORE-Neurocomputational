@@ -43,7 +43,13 @@ def inspect_usg_compatibility(
     """Return incompatibilities without attempting implicit conversion or migration."""
     issues: list[str] = []
     contract = bundle.get("contract", bundle.get("contract_id", expected_contract))
-    version = bundle.get("schema_version", bundle.get("version"))
+    version = bundle.get(
+        "schema_version",
+        bundle.get(
+            "version",
+            contract.rsplit("/", 1)[-1] if isinstance(contract, str) and "/" in contract else None,
+        ),
+    )
     if contract != expected_contract:
         issues.append(f"unsupported USG contract {contract!r}; expected {expected_contract!r}")
     if version != expected_schema_version:
@@ -174,6 +180,12 @@ class USGMigrationRegistry:
             if migration.semantic_effect == "PRESERVED" and before != after:
                 raise USGCompatibilityError((
                     f"migration {migration_id} declared PRESERVED but changed source-backed semantics",
+                ))
+            actual_target = detached.get("contract", detached.get("contract_id"))
+            if actual_target != migration.target_contract:
+                raise USGCompatibilityError((
+                    f"migration {migration_id} declared target {migration.target_contract}, "
+                    f"but produced {actual_target!r}",
                 ))
             current = detached
         target_digest = _canonical_digest(current)

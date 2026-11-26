@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from copy import deepcopy
 
+import pytest
+
 from ore_usg.performance import (
     benchmark_usg_import,
     benchmark_usg_lookups,
@@ -49,6 +51,7 @@ def _large_bundle(extra_forms: int = 1200):
     bundle["bundle_id"] = "phase6-large-performance"
     return bundle
 
+@pytest.mark.performance
 def test_large_bundle_import_measures_time_memory_and_resource_counts():
     resource, report = benchmark_usg_import(_large_bundle(), repetitions=2)
     assert report.repetitions == 2
@@ -63,6 +66,7 @@ def test_large_bundle_import_measures_time_memory_and_resource_counts():
     assert footprint.duplicate_ore_record_ids == 0
 
 
+@pytest.mark.performance
 def test_exact_lexical_semantic_and_predicate_lookup_metrics_are_reported():
     resource, _ = benchmark_usg_import(_large_bundle(600), repetitions=1)
     metrics = benchmark_usg_lookups(
@@ -80,6 +84,7 @@ def test_exact_lexical_semantic_and_predicate_lookup_metrics_are_reported():
     assert metrics.p95_lookup_us >= metrics.median_lookup_us
 
 
+@pytest.mark.performance
 def test_repeated_footprint_measurement_does_not_duplicate_snapshot_records():
     resource, _ = benchmark_usg_import(_large_bundle(100), repetitions=1)
     assert measure_usg_resource_footprint(resource) == measure_usg_resource_footprint(resource)

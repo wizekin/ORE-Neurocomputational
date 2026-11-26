@@ -46,7 +46,7 @@ ORE's AST annotation catalogue remains the single annotation source. Run the syn
 python -m ore_usg.annotation_sync --repository-root .
 ```
 
-It scans `ore_usg`, `ore_blackboard`, `ore_contracts`, and `ore_logger` and writes module, class, function, and method annotations to the existing `ore_logs/ore_logger.sqlite3` database. Source hashes and stale annotation handling continue to be managed by `ore_logger.catalog.sync_repository`. The database is generated locally, not committed as a binary artifact.
+It scans `ore_usg`, `ore_blackboard`, `ore_contracts`, and `ore_logger` and writes module, class, function, and method annotations to the existing `ore_logs/ore_logger.sqlite3` database. Its JSON report includes expected/actual symbol counts, per-file coverage gaps and a `coverage_complete` flag; the command exits non-zero when coverage is incomplete. Source hashes and stale annotation handling continue to be managed by `ore_logger.catalog.sync_repository`. The database is generated locally, not committed as a binary artifact.
 
 `USGSQLiteObservability` extends that same SQLite file with three additive tables:
 
@@ -54,7 +54,7 @@ It scans `ore_usg`, `ore_blackboard`, `ore_contracts`, and `ore_logger` and writ
 - `artifact_lineage`: immutable artifact hash, ORE contract/schema version, producer, run ID, parent IDs, source namespace/bundle/digest and original USG record IDs.
 - `usg_migration_events`: migration ID, source/target contracts and digests, and semantic-change declaration.
 
-It stores hashes, identifiers and bounded metadata, not raw definitions, evidence text or complete bundle payloads. Repeated identical lineage writes are idempotent; conflicting writes for an existing artifact ID fail. Lineage traversal detects cycles and enforces a maximum depth.
+Pass the observer to `register_usg_knowledge_module(registry, observability=observer)`. Both the unified importer and its controlled retrieval backend then record module execution events and artifact lineage automatically. It stores hashes, identifiers and bounded metadata, not raw definitions, evidence text or complete bundle payloads. Repeated identical lineage writes are idempotent; conflicting writes for an existing artifact ID fail. Lineage traversal detects cycles and enforces a maximum depth.
 
 Example:
 

@@ -215,6 +215,7 @@ class SpecialistInvocation:
         task_id: str,
         subscribed_fields: tuple[str, ...],
         measurement_sink: Callable[[str, float], None] | None = None,
+        artifact_provider: Callable[[WorkspaceSnapshot], Mapping[str, ContractArtifact]] | None = None,
     ) -> None:
         """Bind the specialist with its immutable task-level input artifacts."""
         self.specialist = specialist
@@ -226,6 +227,7 @@ class SpecialistInvocation:
         self.task_id = task_id
         self.subscribed_fields = subscribed_fields
         self.measurement_sink = measurement_sink
+        self.artifact_provider = artifact_provider
         self.manifest = specialist.describe()
         self.module_id = self.manifest.identity.module_id
         self.module_version = self.manifest.identity.module_version
@@ -235,6 +237,14 @@ class SpecialistInvocation:
         """Assemble typed port inputs from task artifacts and the detached snapshot."""
 
         artifacts = dict(self.task_artifacts)
+        if self.artifact_provider is not None:
+            dynamic_artifacts = self.artifact_provider(snapshot)
+            if not isinstance(dynamic_artifacts, Mapping):
+                raise TypeError("artifact_provider must return a mapping of port IDs to artifacts")
+            for port_id, artifact in dynamic_artifacts.items():
+                if not isinstance(artifact, ContractArtifact):
+                    raise TypeError(f"artifact_provider returned a non-ContractArtifact for {port_id!r}")
+                artifacts[str(port_id)] = artifact
         artifacts.setdefault("workspace_snapshot", build_snapshot_artifact(
             snapshot, self.run_context.run_id,
         ))

@@ -176,6 +176,71 @@ class BlackboardResourceCoordinator:
             memory_mb=memory_mb, cpu_cost=cpu_cost,
         )
 
+    def prioritize_knowledge_routes(
+        self,
+        route_demands: tuple[Mapping[str, Any], ...] | list[Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        """Rank specialist knowledge routes with ORE's existing resource/reliability estimates.
+
+        Mandatory routes remain in the plan even when an estimate or circuit-breaker
+        signal is poor. Scores are labelled heuristics and never interpreted as
+        confidence or as permission to skip a required capability.
+        """
+        rows: list[dict[str, Any]] = []
+        budget_ms = (
+            float(self.policy.budgets.max_time_seconds) * 1000.0
+            if self.policy.budgets.max_time_seconds is not None else 60000.0
+        )
+        memory_budget = float(self.policy.budgets.max_memory_mb or 1024.0)
+        for demand in route_demands:
+            module_id = str(demand.get("module_id", "")).strip()
+            if not module_id:
+                raise ValueError("knowledge route demands require module_id")
+            priority = min(1.0, max(0.0, float(demand.get("priority", 0.5))))
+            mandatory = bool(demand.get("mandatory", False))
+            estimate = self.estimate(module_id, priority)
+            reliability = self.reliability_probability(module_id)
+            circuit_open = self.circuit_open(module_id)
+            score = compute_comparison_score(
+                module_id,
+                relevance=priority,
+                heuristic_information_gain=estimate.expected_information_gain,
+                goal_contribution=priority,
+                reliability=reliability,
+                latency_cost=normalized_cost(estimate, max(1.0, budget_ms)),
+                memory_cost=min(1.0, max(0.0, estimate.expected_memory_mb / memory_budget)),
+                risk_cost=1.0 - reliability,
+                coefficients=self.policy.coefficients,
+            )
+            rows.append({
+                "module_id": module_id,
+                "domains": list(demand.get("domains", ())),
+                "mandatory": mandatory,
+                "priority": priority,
+                "score": score.score,
+                "relevance": score.relevance,
+                "heuristic_information_gain": score.heuristic_information_gain,
+                "reliability_estimate": score.reliability,
+                "expected_latency_ms": estimate.expected_latency_ms,
+                "expected_memory_mb": estimate.expected_memory_mb,
+                "estimate_source": estimate.estimate_source,
+                "circuit_open": circuit_open,
+                "heuristic": True,
+                "score_definition": score.definition,
+            })
+        rows.sort(key=lambda item: (
+            not item["mandatory"],
+            item["circuit_open"] if not item["mandatory"] else False,
+            -item["score"],
+            item["module_id"],
+        ))
+        return {
+            "route_order": [item["module_id"] for item in rows],
+            "routes": rows,
+            "mandatory_routes_preserved": True,
+            "heuristic": True,
+        }
+
     def close(self) -> None:
         """Release the resource-history database without deleting task workspace state."""
         if self._temporary_directory is not None:

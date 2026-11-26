@@ -28,7 +28,10 @@ from ore_workspace.evidence import EvidenceContribution, HypothesisScorer
 from ore_workspace.models import Provenance, new_id
 from ore_usg import register_usg_contracts
 
-from .bridge import register_blackboard_contracts
+from .bridge import (
+    BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT,
+    register_blackboard_contracts,
+)
 from .config import BlackboardPolicy
 from .contracts import (
     BLACKBOARD_PACKAGE_VERSION,
@@ -125,8 +128,181 @@ class BlackboardCoordinator:
             self.registry, self.catalog, self.specialists,
         )
         self._results: dict[str, BlackboardTaskResult] = {}
+        # Reuse one immutable snapshot for repeated tasks against the same large
+        # USG bundle. Replacing the digest replaces the cache (bounded to one).
+        self._usg_snapshot_cache: BlackboardUSGSnapshot | None = None
+        self._usg_snapshot_cache_digest: str | None = None
 
     # ------------------------------------------------------------------ helpers
+
+    def _selected_usg_route_demands(
+        self, request: BlackboardTaskRequest,
+    ) -> tuple[dict[str, Any], ...]:
+        """Find selected specialists that explicitly declare USG knowledge domains."""
+        requested = set(request.required_capabilities) | set(request.optional_capabilities)
+        selected: set[str] = set()
+        manifests = {
+            specialist.describe().identity.module_id: specialist.describe()
+            for specialist in self.specialists
+        }
+        for module_id, manifest in manifests.items():
+            if requested.intersection(manifest.capabilities):
+                selected.add(module_id)
+        pending = list(selected)
+        while pending:
+            module_id = pending.pop()
+            manifest = manifests.get(module_id)
+            if manifest is None:
+                continue
+            for dependency in manifest.dependencies:
+                if dependency.required and dependency.module_id not in selected:
+                    selected.add(dependency.module_id)
+                    pending.append(dependency.module_id)
+        demands: list[dict[str, Any]] = []
+        allowed_domains = {
+            "LEXICAL", "SEMANTIC", "RELATIONAL", "PREDICATE",
+            "MORPHOLOGY", "CONTEXT", "EVIDENCE", "SOURCE_PROVENANCE",
+        }
+        for specialist in self.specialists:
+            manifest = specialist.describe()
+            module_id = manifest.identity.module_id
+            domains = tuple(sorted({
+                str(item).upper()
+                for item in getattr(specialist, "usg_knowledge_domains", ())
+            }))
+            if module_id not in selected or not domains:
+                continue
+            unknown_domains = set(domains) - allowed_domains
+            if unknown_domains:
+                raise ValueError(
+                    f"{module_id} declares unsupported USG domains: {sorted(unknown_domains)}"
+                )
+            knowledge_port = next(
+                (item for item in manifest.input_ports if item.port_id == "usg_knowledge"),
+                None,
+            )
+            if (
+                knowledge_port is None
+                or knowledge_port.contract_id != BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT
+                or knowledge_port.accepted_versions != ("1.0.0",)
+            ):
+                raise ValueError(
+                    f"{module_id} declares USG knowledge domains but lacks the "
+                    "ORE.BLACKBOARD.USG_MODULE_KNOWLEDGE@1.0.0 input port"
+                )
+            mandatory = bool(set(request.required_capabilities).intersection(
+                manifest.capabilities
+            ))
+            demands.append({
+                "module_id": module_id,
+                "domains": domains,
+                "priority": float(getattr(specialist, "usg_knowledge_priority", 0.5)),
+                "mandatory": mandatory,
+            })
+        return tuple(sorted(demands, key=lambda item: item["module_id"]))
+
+    def _make_usg_artifact_provider(
+        self,
+        usg: BlackboardUSGSnapshot | None,
+        specialist: Any,
+        *,
+        run_id: str,
+        input_root: InputRoot,
+        language: str | None = None,
+        delivery_scope: str = "default",
+    ):
+        """Create a per-invocation provider for the specialist's bounded USG slice."""
+        domains = tuple(getattr(specialist, "usg_knowledge_domains", ()))
+        if usg is None or not domains:
+            return None
+        module_id = specialist.describe().identity.module_id
+        initial_terms = tuple(item.token for item in input_root.tokens)
+
+        def provide(snapshot: Any) -> Mapping[str, Any]:
+            """Route only the current module's terms and domains from the cached snapshot."""
+            state = snapshot.state
+            terms = initial_terms
+            predicates: tuple[str, ...] = ()
+            if module_id == "ore.blackboard.semantic_specialist":
+                lexical_state = state.get("lexical_hypotheses", {})
+                if isinstance(lexical_state, Mapping):
+                    terms = tuple(str(item) for item in lexical_state.keys())
+                syntactic = state.get("syntactic_hypotheses", ())
+                predicates = tuple(
+                    str(item.get("verb"))
+                    for item in syntactic
+                    if isinstance(item, Mapping) and item.get("verb")
+                )
+            knowledge = usg.router.route(
+                module_id,
+                domains=domains,
+                lexical_terms=terms,
+                predicate_terms=predicates,
+                language=language,
+                workspace_revision=int(getattr(snapshot, "revision", 0)),
+                delivery_scope=delivery_scope,
+            )
+            return {
+                "usg_knowledge": usg.module_knowledge_artifact(run_id, knowledge),
+            }
+
+        return provide
+
+    def _publish_usg_feedback(
+        self, workspace: SharedWorkspace, usg: BlackboardUSGSnapshot | None,
+        publications: Iterable[Any],
+    ) -> tuple[Any, ...]:
+        """Record specialist feedback and publish it as separate ORE unresolved questions."""
+        if usg is None:
+            return ()
+        for result in publications:
+            finding_id = getattr(result, "finding_id", None)
+            finding = (
+                workspace.findings.get(finding_id)
+                or workspace.pending_findings.get(finding_id)
+                or workspace.rejected_findings.get(finding_id)
+            ) if finding_id else None
+            if finding is not None:
+                usg.router.record_finding_feedback(
+                    source_module=finding.producer_module,
+                    finding_id=finding.finding_id,
+                    workspace_revision=workspace.revision,
+                    payload=finding.payload,
+                )
+        feedback_publications = []
+        for feedback in usg.router.unannounced_feedback(
+            publication_scope=workspace.workspace_id,
+        ):
+            publisher = FindingPublisher(workspace, COGNITIVE_CONTROL_PRODUCER)
+            finding = publisher.create_finding(
+                "unresolved_questions",
+                {
+                    **feedback.to_dict(),
+                    "question_id": feedback.feedback_id,
+                    "question": feedback.reason,
+                    "resolved": False,
+                    "status": "unresolved",
+                    "question_type": "usg_knowledge_feedback",
+                },
+                key=f"usg_feedback:{feedback.feedback_id}",
+                finding_type="usg_knowledge_feedback",
+                provenance=Provenance(
+                    source="blackboard_usg_feedback_channel",
+                    rules_applied=(
+                        "feedback_is_separate_from_usg",
+                        "digest_scoped_feedback",
+                        "deduplicate_identical_requests",
+                    ),
+                    notes="This ORE feedback record does not modify the source USG bundle.",
+                ),
+            )
+            result = workspace.publish(finding)
+            feedback_publications.append(result)
+            usg.router.mark_feedback_published(
+                feedback.feedback_id,
+                publication_scope=workspace.workspace_id,
+            )
+        return tuple(feedback_publications)
 
     def _subscription_spec(
         self, specialist: Any,
@@ -325,26 +501,60 @@ class BlackboardCoordinator:
             "finding_id": input_root_finding_id,
         })
 
-        # Step 5 - attach a verified, read-only USG snapshot when supplied.
+        # Step 5 - identify actual USG demand before opening the source snapshot.
+        usg_route_demands = (
+            self._selected_usg_route_demands(request)
+            if self.policy.ablations.usg_retrieval else ()
+        )
         usg: BlackboardUSGSnapshot | None = None
         usg_artifacts: dict[str, Any] = {}
-        if request.usg_bundle is not None and self.policy.ablations.usg_retrieval:
-            usg = BlackboardUSGSnapshot(
-                request.usg_bundle, expected_digest=request.usg_expected_digest,
-            )
+        snapshot_cache_reused = False
+        if usg_route_demands and request.usg_bundle is not None:
+            requested_bundle_digest = sha256_json(dict(request.usg_bundle))
+            if (
+                self._usg_snapshot_cache is not None
+                and self._usg_snapshot_cache_digest == requested_bundle_digest
+            ):
+                usg = self._usg_snapshot_cache
+                snapshot_cache_reused = True
+                if request.usg_expected_digest is not None and (
+                    usg.reference.bundle_digest != request.usg_expected_digest
+                ):
+                    raise ValueError("cached USG snapshot digest does not match usg_expected_digest")
+            else:
+                usg = BlackboardUSGSnapshot(
+                    request.usg_bundle, expected_digest=request.usg_expected_digest,
+                )
+                self._usg_snapshot_cache = usg
+                self._usg_snapshot_cache_digest = requested_bundle_digest
             publish_usg_reference(workspace, usg.reference)
-            usg_artifacts["usg_lexicon"] = usg.lexicon_artifact(run_id)
             self._record_step(step_records, 5, {
+                "attached": True,
                 "bundle_id": usg.reference.bundle_id,
                 "bundle_digest": usg.reference.bundle_digest,
                 "namespace": usg.reference.namespace,
                 "resource_categories": dict(usg.reference.resource_categories),
+                "selected_modules": [item["module_id"] for item in usg_route_demands],
+                "routed_domains": {
+                    item["module_id"]: list(item["domains"])
+                    for item in usg_route_demands
+                },
+                "snapshot_cache_reused": snapshot_cache_reused,
+                "full_lexicon_attached_to_task": False,
                 "read_only": True,
             })
         else:
+            reason = (
+                "no selected specialist declares a USG knowledge requirement"
+                if not usg_route_demands else
+                "no USG bundle supplied"
+                if request.usg_bundle is None else
+                "USG retrieval ablated"
+            )
             self._record_step(step_records, 5, {
                 "attached": False,
-                "reason": "no USG bundle supplied or USG retrieval ablated",
+                "reason": reason,
+                "selected_usg_modules": [item["module_id"] for item in usg_route_demands],
             })
 
         # Step 6 - register specialists and their authority boundaries.
@@ -379,7 +589,6 @@ class BlackboardCoordinator:
             planning_artifacts["verification_rules"] = build_rules_artifact(
                 tuple(request.verification_rules), run_id,
             )
-        planning_artifacts.update(usg_artifacts)
         plan = build_dependency_plan(self.registry, self.catalog, request, planning_artifacts)
         self._record_step(step_records, 7, {
             "selected_modules": list(plan.selected_modules),
@@ -417,6 +626,17 @@ class BlackboardCoordinator:
             key: value for key, value in planning_artifacts.items()
             if key != "workspace_snapshot"
         }
+        artifact_provider_factory = lambda selected_specialist: self._make_usg_artifact_provider(
+            usg,
+            selected_specialist,
+            run_id=run_id,
+            input_root=input_root,
+            language=(
+                str(request.metadata["language"])
+                if request.metadata.get("language") is not None else None
+            ),
+            delivery_scope=request.task_id,
+        )
         for specialist in self.specialists:
             fields, weights, threshold = self._subscription_spec(specialist)
             if not self.policy.ablations.selective_subscriptions:
@@ -441,7 +661,9 @@ class BlackboardCoordinator:
                 measurement_sink=lambda module_id, duration, store=measurements: store.append(
                     (module_id, duration),
                 ),
+                artifact_provider=artifact_provider_factory(specialist),
             )
+            invocation.artifact_provider_factory = artifact_provider_factory
             invocations[manifest.identity.module_id] = invocation
             scheduler.register_module(
                 workspace, manifest.identity.module_id, invocation, fields,
@@ -460,7 +682,19 @@ class BlackboardCoordinator:
         resource_coordinator = BlackboardResourceCoordinator(
             self.policy, task_family=request.task_family,
         )
-        resource_plan = self._build_resource_plan(request, resource_coordinator)
+        resource_plan = dict(self._build_resource_plan(request, resource_coordinator))
+        usg_route_priority_plan = (
+            resource_coordinator.prioritize_knowledge_routes(list(usg_route_demands))
+            if usg_route_demands and self.policy.ablations.resource_aware_choice
+            else {
+                "route_order": [item["module_id"] for item in usg_route_demands],
+                "routes": [],
+                "mandatory_routes_preserved": True,
+                "heuristic": True,
+            }
+        )
+        resource_plan["usg_knowledge_routes"] = usg_route_priority_plan
+        resource_plan["usg_route_cache"] = usg.router.statistics() if usg is not None else {}
         critical = (self.policy.critical_requirements or {}).get(
             request.goal, ("lexical_hypotheses", "syntactic_hypotheses", "semantic_hypotheses"),
         )
@@ -548,6 +782,11 @@ class BlackboardCoordinator:
                 activations, publications = scheduler.run_round(
                     workspace, tuple(deltas), deltas,
                 )
+                feedback_publications = self._publish_usg_feedback(
+                    workspace, usg, publications,
+                )
+                if feedback_publications:
+                    publications = tuple(publications) + tuple(feedback_publications)
                 cycle.rounds += 1
                 cycle.activations += sum(1 for item in activations if item.queued)
                 cycle.module_calls += sum(
@@ -855,7 +1094,14 @@ class BlackboardCoordinator:
                     computation_registry=failed_invocation.computation_registry,
                     task_id=failed_invocation.task_id,
                     subscribed_fields=fields,
+                    artifact_provider=(
+                        failed_invocation.artifact_provider_factory(specialist)
+                        if getattr(failed_invocation, "artifact_provider_factory", None)
+                        else None
+                    ),
                 )
+                if hasattr(failed_invocation, "artifact_provider_factory"):
+                    invocation.artifact_provider_factory = failed_invocation.artifact_provider_factory
                 invocations[candidate] = invocation
                 scheduler.register_module(
                     workspace, candidate, invocation, fields,
@@ -956,6 +1202,14 @@ class BlackboardCoordinator:
     ) -> BlackboardTaskResult:
         """Assemble the final result with epistemic categories separate (Step 28)."""
         state = workspace.snapshot().state
+        resource_plan = dict(resource_plan)
+        resource_plan["usg_route_cache"] = (
+            usg.router.statistics() if usg is not None else {
+                "cache_hits": 0, "cache_misses": 0, "route_calls": 0,
+                "cached_module_routes": 0, "feedback_count": 0,
+                "feedback_pending": 0,
+            }
+        )
         observations: list[dict[str, Any]] = [
             {
                 "observation_type": "input_root",
@@ -981,6 +1235,14 @@ class BlackboardCoordinator:
         imported_references: list[dict[str, Any]] = []
         if usg is not None:
             imported_references.append(usg.reference.to_dict())
+            observations.append({
+                "observation_type": "usg_route_statistics",
+                **usg.router.statistics(),
+                "snapshot_cache_available_for_reuse": (
+                    self._usg_snapshot_cache is usg
+                ),
+                "source_database_mutation_performed": False,
+            })
         for finding in workspace.findings.values():
             for reference in finding.payload.get("usg_references", ()):
                 imported_references.append({
@@ -1040,6 +1302,8 @@ class BlackboardCoordinator:
             "revision": workspace.revision,
             "input_digest": trace_builder.input_root.input_digest,
             "usg_bundle_digest": usg.reference.bundle_digest if usg else None,
+            "usg_snapshot_resource_id": usg.resource.resource_id if usg else None,
+            "usg_router_statistics": usg.router.statistics() if usg else {},
             "module_versions": dict(sorted(module_versions.items())),
             "policy_version": BLACKBOARD_PACKAGE_VERSION,
             "artifact_digests": {
@@ -1146,6 +1410,32 @@ class BlackboardCoordinator:
                         weight=1.0,
                         correlation_group=f"lexical:{word}",
                     ))
+            for evidence in structure.get("usg_evidence", ()):
+                if not isinstance(evidence, Mapping):
+                    continue
+                status = str(evidence.get("support_status", "UNASSESSED"))
+                contribution = (
+                    1.0 if status == "SUPPORTS"
+                    else -1.0 if status == "CONTRADICTS"
+                    else 0.0
+                )
+                if status in {"SUPPORTS", "CONTRADICTS"}:
+                    contributions.append(EvidenceContribution(
+                        source_id=f"usg-evidence:{evidence.get('evidence_id', evidence.get('source_id', 'unknown'))}",
+                        contribution=contribution,
+                        weight=1.0,
+                        # Each evidence record remains independently comparable.
+                        # Repeated references to the same evidence ID are deduplicated
+                        # upstream by the semantic specialist's evidence ledger.
+                        correlation_group=(
+                            f"usg-evidence:{evidence.get('evidence_id', 'unknown')}"
+                        ),
+                        metadata={
+                            "support_status": status,
+                            "verified_fact": False,
+                            "relationship_id": evidence.get("relationship_id"),
+                        },
+                    ))
             sense_tokens: set[str] = set()
             for key in ("agent_sense", "patient_sense"):
                 value = structure.get(key)
@@ -1176,11 +1466,16 @@ class BlackboardCoordinator:
                         "contribution": item.contribution,
                         "weight": item.weight,
                         "correlation_group": item.correlation_group,
+                        "metadata": dict(item.metadata),
                     }
                     for item in score.used_evidence
                 ),
                 suppressed_sources=tuple(score.suppressed_correlated_sources),
-                score_definition=SCORE_DEFINITION,
+                score_definition=(
+                    SCORE_DEFINITION
+                    + "; includes USG SUPPORTS (+1), CONTRADICTS (-1), and ORE memory/lexical contributions; "
+                    "uncalibrated evidence score, not probability or fact verification"
+                ),
                 calibrated_probability=False,
             ))
         ranked.sort(key=lambda item: (-item.score, item.hypothesis_id or ""))

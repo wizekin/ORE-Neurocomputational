@@ -13,6 +13,7 @@ from .bridge import (
     BLACKBOARD_INPUT_CONTRACT,
     BLACKBOARD_MEMORY_STORE_CONTRACT,
     BLACKBOARD_SNAPSHOT_CONTRACT,
+    BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT,
     BLACKBOARD_VERIFICATION_RULES_CONTRACT,
     register_blackboard_contracts,
     validate_module_result,
@@ -107,7 +108,13 @@ from .specialists import (
     default_specialists,
 )
 from .trace import ProvenanceTraceBuilder, TraceEdge, TraceNode
-from .usg_integration import BlackboardUSGSnapshot, publish_usg_reference
+from .usg_integration import (
+    BlackboardUSGSnapshot,
+    BlackboardUSGRouter,
+    USGKnowledgeFeedback,
+    USGModuleKnowledge,
+    publish_usg_reference,
+)
 
 __version__ = BLACKBOARD_PACKAGE_VERSION
 
@@ -124,6 +131,7 @@ __all__ = [
     "BLACKBOARD_OPERATION_IDS",
     "BLACKBOARD_PACKAGE_VERSION",
     "BLACKBOARD_SNAPSHOT_CONTRACT",
+    "BLACKBOARD_USG_MODULE_KNOWLEDGE_CONTRACT",
     "BLACKBOARD_VERIFICATION_RULES_CONTRACT",
     "BayesianHypothesisUpdater",
     "BenchmarkReport",
@@ -134,6 +142,9 @@ __all__ = [
     "BlackboardTaskRequest",
     "BlackboardTaskResult",
     "BlackboardUSGSnapshot",
+    "BlackboardUSGRouter",
+    "USGKnowledgeFeedback",
+    "USGModuleKnowledge",
     "COGNITIVE_CONTROL_PRODUCER",
     "ComparisonCoefficients",
     "ComparisonScore",

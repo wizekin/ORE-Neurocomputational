@@ -675,3 +675,34 @@ def test_numeric_sequence_scanner_processes_large_lists_in_bounded_chunks():
     chunks = list(_numeric_arrays(values, path="output.values"))
     assert len(chunks) == 3
     assert sum(array.size for _, array in chunks) == len(values)
+
+
+def test_json_mapping_keys_are_coerced_to_declared_scalar_key_types():
+    from typing import Literal
+
+    integer_mapping = _convert_value(Mapping[int, float], {"0": 0.2, "12": 0.8})
+    boolean_mapping = _convert_value(Mapping[bool, str], {"true": "yes", "false": "no"})
+    literal_mapping = _convert_value(
+        Mapping[Literal[1, 2], str], {"1": "one", "2": "two"}
+    )
+    assert integer_mapping == {0: 0.2, 12: 0.8}
+    assert boolean_mapping == {True: "yes", False: "no"}
+    assert literal_mapping == {1: "one", 2: "two"}
+
+    with pytest.raises(TypeError, match="not an integer"):
+        _convert_value(Mapping[int, str], {"not-index": "value"})
+
+
+def test_callable_fields_reject_json_strings_instead_of_failing_later():
+    from typing import Callable
+
+    with pytest.raises(TypeError, match="Python integration"):
+        _convert_value(Callable[..., Any], "not-a-function")
+
+
+def test_numeric_name_hints_prioritize_integer_counts_and_shapes():
+    rng = random.Random(77)
+    assert 1 <= auto_test._random_number(rng, "feature_count", integer=True) <= 12
+    assert 1 <= auto_test._random_number(rng, "context_size", integer=True) <= 12
+    assert 1 <= auto_test._random_number(rng, "input_shape", integer=True) <= 128
+    assert 0 <= auto_test._random_number(rng, "token_categories_key", integer=True) <= 8

@@ -388,9 +388,14 @@ def test_runtime_request_argument_conflicts_with_request_data_helper():
         )
 
 
-def test_unresolved_forward_reference_keeps_typed_objects_but_rejects_mappings():
-    sentinel = object()
-    assert _convert_value("UnresolvedOREContract", sentinel) is sentinel
+def test_unresolved_forward_reference_keeps_matching_objects_but_rejects_unrelated_values():
+    class UnresolvedOREContract:
+        pass
+
+    instance = UnresolvedOREContract()
+    assert _convert_value("UnresolvedOREContract", instance) is instance
+    with pytest.raises(TypeError, match="could not be resolved"):
+        _convert_value("UnresolvedOREContract", object())
     with pytest.raises(TypeError, match="could not be resolved"):
         _convert_value("UnresolvedOREContract", {"field": "value"})
 
@@ -706,3 +711,17 @@ def test_numeric_name_hints_prioritize_integer_counts_and_shapes():
     assert 1 <= auto_test._random_number(rng, "context_size", integer=True) <= 12
     assert 1 <= auto_test._random_number(rng, "input_shape", integer=True) <= 128
     assert 0 <= auto_test._random_number(rng, "token_categories_key", integer=True) <= 8
+
+
+def test_randomized_path_field_handles_path_forward_reference(tmp_path):
+    token = _RANDOM_TEST_ARTIFACT_DIR.set(tmp_path)
+    try:
+        rng = random.Random(78)
+        rng_np = np.random.default_rng(78)
+        generated = _random_value(
+            rng, rng_np, "output_path", "Path", package_name="ore_logger"
+        )
+        assert isinstance(generated, Path)
+        assert generated.parent == tmp_path
+    finally:
+        _RANDOM_TEST_ARTIFACT_DIR.reset(token)

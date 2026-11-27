@@ -11,8 +11,13 @@ from typing import Any
 from uuid import uuid4
 
 from ore_contracts import (
-    CognitiveTask, CognitiveTaskCoordinator, ContractCatalog,
-    ModuleManifest, ModuleRegistry, RunContext, register_existing_contracts,
+    CognitiveTask,
+    CognitiveTaskCoordinator,
+    ContractCatalog,
+    ModuleManifest,
+    ModuleRegistry,
+    RunContext,
+    register_existing_contracts,
 )
 from .catalog import OREPackageCatalog
 

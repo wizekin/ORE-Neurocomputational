@@ -12,6 +12,7 @@ import traceback
 import types
 import uuid
 from collections.abc import (
+    Callable as ABCCallable,
     Collection as ABCCollection,
     Iterable as ABCIterable,
     Mapping as ABCMapping,
@@ -182,6 +183,40 @@ def _prompt_value(annotation, prompt: str, parameter_name: str):
 
 def _literal_matches(value, candidate):
     return type(value) is type(candidate) and value == candidate
+
+
+def _convert_mapping_key(annotation, value):
+    """Convert JSON object keys to declared scalar key types without loosening values."""
+    if isinstance(value, str):
+        if annotation is int:
+            text = value.strip()
+            if text and (text.isdigit() or (text.startswith("-") and text[1:].isdigit())):
+                return int(text)
+            raise TypeError(f"mapping key {value!r} is not an integer")
+        if annotation is float:
+            try:
+                parsed = float(value)
+            except ValueError as exc:
+                raise TypeError(f"mapping key {value!r} is not numeric") from exc
+            if not math.isfinite(parsed):
+                raise ValueError("mapping keys must be finite")
+            return parsed
+        if annotation is bool:
+            if value.casefold() in {"true", "1"}:
+                return True
+            if value.casefold() in {"false", "0"}:
+                return False
+            raise TypeError(f"mapping key {value!r} is not a boolean")
+        if get_origin(annotation) is Literal:
+            for candidate in get_args(annotation):
+                try:
+                    converted = _convert_mapping_key(type(candidate), value)
+                except (TypeError, ValueError):
+                    continue
+                if _literal_matches(converted, candidate):
+                    return candidate
+            raise ValueError(f"mapping key {value!r} is not a permitted literal")
+    return _convert_value(annotation, value)
 
 
 def _convert_value(annotation, value):
@@ -437,6 +472,13 @@ def _convert_value(annotation, value):
             return date.fromisoformat(value)
         raise TypeError("date input must be an ISO date string or date")
 
+    if origin is ABCCallable or annotation is ABCCallable:
+        if callable(value):
+            return value
+        raise TypeError(
+            "callable inputs must be supplied by a Python integration, not JSON"
+        )
+
     if annotation is bool:
         if isinstance(value, bool):
             return value
@@ -469,7 +511,7 @@ def _convert_value(annotation, value):
             raise TypeError("mapping input must be a JSON object")
         key_type, value_type = args if len(args) == 2 else (Any, Any)
         return {
-            _convert_value(key_type, key): _convert_value(value_type, item)
+            _convert_mapping_key(key_type, key): _convert_value(value_type, item)
             for key, item in value.items()
         }
 

@@ -333,6 +333,8 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
         "training_trace", "steps_trace", "stages",
     }
     visited_trace_paths: set[str] = set()
+    total_array_count = 0
+    omitted_array_summaries = 0
 
     def walk(value: Any, path: str, depth: int):
         nonlocal total_array_count, omitted_array_summaries
@@ -431,7 +433,7 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
         "summary": {
             "trace_records": len(traces),
             "numeric_arrays": len(arrays),
-            "total_numeric_or_array_objects": total_array_count,
+            "total_array_count": total_array_count,
             "omitted_array_summaries": omitted_array_summaries,
             "warning_count": len(warnings),
             "check_count": len(checks),

@@ -11,7 +11,15 @@ import time
 import traceback
 import types
 import uuid
-from collections.abc import Iterable as ABCIterable, Mapping as ABCMapping, Sequence as ABCSequence
+from collections.abc import (
+    Collection as ABCCollection,
+    Iterable as ABCIterable,
+    Mapping as ABCMapping,
+    MutableMapping as ABCMutableMapping,
+    MutableSet as ABCMutableSet,
+    Sequence as ABCSequence,
+    Set as ABCSet,
+)
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -346,6 +354,12 @@ def _convert_value(annotation, value):
                 f"Unexpected field(s) for {annotation.__name__}: {', '.join(unknown)}"
             )
         required = set(getattr(annotation, "__required_keys__", allowed))
+        for field_name, field_annotation in hints.items():
+            qualifier = get_origin(field_annotation)
+            if qualifier is Required:
+                required.add(field_name)
+            elif qualifier is NotRequired:
+                required.discard(field_name)
         missing = sorted(required - set(value))
         if missing:
             raise ValueError(
@@ -448,7 +462,9 @@ def _convert_value(annotation, value):
             return value
         raise TypeError("bytes input must be bytes; JSON text is not decoded implicitly")
 
-    if origin in (dict, ABCMapping) or annotation in (dict, ABCMapping):
+    if origin in (dict, ABCMapping, ABCMutableMapping) or annotation in (
+        dict, ABCMapping, ABCMutableMapping
+    ):
         if not isinstance(value, ABCMapping):
             raise TypeError("mapping input must be a JSON object")
         key_type, value_type = args if len(args) == 2 else (Any, Any)
@@ -457,7 +473,10 @@ def _convert_value(annotation, value):
             for key, item in value.items()
         }
 
-    if origin in (list, tuple, set, frozenset, ABCIterable, ABCSequence):
+    if origin in (
+        list, tuple, set, frozenset, ABCIterable, ABCSequence,
+        ABCCollection, ABCSet, ABCMutableSet,
+    ) or annotation in (ABCIterable, ABCSequence, ABCCollection, ABCSet, ABCMutableSet):
         if isinstance(value, (str, bytes, bytearray, ABCMapping)) or not isinstance(value, ABCIterable):
             raise TypeError("sequence input must be an array-like value, not text or a mapping")
         raw_items = list(value)
@@ -473,7 +492,7 @@ def _convert_value(annotation, value):
             converted = [_convert_value(item_type, item) for item in raw_items]
         if origin is tuple:
             return tuple(converted)
-        if origin is set:
+        if origin in (set, ABCSet, ABCMutableSet) or annotation in (ABCSet, ABCMutableSet):
             return set(converted)
         if origin is frozenset:
             return frozenset(converted)

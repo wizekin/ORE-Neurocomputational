@@ -440,9 +440,8 @@ def _random_value(
     metadata = dict(metadata or {})
 
     repository_root_names = {
-        "root", "repo", "repository", "repository_root", "repo_root",
-        "project", "project_root", "project_directory", "source_root",
-        "workspace", "workspace_root", "root_directory",
+        "repository_root", "repo_root", "project_root", "project_directory",
+        "source_root", "workspace_root", "root_directory",
         "repository_directory", "repository_path", "repo_path", "project_path",
     }
     if lower in repository_root_names:

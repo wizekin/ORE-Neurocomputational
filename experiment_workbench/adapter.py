@@ -241,11 +241,18 @@ def _convert_value(annotation, value):
         if value is None and "None" in annotation:
             return None
         if not isinstance(value, ABCMapping):
-            # Preserve already-instantiated upstream objects for unresolved forward
-            # references; dictionaries still require an explicitly resolvable schema.
-            return value
+            # Preserve an upstream object only when its runtime class name matches
+            # an unresolved forward reference. Never pass an unrelated primitive
+            # through merely because get_type_hints could not resolve the name.
+            expected_names = set(
+                annotation.replace("|", " ").replace("[", " ").replace("]", " ")
+                .replace("'", " ").replace('"', " ").split()
+            )
+            actual_names = {base.__name__ for base in type(value).__mro__}
+            if expected_names.intersection(actual_names):
+                return value
         raise TypeError(
-            f"Cannot safely convert a mapping because its type annotation "
+            f"Cannot safely convert this value because its type annotation "
             f"{annotation!r} could not be resolved"
         )
 

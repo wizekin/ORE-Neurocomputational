@@ -7,6 +7,9 @@ on:
       - "tests/test_master_orchestrator.py"
       - "experiment_workbench/adapter.py"
       - "experiment_workbench/auto_test.py"
+      - "experiment_workbench/app.py"
+      - "experiment_workbench/observer.py"
+      - "experiment_workbench/README.md"
       - "tests/test_workbench_randomized_contracts.py"
       - "pyproject.toml"
       - ".github/workflows/ore-orchestrator.yml"
@@ -17,6 +20,7 @@ permissions:
 
 jobs:
   orchestrator-tests:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -37,6 +41,7 @@ jobs:
         run: python -m pytest -q tests/test_master_orchestrator.py
 
   workbench-randomized-tests:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -54,4 +59,4 @@ jobs:
       - name: Check Workbench changes
         run: python -m ruff check experiment_workbench/adapter.py tests/test_workbench_randomized_contracts.py
       - name: Run randomized Workbench regression tests
-        run: python -m pytest -q tests/test_workbench_randomized_contracts.py
+        run: python -m pytest -q tests/test_workbench_randomized_contracts.py tests/test_workbench_adapter.py tests/test_workbench_narration.py tests/test_workbench_observer.py tests/test_workbench_randomized_output_paths.py

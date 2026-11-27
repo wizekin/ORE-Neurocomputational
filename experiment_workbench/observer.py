@@ -10,6 +10,7 @@ import linecache
 import sys
 import time
 from collections import Counter
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Callable
 
@@ -206,11 +207,14 @@ class PythonCallObserver:
                 "timeline": self.timeline, "function_summary": top}
 
 def _trace_mapping(value: Any) -> dict[str, Any]:
-    if isinstance(value, dict):
-        return value
+    if isinstance(value, Mapping):
+        return dict(value)
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
         try:
-            return dataclasses.asdict(value)
+            return {
+                field.name: getattr(value, field.name)
+                for field in dataclasses.fields(value)
+            }
         except Exception:
             pass
     if hasattr(value, "__dict__"):
@@ -228,7 +232,7 @@ def _field_items(value: Any):
                 yield field.name, getattr(value, field.name)
             except Exception:
                 continue
-    elif isinstance(value, dict):
+    elif isinstance(value, Mapping):
         yield from ((str(key), item) for key, item in value.items())
     elif hasattr(value, "__dict__") and not isinstance(value, type):
         try:
@@ -238,32 +242,83 @@ def _field_items(value: Any):
 
 
 def _array_summary(value: Any, path: str) -> dict[str, Any] | None:
-    if np is None:
-        return None
-    if not isinstance(value, np.ndarray):
+    """Summarize numerical arrays with bounded temporary memory."""
+    if np is None or not isinstance(value, np.ndarray):
         return None
     if value.size == 0:
-        return {"field": path, "shape": list(value.shape), "dtype": str(value.dtype),
-                "size": 0, "finite": True, "empty": True}
+        return {
+            "field": path, "shape": list(value.shape), "dtype": str(value.dtype),
+            "size": 0, "finite": True, "empty": True,
+        }
     if not np.issubdtype(value.dtype, np.number) and value.dtype != np.bool_:
-        return {"field": path, "shape": list(value.shape), "dtype": str(value.dtype),
-                "size": int(value.size), "numeric": False}
-    finite_mask = np.isfinite(value)
-    finite = bool(finite_mask.all())
-    safe = value[finite_mask]
+        return {
+            "field": path, "shape": list(value.shape), "dtype": str(value.dtype),
+            "size": int(value.size), "numeric": False,
+        }
+
+    is_complex = np.iscomplexobj(value)
+    size = int(value.size)
+    chunk_size = 1_000_000
+    finite_count = 0
+    nonzero_count = 0
+    total = 0.0
+    total_squared = 0.0
+    real_total = 0.0
+    imaginary_total = 0.0
+    minimum = float("inf")
+    maximum = float("-inf")
+    magnitude_basis = is_complex
+
+    for start in range(0, size, chunk_size):
+        block = np.asarray(value.flat[start:min(start + chunk_size, size)])
+        finite_mask = np.isfinite(block)
+        safe = block[finite_mask]
+        finite_count += int(safe.size)
+        if not safe.size:
+            continue
+        if is_complex:
+            measured = np.abs(safe).astype(np.float64, copy=False)
+            real_total += float(np.sum(safe.real, dtype=np.float64))
+            imaginary_total += float(np.sum(safe.imag, dtype=np.float64))
+        else:
+            measured = safe.astype(np.float64, copy=False)
+        minimum = min(minimum, float(np.min(measured)))
+        maximum = max(maximum, float(np.max(measured)))
+        total += float(np.sum(measured, dtype=np.float64))
+        total_squared += float(np.sum(measured * measured, dtype=np.float64))
+        nonzero_count += int(np.count_nonzero(safe))
+
+    finite = finite_count == size
     summary = {
         "field": path, "shape": list(value.shape), "dtype": str(value.dtype),
-        "size": int(value.size), "finite": finite,
-        "finite_count": int(safe.size),
+        "size": size, "finite": finite, "finite_count": finite_count,
     }
-    if safe.size:
+    if finite_count:
+        mean = total / finite_count
+        variance = max(total_squared / finite_count - mean * mean, 0.0)
         summary.update({
-            "min": float(np.min(safe)), "max": float(np.max(safe)),
-            "mean": float(np.mean(safe)), "std": float(np.std(safe)),
-            "l2_norm": float(np.linalg.norm(safe.astype(np.float64).ravel())),
-            "nonzero_count": int(np.count_nonzero(safe)),
+            "l2_norm": float(np.sqrt(total_squared)),
+            "nonzero_count": nonzero_count,
         })
+        if magnitude_basis:
+            summary.update({
+                "magnitude_min": minimum,
+                "magnitude_max": maximum,
+                "magnitude_mean": mean,
+                "magnitude_std": float(np.sqrt(variance)),
+                "real_mean": real_total / finite_count,
+                "imaginary_mean": imaginary_total / finite_count,
+                "complex_values": True,
+            })
+        else:
+            summary.update({
+                "min": minimum,
+                "max": maximum,
+                "mean": mean,
+                "std": float(np.sqrt(variance)),
+            })
     return summary
+
 
 
 def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> dict[str, Any]:
@@ -282,14 +337,14 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
     def walk(value: Any, path: str, depth: int):
         if depth > max_depth or id(value) in seen:
             return
-        if isinstance(value, (dict, list, tuple)) or dataclasses.is_dataclass(value) or hasattr(value, "__dict__"):
+        if isinstance(value, (Mapping, list, tuple, set, frozenset)) or dataclasses.is_dataclass(value) or hasattr(value, "__dict__"):
             seen.add(id(value))
         array = _array_summary(value, path)
         if array is not None:
             if len(arrays) < max_arrays:
                 arrays.append(array)
             return
-        if isinstance(value, dict):
+        if isinstance(value, Mapping):
             for key, child in value.items():
                 key_text = str(key)
                 child_path = f"{path}.{key_text}" if path else key_text
@@ -298,7 +353,7 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                 if key_text in {"warning", "warnings"}:
                     if isinstance(child, str):
                         warnings.append(child)
-                    elif isinstance(child, (list, tuple)):
+                    elif isinstance(child, (list, tuple, set, frozenset)):
                         warnings.extend(str(x) for x in child)
                 if key_text in explicit_trace_keys and isinstance(child, (list, tuple)):
                     if child_path not in visited_trace_paths:
@@ -306,13 +361,16 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                         for index, row in enumerate(child):
                             row_data = _trace_mapping(row)
                             traces.append({"source": child_path, "index": index, **row_data})
-                if key_text == "records" and isinstance(child, dict):
+                if key_text == "records" and isinstance(child, Mapping):
                     for record_name, record in child.items():
-                        if isinstance(record, dict):
+                        if isinstance(record, Mapping):
                             traces.append({"source": child_path, "stage": str(record_name), **record})
                 walk(child, child_path, depth + 1)
         elif isinstance(value, (list, tuple)):
             for index, child in enumerate(value):
+                walk(child, f"{path}[{index}]", depth + 1)
+        elif isinstance(value, (set, frozenset)):
+            for index, child in enumerate(sorted(value, key=repr)):
                 walk(child, f"{path}[{index}]", depth + 1)
         else:
             for key, child in _field_items(value):

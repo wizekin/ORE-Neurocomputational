@@ -637,11 +637,15 @@ def test_repository_root_generator_uses_explicit_run_root(tmp_path):
         rng = random.Random(75)
         rng_np = np.random.default_rng(75)
         assert _random_value(
-            rng, rng_np, "root", Path, package_name="ore_logger"
+            rng, rng_np, "repository_root", Path, package_name="ore_logger"
         ) == tmp_path
         assert _random_value(
             rng, rng_np, "repository_root", str, package_name="ore_logger"
         ) == str(tmp_path)
+        generated_root = _random_value(
+            rng, rng_np, "root", Path, package_name="ore_logger"
+        )
+        assert generated_root.parent == tmp_path
     finally:
         _RANDOM_TEST_REPOSITORY_ROOT.reset(token)
 

@@ -1521,3 +1521,45 @@ frames remain preserved data and are not yet compiled into executable rules.
 
 See [docs/USG_ADAPTERS.md](docs/USG_ADAPTERS.md) for contracts, APIs,
 limitations, registration, and focused tests.
+
+
+## Master ORE repository orchestrator
+
+The new ore_orchestrator package provides one public entry point to discover
+and use the repository's packages. It builds on the existing
+ore_contracts.CognitiveTaskCoordinator rather than replacing the validated
+module protocol, contract catalog, dependency planner, bounded executor, or
+workspace publication mechanisms.
+
+The orchestrator provides a static inventory of all root Python packages, a
+lazy processor gateway for built-in and caller-configured components, a
+connected text workflow (comprehension → working memory → discourse), direct
+N9 and BNBEA entry points, and one facade for registering and executing
+contract-compatible modules. Discovery does not import every package or claim
+that every package is executable: data-dependent components still require
+their lexicons, models, training data, permissions, and native typed requests.
+Point 24's status adapters remain status probes rather than substitute
+cognitive backends.
+
+Start from the repository root:
+
+~~~powershell
+python -m pip install -e ".[dev]"
+python -m ore_orchestrator inventory
+python -m ore_orchestrator text "The chef prepared a meal."
+~~~
+
+Or use the Python entry point:
+
+~~~python
+from ore_orchestrator import OREOrchestrator
+
+ore = OREOrchestrator()
+report = ore.run_text("The chef prepared a meal.")
+print(report.status)
+print(ore.diagnostics()["runnable_module_count"])
+~~~
+
+See docs/MASTER_ORE_ORCHESTRATOR.md for the complete entry-point guide,
+module registration, custom component examples, visual and biological
+workflows, limitations, and API details.

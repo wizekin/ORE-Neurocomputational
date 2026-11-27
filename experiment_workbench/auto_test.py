@@ -382,6 +382,41 @@ def _random_dataclass(rng: random.Random, rng_np: np.random.Generator,
             "grapheme": _random_string(rng, 2, 5),
             "features": rng_np.normal(0.0, 1.0, size=4).astype(np.float32),
         }
+    if cls.__name__ == "ActiveEngagementState":
+        return {
+            "learner_id": f"learner-{rng.getrandbits(32):08x}",
+            "associative_weights": {
+                _random_string(rng, 3, 10): float(rng.random())
+                for _ in range(rng.randint(0, 8))
+            },
+            "episode_memory": [],
+            "comprehension_history": [
+                float(rng.random()) for _ in range(rng.randint(0, 5))
+            ],
+            "process_count": rng.randint(0, 20),
+        }
+    if cls.__name__ == "ActiveEngagementConfig":
+        # Defaults are contract-valid and exercise the real configuration
+        # without manufacturing out-of-range hyperparameters.
+        return {}
+    if cls.__name__ == "ActiveEngagementRequest":
+        return {
+            "learner_id": f"learner-{rng.getrandbits(32):08x}",
+            "goal": _random_prompt(rng),
+            "material": [_random_prompt(rng) for _ in range(rng.randint(1, 4))],
+            "context": {},
+            "task_type": rng.choice((
+                "understand_claim", "explain_process", "interpret_diagram",
+                "follow_proof", "understand_narrative", "understand_concept",
+            )),
+            "learner_explanation": None,
+            "required_concepts": [],
+            "listener_level": rng.choice(("novice", "intermediate", "expert")),
+            "enable_teaching": bool(rng.getrandbits(1)),
+            "enable_imagery": bool(rng.getrandbits(1)),
+            "max_questions": rng.randint(1, 8),
+            "metadata": {},
+        }
     if cls.__name__ == "N4Input":
         from ore_n4 import N4Processor
         _, n3_result = _make_random_n3_result(rng, rng_np)
@@ -567,6 +602,26 @@ def _discover_callables(package_name: str, modules: list[Any]) -> list[CallableI
                                      for word in ("processor", "engine", "model", "pipeline", "adapter")) else 1,
         item.label,
     ))
+
+
+def _align_active_engagement_identity(
+    package_name: str,
+    constructor_arguments: dict[str, Any],
+    call_arguments: dict[str, Any],
+) -> None:
+    """Keep processor, persistent state, and request bound to one learner identity."""
+    if package_name != "ore_active_engagement":
+        return
+    learner_id = constructor_arguments.get("learner_id")
+    if not isinstance(learner_id, str) or not learner_id:
+        return
+    state = constructor_arguments.get("state")
+    if isinstance(state, dict):
+        state["learner_id"] = learner_id
+    for field_name in ("request", "state"):
+        value = call_arguments.get(field_name)
+        if isinstance(value, dict):
+            value["learner_id"] = learner_id
 
 
 def _constructor_arguments(package_name: str, info: CallableInfo,
@@ -1104,7 +1159,7 @@ def run_auto_test_suite(
                     init_args = _constructor_arguments(package_name, info, rng_py, rng_np)
                     if init_args:
                         supplied["__init__"] = init_args
-                    supplied.setdefault("sequence_id", trial_id)
+                    _align_active_engagement_identity(package_name, init_args, supplied)
                     previous_output = _prepare_upstream(package_name, info, rng_py, rng_np)
                     result = execute(
                         package_name, info, prompt, supplied,

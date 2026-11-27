@@ -860,7 +860,7 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
         except Exception as exc:
             logging_error = f"{type(exc).__name__}: {exc}"
     observer_callback = logger.log_python_event if logger is not None else on_event
-    observer = PythonCallObserver(package_name, on_event=observer_callback, trace_lines=trace_lines)
+    observer = None
     provided_argument_keys = (
         sorted(str(key) for key in supplied)
         if isinstance(supplied, ABCMapping) else []
@@ -886,6 +886,9 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
             raise TypeError("runtime arguments must be a mapping")
         supplied_values = dict(supplied_values)
         phase = "observer_setup"
+        observer = PythonCallObserver(
+            package_name, on_event=observer_callback, trace_lines=trace_lines
+        )
         with observer:
             phase = "module_import"
             module = importlib.import_module(info.module)
@@ -955,11 +958,14 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
         result["failure_phase"] = phase
     finally:
         result["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 3)
-        try:
-            result["profile"] = observer.report()
-        except Exception as exc:
+        if observer is None:
             result["profile"] = {}
-            result["profiling_error"] = f"{type(exc).__name__}: {exc}"
+        else:
+            try:
+                result["profile"] = observer.report()
+            except Exception as exc:
+                result["profile"] = {}
+                result["profiling_error"] = f"{type(exc).__name__}: {exc}"
 
         empty_observation = {
             "output_type": None, "output_fields": [], "trace_rows": [],

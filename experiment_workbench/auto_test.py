@@ -162,9 +162,9 @@ def _random_number(
             else low + 10.0
         )
         if exclusive_lower is not None and lower_bound is None:
-            low += 1.0 if integer else max(abs(low) * 1e-6, 1e-6)
+            low = math.floor(low) + 1 if integer else low + max(abs(low) * 1e-6, 1e-6)
         if exclusive_upper is not None and upper_bound is None:
-            high -= 1.0 if integer else max(abs(high) * 1e-6, 1e-6)
+            high = math.ceil(high) - 1 if integer else high - max(abs(high) * 1e-6, 1e-6)
     else:
         name_lower = name.lower()
         # Structural size and index hints must win before words such as "feature"
@@ -607,7 +607,9 @@ def _random_value(
     try:
         if inspect.isclass(annotation) and issubclass(annotation, np.generic):
             integer_scalar = issubclass(annotation, np.integer)
-            return annotation(_random_number(rng, lower, integer=integer_scalar))
+            return annotation(_random_number(
+                rng, lower, integer=integer_scalar, metadata=metadata
+            ))
     except TypeError:
         pass
 

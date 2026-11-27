@@ -95,7 +95,7 @@ Add an importable package name to COMPONENTS in app.py and install it in the sam
 
 ## Randomized evaluation and failure interpretation
 
-The randomized theory runner generates synthetic inputs from each callable's declared Python types and ORE data contracts. It does not use fixed prompts or expected answers.
+The randomized theory runner generates synthetic inputs from each callable's declared Python types and ORE data contracts. It does not use fixed prompts or expected answers. The all-package batch intentionally excludes `ore_logger`: its instrumentation and repository-wide catalogue work make it disproportionately slow. This exclusion applies only to the randomized batch; the logger package and its standalone tests remain available.
 
 The shared adapter:
 - converts nested dataclasses, enums, literals, typed mappings/sequences, TypedDict, NamedTuple, paths, dates and UUID values;

@@ -19,6 +19,7 @@ from ore_contracts import (
     RunContext,
     register_existing_contracts,
 )
+
 from .catalog import OREPackageCatalog
 
 _DEFAULT_COMPONENTS: dict[str, tuple[str, str]] = {

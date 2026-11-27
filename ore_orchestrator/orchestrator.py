@@ -28,7 +28,6 @@ _DEFAULT_COMPONENTS: dict[str, tuple[str, str]] = {
     "n2": ("ore_n2", "N2Processor"),
     "n3": ("ore_n3", "N3Processor"),
     "n4": ("ore_n4", "N4Processor"),
-    "n5": ("ore_n5", "N5Processor"),
     "n6": ("ore_n6", "N6Processor"),
     "n9": ("ore_n9", "N9Processor"),
     "bnbea": ("ore_bnbea", "BNBEAProcessor"),

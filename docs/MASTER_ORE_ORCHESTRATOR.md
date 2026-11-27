@@ -98,8 +98,8 @@ syntax_package = ore.load_package("ore_syntax")
 
 The facade includes lazy defaults for stable, default-constructible public
 processors such as comprehension, working_memory, discourse, syntax,
-semantic_composition, semantic, reading, n1 through n6, n9, and bnbea.
-Data-dependent models must be configured by the caller. For example,
+semantic_composition, semantic, reading, n1 through n4, n6, n9, and bnbea.
+N3 must be fitted with labelled N2 patches before it can process a sequence. N5 is a model-state builder (initialized from a fitted N3 processor), not a generic process(request) component, so it is deliberately accessed through its native package API instead of the generic registry. N4 and N6 also require their native upstream result/model inputs. Data-dependent models must be configured by the caller. For example,
 ore_lexical_access.LexicalAccessProcessor requires a non-empty lexicon and
 must not be fabricated by the orchestrator.
 

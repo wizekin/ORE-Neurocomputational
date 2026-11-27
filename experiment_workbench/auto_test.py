@@ -1855,10 +1855,12 @@ def run_auto_test_suite(
     max_callables_per_package: int = 0,
     random_seed: int | None = None,
 ) -> dict[str, Any]:
-    """Execute randomized trials for all eligible callables in every ore_* package.
+    """Execute randomized trials for eligible callables across ORE packages.
 
-    A zero callable cap means all discovered callables. Each trial gets fresh
-    random input, fresh constructor state, and a new processor instance.
+    The expensive ore_logger package is excluded from this batch. A zero
+    callable cap means all discovered callables in the remaining packages.
+    Each trial gets fresh random input, fresh constructor state, and a new
+    processor instance.
     """
     if isinstance(trials_per_callable, bool) or not isinstance(trials_per_callable, int) or trials_per_callable < 1:
         raise ValueError("trials_per_callable must be a positive integer")

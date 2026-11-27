@@ -9,6 +9,7 @@ from __future__ import annotations
 import ast
 import dataclasses
 import enum
+from contextvars import ContextVar
 import importlib
 import inspect
 import json
@@ -30,6 +31,10 @@ import numpy as np
 from adapter import CallableInfo, execute, json_safe
 
 _UNSET = object()
+# Files created by randomized trials must stay inside that run's report folder.
+_RANDOM_TEST_ARTIFACT_DIR: ContextVar[Path | None] = ContextVar(
+    "ore_random_test_artifact_dir", default=None
+)
 SAFE_METHODS = {
     "process", "run", "execute", "infer", "predict", "recognize", "transform",
     "simulate", "forward", "parse", "compose", "reason", "plan", "encode",
@@ -250,6 +255,16 @@ def _random_value(rng: random.Random, rng_np: np.random.Generator,
         return _random_string(rng)
     lower = name.lower()
     origin, args = get_origin(annotation), get_args(annotation)
+    if lower in {"path", "file_path", "db_path", "database_path", "sqlite_path",
+                 "output_path", "storage_path"}:
+        artifact_dir = _RANDOM_TEST_ARTIFACT_DIR.get()
+        if artifact_dir is not None:
+            artifact_dir.mkdir(parents=True, exist_ok=True)
+            suffix = ".sqlite3" if (package_name == "ore_agentic" or
+                                    "database" in lower or "sqlite" in lower or
+                                    lower == "db_path") else ".tmp"
+            target = artifact_dir / f"generated-{rng.getrandbits(64):016x}{suffix}"
+            return target if annotation is Path or Path in args else str(target)
     if package_name in {"ore_n3", "ore_n5", "ore_n6"} and lower in {"features", "feature_vector", "embedding", "vector"}:
         return rng_np.normal(0.0, 1.0, size=4).astype(np.float32)
     if lower == "n1_result" and package_name == "ore_n2":
@@ -1081,6 +1096,9 @@ def run_auto_test_suite(
                 prompt = _random_prompt(rng_py)
                 supplied: dict[str, Any] = {}
                 init_args: dict[str, Any] = {}
+                artifact_token = _RANDOM_TEST_ARTIFACT_DIR.set(
+                    report_dir / "side_effects" / package_name
+                )
                 try:
                     supplied = _call_arguments(package_name, info, rng_py, rng_np)
                     init_args = _constructor_arguments(package_name, info, rng_py, rng_np)
@@ -1144,6 +1162,8 @@ def run_auto_test_suite(
                         "invariant_checks": [], "errors": f"{type(exc).__name__}: {exc}",
                         "traceback": traceback.format_exc(),
                     })
+                finally:
+                    _RANDOM_TEST_ARTIFACT_DIR.reset(artifact_token)
                 completed += 1
                 _notify(
                     progress_callback, completed, total_trials,
@@ -1271,6 +1291,13 @@ def run_auto_test_suite(
                 if file_path and Path(file_path).is_file():
                     suffix = "json" if ext == "json" else "md"
                     archive.write(file_path, arcname=f"packages/{item['package']}.{suffix}")
+    side_effect_dir = report_dir / "side_effects"
+    if side_effect_dir.is_dir():
+        with zipfile.ZipFile(archive_path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            for generated_file in sorted(side_effect_dir.rglob("*")):
+                if generated_file.is_file():
+                    archive_name = generated_file.relative_to(report_dir).as_posix()
+                    archive.write(generated_file, arcname=archive_name)
     _notify(progress_callback, completed, total_trials, package="All packages",
             package_index=len(packages), package_count=len(packages),
             callable="", callable_index=0, callable_count=0,

@@ -106,13 +106,23 @@ def _convert_value(annotation, value):
     if origin in (types.UnionType, getattr(__import__("typing"), "Union")):
         if value is None:
             return None
-        for candidate in args:
-            if candidate is type(None):
-                continue
+        candidates = [candidate for candidate in args if candidate is not type(None)]
+        # A JSON object supplied for an optional dataclass must be converted or
+        # rejected. Falling back to the original dict hides contract failures
+        # and lets downstream code fail later with misleading AttributeErrors.
+        dataclass_candidates = [
+            candidate for candidate in candidates if _is_dataclass_type(candidate)
+        ]
+        if isinstance(value, dict) and len(dataclass_candidates) == 1:
+            return _convert_value(dataclass_candidates[0], value)
+        conversion_errors = []
+        for candidate in candidates:
             try:
                 return _convert_value(candidate, value)
-            except (TypeError, ValueError):
-                continue
+            except (TypeError, ValueError) as exc:
+                conversion_errors.append(exc)
+        if conversion_errors and isinstance(value, dict):
+            raise conversion_errors[0]
         return value
     if _is_dataclass_type(annotation):
         if isinstance(value, annotation):

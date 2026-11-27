@@ -5,6 +5,9 @@ on:
     paths:
       - "ore_orchestrator/**"
       - "tests/test_master_orchestrator.py"
+      - "experiment_workbench/adapter.py"
+      - "experiment_workbench/auto_test.py"
+      - "tests/test_workbench_randomized_contracts.py"
       - "pyproject.toml"
       - ".github/workflows/ore-orchestrator.yml"
   workflow_dispatch:
@@ -32,3 +35,23 @@ jobs:
         run: python -m ruff check ore_orchestrator tests/test_master_orchestrator.py
       - name: Run orchestrator integration tests
         run: python -m pytest -q tests/test_master_orchestrator.py
+
+  workbench-randomized-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install project and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Check Workbench changes
+        run: python -m ruff check experiment_workbench/adapter.py tests/test_workbench_randomized_contracts.py
+      - name: Run randomized Workbench regression tests
+        run: python -m pytest -q tests/test_workbench_randomized_contracts.py

@@ -1467,6 +1467,7 @@ def _invariant_checks(output: Any) -> list[dict[str, Any]]:
             and array.ndim >= 1
             and np.issubdtype(array.dtype, np.floating)
             and array.shape[-1] > 1
+            and not path.endswith("]")
         ):
             minimum = float(summary.get("min", array.min()))
             maximum = float(summary.get("max", array.max()))

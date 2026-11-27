@@ -28,11 +28,11 @@ def _active_engagement_callable():
 
 
 def test_optional_dataclass_conversion_does_not_hide_contract_errors():
-    from ore_active_engagement.contracts import ActiveEngagementState
+    from ore_active_engagement.pipeline import ActiveEngagementProcessor
 
     try:
         _convert_constructor_kwargs(
-            type("Holder", (), {"__init__": lambda self, state=None: None}),
+            ActiveEngagementProcessor,
             "ore_active_engagement",
             {"state": {"learner_id": "learner-1", "associative_weights": {"x": 1000.0}}},
         )
@@ -40,8 +40,6 @@ def test_optional_dataclass_conversion_does_not_hide_contract_errors():
         pass
     else:
         raise AssertionError("Invalid nested dataclass data must be rejected, not left as a dict")
-
-    assert ActiveEngagementState(learner_id="learner-1").learner_id == "learner-1"
 
 
 def test_randomized_active_engagement_inputs_respect_cross_object_contracts():

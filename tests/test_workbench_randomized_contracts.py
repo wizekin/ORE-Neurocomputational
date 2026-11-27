@@ -748,3 +748,34 @@ def test_observer_inspects_outputs_with_no_numpy_arrays():
         if item["check"] == "numeric_arrays_finite"
     )
     assert finite_check["value"] is True
+
+
+def test_observer_setup_failures_are_reported_as_workbench_errors(monkeypatch):
+    class BrokenObserver:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            raise RuntimeError("synthetic observer setup failure")
+
+        def __exit__(self, *args):
+            return False
+
+        def report(self):
+            return {}
+
+    monkeypatch.setattr(adapter, "PythonCallObserver", BrokenObserver)
+    info = CallableInfo(
+        label="builtins.len",
+        module="builtins",
+        name="len",
+        signature="(obj, /)",
+        doc="Return the length of an object.",
+    )
+    result = execute("builtins", info, "", {"obj": [1]})
+    assert result["status"] == "error"
+    assert result["failure_phase"] == "observer_setup"
+    assert "synthetic observer setup failure" in result["error"]
+    assert _classify_failure(
+        result["error"], result["failure_phase"], result["traceback"]
+    ) == "test_harness_error"

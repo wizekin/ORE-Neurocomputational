@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, is_dataclass
 import importlib
+import re
 import time
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -404,9 +405,25 @@ class OREOrchestrator:
 
         if include_discourse:
             from ore_discourse import DiscourseRequest
+            sentences = tuple(
+                item.strip()
+                for item in re.split(r"(?<=[.!?])\\s+", text.strip())
+                if item.strip()
+            )
+            propositions = tuple(
+                {
+                    "sentence_index": index,
+                    "text": sentence,
+                    "source_interpretation": interpretation,
+                }
+                for index, (sentence, interpretation) in enumerate(
+                    zip(sentences, comprehension.sentence_interpretations)
+                )
+            )
             third = DiscourseRequest(
                 sequence_id=sequence,
-                sentences=(text,),
+                sentences=sentences or (text,),
+                propositions=propositions,
                 context={
                     "source_component": "ore_comprehension",
                     "sentence_interpretations": comprehension.sentence_interpretations,

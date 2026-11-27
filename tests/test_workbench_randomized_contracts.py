@@ -37,6 +37,7 @@ _numeric_arrays = auto_test._numeric_arrays
 _invariant_checks = auto_test._invariant_checks
 _bounded_value = auto_test._bounded_value
 _RANDOM_TEST_ARTIFACT_DIR = auto_test._RANDOM_TEST_ARTIFACT_DIR
+_RANDOM_TEST_REPOSITORY_ROOT = auto_test._RANDOM_TEST_REPOSITORY_ROOT
 inspect_output = importlib.import_module("observer").inspect_output
 
 
@@ -606,3 +607,44 @@ def test_request_data_is_preserved_as_an_extra_keyword_for_variadic_callables():
         process, "prompt", {"request_data": {"source": "explicit-extra"}}
     )
     assert arguments == {"request_data": {"source": "explicit-extra"}}
+
+
+def test_abstract_mapping_and_set_annotations_are_converted_recursively():
+    from collections.abc import MutableMapping, Set as AbstractSet
+
+    mapping = _convert_value(MutableMapping[str, float], {"salience": 0.8})
+    values = _convert_value(AbstractSet[int], [1, 2, 2, 3])
+    assert mapping == {"salience": 0.8}
+    assert values == {1, 2, 3}
+
+
+def test_repository_root_generator_uses_explicit_run_root(tmp_path):
+    token = _RANDOM_TEST_REPOSITORY_ROOT.set(tmp_path)
+    try:
+        rng = random.Random(75)
+        rng_np = np.random.default_rng(75)
+        assert _random_value(
+            rng, rng_np, "root", Path, package_name="ore_logger"
+        ) == tmp_path
+        assert _random_value(
+            rng, rng_np, "repository_root", str, package_name="ore_logger"
+        ) == str(tmp_path)
+    finally:
+        _RANDOM_TEST_REPOSITORY_ROOT.reset(token)
+
+
+def test_typeddict_required_qualifiers_override_total_false_defaults():
+    class _RequiredOptionalPayload(TypedDict, total=False):
+        required_value: Required[str]
+        optional_value: NotRequired[float]
+
+    rng = random.Random(76)
+    rng_np = np.random.default_rng(76)
+    generated = _random_value(
+        rng, rng_np, "payload", _RequiredOptionalPayload
+    )
+    assert "required_value" in generated
+    assert isinstance(generated["required_value"], str)
+    assert "optional_value" not in generated or isinstance(
+        generated["optional_value"], float
+    )

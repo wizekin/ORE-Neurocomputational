@@ -407,7 +407,7 @@ class OREOrchestrator:
             from ore_discourse import DiscourseRequest
             sentences = tuple(
                 item.strip()
-                for item in re.split(r"(?<=[.!?])\\s+", text.strip())
+                for item in re.split(r"(?<=[.!?])\s+", text.strip())
                 if item.strip()
             )
             propositions = tuple(

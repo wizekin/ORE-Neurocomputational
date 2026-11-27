@@ -93,6 +93,40 @@ Add an importable package name to COMPONENTS in app.py and install it in the sam
 - Some classes may need custom lifecycle setup or domain-specific JSON inputs. Use the displayed signature, docstring, and traceback to configure them.
 - This interface is a test harness, not an LLM. It returns actual Python output and does not generate natural-language answers in place of component results.
 
+## Randomized evaluation and failure interpretation
+
+The randomized theory runner generates synthetic inputs from each callable's declared Python types and ORE data contracts. It does not use fixed prompts or expected answers.
+
+The shared adapter:
+- converts nested dataclasses, enums, literals, typed mappings/sequences, TypedDict, NamedTuple, paths, dates and UUID values;
+- validates callable and constructor arguments before invocation;
+- preserves explicit values rather than allowing runtime inputs to overwrite them;
+- accepts a request_data helper only when exactly one dataclass request parameter can receive it;
+- restores versioned N5 model snapshots through their package-owned schema loader.
+
+Randomized file outputs are redirected to the current report's side_effects/<package>/ directory. Read-only repository-root parameters continue to refer to the project itself. Input/output observation summarizes numerical arrays in bounded-memory chunks, including complex arrays.
+
+### How to read randomized failures
+
+The report keeps three categories separate:
+
+- **Input/authorization rejections:** the generated values reached an ORE contract or an explicit permission gate and were rejected. These are not counted as successful executions.
+- **Workbench errors:** the harness could not generate or convert a valid value, bind a call, or dispatch the requested input. These are defects in the test harness or unsupported contract shapes.
+- **ORE runtime errors:** the component itself raised an unexpected exception after dispatch. These are candidates for package-level implementation defects.
+
+This classification uses the execution phase and traceback as well as the exception type. A TypeError raised inside an ORE function is not automatically treated as a harmless input rejection.
+
+### Validation limits
+
+Type annotations and dataclass contracts do not describe every semantic dependency between fields. The generator has explicit fixtures for known cross-object ORE contracts and validates other dataclasses incrementally, but domain-specific constraints not represented in Python types or constructors can still require a package-specific generator. Synthetic randomized execution is software evidence; it does not prove cognitive, biological, or scientific validity.
+
+For local verification, run the focused Workbench regression tests before the full repository suite:
+
+```powershell
+python -m pytest -q tests/test_workbench_randomized_contracts.py tests/test_workbench_adapter.py tests/test_workbench_narration.py tests/test_workbench_observer.py tests/test_workbench_randomized_output_paths.py
+python -m pytest -q
+```
+
 ## Security
 
 Only run trusted Python packages. Importing a package executes its module initialization code. Keep the Workbench local unless an exposed deployment has authentication, isolation, resource limits, and appropriate controls for uploaded data.

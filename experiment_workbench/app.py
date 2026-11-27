@@ -5,6 +5,9 @@ import queue
 import sys
 import threading
 import time
+import traceback
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 import streamlit as st
 
@@ -318,14 +321,44 @@ with left:
                 execution_holder = {}
 
                 def _execute_in_worker():
-                    execution_holder["result"] = execute(
-                        component, selected, prompt, supplied,
-                        previous_output=upstream_artifact["output"] if upstream_artifact else None,
-                        runtime_kwargs=runtime_kwargs,
-                        on_event=event_queue.put,
-                        trace_lines=trace_lines,
-                        log_directory=ROOT / "ore_logs",
-                    )
+                    started = time.perf_counter()
+                    started_at = datetime.now(timezone.utc).isoformat()
+                    try:
+                        execution_holder["result"] = execute(
+                            component, selected, prompt, supplied,
+                            previous_output=upstream_artifact["output"] if upstream_artifact else None,
+                            runtime_kwargs=runtime_kwargs,
+                            on_event=event_queue.put,
+                            trace_lines=trace_lines,
+                            log_directory=ROOT / "ore_logs",
+                        )
+                    except Exception as exc:
+                        # Preserve failures raised before execute() can construct
+                        # its normal result record (for example observer/thread setup).
+                        execution_holder["result"] = {
+                            "run_id": uuid.uuid4().hex,
+                            "started_at": started_at,
+                            "component": component,
+                            "callable": selected.label,
+                            "prompt": prompt,
+                            "status": "error",
+                            "elapsed_ms": round((time.perf_counter() - started) * 1000, 3),
+                            "arguments": {},
+                            "provided_argument_keys": sorted(str(key) for key in supplied),
+                            "constructor_arguments": {},
+                            "input_observation": {},
+                            "output": None,
+                            "error": f"Workbench worker error: {type(exc).__name__}: {exc}",
+                            "traceback": traceback.format_exc(),
+                            "failure_phase": "worker_thread",
+                            "profile": {},
+                            "observation": {
+                                "output_type": None, "output_fields": [], "trace_rows": [],
+                                "trace_count": 0, "numerical_summaries": [], "array_count": 0,
+                                "warnings": [], "checks": [], "summary": {},
+                            },
+                            "trace_lines_enabled": trace_lines,
+                        }
 
                 worker = threading.Thread(target=_execute_in_worker, daemon=True)
                 worker.start()

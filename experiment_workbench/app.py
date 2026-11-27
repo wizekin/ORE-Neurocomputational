@@ -121,7 +121,7 @@ with st.expander("Randomized theory-and-algorithm testing", expanded=False):
         f"Configured run: up to {int(trial_count)} random trials for each selected callable. "
         "The actual total is calculated after package discovery."
     )
-    if st.button("Start randomized testing of all packages", type="primary",
+    if st.button("Start randomized testing of all eligible packages", type="primary",
                   use_container_width=True, key="run_all_ore_randomized_tests"):
         progress_bar = st.progress(0.0, text="Discovering package algorithms...")
         progress_detail = st.empty()

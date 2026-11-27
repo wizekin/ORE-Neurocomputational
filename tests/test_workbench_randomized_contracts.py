@@ -783,3 +783,23 @@ def test_observer_setup_failures_are_reported_as_workbench_errors(monkeypatch):
     assert _classify_failure(
         result["error"], result["failure_phase"], result["traceback"]
     ) == "test_harness_error"
+
+
+def test_observer_constructor_failures_are_returned_as_structured_errors(monkeypatch):
+    class BrokenObserver:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("synthetic observer constructor failure")
+
+    monkeypatch.setattr(adapter, "PythonCallObserver", BrokenObserver)
+    info = CallableInfo(
+        label="builtins.len",
+        module="builtins",
+        name="len",
+        signature="(obj, /)",
+        doc="Return the length of an object.",
+    )
+    result = execute("builtins", info, "", {"obj": [1]})
+    assert result["status"] == "error"
+    assert result["failure_phase"] == "observer_setup"
+    assert "synthetic observer constructor failure" in result["error"]
+    assert result["profile"] == {}

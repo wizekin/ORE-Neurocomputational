@@ -188,11 +188,11 @@ Python profiling does not expose native NumPy/SciPy instructions, GPU kernels or
 
 ## Randomized theory-and-algorithm evaluation
 
-The Streamlit Workbench discovers first-party `ore_*` packages and their eligible public algorithm entry points dynamically. Its **Start randomized testing of all packages** action runs random trials against each discovered callable, one callable and one package at a time.
+The Streamlit Workbench discovers first-party `ore_*` packages and their public module-level functions and class methods dynamically. It exercises both high-level processors and callable algorithm/stage helpers, excluding known file, network, persistence, deletion, and lifecycle operations. Its **Start randomized testing of all packages** action runs random trials against each discovered callable, one callable and one package at a time.
 
 ### No fixed prompts or expected answers
 
-The randomized runner deliberately does not use a pre-authored prompt bank, canned example inputs, fixed target labels, or expected output answers. It generates a fresh random seed, random pseudo-text, random numerical arrays, random structured values, and typed request records using the inspected Python signatures and dataclass contracts. Each trial receives new input and a new processor instance. The seed is included in the report to make a run reproducible.
+The randomized runner deliberately does not use a pre-authored prompt bank, canned example inputs, fixed target labels, or expected output answers. It generates a fresh random seed, random pseudo-text, random numerical arrays, random structured values, and typed request records using the inspected Python signatures and dataclass contracts. Each trial receives new input and a new processor instance. The seed is included in the report so the random input sequence can be repeated; run IDs and timestamps will naturally differ.
 
 The default is 25 random trials per discovered callable. You can increase this to 500, and set the callable cap to zero to include all discovered eligible entry points. The runner includes selected in-memory learning/update methods when they are discoverable, but intentionally excludes file-writing, persistence, network, deletion, reset, and shutdown methods. Input/guard rejections (for example, a deliberately random input being rejected by a contract or an authorization gate) are reported separately from unexpected runtime exceptions. Any learning/update trial uses a fresh in-memory model and randomly generated synthetic records; randomized authorization flags only exercise the permission gate and do not represent genuine human verification or consent. No persistent model write is performed.
 

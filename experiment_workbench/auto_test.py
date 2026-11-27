@@ -514,7 +514,10 @@ def _discover_callables(package_name: str, modules: list[Any]) -> list[CallableI
     for module in modules:
         for name, function in inspect.getmembers(module, inspect.isfunction):
             if (function.__module__ != module.__name__ or name.startswith("_")
-                    or name.lower() not in SAFE_METHODS or name.lower() in UNSAFE_METHODS):
+                    or name.lower() in UNSAFE_METHODS
+                    or name.lower().startswith(("save_", "load_", "export_", "delete_", "remove_",
+                                                "write_", "persist_", "connect_", "download_",
+                                                "upload_", "shutdown_", "close_", "reset_", "clear_"))):
                 continue
             signature = str(inspect.signature(function))
             found[(module.__name__, name, None)] = CallableInfo(
@@ -525,7 +528,10 @@ def _discover_callables(package_name: str, modules: list[Any]) -> list[CallableI
             if cls.__module__ != module.__name__ or class_name.startswith("_"):
                 continue
             for name, method in inspect.getmembers(cls, inspect.isfunction):
-                if name.startswith("_") or name.lower() not in SAFE_METHODS or name.lower() in UNSAFE_METHODS:
+                if (name.startswith("_") or name.lower() in UNSAFE_METHODS
+                        or name.lower().startswith(("save_", "load_", "export_", "delete_", "remove_",
+                                                    "write_", "persist_", "connect_", "download_",
+                                                    "upload_", "shutdown_", "close_", "reset_", "clear_"))):
                     continue
                 signature = str(inspect.signature(method))
                 found[(module.__name__, name, class_name)] = CallableInfo(

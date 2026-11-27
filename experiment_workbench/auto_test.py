@@ -210,6 +210,27 @@ def _random_number(
             low, high = -1.0, 1.0
 
     if integer:
+        # Integer-valued fields are structural counts, identifiers or indices far
+        # more often than probabilities. Keep them valid even when a name contains
+        # a probability-like word such as "feature".
+        if lower_bound is None and upper_bound is None and exclusive_lower is None and exclusive_upper is None:
+            name_lower = name.lower()
+            if any(token in name_lower for token in (
+                "dimension", "shape", "height", "width", "rows", "columns",
+                "feature_size", "embedding_size",
+            )):
+                low, high = 8.0, 128.0
+            elif name_lower.endswith("_key") or any(token in name_lower for token in (
+                "index", "position", "offset", "rank", "step",
+            )):
+                low, high = 0.0, 8.0
+            elif any(token in name_lower for token in (
+                "count", "size", "capacity", "limit", "length",
+                "num_", "n_", "frequency", "population",
+            )):
+                low, high = 1.0, 12.0
+            else:
+                low, high = 0.0, 12.0
         min_int = math.ceil(low)
         max_int = math.floor(high)
         if max_int < min_int:
@@ -463,10 +484,16 @@ def _random_value(
                     "database" in lower or "sqlite" in lower or lower == "db_path"
                 ) else ".tmp"
                 target = artifact_dir / f"generated-{rng.getrandbits(64):016x}{suffix}"
-            if annotation is Path or Path in args:
+            if (
+                annotation is Path or Path in args
+                or (isinstance(annotation, str) and annotation in {"Path", "pathlib.Path"})
+            ):
                 return target
             return str(target)
-        if annotation is Path or Path in args:
+        if (
+            annotation is Path or Path in args
+            or (isinstance(annotation, str) and annotation in {"Path", "pathlib.Path"})
+        ):
             return Path("workbench-generated.tmp")
         return "workbench-generated.tmp"
 
@@ -579,7 +606,8 @@ def _random_value(
         return _random_array(rng_np, rng, lower)
     try:
         if inspect.isclass(annotation) and issubclass(annotation, np.generic):
-            return annotation(_random_number(rng, lower))
+            integer_scalar = issubclass(annotation, np.integer)
+            return annotation(_random_number(rng, lower, integer=integer_scalar))
     except TypeError:
         pass
 

@@ -208,7 +208,7 @@ class PythonCallObserver:
 
 def _trace_mapping(value: Any) -> dict[str, Any]:
     if isinstance(value, Mapping):
-        return dict(value)
+        return {str(key): item for key, item in value.items()}
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
         try:
             return {
@@ -335,15 +335,21 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
     visited_trace_paths: set[str] = set()
 
     def walk(value: Any, path: str, depth: int):
+        nonlocal total_array_count, omitted_array_summaries
         if depth > max_depth or id(value) in seen:
+            return
+        if np is not None and isinstance(value, np.ndarray):
+            seen.add(id(value))
+            total_array_count += 1
+            if len(arrays) < max_arrays:
+                array_summary = _array_summary(value, path)
+                if array_summary is not None:
+                    arrays.append(array_summary)
+            else:
+                omitted_array_summaries += 1
             return
         if isinstance(value, (Mapping, list, tuple, set, frozenset)) or dataclasses.is_dataclass(value) or hasattr(value, "__dict__"):
             seen.add(id(value))
-        array = _array_summary(value, path)
-        if array is not None:
-            if len(arrays) < max_arrays:
-                arrays.append(array)
-            return
         if isinstance(value, Mapping):
             for key, child in value.items():
                 key_text = str(key)
@@ -363,8 +369,11 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                             traces.append({"source": child_path, "index": index, **row_data})
                 if key_text == "records" and isinstance(child, Mapping):
                     for record_name, record in child.items():
-                        if isinstance(record, Mapping):
-                            traces.append({"source": child_path, "stage": str(record_name), **record})
+                        if isinstance(record, Mapping) or dataclasses.is_dataclass(record):
+                            traces.append({
+                                "source": child_path, "stage": str(record_name),
+                                **_trace_mapping(record),
+                            })
                 walk(child, child_path, depth + 1)
         elif isinstance(value, (list, tuple)):
             for index, child in enumerate(value):
@@ -383,13 +392,29 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
                             traces.append({"source": child_path, "index": index, **row_data})
                 walk(child, child_path, depth + 1)
 
+
     walk(output, "output", 0)
     # Avoid duplicate warning messages from nested diagnostics.
     warnings = list(dict.fromkeys(warnings))
     numeric_failures = [item for item in arrays if not item.get("finite", True)]
-    checks.extend([
-        {"check": "numeric_arrays_finite", "value": not numeric_failures,
-         "details": f"{len(numeric_failures)} non-finite array(s)"}])
+    finite_status = (
+        False if numeric_failures
+        else None if omitted_array_summaries
+        else True
+    )
+    checks.append({
+        "check": "numeric_arrays_finite",
+        "value": finite_status,
+        "details": (
+            f"{len(numeric_failures)} non-finite array(s) among "
+            f"{len(arrays)} summarized; {omitted_array_summaries} additional array(s) "
+            "were not summarized"
+        ),
+    })
+    if omitted_array_summaries:
+        warnings.append(
+            f"{omitted_array_summaries} array summaries omitted at the configured limit of {max_arrays}."
+        )
     output_type = type(output).__name__
     fields = [name for name, _ in _field_items(output)]
     return {
@@ -399,11 +424,15 @@ def inspect_output(output: Any, max_arrays: int = 300, max_depth: int = 7) -> di
         "trace_count": len(traces),
         "numerical_summaries": arrays,
         "array_count": len(arrays),
+        "total_array_count": total_array_count,
+        "omitted_array_summaries": omitted_array_summaries,
         "warnings": warnings,
         "checks": checks,
         "summary": {
             "trace_records": len(traces),
             "numeric_arrays": len(arrays),
+            "total_numeric_or_array_objects": total_array_count,
+            "omitted_array_summaries": omitted_array_summaries,
             "warning_count": len(warnings),
             "check_count": len(checks),
         },

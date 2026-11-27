@@ -1,4 +1,5 @@
 from pathlib import Path
+import importlib
 import random
 import sys
 
@@ -8,12 +9,14 @@ WORKBENCH_DIR = Path(__file__).resolve().parents[1] / "experiment_workbench"
 if str(WORKBENCH_DIR) not in sys.path:
     sys.path.insert(0, str(WORKBENCH_DIR))
 
-from adapter import CallableInfo, _convert_constructor_kwargs, execute
-from auto_test import (
-    _align_active_engagement_identity,
-    _call_arguments,
-    _constructor_arguments,
-)
+adapter = importlib.import_module("adapter")
+auto_test = importlib.import_module("auto_test")
+CallableInfo = adapter.CallableInfo
+_convert_constructor_kwargs = adapter._convert_constructor_kwargs
+execute = adapter.execute
+_align_active_engagement_identity = auto_test._align_active_engagement_identity
+_call_arguments = auto_test._call_arguments
+_constructor_arguments = auto_test._constructor_arguments
 
 
 def _active_engagement_callable():

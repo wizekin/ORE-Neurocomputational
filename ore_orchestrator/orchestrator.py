@@ -1,12 +1,13 @@
 """One public runtime entry point for the ORE Neurocomputational repository."""
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, is_dataclass
 import importlib
 import re
 import time
+from collections.abc import Callable, Mapping
+from dataclasses import asdict, dataclass, is_dataclass
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any
 from uuid import uuid4
 
 from ore_contracts import (
@@ -311,7 +312,7 @@ class OREOrchestrator:
                 round((time.perf_counter() - started) * 1000.0, 3),
                 result=result,
             )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - record component errors in the run report
             return ComponentOutcome(
                 component_id, package_name, "failed",
                 round((time.perf_counter() - started) * 1000.0, 3),

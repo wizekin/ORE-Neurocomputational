@@ -9,6 +9,14 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping, NamedTuple, Optional, Sequence, TypedDict
 
+try:
+    from typing import NotRequired, Required
+except ImportError:
+    try:
+        from typing_extensions import NotRequired, Required
+    except ImportError:
+        NotRequired = Required = None
+
 import numpy as np
 import pytest
 
@@ -639,6 +647,9 @@ def test_repository_root_generator_uses_explicit_run_root(tmp_path):
 
 
 def test_typeddict_required_qualifiers_override_total_false_defaults():
+    if Required is None or NotRequired is None:
+        pytest.skip("Required/NotRequired qualifiers are unavailable on this Python install")
+
     class _RequiredOptionalPayload(TypedDict, total=False):
         required_value: Required[str]
         optional_value: NotRequired[float]

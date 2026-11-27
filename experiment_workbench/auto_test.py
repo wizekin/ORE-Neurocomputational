@@ -1321,13 +1321,13 @@ def _source_inventory(root: Path, package_name: str) -> dict[str, Any]:
 
 
 def _numeric_arrays(value: Any, path: str = "output", depth: int = 0):
-    """Find numeric arrays, numeric sequences and scalar values in nested outputs."""
+    """Find numeric values without materializing large Python sequences at once."""
     if depth > 8:
         return
     if isinstance(value, np.ndarray):
         if np.issubdtype(value.dtype, np.number):
             yield path, value
-    elif isinstance(value, (int, float, np.number)) and not isinstance(value, bool):
+    elif isinstance(value, (int, float, np.number)) and not isinstance(value, (bool, np.bool_)):
         yield path, np.asarray(value)
     elif dataclasses.is_dataclass(value) and not isinstance(value, type):
         for field in dataclasses.fields(value):
@@ -1338,7 +1338,8 @@ def _numeric_arrays(value: Any, path: str = "output", depth: int = 0):
         for key, child in value.items():
             yield from _numeric_arrays(child, f"{path}.{key}", depth + 1)
     elif isinstance(value, (list, tuple)):
-        if len(value) <= 100_000:
+        chunk_size = 4096
+        if len(value) <= chunk_size:
             try:
                 array = np.asarray(value)
                 if array.size and array.dtype.kind in "iufc":
@@ -1346,12 +1347,38 @@ def _numeric_arrays(value: Any, path: str = "output", depth: int = 0):
                     return
             except (TypeError, ValueError):
                 pass
-        # Avoid copying very large native sequences merely to observe them.
-        for index, child in enumerate(value[:100]):
-            yield from _numeric_arrays(child, f"{path}[{index}]", depth + 1)
+            for index, child in enumerate(value[:100]):
+                yield from _numeric_arrays(child, f"{path}[{index}]", depth + 1)
+        else:
+            for start in range(0, len(value), chunk_size):
+                end = min(start + chunk_size, len(value))
+                chunk = value[start:end]
+                try:
+                    array = np.asarray(chunk)
+                    if array.size and array.dtype.kind in "iufc":
+                        yield f"{path}[{start}:{end}]", array
+                        continue
+                except (TypeError, ValueError):
+                    pass
+                for offset, child in enumerate(chunk[:100]):
+                    yield from _numeric_arrays(
+                        child, f"{path}[{start + offset}]", depth + 1
+                    )
     elif isinstance(value, (set, frozenset)):
-        for index, child in enumerate(sorted(value, key=repr)[:100]):
-            yield from _numeric_arrays(child, f"{path}[{index}]", depth + 1)
+        ordered = sorted(value, key=repr)
+        for start in range(0, len(ordered), 4096):
+            chunk = ordered[start:start + 4096]
+            try:
+                array = np.asarray(chunk)
+                if array.size and array.dtype.kind in "iufc":
+                    yield f"{path}[{start}:{start + len(chunk)}]", array
+                    continue
+            except (TypeError, ValueError):
+                pass
+            for offset, child in enumerate(chunk[:100]):
+                yield from _numeric_arrays(
+                    child, f"{path}[{start + offset}]", depth + 1
+                )
 
 
 
@@ -1397,7 +1424,21 @@ def _invariant_checks(output: Any) -> list[dict[str, Any]]:
             minimum = float(summary.get("min", array.min()))
             maximum = float(summary.get("max", array.max()))
             if minimum >= -1e-6 and maximum <= 1.0 + 1e-6:
-                deviation = float(np.max(np.abs(array.sum(axis=-1) - 1.0)))
+                last_dimension = int(array.shape[-1])
+                rows_per_chunk = max(1, 1_000_000 // max(last_dimension, 1))
+                if array.ndim == 1:
+                    deviation = abs(float(np.sum(array, dtype=np.float64)) - 1.0)
+                else:
+                    deviation = 0.0
+                    for row_start in range(0, array.shape[0], rows_per_chunk):
+                        row_end = min(row_start + rows_per_chunk, array.shape[0])
+                        row_sums = np.sum(
+                            array[row_start:row_end], axis=-1, dtype=np.float64
+                        )
+                        deviation = max(
+                            deviation,
+                            float(np.max(np.abs(row_sums - 1.0))) if row_sums.size else 0.0,
+                        )
                 checks.append({
                     "kind": "probability_distribution_normalization_candidate",
                     "path": path,

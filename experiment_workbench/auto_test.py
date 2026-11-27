@@ -141,54 +141,71 @@ def _random_number(
     integer: bool = False,
     metadata: Mapping[str, Any] | None = None,
 ) -> int | float:
-    """Generate finite values with conservative name and declared-metadata bounds."""
+    """Generate finite values from declared bounds, then use ordered semantic hints."""
     metadata = dict(metadata or {})
     lower_bound = metadata.get("ge", metadata.get("minimum", metadata.get("min")))
     upper_bound = metadata.get("le", metadata.get("maximum", metadata.get("max")))
     exclusive_lower = metadata.get("gt")
     exclusive_upper = metadata.get("lt")
-    if lower_bound is not None or upper_bound is not None or exclusive_lower is not None or exclusive_upper is not None:
-        low = float(lower_bound if lower_bound is not None else exclusive_lower if exclusive_lower is not None else -1.0)
-        high = float(upper_bound if upper_bound is not None else exclusive_upper if exclusive_upper is not None else low + 10.0)
+    if (
+        lower_bound is not None or upper_bound is not None
+        or exclusive_lower is not None or exclusive_upper is not None
+    ):
+        low = float(
+            lower_bound if lower_bound is not None
+            else exclusive_lower if exclusive_lower is not None
+            else -1.0
+        )
+        high = float(
+            upper_bound if upper_bound is not None
+            else exclusive_upper if exclusive_upper is not None
+            else low + 10.0
+        )
         if exclusive_lower is not None and lower_bound is None:
             low += 1.0 if integer else max(abs(low) * 1e-6, 1e-6)
         if exclusive_upper is not None and upper_bound is None:
             high -= 1.0 if integer else max(abs(high) * 1e-6, 1e-6)
     else:
         name_lower = name.lower()
-        if any(token in name_lower for token in ("dimension", "embedding_size", "feature_size")):
+        # Structural size and index hints must win before words such as "feature"
+        # or "context", otherwise integer fields like feature_count get 0..1 bounds.
+        if any(token in name_lower for token in (
+            "dimension", "embedding_size", "feature_size", "input_shape",
+            "height", "width", "rows", "columns", "row_count", "column_count",
+        )):
             low, high = 8.0, 128.0
+        elif name_lower.endswith("_key"):
+            low, high = 0.0, 8.0
+        elif any(token in name_lower for token in (
+            "population_size", "frequency", "capacity", "limit", "size", "count",
+            "max_", "min_", "num_", "steps", "iterations", "candidates",
+            "questions", "length", "num_samples", "n_samples",
+        )):
+            low, high = 1.0, 12.0
+        elif any(token in name_lower for token in (
+            "index", "position", "iteration", "step", "offset", "rank",
+        )):
+            low, high = 0.0, 8.0
         elif any(token in name_lower for token in (
             "confidence", "probability", "probabilities", "reliability", "prior",
             "threshold", "weight", "strength", "productivity", "similarity",
             "posterior", "precision", "activation", "normalized", "normalised",
             "ratio", "fraction", "coverage", "gate", "semantic_feature",
             "context_feature", "evidence", "incoming_feature", "modality_feature",
-            "context", "feature",
+            "context", "feature", "salience", "likelihood", "belief",
         )):
             low, high = 0.05, 0.95
-        elif "population_size" in name_lower:
-            low, high = 2.0, 16.0
-        elif name_lower.endswith("_key") or any(
-            token in name_lower for token in (
-                "frequency", "capacity", "limit", "size", "count", "max_",
-                "min_", "num_", "steps", "iterations", "candidates", "questions",
-            )
-        ):
-            low, high = 1.0, 12.0
-        elif any(token in name_lower for token in ("index", "position", "iteration", "step")):
-            low, high = 0.0, 8.0
         elif any(token in name_lower for token in (
             "temperature", "tau", "time_ms", "duration_ms", "resistance",
-            "current_gain", "membrane_tau", "refractory",
+            "current_gain", "membrane_tau", "refractory", "alpha", "beta",
+            "gamma", "sigma", "variance", "standard_deviation", "epsilon",
+            "duration", "interval", "period",
         )):
-            low, high = 0.1, 2.0
+            low, high = 0.05, 2.0
         elif "learning_rate" in name_lower or name_lower.endswith("_rate"):
             low, high = 0.01, 0.25
         elif "gain" in name_lower or "scale" in name_lower:
             low, high = 0.05, 1.0
-        elif "frequency" in name_lower:
-            low, high = 1.0, 1000.0
         else:
             low, high = -1.0, 1.0
 

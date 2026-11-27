@@ -367,7 +367,7 @@ def test_path_generator_isolates_outputs_but_preserves_repository_roots(tmp_path
         string_root = _random_value(
             rng, rng_np, "repository_root", str, package_name="ore_logger"
         )
-        assert typed_root == Path(".")
+        assert typed_root == Path.cwd()
         assert string_root == str(Path.cwd())
     finally:
         _RANDOM_TEST_ARTIFACT_DIR.reset(token)
@@ -648,3 +648,30 @@ def test_typeddict_required_qualifiers_override_total_false_defaults():
     assert "optional_value" not in generated or isinstance(
         generated["optional_value"], float
     )
+
+
+def test_observer_caps_array_summaries_without_claiming_unobserved_arrays_finite():
+    from observer import inspect_output
+
+    output = {
+        "arrays": [
+            np.asarray([1.0], dtype=np.float32)
+            for _ in range(5)
+        ]
+    }
+    observation = inspect_output(output, max_arrays=2)
+    assert observation["array_count"] == 2
+    assert observation["total_array_count"] == 5
+    assert observation["omitted_array_summaries"] == 3
+    finite_check = next(
+        item for item in observation["checks"]
+        if item["check"] == "numeric_arrays_finite"
+    )
+    assert finite_check["value"] is None
+
+
+def test_numeric_sequence_scanner_processes_large_lists_in_bounded_chunks():
+    values = [float(index % 10) for index in range(9_000)]
+    chunks = list(_numeric_arrays(values, path="output.values"))
+    assert len(chunks) == 3
+    assert sum(array.size for _, array in chunks) == len(values)

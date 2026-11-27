@@ -21,7 +21,10 @@ import traceback
 import types
 import uuid
 import zipfile
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import (
+    Collection, Iterable, Mapping, MutableMapping, MutableSet,
+    Sequence, Set as AbstractSet,
+)
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, get_args, get_origin, get_type_hints, is_typeddict
@@ -47,6 +50,9 @@ _UNSET = object()
 # Files created by randomized trials must stay inside that run's report folder.
 _RANDOM_TEST_ARTIFACT_DIR: ContextVar[Path | None] = ContextVar(
     "ore_random_test_artifact_dir", default=None
+)
+_RANDOM_TEST_REPOSITORY_ROOT: ContextVar[Path | None] = ContextVar(
+    "ore_random_test_repository_root", default=None
 )
 SAFE_METHODS = {
     "process", "run", "execute", "infer", "predict", "recognize", "transform",
@@ -396,21 +402,24 @@ def _random_value(
     metadata = dict(metadata or {})
 
     repository_root_names = {
-        "repository_root", "repo_root", "project_root", "source_root",
-        "workspace_root", "root_directory", "repository_directory",
+        "root", "repo", "repository", "repository_root", "repo_root",
+        "project", "project_root", "project_directory", "source_root",
+        "workspace", "workspace_root", "root_directory",
+        "repository_directory", "repository_path", "repo_path", "project_path",
     }
     if lower in repository_root_names:
+        repository_root = _RANDOM_TEST_REPOSITORY_ROOT.get() or Path.cwd()
         if (
             annotation is Path or Path in args
             or (isinstance(annotation, str) and annotation in {"Path", "pathlib.Path"})
         ):
-            return Path(".")
+            return repository_root
         if (
             annotation is str or str in args or annotation is Any
             or annotation is inspect.Parameter.empty
             or (isinstance(annotation, str) and annotation in {"str", "Any"})
         ):
-            return str(Path.cwd())
+            return str(repository_root)
 
     path_names = {
         "path", "file_path", "db_path", "database_path", "sqlite_path",
@@ -496,6 +505,12 @@ def _random_value(
     if is_typeddict(annotation):
         hints = _type_hints(annotation)
         required = set(getattr(annotation, "__required_keys__", set(hints)))
+        for field_name, field_annotation in hints.items():
+            qualifier = get_origin(field_annotation)
+            if qualifier is Required:
+                required.add(field_name)
+            elif qualifier is NotRequired:
+                required.discard(field_name)
         values = {}
         for field_name, field_type in hints.items():
             if field_name not in required and rng.random() >= OPTIONAL_PARAMETER_PROBABILITY:
@@ -551,7 +566,9 @@ def _random_value(
     except TypeError:
         pass
 
-    if origin in (dict, Mapping) or annotation in (dict, Mapping):
+    if origin in (dict, Mapping, MutableMapping) or annotation in (
+        dict, Mapping, MutableMapping
+    ):
         key_type, value_type = args if len(args) == 2 else (str, Any)
         minimum = 1 if lower in {"context", "context_features", "semantic_features", "features_by_name"} else 0
         count = rng.randint(minimum, 5)
@@ -568,7 +585,10 @@ def _random_value(
                 rows[key] = item
         return rows
 
-    if origin in (list, tuple, set, frozenset, Sequence, Iterable):
+    if origin in (
+        list, tuple, set, frozenset, Sequence, Iterable,
+        Collection, AbstractSet, MutableSet,
+    ) or annotation in (Sequence, Iterable, Collection, AbstractSet, MutableSet):
         item_annotation = args[0] if args else Any
         item_origin = get_origin(item_annotation)
         if lower in {"lexicon", "concepts", "morphemes", "g2p_rules"} and (
@@ -604,7 +624,7 @@ def _random_value(
         values = [item for item in values if item is not _UNSET]
         if origin is tuple:
             return tuple(values)
-        if origin is set:
+        if origin in (set, AbstractSet, MutableSet) or annotation in (AbstractSet, MutableSet):
             return set(values)
         if origin is frozenset:
             return frozenset(values)
@@ -1834,6 +1854,7 @@ def run_auto_test_suite(
                 artifact_token = _RANDOM_TEST_ARTIFACT_DIR.set(
                     report_dir / "side_effects" / package_name
                 )
+                root_token = _RANDOM_TEST_REPOSITORY_ROOT.set(root)
                 try:
                     supplied = _call_arguments(package_name, info, rng_py, rng_np)
                     init_args = _constructor_arguments(package_name, info, rng_py, rng_np)
@@ -1913,6 +1934,7 @@ def run_auto_test_suite(
                     })
                 finally:
                     _RANDOM_TEST_ARTIFACT_DIR.reset(artifact_token)
+                    _RANDOM_TEST_REPOSITORY_ROOT.reset(root_token)
                 completed += 1
                 _notify(
                     progress_callback, completed, total_trials,

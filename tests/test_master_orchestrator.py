@@ -54,3 +54,26 @@ def test_text_workflow_can_run_comprehension_only():
     assert report.status == "completed"
     assert len(report.components) == 1
     assert report.components[0].component_id == "comprehension"
+
+
+def test_default_bootstrap_reuses_point24_integration_manager():
+    ore = OREOrchestrator(integrate_point_modules=True)
+
+    assert ore.integration_report is not None
+    assert "package_inventory" in ore.diagnostics()
+    assert "failures" in ore.integration_report.to_dict()
+
+
+def test_vision_entry_point_delegates_to_n9():
+    from ore_n9 import N9Patch, N9Request
+
+    ore = OREOrchestrator(integrate_point_modules=False)
+    request = N9Request(
+        sequence_id="orchestrator-vision-test",
+        patches=[N9Patch("patch-1", grapheme_probabilities={"A": 1.0})],
+    )
+
+    result = ore.run_vision(request)
+
+    assert result.sequence_id == "orchestrator-vision-test"
+    assert len(result.operation_trace) == 120

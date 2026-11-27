@@ -12,12 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from adapter import accepts_parameter, discover_callables, execute, json_safe
+from auto_test import discover_ore_packages, run_auto_test_suite, save_manual_run_report
 
-COMPONENTS = [
-    "ore_contracts", "ore_lexical_access", "ore_lexical_context",
-    "ore_n1", "ore_n2", "ore_n3", "ore_n4", "ore_n5", "ore_n6", "ore_n9",
-    "ore_predictive_orthography", "ore_reading", "ore_semantic",
-]
+COMPONENTS = discover_ore_packages(ROOT)
 st.set_page_config(page_title="ORE Experiment Workbench", page_icon="🧠",
                    layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
@@ -36,7 +33,8 @@ st.title("🧠 ORE Experiment Workbench")
 st.markdown('<p class="ore-subtitle">A conversational lab for executing ORE components and observing what the Python implementation actually computes.</p>', unsafe_allow_html=True)
 
 DEFAULTS = {"messages": [], "last_result": None, "last_output_object": None,
-            "discovery_cache": {}, "artifacts": [], "run_count": 0}
+            "discovery_cache": {}, "artifacts": [], "run_count": 0,
+            "automatic_test_result": None}
 for key, value in DEFAULTS.items():
     if key not in st.session_state:
         st.session_state[key] = value
@@ -91,6 +89,148 @@ with st.sidebar:
         st.session_state.artifacts = []
         st.session_state.last_output_object = None
         st.rerun()
+
+with st.expander("Randomized theory-and-algorithm testing", expanded=False):
+    st.markdown(
+        f"Randomly exercise **all eligible callables** found in the {len(COMPONENTS)} packages. "
+        "Inputs and pseudo-text are newly generated for every trial. No fixed prompt bank, target answer, "
+        "or expected output is used."
+    )
+    st.caption(
+        "The runner checks execution, numerical invariants, declared operation registries, and observed traces. "
+        "It does not substitute for empirical neuroscience evidence or domain-specific theory review."
+    )
+    trial_count = st.number_input(
+        "Random trials per callable", min_value=1, max_value=500, value=25, step=5,
+        help="Every discovered eligible callable is tested this many times with fresh random inputs."
+    )
+    callable_cap = st.number_input(
+        "Maximum callables per package (0 = all)", min_value=0, max_value=1000,
+        value=0, step=5,
+        help="Zero includes every discovered safe algorithm entry point, including supported learning methods."
+    )
+    seed_text = st.text_input(
+        "Random seed (optional)", value="",
+        help="Leave blank for a new unpredictable seed. Save the seed from the report to reproduce a run."
+    )
+    st.caption(
+        f"Configured run: up to {int(trial_count)} random trials for each selected callable. "
+        "The actual total is calculated after package discovery."
+    )
+    if st.button("Start randomized testing of all packages", type="primary",
+                  use_container_width=True, key="run_all_ore_randomized_tests"):
+        progress_bar = st.progress(0.0, text="Discovering package algorithms...")
+        progress_detail = st.empty()
+        status_panel = st.status("Randomized evaluation running", expanded=True)
+        random_seed = None
+        try:
+            random_seed = int(seed_text.strip()) if seed_text.strip() else None
+        except ValueError:
+            st.error("The random seed must be an integer or left empty.")
+            st.stop()
+
+        def _update_random_progress(payload):
+            fraction = float(payload.get("fraction", 0.0))
+            progress_bar.progress(min(1.0, max(0.0, fraction)))
+            package_name = payload.get("package") or "All packages"
+            progress_detail.write(
+                f"Package {payload.get('package_index', 0)} of {payload.get('package_count', len(COMPONENTS))}: "
+                f"**{package_name}** · Callable {payload.get('callable_index', 0)} of "
+                f"{payload.get('callable_count', 0)} · Trial {payload.get('trial_index', 0)} of "
+                f"{payload.get('trial_count', 0)} · {payload.get('phase', '')} · "
+                f"{payload.get('completed', 0)} / {payload.get('total', 0)} trials"
+            )
+
+        try:
+            auto_result = run_auto_test_suite(
+                ROOT,
+                progress_callback=_update_random_progress,
+                trials_per_callable=int(trial_count),
+                max_callables_per_package=int(callable_cap),
+                random_seed=random_seed,
+            )
+            st.session_state.automatic_test_result = auto_result
+            status_panel.update(label="Randomized evaluation completed", state="complete", expanded=False)
+            st.rerun()
+        except Exception as exc:
+            status_panel.update(label="Randomized evaluation stopped with an error", state="error", expanded=True)
+            st.error(f"{type(exc).__name__}: {exc}")
+
+    auto_result = st.session_state.get("automatic_test_result")
+    if auto_result:
+        summary = auto_result["summary"]
+        st.divider()
+        st.subheader("Latest randomized evaluation")
+        metric_cols = st.columns(6)
+        metric_cols[0].metric("Packages", summary["package_count"])
+        metric_cols[1].metric("Callables", summary["callables_exercised"])
+        metric_cols[2].metric("Random trials", summary["completed_trials"])
+        metric_cols[3].metric("Runtime errors", summary["execution_errors"])
+        metric_cols[4].metric("Input / gate rejections", summary["input_rejections"])
+        metric_cols[5].metric("Invariant flags", summary["candidate_invariant_violations"])
+        st.caption(
+            f"Run {auto_result['run_id']} · Random seed {auto_result['random_seed']} · "
+            f"{summary['completed_trials']} / {summary['planned_trials']} trials · "
+            f"Reports saved to {auto_result['report_directory']}"
+        )
+        zip_path = Path(auto_result["archive_path"])
+        if zip_path.is_file():
+            st.download_button(
+                "Download all package reports (ZIP)",
+                data=zip_path.read_bytes(),
+                file_name=zip_path.name,
+                mime="application/zip",
+                use_container_width=True,
+                key="download_all_randomized_package_reports",
+            )
+        summary_path = Path(auto_result["summary_markdown"])
+        if summary_path.is_file():
+            st.download_button(
+                "Download overall summary (Markdown)",
+                data=summary_path.read_bytes(),
+                file_name=summary_path.name,
+                mime="text/markdown",
+                key="download_randomized_package_summary",
+            )
+        package_reports = auto_result.get("package_reports", [])
+        if package_reports:
+            st.markdown("**Individual package reports**")
+            package_names = [item["package"] for item in package_reports]
+            chosen_report_name = st.selectbox(
+                "Select a package report", package_names, key="randomized_report_package"
+            )
+            chosen_report = next(item for item in package_reports
+                                 if item["package"] == chosen_report_name)
+            part = chosen_report["summary"]
+            st.caption(
+                f"Import: {chosen_report['import_status']} · "
+                f"Callables: {part.get('callables_exercised', 0)} · "
+                f"Trials: {part.get('trials_executed', 0)} · "
+                f"Errors: {part.get('execution_errors', 0)} · "
+                f"Candidate invariant flags: {part.get('candidate_invariant_violations', 0)}"
+            )
+            report_json_path = Path(chosen_report["json_path"]) if chosen_report.get("json_path") else None
+            report_md_path = Path(chosen_report["markdown_path"]) if chosen_report.get("markdown_path") else None
+            report_cols = st.columns(2)
+            if report_json_path and report_json_path.is_file():
+                report_cols[0].download_button(
+                    "Download package JSON",
+                    data=report_json_path.read_bytes(),
+                    file_name=report_json_path.name,
+                    mime="application/json",
+                    key=f"download_random_json_{chosen_report_name}",
+                    use_container_width=True,
+                )
+            if report_md_path and report_md_path.is_file():
+                report_cols[1].download_button(
+                    "Download package Markdown",
+                    data=report_md_path.read_bytes(),
+                    file_name=report_md_path.name,
+                    mime="text/markdown",
+                    key=f"download_random_md_{chosen_report_name}",
+                    use_container_width=True,
+                )
+
 
 try:
     if component not in st.session_state.discovery_cache:
@@ -251,6 +391,10 @@ with left:
                         state=("complete" if result["status"] == "success" else "error"),
                         expanded=live_debug,
                     )
+                try:
+                    result["automatic_report_path"] = save_manual_run_report(ROOT, result)
+                except Exception as report_exc:
+                    result["automatic_report_error"] = f"{type(report_exc).__name__}: {report_exc}"
                 st.session_state.last_result = result
                 if result["status"] == "success":
                     raw_output = result["output"]
@@ -297,6 +441,10 @@ with right:
             st.code(result.get("callable", ""), language="text")
             st.write("**Output type**")
             st.write(obs.get("output_type"))
+            if result.get("automatic_report_path"):
+                st.caption("Automatically saved report: " + result["automatic_report_path"])
+            if result.get("automatic_report_error"):
+                st.warning("Automatic report could not be saved: " + result["automatic_report_error"])
             if result.get("upstream_run_id"):
                 st.caption(f'Upstream run: {result["upstream_run_id"]}')
             st.write("**Validation checks**")

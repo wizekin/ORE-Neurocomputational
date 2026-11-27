@@ -183,3 +183,48 @@ Installing the repository with `python -m pip install -e .` installs the small P
 The database defaults to `ore_logs/ore_logger.sqlite3`. Set `ORE_LOGGER_DB` to override its location, `ORE_LOG_MAX_EVENTS` to change the per-process cap (default 200,000), or `ORE_AUTO_LOG=0` to disable automatic tracing for a process. The startup hook is diagnostic only and fails open: a logger failure must not prevent the user's script from running.
 
 Python profiling does not expose native NumPy/SciPy instructions, GPU kernels or work performed in existing external processes. It records Python-level operations and the component-authored diagnostics available from ORE.
+
+
+
+## Randomized theory-and-algorithm evaluation
+
+The Streamlit Workbench discovers first-party `ore_*` packages and their eligible public algorithm entry points dynamically. Its **Start randomized testing of all packages** action runs random trials against each discovered callable, one callable and one package at a time.
+
+### No fixed prompts or expected answers
+
+The randomized runner deliberately does not use a pre-authored prompt bank, canned example inputs, fixed target labels, or expected output answers. It generates a fresh random seed, random pseudo-text, random numerical arrays, random structured values, and typed request records using the inspected Python signatures and dataclass contracts. Each trial receives new input and a new processor instance. The seed is included in the report to make a run reproducible.
+
+The default is 25 random trials per discovered callable. You can increase this to 500, and set the callable cap to zero to include all discovered eligible entry points. The runner includes selected in-memory learning/update methods when they are discoverable, but intentionally excludes file-writing, persistence, network, deletion, reset, and shutdown methods. Input/guard rejections (for example, a deliberately random input being rejected by a contract or an authorization gate) are reported separately from unexpected runtime exceptions. Any learning/update trial uses a fresh in-memory model and randomly generated synthetic records; randomized authorization flags only exercise the permission gate and do not represent genuine human verification or consent. No persistent model write is performed.
+
+Random strings and arbitrary structured data are useful for discovering crashes, bad assumptions, unstable numerical operations, type-contract gaps, and unexpected edge behaviour. They are not intended to simulate meaningful human language or to provide a human-readable expected answer.
+
+### How it evaluates algorithms without an answer key
+
+The runner gathers three kinds of implementation evidence:
+
+1. **Randomized execution:** it records each callable, random input, actual arguments, returned type/value summary, errors, elapsed time, Python call profile, and component-provided traces.
+2. **Oracle-free invariant checks:** it checks numerical finiteness and reports candidate violations of common probability/confidence bounds or probability normalization. Name-based checks are explicitly marked as candidates because the variable's exact theoretical meaning must be reviewed before calling them defects.
+3. **Theory and algorithm coverage:** it discovers package operation/stage registries, captures declared mathematical forms and biological references where present, compares registered operation identifiers with identifiers observed in execution traces, inventories public source functions/classes, and attaches matching architecture documents plus the source-to-code crosswalk.
+
+The automatic runner cannot prove a theory from random input alone. For example, random numbers cannot establish that a semantic representation has the correct human meaning, or that a neural approximation matches measured brain responses. Those claims require domain-specific controlled experiments, reference measurements, and human theory review. This randomized evaluation is designed to uncover weaknesses and direct that next stage, not to overstate what has been demonstrated.
+
+### Reports
+
+Each run creates a timestamped directory under `ore_reports/randomized_theory_tests/` with:
+
+- An overall `summary.json` and `summary.md`.
+- One separate JSON and Markdown report for every package.
+- Callable-by-callable results, randomized trials, input summaries, output summaries, runtime errors, invariant checks, operation-registry coverage, and matched theory-document excerpts.
+- A ZIP archive containing the overall summary and all package reports.
+
+Ordinary manual Workbench runs continue to create automatic JSON and Markdown records under `ore_reports/manual_runs/`. Generated reports are local artifacts and do not need to be committed to Git.
+
+### Run locally
+
+From the repository root:
+
+    python -m pip install -e .
+    python -m pip install -r experiment_workbench/requirements.txt
+    streamlit run experiment_workbench/app.py
+
+The randomized runner is separate from pytest. Clicking its Streamlit button does not start pytest, GitHub Actions, or a pull request.

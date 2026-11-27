@@ -736,3 +736,15 @@ def test_randomized_path_field_handles_path_forward_reference(tmp_path):
         assert generated.parent == tmp_path
     finally:
         _RANDOM_TEST_ARTIFACT_DIR.reset(token)
+
+
+def test_observer_inspects_outputs_with_no_numpy_arrays():
+    observation = inspect_output({"status": "ok", "result": "done"})
+    assert observation["array_count"] == 0
+    assert observation["total_array_count"] == 0
+    assert observation["omitted_array_summaries"] == 0
+    finite_check = next(
+        item for item in observation["checks"]
+        if item["check"] == "numeric_arrays_finite"
+    )
+    assert finite_check["value"] is True

@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import math
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Iterable, Sequence
 
@@ -28,7 +28,7 @@ class QuantileEstimate:
     """Typed quantile estimate: approximate, never a correctness claim (Step 34)."""
 
     percentile: float
-    value: float
+    value: float = field(metadata={"allow_nan_when": {"field": "available", "equals": False}})
     unit: str
     source: str
     nominal_error_bound: float

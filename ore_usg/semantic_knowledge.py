@@ -161,7 +161,20 @@ class USGSemanticKnowledgeResource:
 
     @property
     def active_concepts(self) -> tuple[SemanticConcept, ...]:
-        active_ids = {item.concept.concept_id for item in self.concept_records if item.active}
+        # General semantic composition uses declared CONCEPT records. Lexical
+        # senses remain available through the full inventory and lexical access.
+        active_ids = {
+            item.concept.concept_id for item in self.concept_records
+            if item.active and item.record_kind == "CONCEPT"
+        }
+        return tuple(item for item in self.concepts if item.concept_id in active_ids)
+
+    @property
+    def active_records(self) -> tuple[SemanticConcept, ...]:
+        """Return every active concept record, including lexical senses."""
+        active_ids = {
+            item.concept.concept_id for item in self.concept_records if item.active
+        }
         return tuple(item for item in self.concepts if item.concept_id in active_ids)
 
     @property

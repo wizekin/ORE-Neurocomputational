@@ -9,14 +9,22 @@ from __future__ import annotations
 import ast
 import dataclasses
 import enum
+import gc
+import platform
 from contextvars import ContextVar
 import importlib
+from importlib import metadata as importlib_metadata
 import inspect
 import json
 import math
 import pkgutil
 import random
 import secrets
+import shutil
+import subprocess
+import sys
+import textwrap
+import time
 import traceback
 import types
 import uuid
@@ -102,6 +110,60 @@ def discover_ore_packages(repository_root: str | Path) -> list[str]:
         if path.is_dir() and path.name.startswith("ore_")
         and (path / "__init__.py").is_file()
     )
+
+
+def _execution_environment(repository_root: Path) -> dict[str, Any]:
+    """Capture the runtime, direct dependency versions, and available Git identity."""
+    source_control: dict[str, str | None] = {"branch": None, "commit": None}
+    if (repository_root / ".git").exists():
+        for key, args in (
+            ("branch", ["rev-parse", "--abbrev-ref", "HEAD"]),
+            ("commit", ["rev-parse", "HEAD"]),
+        ):
+            try:
+                result = subprocess.run(
+                    ["git", "-C", str(repository_root), *args],
+                    capture_output=True, check=False, text=True, timeout=2,
+                )
+            except (OSError, subprocess.SubprocessError):
+                continue
+            if result.returncode == 0:
+                source_control[key] = result.stdout.strip() or None
+
+    dependency_versions: dict[str, str | None] = {"numpy": np.__version__}
+    for distribution in ("scipy", "psutil", "streamlit", "pytest"):
+        try:
+            dependency_versions[distribution] = importlib_metadata.version(distribution)
+        except importlib_metadata.PackageNotFoundError:
+            dependency_versions[distribution] = None
+
+    return {
+        "python_version": platform.python_version(),
+        "python_implementation": platform.python_implementation(),
+        "python_executable": sys.executable,
+        "platform": platform.platform(),
+        "source_control": source_control,
+        "dependency_versions": dependency_versions,
+    }
+
+
+def _canonical_algorithm_catalog() -> list[dict[str, Any]]:
+    """Expose the Point 24 canonical package mapping with stable IDs and titles."""
+    try:
+        from ore_point24.spec import POINT_FAMILIES
+    except Exception:
+        return []
+    return [
+        {
+            "algorithm_id": family.algorithm_id,
+            "canonical_point": family.point,
+            "title": family.family,
+            "package": family.package,
+            "package_title": family.package_title,
+        }
+        for family in POINT_FAMILIES
+        if family.package and family.algorithm_id
+    ]
 
 
 def _type_hints(target: Any) -> dict[str, Any]:
@@ -367,6 +429,18 @@ def _valid_random_image(rng_np: np.random.Generator) -> np.ndarray:
     return rng_np.random((height, width), dtype=np.float32)
 
 
+def _minimal_usg_bundle(rng: random.Random) -> dict[str, Any]:
+    """Create an empty but structurally valid synthetic USG bundle for integration trials."""
+    return {
+        "contract": "USG-KNOWLEDGE/0.1.0",
+        "namespace": "synthetic-workbench",
+        "bundle_id": f"synthetic-{rng.getrandbits(48):012x}",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "records": [], "sources": [], "evidence": [], "contexts": [],
+        "mappings": [], "relations": [],
+    }
+
+
 def _make_random_n3_processor(rng: random.Random, rng_np: np.random.Generator):
     """Fit an ephemeral N3 model using fresh random feature samples."""
     from ore_n3 import LabeledN2Patch, N3Processor
@@ -439,6 +513,11 @@ def _random_value(
     origin, args = get_origin(annotation), get_args(annotation)
     metadata = dict(metadata or {})
 
+    if package_name == "ore_blackboard" and lower in {"usg_bundle", "knowledge_bundle"}:
+        if type(None) in args and rng.random() < 0.35:
+            return None
+        return _minimal_usg_bundle(rng)
+
     repository_root_names = {
         "repository_root", "repo_root", "project_root", "project_directory",
         "source_root", "workspace_root", "root_directory",
@@ -466,7 +545,9 @@ def _random_value(
         "database_file", "db_file", "destination_file",
     }
     is_directory = (
-        lower in {"directory", "folder", "output_dir", "storage_dir", "cache_dir", "log_dir"}
+        lower in {
+            "root", "directory", "folder", "output_dir", "storage_dir", "cache_dir", "log_dir",
+        }
         or lower.endswith(("_dir", "_directory", "_folder"))
     )
     if (
@@ -474,13 +555,15 @@ def _random_value(
         or is_directory
     ):
         artifact_dir = _RANDOM_TEST_ARTIFACT_DIR.get()
+        if artifact_dir is None and lower == "root":
+            artifact_dir = _RANDOM_TEST_REPOSITORY_ROOT.get()
         if artifact_dir is not None:
             artifact_dir.mkdir(parents=True, exist_ok=True)
             if is_directory:
                 target = artifact_dir / f"generated-{rng.getrandbits(64):016x}"
             else:
                 suffix = ".sqlite3" if (
-                    "database" in lower or "sqlite" in lower or lower == "db_path"
+                    "database" in lower or "sqlite" in lower or lower in {"db_path", "path"}
                 ) else ".tmp"
                 target = artifact_dir / f"generated-{rng.getrandbits(64):016x}{suffix}"
             if (
@@ -596,6 +679,19 @@ def _random_value(
         return datetime.fromtimestamp(rng.randint(1_500_000_000, 1_800_000_000), tz=timezone.utc).date()
 
     if annotation is np.ndarray:
+        if package_name == "ore_brain_networks":
+            if lower == "feature_stack":
+                return rng_np.random((8, 32, 32), dtype=np.float32)
+            if lower == "region_mask":
+                mask = np.zeros((32, 32), dtype=bool)
+                mask[8:24, 8:24] = True
+                return mask
+            if lower in {"feature_vector", "observed_vector", "prototype_mean", "mean", "variance"}:
+                return (
+                    np.full(23, 0.5, dtype=np.float64)
+                    if lower == "variance"
+                    else rng_np.normal(0.0, 1.0, size=23).astype(np.float64)
+                )
         if package_name in {"ore_n3", "ore_n5", "ore_n6"} and lower in {
             "features", "feature_vector", "embedding", "vector"
         }:
@@ -791,7 +887,87 @@ def _random_dataclass(
     """Generate a real dataclass instance and validate it before dispatch."""
     payload = None
 
-    if cls.__name__ == "N5ModelState":
+    if package_name == "ore_bayesian_causal" and cls.__name__ == "BayesianCausalState":
+        payload = {"runner_id": f"runner-{rng.getrandbits(48):012x}"}
+    elif package_name == "ore_bayesian_causal" and cls.__name__ == "BayesianCausalRequest":
+        payload = {"question": _random_prompt(rng)}
+    elif package_name == "ore_corrective_learning" and cls.__name__ == "ClarificationOption":
+        first_id = f"hypothesis-{rng.getrandbits(32):08x}"
+        second_id = f"hypothesis-{rng.getrandbits(32):08x}"
+        payload = {
+            "action_id": f"action-{rng.getrandbits(32):08x}",
+            "kind": rng.choice(("infer", "clarify", "check", "test")),
+            "description": "Compare two candidate explanations with a synthetic response.",
+            "response_models": {
+                first_id: {"supports": 0.8, "refutes": 0.2},
+                second_id: {"supports": 0.3, "refutes": 0.7},
+            },
+            "cost": float(rng.random()),
+        }
+    elif package_name == "ore_corrective_learning" and cls.__name__ == "CorrectionRequest":
+        first_id = f"hypothesis-{rng.getrandbits(32):08x}"
+        second_id = f"hypothesis-{rng.getrandbits(32):08x}"
+        response_models = {
+            first_id: {"supports": 0.8, "refutes": 0.2},
+            second_id: {"supports": 0.3, "refutes": 0.7},
+        }
+        payload = {
+            "request_id": f"correction-{rng.getrandbits(48):012x}",
+            "hypotheses": [
+                {"hypothesis_id": first_id, "statement": "The first candidate explanation."},
+                {"hypothesis_id": second_id, "statement": "The alternative candidate explanation."},
+            ],
+            "current_hypothesis_id": first_id,
+            "observed_outcome": "supports",
+            "clarification_options": [{
+                "action_id": f"action-{rng.getrandbits(32):08x}",
+                "kind": rng.choice(("infer", "clarify", "check", "test")),
+                "description": "Compare candidate explanations with a synthetic response.",
+                "response_models": response_models,
+                "cost": 0.1,
+            }],
+        }
+    elif package_name == "ore_analogical_transfer" and cls.__name__ == "TransferConstraint":
+        payload = {
+            "constraint_id": f"constraint-{rng.getrandbits(32):08x}",
+            "kind": rng.choice((
+                "forbid_relation", "require_relation", "condition_equals",
+                "condition_not_equals", "unsupported_relation",
+            )),
+            "subject": "target-entity", "predicate": "synthetic-relation",
+            "object": "target-value", "key": "synthetic-condition",
+            "expected_value": "expected", "explanation": "Synthetic target-domain boundary.",
+            "severity": rng.choice(("hard", "soft", "informational")),
+        }
+    elif package_name == "ore_brain_networks" and cls.__name__ == "BNBEAConfig":
+        payload = {}
+    elif package_name == "ore_brain_networks" and cls.__name__ == "GraphemePrototype":
+        payload = {
+            "label": _random_string(rng, 2, 6),
+            "mean": rng_np.normal(0.0, 1.0, size=23),
+            "variance": np.ones(23, dtype=np.float64),
+        }
+    elif package_name == "ore_brain_networks" and cls.__name__ == "BNBEARequest":
+        payload = {
+            "sample_id": f"sample-{rng.getrandbits(32):08x}",
+            "visual_image": _valid_random_image(rng_np),
+        }
+    elif package_name == "ore_blackboard" and cls.__name__ == "BlackboardTaskRequest":
+        payload = {
+            "input": _random_prompt(rng),
+            "goal": "Interpret the supplied synthetic input.",
+            "task_id": f"blackboard-task-{rng.getrandbits(48):012x}",
+            "usg_bundle": _minimal_usg_bundle(rng),
+        }
+    elif package_name == "ore_blackboard" and cls.__name__ == "USGModuleKnowledge":
+        payload = {
+            "module_id": "ore.blackboard.synthetic",
+            "domains": ("synthetic",), "requested_terms": ("example",),
+            "predicate_terms": (), "bundle_id": f"bundle-{rng.getrandbits(32):08x}",
+            "bundle_digest": "0" * 64,
+            "resource_reference": "usg-knowledge://synthetic/bundle",
+        }
+    elif cls.__name__ == "N5ModelState":
         return _make_random_n5_model(rng, rng_np)
     if cls.__name__ == "LabeledN2Patch":
         payload = {
@@ -1050,7 +1226,49 @@ def _prepare_upstream(package_name: str, info: CallableInfo,
         return _random_visual_upstream(rng_np)
     if package_name == "ore_n3" and info.class_name == "N3Processor" and info.name in {"process", "recognize"}:
         return _make_random_n3_processor(rng, rng_np)
+    if (
+        package_name == "ore_cros"
+        and info.class_name == "RollbackManager"
+        and info.name in {"baseline", "activate_baseline"}
+    ):
+        from ore_cros.actions import RuntimeControlState
+        from ore_cros.safety.fallback import RollbackManager
+
+        manager = RollbackManager()
+        manager.register_baseline(RuntimeControlState())
+        return manager
     return None
+
+
+def _is_not_implemented_placeholder(target: Any) -> bool:
+    """Return True when a function body consists only of a NotImplementedError raise."""
+    try:
+        source = textwrap.dedent(inspect.getsource(target))
+        tree = ast.parse(source)
+    except (OSError, TypeError, IndentationError, SyntaxError):
+        return False
+    function_node = next((node for node in tree.body if isinstance(
+        node, (ast.FunctionDef, ast.AsyncFunctionDef)
+    )), None)
+    if function_node is None:
+        return False
+    body = list(function_node.body)
+    if (
+        body and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
+        body.pop(0)
+    if len(body) != 1 or not isinstance(body[0], ast.Raise) or body[0].exc is None:
+        return False
+    exception = body[0].exc
+    if isinstance(exception, ast.Name):
+        return exception.id == "NotImplementedError"
+    return (
+        isinstance(exception, ast.Call)
+        and isinstance(exception.func, ast.Name)
+        and exception.func.id == "NotImplementedError"
+    )
 
 
 def _discover_modules(package_name: str) -> tuple[list[Any], list[str]]:
@@ -1080,6 +1298,11 @@ def _discover_callables(
     )
 
     for module in modules:
+        # __main__.py files are executable demos/CLI entry points, not library
+        # APIs. Invoking them with generated values can feed random argv into
+        # argparse and terminate the batch with SystemExit.
+        if module.__name__.rsplit(".", 1)[-1] == "__main__":
+            continue
         try:
             module_functions = inspect.getmembers(module, inspect.isfunction)
         except Exception as exc:
@@ -1091,6 +1314,9 @@ def _discover_callables(
             if (
                 function.__module__ != module.__name__
                 or name.startswith("_")
+                or name == "main"
+                or _is_not_implemented_placeholder(function)
+                or (package_name == "ore_comprehension" and name.startswith("op_"))
                 or name.lower() in UNSAFE_METHODS
                 or name.lower().startswith(unsafe_prefixes)
             ):
@@ -1118,6 +1344,8 @@ def _discover_callables(
         for class_name, cls in module_classes:
             if cls.__module__ != module.__name__ or class_name.startswith("_"):
                 continue
+            if inspect.isabstract(cls) or getattr(cls, "_is_protocol", False):
+                continue
             try:
                 class_methods = inspect.getmembers(cls, inspect.isfunction)
             except Exception as exc:
@@ -1130,6 +1358,9 @@ def _discover_callables(
                 if (
                     name.startswith("_")
                     or name.lower() in UNSAFE_METHODS
+                    or getattr(method, "__isabstractmethod__", False)
+                    or _is_not_implemented_placeholder(method)
+                    or (package_name == "ore_comprehension" and name.startswith("op_"))
                     or name.lower().startswith(unsafe_prefixes)
                 ):
                     continue
@@ -1164,12 +1395,38 @@ def _discover_callables(
 
 
 
-def _align_active_engagement_identity(
+def _align_generated_state_identity(
     package_name: str,
     constructor_arguments: dict[str, Any],
     call_arguments: dict[str, Any],
 ) -> None:
-    """Keep Point 01 processor, state, and request bound to one learner identity."""
+    """Keep related generated processor states bound to the same owner identity."""
+    if package_name == "ore_bayesian_causal":
+        runner_id = constructor_arguments.get("runner_id")
+        if not isinstance(runner_id, str) or not runner_id:
+            return
+
+        def _set_runner_identity(value):
+            if isinstance(value, dict):
+                value["runner_id"] = runner_id
+                return value
+            if dataclasses.is_dataclass(value) and not isinstance(value, type):
+                if "runner_id" not in {field.name for field in dataclasses.fields(value)}:
+                    return value
+                parameters = getattr(type(value), "__dataclass_params__", None)
+                if parameters is not None and parameters.frozen:
+                    return dataclasses.replace(value, runner_id=runner_id)
+                value.runner_id = runner_id
+            return value
+
+        if "state" in constructor_arguments:
+            constructor_arguments["state"] = _set_runner_identity(
+                constructor_arguments["state"]
+            )
+        if "state" in call_arguments:
+            call_arguments["state"] = _set_runner_identity(call_arguments["state"])
+        return
+
     if package_name != "ore_active_engagement":
         return
     learner_id = constructor_arguments.get("learner_id")
@@ -1651,8 +1908,11 @@ def _write_json(path: Path, payload: Any) -> None:
 
 def _package_markdown(report: Mapping[str, Any]) -> str:
     summary = report["summary"]
+    canonical_algorithm = report.get("canonical_algorithm") or {}
     lines = [
         f"# Randomized theory-oriented evaluation: {report['package']}", "",
+        f"- Canonical algorithm: {canonical_algorithm.get('algorithm_id', 'unmapped')}",
+        f"- Canonical title: {canonical_algorithm.get('title', 'No canonical package mapping')}",
         f"- Random seed: {report['random_seed']}",
         f"- Package import: {report['import_status']}",
         f"- Discovered callables: {len(report['discovered_callables'])}",
@@ -1662,6 +1922,8 @@ def _package_markdown(report: Mapping[str, Any]) -> str:
         f"- Workbench input/dispatch errors: {summary.get('workbench_errors', 0)}",
         f"- Input/authorization rejections: {summary.get('input_rejections', 0)}",
         f"- Candidate invariant flags: {summary['candidate_invariant_violations']}",
+        f"- Hard numerical violations: {summary.get('hard_numerical_violations', 0)}",
+        f"- Heuristic candidate flags: {summary.get('heuristic_candidate_flags', 0)}",
         f"- Callable/module discovery warnings: {len(report.get('discovery_errors', []))}",
         f"- Metadata/source inventory errors: {len(report.get('analysis_errors', []))}", "",
         "## Evaluation boundary", "",
@@ -1706,14 +1968,15 @@ def _package_markdown(report: Mapping[str, Any]) -> str:
     for missing in package_coverage.get("not_observed", [])[:80]:
         lines.append(f"- Not observed: {missing.get('identifier')} {missing.get('name') or ''}")
     lines.extend(["", "## Callable-level randomized results", "",
-                  "| Callable | Trials | Successes | ORE runtime errors | Workbench errors | Input/guard rejections | Candidate invariant flags |",
-                  "|---|---:|---:|---:|---:|---:|---:|"])
+                  "| Callable | Trials | Successes | ORE runtime errors | Workbench errors | Input/guard rejections | Hard numerical violations | Heuristic candidate flags |",
+                  "|---|---:|---:|---:|---:|---:|---:|---:|"])
     for item in report["callable_results"]:
         part = item["summary"]
         lines.append("| " + " | ".join(str(value) for value in (
             item["callable"], part["trials"], part["successes"],
             part.get("runtime_errors", part["errors"]), part.get("workbench_errors", 0),
-            part["rejections"], part["candidate_invariant_violations"],
+            part["rejections"], part.get("hard_numerical_violations", 0),
+            part.get("heuristic_candidate_flags", 0),
         )) + " |")
     lines.extend(["", "## Registry-to-trace coverage", ""])
     for item in report["callable_results"]:
@@ -1743,7 +2006,12 @@ def _package_markdown(report: Mapping[str, Any]) -> str:
             flags = [check for check in trial["invariant_checks"]
                      if check["status"] in {"violation", "candidate_violation"}]
             for flag in flags[:12]:
-                lines.append(f"- Candidate invariant observation: {flag}")
+                label = (
+                    "Hard numerical invariant violation"
+                    if flag["status"] == "violation"
+                    else "Heuristic candidate invariant flag"
+                )
+                lines.append(f"- {label}: {flag}")
             lines.append("")
         if len(item["trials"]) > 25:
             lines.append(f"{len(item['trials']) - 25} more trial records are included in the JSON report.")
@@ -1854,6 +2122,7 @@ def run_auto_test_suite(
     trials_per_callable: int = 25,
     max_callables_per_package: int = 0,
     random_seed: int | None = None,
+    retain_generated_artifacts: bool = False,
 ) -> dict[str, Any]:
     """Execute randomized trials for eligible callables across ORE packages.
 
@@ -1866,8 +2135,15 @@ def run_auto_test_suite(
         raise ValueError("trials_per_callable must be a positive integer")
     if isinstance(max_callables_per_package, bool) or not isinstance(max_callables_per_package, int) or max_callables_per_package < 0:
         raise ValueError("max_callables_per_package must be a non-negative integer")
+    if not isinstance(retain_generated_artifacts, bool):
+        raise TypeError("retain_generated_artifacts must be a boolean")
 
     root = Path(repository_root).resolve()
+    execution_environment = _execution_environment(root)
+    canonical_algorithm_catalog = _canonical_algorithm_catalog()
+    canonical_algorithms_by_package = {
+        item["package"]: item for item in canonical_algorithm_catalog
+    }
     discovered_packages = discover_ore_packages(root)
     # ore_logger is intentionally excluded from the all-package randomized
     # batch: its instrumentation and repository-wide catalogue work make it
@@ -1882,6 +2158,26 @@ def run_auto_test_suite(
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     report_dir = root / "ore_reports" / "randomized_theory_tests" / f"{stamp}_{run_id[:8]}"
     report_dir.mkdir(parents=True, exist_ok=True)
+
+    def discard_package_artifacts(package_name: str) -> None:
+        package_artifact_dir = report_dir / "side_effects" / package_name
+        if package_artifact_dir.is_symlink():
+            package_artifact_dir.unlink()
+        elif package_artifact_dir.is_dir():
+            shutil.rmtree(package_artifact_dir)
+        side_effect_dir = report_dir / "side_effects"
+        if side_effect_dir.is_dir() and not any(side_effect_dir.iterdir()):
+            side_effect_dir.rmdir()
+
+    artifact_cleanup_pending: set[str] = set()
+
+    def try_discard_package_artifacts(package_name: str) -> None:
+        try:
+            discard_package_artifacts(package_name)
+        except OSError:
+            # SQLite and other generated files can remain briefly locked on
+            # Windows. Retry after the rest of the batch has released them.
+            artifact_cleanup_pending.add(package_name)
 
     inventories = []
     for index, package_name in enumerate(packages, start=1):
@@ -1907,6 +2203,7 @@ def run_auto_test_suite(
             "schema": "ore.workbench.randomized_theory_evaluation.v1",
             "run_id": run_id, "random_seed": seed,
             "started_at_utc": started_at, "package": package_name,
+            "canonical_algorithm": canonical_algorithms_by_package.get(package_name),
             "import_status": inventory["import_status"],
             "discovered_callables": [item.label for item in inventory.get("callables", [])],
             "selected_callables": [item.label for item in candidates],
@@ -1922,15 +2219,19 @@ def run_auto_test_suite(
                 "successes": 0, "execution_errors": 0, "workbench_errors": 0,
                 "package_import_errors": len(inventory["discovery_errors"]) or 1,
                 "input_rejections": 0, "candidate_invariant_violations": 0,
+                "hard_numerical_violations": 0, "heuristic_candidate_flags": 0,
                 "status": "package_import_failed",
             }
             report["report_files"] = _write_package_report(report, report_dir)
+            if not retain_generated_artifacts:
+                try_discard_package_artifacts(package_name)
             package_reports.append(report)
             continue
 
         for callable_index, info in enumerate(candidates, start=1):
             trials = []
             successes = errors = rejections = invariant_flags = 0
+            hard_numerical_violations = heuristic_candidate_flags = 0
             runtime_errors = workbench_errors = 0
             observed_trace_ids: set[str] = set()
             for trial_index in range(1, trials_per_callable + 1):
@@ -1955,7 +2256,7 @@ def run_auto_test_suite(
                     init_args = _constructor_arguments(package_name, info, rng_py, rng_np)
                     if init_args:
                         supplied["__init__"] = init_args
-                    _align_active_engagement_identity(package_name, init_args, supplied)
+                    _align_generated_state_identity(package_name, init_args, supplied)
                     previous_output = _prepare_upstream(package_name, info, rng_py, rng_np)
                     result = execute(
                         package_name, info, prompt, supplied,
@@ -1985,9 +2286,16 @@ def run_auto_test_suite(
                     else:
                         errors += 1
                         runtime_errors += 1
-                    flags = sum(check["status"] in {"violation", "candidate_violation"}
-                                for check in checks)
-                    invariant_flags += flags
+                    trial_hard_violations = sum(
+                        check["status"] == "violation" for check in checks
+                    )
+                    trial_heuristic_flags = sum(
+                        check["status"] == "candidate_violation" for check in checks
+                    )
+                    hard_numerical_violations += trial_hard_violations
+                    heuristic_candidate_flags += trial_heuristic_flags
+                    # Keep the legacy combined count in reports for existing consumers.
+                    invariant_flags += trial_hard_violations + trial_heuristic_flags
                     trials.append({
                         "trial_id": trial_id, "trial_number": trial_index,
                         "status": result.get("status"),
@@ -2049,6 +2357,8 @@ def run_auto_test_suite(
                     "errors": errors, "runtime_errors": runtime_errors,
                     "workbench_errors": workbench_errors, "rejections": rejections,
                     "candidate_invariant_violations": invariant_flags,
+                    "hard_numerical_violations": hard_numerical_violations,
+                    "heuristic_candidate_flags": heuristic_candidate_flags,
                 },
                 "trials": trials,
             })
@@ -2077,6 +2387,12 @@ def run_auto_test_suite(
             "candidate_invariant_violations": sum(
                 item["summary"]["candidate_invariant_violations"] for item in tested
             ),
+            "hard_numerical_violations": sum(
+                item["summary"]["hard_numerical_violations"] for item in tested
+            ),
+            "heuristic_candidate_flags": sum(
+                item["summary"]["heuristic_candidate_flags"] for item in tested
+            ),
             "status": (
                 "no_eligible_callables"
                 if not tested
@@ -2093,7 +2409,26 @@ def run_auto_test_suite(
             ),
         }
         report["report_files"] = _write_package_report(report, report_dir)
+        if not retain_generated_artifacts:
+            try_discard_package_artifacts(package_name)
         package_reports.append(report)
+
+    artifact_cleanup_warnings: list[str] = []
+    if artifact_cleanup_pending:
+        gc.collect()
+        for attempt in range(3):
+            pending = sorted(artifact_cleanup_pending)
+            artifact_cleanup_pending.clear()
+            for package_name in pending:
+                try:
+                    discard_package_artifacts(package_name)
+                except OSError:
+                    artifact_cleanup_pending.add(package_name)
+            if not artifact_cleanup_pending:
+                break
+            if attempt < 2:
+                time.sleep(0.1 * (attempt + 1))
+        artifact_cleanup_warnings = sorted(artifact_cleanup_pending)
 
     summary = {
         "schema": "ore.workbench.randomized_theory_summary.v1",
@@ -2101,6 +2436,8 @@ def run_auto_test_suite(
         "started_at_utc": started_at,
         "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         "repository": "ORE-Neurocomputational",
+        "execution_environment": execution_environment,
+        "canonical_algorithm_catalog": canonical_algorithm_catalog,
         "package_count": len(packages),
         "discovered_package_count": len(discovered_packages),
         "excluded_packages": sorted(excluded_packages.intersection(discovered_packages)),
@@ -2127,6 +2464,13 @@ def run_auto_test_suite(
         "candidate_invariant_violations": sum(
             item["summary"].get("candidate_invariant_violations", 0) for item in package_reports
         ),
+        "hard_numerical_violations": sum(
+            item["summary"].get("hard_numerical_violations", 0) for item in package_reports
+        ),
+        "heuristic_candidate_flags": sum(
+            item["summary"].get("heuristic_candidate_flags", 0) for item in package_reports
+        ),
+        "artifact_cleanup_warnings": artifact_cleanup_warnings,
         "trials_per_callable": trials_per_callable,
         "max_callables_per_package": max_callables_per_package,
         "all_discovered_callables_included": max_callables_per_package == 0,
@@ -2149,6 +2493,10 @@ def run_auto_test_suite(
     lines = [
         "# ORE randomized theory-oriented evaluation", "",
         f"- Run ID: {run_id}", f"- Random seed: {seed}",
+        f"- Python: {execution_environment['python_version']} ({execution_environment['python_implementation']})",
+        f"- Git branch: {execution_environment['source_control']['branch'] or 'unavailable'}",
+        f"- Git commit: {execution_environment['source_control']['commit'] or 'unavailable'}",
+        f"- Dependency versions: {execution_environment['dependency_versions']}",
         f"- Packages: {summary['package_count']}",
         f"- Imported packages: {summary['packages_imported']}",
         f"- Callables exercised: {summary['callables_exercised']}",
@@ -2158,13 +2506,16 @@ def run_auto_test_suite(
         f"- Workbench input/dispatch errors: {summary.get('workbench_errors', 0)}",
         f"- Input/authorization rejections: {summary.get('input_rejections', 0)}",
         f"- Candidate invariant flags: {summary['candidate_invariant_violations']}",
+        f"- Hard numerical violations: {summary['hard_numerical_violations']}",
+        f"- Heuristic candidate flags: {summary['heuristic_candidate_flags']}",
         f"- Callable/module discovery warnings: {summary.get('callable_discovery_errors', 0)}",
         f"- Package metadata/source inventory errors: {summary.get('package_analysis_errors', 0)}",
+        f"- Packages with generated artifacts not removed: {len(artifact_cleanup_warnings)}",
         f"- Packages without eligible callables: {summary.get('packages_without_callable', 0)}", "",
         "Fresh random inputs were generated from callable signatures. There are no fixed prompts or expected answers.",
         "This is execution and mathematical-invariant evidence, not proof of cognitive or biological validity.", "",
-        "| Package | Import | Callables | Trials | ORE runtime errors | Workbench errors | Rejections | Candidate invariant flags |",
-        "|---|---|---:|---:|---:|---:|---:|---:|",
+        "| Package | Import | Callables | Trials | ORE runtime errors | Workbench errors | Rejections | Hard numerical violations | Heuristic candidate flags |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for item in package_reports:
         part = item["summary"]
@@ -2172,7 +2523,8 @@ def run_auto_test_suite(
             item["package"], item["import_status"], part.get("callables_exercised", 0),
             part.get("trials_executed", 0), part.get("execution_errors", 0),
             part.get("workbench_errors", 0), part.get("input_rejections", 0),
-            part.get("candidate_invariant_violations", 0),
+            part.get("hard_numerical_violations", 0),
+            part.get("heuristic_candidate_flags", 0),
         )) + " |")
     summary_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     archive_path = report_dir / f"ore-randomized-theory-reports-{run_id[:8]}.zip"
@@ -2186,7 +2538,7 @@ def run_auto_test_suite(
                     suffix = "json" if ext == "json" else "md"
                     archive.write(file_path, arcname=f"packages/{item['package']}.{suffix}")
     side_effect_dir = report_dir / "side_effects"
-    if side_effect_dir.is_dir():
+    if retain_generated_artifacts and side_effect_dir.is_dir():
         with zipfile.ZipFile(archive_path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
             for generated_file in sorted(side_effect_dir.rglob("*")):
                 if generated_file.is_file():

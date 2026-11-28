@@ -103,14 +103,23 @@ def backoff_delay(attempt: int, initial_delay: float, maximum_delay: float,
     return deterministic + jitter
 
 
-def utilization(arrival_rate: float, service_rate: float) -> float:
-    """Return queue utilization rho = lambda / mu (Step 14).
+def utilization(arrival_rate: float, service_rate: float) -> float | None:
+    """Return queue utilization rho = lambda / mu, or None when service is unmeasured.
 
     A sustained value at or above 1.0 signals instability in the simple
-    single-server approximation; real queue distributions must be measured.
+    single-server approximation; real queue distributions must be measured. A
+    zero service rate has no finite utilization estimate and is represented as
+    unavailable rather than infinity.
     """
-    if service_rate <= 0.0:
-        return math.inf if arrival_rate > 0.0 else 0.0
+    arrival_rate = float(arrival_rate)
+    service_rate = float(service_rate)
+    if (
+        not math.isfinite(arrival_rate) or arrival_rate < 0.0
+        or not math.isfinite(service_rate) or service_rate < 0.0
+    ):
+        raise ValueError("arrival and service rates must be finite and non-negative")
+    if service_rate == 0.0:
+        return None
     return arrival_rate / service_rate
 
 

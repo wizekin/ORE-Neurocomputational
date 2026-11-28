@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping, NamedTuple, Optional, Sequence, TypedDict
+from typing import Any, Mapping, NamedTuple, Optional, Sequence, TypedDict
 
 try:
     from typing import NotRequired, Required

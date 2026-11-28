@@ -254,7 +254,10 @@ class DistributedCorticalConceptNetwork:
             "learning_update_performed": bool(new_indices),
             "learning_update_count": self.learning_updates,
             "population_size": self.config.cortical_units,
-            "mean_absolute_input_weight": float(np.mean(np.abs(self.input_to_cortex))),
+            "mean_absolute_input_weight": (
+                float(np.mean(np.abs(self.input_to_cortex)))
+                if self.input_to_cortex.size else None
+            ),
             "mean_absolute_recurrent_weight": float(np.mean(np.abs(self.recurrent_weights))),
             "cortical_pattern": self.cortical_pattern.tolist(),
             "activation_stability": stability,

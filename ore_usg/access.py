@@ -177,9 +177,13 @@ class USGKnowledgeAccess:
         concepts = (
             self.resource.semantic_knowledge.concepts
             if self.resource.semantic_knowledge is not None
-            else self.resource.semantic.concepts
+            else self.resource.semantic_concepts
         )
         return tuple(item for item in concepts if item.concept_id in wanted)
+
+    def source_provenance_by_id(self, source_id: str) -> Any | None:
+        """Return licensing and redistribution metadata for an exact source ID."""
+        return self.index.source_provenance_by_id(source_id)
 
     def semantic_relations(self, record_id: str) -> tuple[Any, ...]:
         """Return explicitly asserted directed semantic relations incident to record_id."""

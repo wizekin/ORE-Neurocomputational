@@ -231,13 +231,15 @@ class RuntimeSession:
 
 
 def _candidate_script(arguments: list[str], root: Path) -> tuple[Path | None, str]:
-    # The module target is present in sys.orig_argv even when sitecustomize runs
-    # before runpy has replaced sys.argv[0] with the module's file path.
-    combined = list(arguments) + list(getattr(sys, "orig_argv", []))
-    if "-m" in combined:
+    argument_list = list(arguments)
+    original_arguments = list(getattr(sys, "orig_argv", []))
+
+    def module_candidate(values: list[str]) -> tuple[Path | None, str | None]:
+        if "-m" not in values:
+            return None, None
         try:
-            module_index = combined.index("-m")
-            module_target = combined[module_index + 1]
+            module_index = values.index("-m")
+            module_target = values[module_index + 1]
             spec = importlib.util.find_spec(module_target)
             if spec is not None:
                 candidate = None
@@ -253,23 +255,40 @@ def _candidate_script(arguments: list[str], root: Path) -> tuple[Path | None, st
                         return candidate, "module"
         except (IndexError, ImportError, ModuleNotFoundError, ValueError, OSError):
             pass
+        return None, None
 
-    for value in combined:
-        if not value or value.startswith("-"):
-            continue
-        candidate = Path(value)
-        if not candidate.is_absolute():
-            candidate = Path.cwd() / candidate
-        try:
-            resolved = candidate.resolve()
-            relative = resolved.relative_to(root)
-        except (OSError, ValueError):
-            continue
-        if resolved.suffix.lower() != ".py" or not resolved.is_file():
-            continue
-        if relative.parts and relative.parts[0] == "ore_logger":
-            continue
-        return resolved, "module" if "__main__.py" in relative.parts else "script"
+    def script_candidate(values: list[str]) -> tuple[Path | None, str | None]:
+        for value in values:
+            if not value or value.startswith("-"):
+                continue
+            candidate = Path(value)
+            if not candidate.is_absolute():
+                candidate = Path.cwd() / candidate
+            try:
+                resolved = candidate.resolve()
+                relative = resolved.relative_to(root)
+            except (OSError, ValueError):
+                continue
+            if resolved.suffix.lower() != ".py" or not resolved.is_file():
+                continue
+            if relative.parts and relative.parts[0] == "ore_logger":
+                continue
+            return resolved, "module" if "__main__.py" in relative.parts else "script"
+        return None, None
+
+    # Prefer a direct target supplied by the caller. orig_argv can describe an
+    # outer runner such as pytest instead of the script this helper was given.
+    if (candidate := script_candidate(argument_list))[0] is not None:
+        return candidate
+    if (candidate := module_candidate(argument_list))[0] is not None:
+        return candidate
+
+    # Under `python -m`, the module name may remain only in orig_argv until
+    # runpy replaces sys.argv[0] with the module's file path.
+    if (candidate := module_candidate(original_arguments))[0] is not None:
+        return candidate
+    if (candidate := script_candidate(original_arguments))[0] is not None:
+        return candidate
     return None, "script"
 
 

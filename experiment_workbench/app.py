@@ -5,9 +5,6 @@ import queue
 import sys
 import threading
 import time
-import traceback
-import uuid
-from datetime import datetime, timezone
 from pathlib import Path
 import streamlit as st
 
@@ -20,18 +17,86 @@ from auto_test import discover_ore_packages, run_auto_test_suite, save_manual_ru
 COMPONENTS = discover_ore_packages(ROOT)
 st.set_page_config(page_title="ORE Experiment Workbench", page_icon="🧠",
                    layout="wide", initial_sidebar_state="expanded")
+
+
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] {background:#0b1020;}
-[data-testid="stSidebar"] {background:#111a2e;border-right:1px solid #26344e;}
-.block-container {max-width:1600px;padding-top:1.35rem;}
-.ore-subtitle {color:#9aabc6;margin-top:-.7rem;}
-[data-testid="stChatMessage"] {border:1px solid #25334d;border-radius:14px;}
-.ore-pill {display:inline-block;padding:4px 10px;border:1px solid #334663;
-border-radius:20px;color:#b7c9e5;font-size:12px;margin-right:6px;}
-[data-testid="stMetric"] {background:#111a2e;border:1px solid #26344e;padding:10px;border-radius:12px;}
+/* Main application */
+[data-testid="stAppViewContainer"] {
+    background: #FFFFFF !important;
+    color: #172033 !important;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: #F1F5F9 !important;
+    border-right: 1px solid #D8E0EA;
+}
+
+/* Main content */
+.block-container {
+    max-width: 1600px;
+    padding-top: 1.35rem;
+}
+
+/* Subtitle */
+.ore-subtitle {
+    color: #475569 !important;
+    margin-top: -.7rem;
+}
+
+/* Component labels */
+.ore-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid #CBD5E1;
+    border-radius: 20px;
+    color: #334155 !important;
+    font-size: 12px;
+    margin-right: 6px;
+    background: #F8FAFC;
+}
+
+/* Metrics */
+[data-testid="stMetric"] {
+    background: #F1F5F9 !important;
+    color: #172033 !important;
+    border: 1px solid #D8E0EA;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+/* General text */
+[data-testid="stMarkdownContainer"],
+[data-testid="stText"],
+[data-testid="stCaptionContainer"] {
+    color: #172033;
+}
+
+/* Inputs */
+[data-baseweb="input"],
+[data-baseweb="textarea"],
+[data-baseweb="select"] {
+    background: #FFFFFF !important;
+    color: #172033 !important;
+}
 </style>
 """, unsafe_allow_html=True)
+
+
+#st.markdown(
+
+#<style>
+#[data-testid="stAppViewContainer"] {background:#0b1020;}
+#[data-testid="stSidebar"] {background:#111a2e;border-right:1px solid #26344e;}
+#.block-container {max-width:1600px;padding-top:1.35rem;}
+#.ore-subtitle {color:#9aabc6;margin-top:-.7rem;}
+#[data-testid="stChatMessage"] {border:1px solid #25334d;border-radius:14px;}
+#.ore-pill {display:inline-block;padding:4px 10px;border:1px solid #334663;
+#border-radius:20px;color:#b7c9e5;font-size:12px;margin-right:6px;}
+#[data-testid="stMetric"] {background:#111a2e;border:1px solid #26344e;padding:10px;border-radius:12px;}
+#</style>
+#, unsafe_allow_html=True)
 st.title("🧠 ORE Experiment Workbench")
 st.markdown('<p class="ore-subtitle">A conversational lab for executing ORE components and observing what the Python implementation actually computes.</p>', unsafe_allow_html=True)
 
@@ -95,8 +160,7 @@ with st.sidebar:
 
 with st.expander("Randomized theory-and-algorithm testing", expanded=False):
     st.markdown(
-        f"Randomly exercise **all eligible callables** found in the {len(COMPONENTS)} selectable packages, "
-        "excluding ore_logger from the batch because its instrumentation workload is unusually expensive. "
+        f"Randomly exercise **all eligible callables** found in the {len(COMPONENTS)} packages. "
         "Inputs and pseudo-text are newly generated for every trial. No fixed prompt bank, target answer, "
         "or expected output is used."
     )
@@ -113,6 +177,15 @@ with st.expander("Randomized theory-and-algorithm testing", expanded=False):
         value=0, step=5,
         help="Zero includes every discovered safe algorithm entry point, including supported learning methods."
     )
+    retain_generated_artifacts = st.toggle(
+        "Keep generated SQLite and temporary files",
+        value=False,
+        help=(
+            "Off keeps the randomized report small by deleting generated database and temporary files "
+            "after each package. If a file is still open, cleanup is retried after the batch. Turn it on "
+            "only when you need to inspect those artifacts."
+        ),
+    )
     seed_text = st.text_input(
         "Random seed (optional)", value="",
         help="Leave blank for a new unpredictable seed. Save the seed from the report to reproduce a run."
@@ -121,7 +194,7 @@ with st.expander("Randomized theory-and-algorithm testing", expanded=False):
         f"Configured run: up to {int(trial_count)} random trials for each selected callable. "
         "The actual total is calculated after package discovery."
     )
-    if st.button("Start randomized testing of all eligible packages", type="primary",
+    if st.button("Start randomized testing of all packages", type="primary",
                   use_container_width=True, key="run_all_ore_randomized_tests"):
         progress_bar = st.progress(0.0, text="Discovering package algorithms...")
         progress_detail = st.empty()
@@ -152,7 +225,7 @@ with st.expander("Randomized theory-and-algorithm testing", expanded=False):
                 trials_per_callable=int(trial_count),
                 max_callables_per_package=int(callable_cap),
                 random_seed=random_seed,
-                # ore_logger is intentionally skipped by the shared batch runner.
+                retain_generated_artifacts=retain_generated_artifacts,
             )
             st.session_state.automatic_test_result = auto_result
             status_panel.update(label="Randomized evaluation completed", state="complete", expanded=False)
@@ -178,6 +251,12 @@ with st.expander("Randomized theory-and-algorithm testing", expanded=False):
             f"{summary['completed_trials']} / {summary['planned_trials']} trials · "
             f"Reports saved to {auto_result['report_directory']}"
         )
+        cleanup_warnings = summary.get("artifact_cleanup_warnings", [])
+        if cleanup_warnings:
+            st.warning(
+                "The batch completed, but generated files for these packages could not be deleted "
+                "(for example, because a file remained open): " + ", ".join(cleanup_warnings)
+            )
         zip_path = Path(auto_result["archive_path"])
         if zip_path.is_file():
             st.download_button(
@@ -323,44 +402,14 @@ with left:
                 execution_holder = {}
 
                 def _execute_in_worker():
-                    started = time.perf_counter()
-                    started_at = datetime.now(timezone.utc).isoformat()
-                    try:
-                        execution_holder["result"] = execute(
-                            component, selected, prompt, supplied,
-                            previous_output=upstream_artifact["output"] if upstream_artifact else None,
-                            runtime_kwargs=runtime_kwargs,
-                            on_event=event_queue.put,
-                            trace_lines=trace_lines,
-                            log_directory=ROOT / "ore_logs",
-                        )
-                    except Exception as exc:
-                        # Preserve failures raised before execute() can construct
-                        # its normal result record (for example observer/thread setup).
-                        execution_holder["result"] = {
-                            "run_id": uuid.uuid4().hex,
-                            "started_at": started_at,
-                            "component": component,
-                            "callable": selected.label,
-                            "prompt": prompt,
-                            "status": "error",
-                            "elapsed_ms": round((time.perf_counter() - started) * 1000, 3),
-                            "arguments": {},
-                            "provided_argument_keys": sorted(str(key) for key in supplied),
-                            "constructor_arguments": {},
-                            "input_observation": {},
-                            "output": None,
-                            "error": f"Workbench worker error: {type(exc).__name__}: {exc}",
-                            "traceback": traceback.format_exc(),
-                            "failure_phase": "worker_thread",
-                            "profile": {},
-                            "observation": {
-                                "output_type": None, "output_fields": [], "trace_rows": [],
-                                "trace_count": 0, "numerical_summaries": [], "array_count": 0,
-                                "warnings": [], "checks": [], "summary": {},
-                            },
-                            "trace_lines_enabled": trace_lines,
-                        }
+                    execution_holder["result"] = execute(
+                        component, selected, prompt, supplied,
+                        previous_output=upstream_artifact["output"] if upstream_artifact else None,
+                        runtime_kwargs=runtime_kwargs,
+                        on_event=event_queue.put,
+                        trace_lines=trace_lines,
+                        log_directory=ROOT / "ore_logs",
+                    )
 
                 worker = threading.Thread(target=_execute_in_worker, daemon=True)
                 worker.start()

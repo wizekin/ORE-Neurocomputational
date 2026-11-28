@@ -5,6 +5,8 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Mapping
 
+from ore_semantic.contracts import SemanticConcept
+
 from .bundle_io import USGBundleSnapshot, load_knowledge_bundle
 from .contracts import USGLexiconResource
 from .lexical import USGKnowledgeLexicalAdapter
@@ -85,7 +87,25 @@ class USGKnowledgeResource:
         """Expose sense-level and concept-level ORE SemanticConcept records."""
         if self.semantic_knowledge is not None:
             return self.semantic_knowledge.concepts
-        return self.semantic.concepts
+        concepts = list(self.semantic.concepts)
+        known_ids = {item.concept_id for item in concepts}
+        for entry in self.lexical.entries:
+            for meaning in entry.meanings:
+                if meaning.meaning_id in known_ids:
+                    continue
+                concepts.append(SemanticConcept(
+                    concept_id=meaning.meaning_id,
+                    label=meaning.gloss or entry.orthography,
+                    aliases=(entry.orthography,),
+                    lexical_category=entry.lexical_category,
+                    frequency=meaning.prior,
+                    language=entry.language,
+                    verified_by=meaning.verified_by,
+                    source_reference=meaning.source_reference,
+                    definition=meaning.gloss or None,
+                ))
+                known_ids.add(meaning.meaning_id)
+        return tuple(concepts)
 
     @property
     def contextual_records(self) -> tuple[Any, ...]:
@@ -310,6 +330,34 @@ class USGKnowledgeAdapter:
                 script = first_morphology.script
                 grammatical_information_json = first_morphology.grammatical_information_json
                 morphology_source_reference = first_morphology.source_reference
+
+            # Explicit form-to-lemma links carry semantic candidates from their
+            # lemma entries without selecting a winner when morphology is ambiguous.
+            if morphology and not concept_ids:
+                lemma_concepts = {
+                    link.semantic_concept_id
+                    for lemma_id in lemma_ids
+                    for link in links_by_entry.get(lemma_id, ())
+                    if link.semantic_concept_id is not None
+                }
+                if lemma_concepts:
+                    concept_ids = tuple(sorted(lemma_concepts))
+                    if "CONFLICTED" in morphology_statuses:
+                        entry_status = "CONFLICTED"
+                    elif "CONTRADICTED" in morphology_statuses:
+                        entry_status = "CONTRADICTED"
+                    elif "UNRESOLVED" in morphology_statuses:
+                        entry_status = "UNRESOLVED"
+                    elif "CANDIDATE" in morphology_statuses:
+                        entry_status = "CANDIDATE"
+                    elif "NEUTRAL" in morphology_statuses:
+                        entry_status = "NEUTRAL"
+                    elif "UNASSESSED" in morphology_statuses:
+                        entry_status = "UNASSESSED"
+                    elif len(lemma_ids) > 1 or len(concept_ids) > 1:
+                        entry_status = "AMBIGUOUS"
+                    else:
+                        entry_status = "LINKED"
             enriched_entries.append(replace(
                 entry,
                 meanings=tuple(enriched_meanings),

@@ -41,6 +41,8 @@ except ImportError:
 
 from observer import PythonCallObserver, _array_summary, inspect_output
 
+_UNSET = object()
+
 @dataclass
 class CallableInfo:
     label: str
@@ -335,14 +337,27 @@ def _convert_value(annotation, value):
         if len(successes) == 1:
             return successes[0]
         if len(successes) > 1:
-            # Prefer an exact built-in container match over coercing it into another
-            # union alternative; ambiguous dataclass alternatives remain an error.
+            # Prefer the matching concrete container even when it is parameterized
+            # (for example, list[N9Patch]) instead of coercing it to another union
+            # alternative. Ambiguous dataclass alternatives remain an error.
             exact = [
                 candidate for candidate in candidates
-                if (candidate is dict and isinstance(value, dict))
-                or (candidate is list and isinstance(value, list))
-                or (candidate is tuple and isinstance(value, tuple))
-                or (candidate is set and isinstance(value, set))
+                if (
+                    (candidate is dict or get_origin(candidate) is dict)
+                    and isinstance(value, dict)
+                ) or (
+                    (candidate is list or get_origin(candidate) is list)
+                    and isinstance(value, list)
+                ) or (
+                    (candidate is tuple or get_origin(candidate) is tuple)
+                    and isinstance(value, tuple)
+                ) or (
+                    (candidate is set or get_origin(candidate) is set)
+                    and isinstance(value, set)
+                ) or (
+                    (candidate is frozenset or get_origin(candidate) is frozenset)
+                    and isinstance(value, frozenset)
+                )
             ]
             if len(exact) == 1:
                 return _convert_value(exact[0], value)
@@ -373,7 +388,7 @@ def _convert_value(annotation, value):
     if _is_dataclass_type(annotation):
         if isinstance(value, annotation):
             return value
-        if not isinstance(value, Mapping):
+        if not isinstance(value, ABCMapping):
             raise TypeError(f"{annotation.__name__} input must be a JSON object")
         if (
             annotation.__name__ == "N5ModelState"
@@ -589,7 +604,14 @@ def _build_dataclass(cls, payload, prompt, previous_output):
             f"Unexpected field(s) for {cls.__name__}: {', '.join(unknown)}"
         )
 
-    if not any(name in values for name in PROMPT_NAMES):
+    exclusive_text_token_input = (
+        "text" in init_fields
+        and "tokens" in init_fields
+        and ("text" in values or "tokens" in values)
+    )
+    if not exclusive_text_token_input and not any(
+        name in values for name in PROMPT_NAMES
+    ):
         for field in fields:
             if not field.init or field.name.lower() not in PROMPT_NAMES:
                 continue
@@ -780,6 +802,19 @@ def build_arguments(function: Any, prompt: str, supplied: dict[str, Any],
         ):
             continue
         kwargs[name] = _convert_value(hints.get(name, parameter.annotation), value)
+
+    missing = [
+        parameter.name for parameter in signature.parameters.values()
+        if parameter.kind not in (
+            inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD
+        )
+        and parameter.default is inspect.Parameter.empty
+        and parameter.name not in kwargs
+    ]
+    if missing:
+        raise ValueError(
+            "Missing required argument(s): " + ", ".join(missing)
+        )
     return kwargs
 
 
@@ -952,6 +987,12 @@ def execute(package_name: str, info: CallableInfo, prompt: str, supplied: dict[s
             result["output"] = output
             result["status"] = "success"
             result["failure_phase"] = None
+    except SystemExit as exc:
+        # CLI entry points can raise SystemExit through argparse. Treat that as
+        # a callable failure so a Workbench trial cannot terminate its host app.
+        result["error"] = f"SystemExit: {exc.code}"
+        result["traceback"] = traceback.format_exc()
+        result["failure_phase"] = phase
     except Exception as exc:
         result["error"] = f"{type(exc).__name__}: {exc}"
         result["traceback"] = traceback.format_exc()

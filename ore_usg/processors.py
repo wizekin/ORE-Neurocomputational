@@ -178,9 +178,9 @@ def build_semantic_cognition_processor(
     if not isinstance(resource, USGKnowledgeResource):
         raise TypeError("resource must be a USGKnowledgeResource")
     concepts = (
-        resource.semantic_knowledge.active_concepts
+        resource.semantic_knowledge.active_records
         if resource.semantic_knowledge is not None
-        else resource.semantic.concepts
+        else resource.semantic_concepts
     )
     processor = SemanticCognitionProcessor(
         concepts=concepts,

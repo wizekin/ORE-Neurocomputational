@@ -474,15 +474,17 @@ def sample_from_distribution(distribution: Mapping[str, float],
     raise AssertionError("unreachable sampling fallback")
 
 
-def weighted_std_error(values: Iterable[float], weights: Iterable[float]) -> float:
-    """Return the weighted standard error of the mean for independent weighted samples."""
+def weighted_std_error(values: Iterable[float], weights: Iterable[float]) -> float | None:
+    """Return weighted standard error, or None when effective sample size is insufficient."""
     value_list = [float(value) for value in values]
     weight_list = [float(weight) for weight in weights]
     if len(value_list) != len(weight_list) or not value_list:
         raise ValueError("standard error needs equally sized non-empty sequences")
+    if any(not math.isfinite(value) for value in value_list):
+        raise ValueError("standard-error values must be finite")
     ess = effective_sample_size(weight_list)
     if ess <= 1.0:
-        return float("inf")
+        return None
     mean = sum(v * w for v, w in zip(value_list, weight_list)) / sum(weight_list)
     variance = sum(w * (v - mean) ** 2 for v, w in zip(value_list, weight_list)) / sum(weight_list)
     return math.sqrt(max(variance, 0.0) / ess)

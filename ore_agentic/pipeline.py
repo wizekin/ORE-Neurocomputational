@@ -910,12 +910,17 @@ class AgenticEngine:
 
     def _phase2_records(self) -> None:
         """Steps 14-16 -- backpressure, fencing and retry records (Phase II)."""
+        utilization = self.queue_monitor.utilization()
+        utilization_text = (
+            f"rho={utilization:.2f}"
+            if utilization is not None else "rho=unavailable (no service observations)"
+        )
         self._record_step(14, detail=(
             f"concurrency limits per-workflow={self.config.per_workflow_concurrency}, "
             f"per-worker={self.config.per_worker_concurrency}, "
             f"pool={self.config.worker_pool_size}; "
-            f"{self.metrics.deferred} deferred; utilization "
-            f"rho={self.queue_monitor.utilization():.2f} (single-server "
+            f"{self.metrics.deferred} deferred; utilization {utilization_text} "
+            "(single-server "
             "approximation)"))
         self._record_step(15, detail="lease epochs/fencing enforced on every "
                             "accepted result")

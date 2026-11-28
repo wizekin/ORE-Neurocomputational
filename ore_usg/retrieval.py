@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any
 
 from .knowledge import USGKnowledgeResource
 
@@ -84,7 +84,7 @@ class USGKnowledgeIndex:
             semantic_resource = self.resource.semantic_knowledge
             concepts = (
                 semantic_resource.concepts if semantic_resource is not None
-                else self.resource.semantic.concepts
+                else self.resource.semantic_concepts
             )
             concept_records = (
                 {item.concept.concept_id: item for item in semantic_resource.concept_records}

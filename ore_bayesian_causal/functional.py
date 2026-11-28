@@ -437,6 +437,9 @@ def likelihood_weighting(network: BayesianNetworkSpec, query: str,
     return {"posterior": posterior, "method": "likelihood_weighting",
             "samples": samples, "seed": seed, "effective_sample_size": ess,
             "standard_errors": standard_errors, "converged": ess >= 10,
+            "standard_error_status": (
+                "estimated" if ess > 1.0 else "unavailable_insufficient_effective_sample_size"
+            ),
             "approximate": True}
 
 

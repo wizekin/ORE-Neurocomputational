@@ -144,7 +144,7 @@ class QueueMonitor:
         service_rate = 1.0 / mean_service if mean_service > 0 else 0.0
         return arrival_rate, service_rate
 
-    def utilization(self) -> float:
+    def utilization(self) -> float | None:
         """Return rho = lambda / mu with the single-server caveat (Step 14)."""
         arrival_rate, service_rate = self.rates()
         return utilization(arrival_rate, service_rate)
@@ -152,14 +152,24 @@ class QueueMonitor:
     def overloaded(self) -> bool:
         """Return True when sustained utilization is at or above 1 (Step 14)."""
         arrival_rate, service_rate = self.rates()
-        return service_rate > 0.0 and arrival_rate / service_rate >= 1.0
+        if arrival_rate <= 0.0:
+            return False
+        return service_rate <= 0.0 or arrival_rate / service_rate >= 1.0
 
     def describe(self) -> dict[str, Any]:
         """Return a serializable summary."""
         arrival_rate, service_rate = self.rates()
+        utilization_estimate = utilization(arrival_rate, service_rate)
         return {"arrival_rate": round(arrival_rate, 6),
                 "service_rate": round(service_rate, 6),
-                "utilization": round(self.utilization(), 6),
+                "utilization": (
+                    round(utilization_estimate, 6)
+                    if utilization_estimate is not None else None
+                ),
+                "utilization_status": (
+                    "estimated" if utilization_estimate is not None
+                    else "unavailable_no_service_observations"
+                ),
                 "overloaded": self.overloaded()}
 
 

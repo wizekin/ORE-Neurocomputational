@@ -9,7 +9,7 @@ automatically *implemented*.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Mapping, Tuple
 
 from .core import POINT24_VERSION
@@ -133,6 +133,14 @@ class PointFamily:
     package: str | None = None
     package_title: str | None = None
     hic_relevant: bool = False
+
+    @property
+    def algorithm_id(self) -> str | None:
+        """Return a stable package-based identifier independent of local point numbering."""
+        if not self.package:
+            return None
+        package_slug = self.package.removeprefix("ore_").replace("_", "-")
+        return f"ore.algorithm.{package_slug}"
 
 
 POINT_FAMILIES: Tuple[PointFamily, ...] = (

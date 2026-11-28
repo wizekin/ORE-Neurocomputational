@@ -170,8 +170,13 @@ def compute_prediction_error(
     if observed is None:
         return {"status": "not_observed", "error": None, "mse": None}
     target = np.asarray(observed, dtype=np.float64).reshape(-1)
-    if target.size != prediction.size or not np.all(np.isfinite(target)):
-        raise ValueError("observed activity must be finite and match prediction dimensions")
+    if (
+        target.size == 0 or target.size != prediction.size
+        or not np.all(np.isfinite(target)) or not np.all(np.isfinite(prediction))
+    ):
+        raise ValueError(
+            "observed and predicted activity must be non-empty, finite, and match in dimensions"
+        )
     error = target - prediction
     return {"status": "observed", "error": error, "mse": float(np.mean(np.square(error)))}
 

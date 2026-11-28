@@ -1855,10 +1855,12 @@ def run_auto_test_suite(
     max_callables_per_package: int = 0,
     random_seed: int | None = None,
 ) -> dict[str, Any]:
-    """Execute randomized trials for all eligible callables in every ore_* package.
+    """Execute randomized trials for eligible callables across ORE packages.
 
-    A zero callable cap means all discovered callables. Each trial gets fresh
-    random input, fresh constructor state, and a new processor instance.
+    The expensive ore_logger package is excluded from this batch. A zero
+    callable cap means all discovered callables in the remaining packages.
+    Each trial gets fresh random input, fresh constructor state, and a new
+    processor instance.
     """
     if isinstance(trials_per_callable, bool) or not isinstance(trials_per_callable, int) or trials_per_callable < 1:
         raise ValueError("trials_per_callable must be a positive integer")
@@ -1866,7 +1868,12 @@ def run_auto_test_suite(
         raise ValueError("max_callables_per_package must be a non-negative integer")
 
     root = Path(repository_root).resolve()
-    packages = discover_ore_packages(root)
+    discovered_packages = discover_ore_packages(root)
+    # ore_logger is intentionally excluded from the all-package randomized
+    # batch: its instrumentation and repository-wide catalogue work make it
+    # disproportionately expensive. It remains available for individual use.
+    excluded_packages = {"ore_logger"}
+    packages = [name for name in discovered_packages if name not in excluded_packages]
     run_id = uuid.uuid4().hex
     seed = int(random_seed if random_seed is not None else secrets.randbits(64))
     rng_py = random.Random(seed)
@@ -2095,6 +2102,8 @@ def run_auto_test_suite(
         "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         "repository": "ORE-Neurocomputational",
         "package_count": len(packages),
+        "discovered_package_count": len(discovered_packages),
+        "excluded_packages": sorted(excluded_packages.intersection(discovered_packages)),
         "packages_imported": sum(item["import_status"] in {"success", "partial"} for item in inventories),
         "packages_with_partial_imports": sum(item["import_status"] == "partial" for item in inventories),
         "packages_with_import_errors": sum(item["import_status"] == "error" for item in inventories),

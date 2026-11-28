@@ -62,10 +62,10 @@ PARAMETER_BOUNDS: Mapping[str, tuple[int, int]] = {
 class StorageTelemetry:
     """One sampled storage-pressure snapshot (source section 6)."""
 
-    memory_pressure: float
-    storage_pressure: float
-    queue_depth: int
-    compaction_load: float
+    memory_pressure: float = field(metadata={"ge": 0.0, "le": 1.0})
+    storage_pressure: float = field(metadata={"ge": 0.0, "le": 1.0})
+    queue_depth: int = field(metadata={"ge": 0})
+    compaction_load: float = field(metadata={"ge": 0.0, "le": 1.0})
 
     def __post_init__(self) -> None:
         """Validate pressure samples."""

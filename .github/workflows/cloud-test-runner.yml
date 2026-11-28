@@ -1,0 +1,36 @@
+name: ORE Cloud Test Runner Checks
+
+on:
+  pull_request:
+    paths:
+      - "cloud_testing/**"
+      - "experiment_workbench/auto_test.py"
+      - "tests/test_workbench_randomized_output_paths.py"
+      - "pyproject.toml"
+      - ".github/workflows/cloud-test-runner.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cloud-runner-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install project and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Compile cloud runner
+        run: python -m compileall -q cloud_testing
+      - name: Validate notebook JSON
+        run: python -c "import json; json.load(open('cloud_testing/ORE_Kaggle_Test_Runner.ipynb', encoding='utf-8'))"
+      - name: Run randomized artifact-path regression tests
+        run: python -m pytest -q tests/test_workbench_randomized_output_paths.py

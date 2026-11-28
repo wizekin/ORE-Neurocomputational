@@ -1685,19 +1685,71 @@ def _numeric_arrays(value: Any, path: str = "output", depth: int = 0):
 
 
 
+def _allowed_nan_paths(value: Any, path: str = "output", depth: int = 0) -> set[str]:
+    """Find fields whose dataclass contract explicitly permits NaN in one state."""
+    if depth > 8:
+        return set()
+    allowed: set[str] = set()
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        for item in dataclasses.fields(value):
+            child_path = f"{path}.{item.name}"
+            rule = item.metadata.get("allow_nan_when")
+            if isinstance(rule, Mapping):
+                sibling = rule.get("field")
+                expected = rule.get("equals", _UNSET)
+                if (
+                    isinstance(sibling, str)
+                    and expected is not _UNSET
+                    and getattr(value, sibling, _UNSET) == expected
+                ):
+                    allowed.add(child_path)
+            allowed.update(
+                _allowed_nan_paths(getattr(value, item.name), child_path, depth + 1)
+            )
+    elif isinstance(value, Mapping):
+        for key, child in value.items():
+            allowed.update(
+                _allowed_nan_paths(child, f"{path}.{key}", depth + 1)
+            )
+    elif isinstance(value, (list, tuple)):
+        for index, child in enumerate(value):
+            allowed.update(
+                _allowed_nan_paths(child, f"{path}[{index}]", depth + 1)
+            )
+    elif isinstance(value, (set, frozenset)):
+        for index, child in enumerate(sorted(value, key=repr)):
+            allowed.update(
+                _allowed_nan_paths(child, f"{path}[{index}]", depth + 1)
+            )
+    return allowed
+
+
 def _invariant_checks(output: Any) -> list[dict[str, Any]]:
     """Check output-independent mathematical constraints without full-size masks."""
     checks = []
+    allowed_nan_paths = _allowed_nan_paths(output)
     for path, array in _numeric_arrays(output):
         summary = _array_summary(array, path) or {}
         if array.size == 0:
             checks.append({"kind": "array_non_empty", "path": path, "status": "warning"})
             continue
         finite = bool(summary.get("finite", True))
+        allowed_unavailable_nan = (
+            path in allowed_nan_paths
+            and np.issubdtype(array.dtype, np.inexact)
+            and bool(np.isnan(array).all())
+        )
         checks.append({
             "kind": "numeric_finiteness", "path": path,
-            "status": "pass" if finite else "violation",
+            "status": (
+                "pass" if finite
+                else "allowed_unavailable" if allowed_unavailable_nan
+                else "violation"
+            ),
             "shape": list(array.shape), "dtype": str(array.dtype),
+            **({
+                "note": "NaN is permitted by this field's dataclass contract only while its availability flag is false."
+            } if allowed_unavailable_nan else {}),
         })
         if not finite:
             continue
